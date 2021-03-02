@@ -8,37 +8,41 @@ import com.redescooter.ses.api.mobile.b.service.express.EdDashboardService;
 import com.redescooter.ses.api.mobile.b.vo.express.EdMobileBExpressOrderChartResult;
 import com.redescooter.ses.api.mobile.b.vo.express.EdMonthlyExpressOrderChartResult;
 import com.redescooter.ses.service.mobile.b.dao.EdDashboardServiceMapper;
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
-@Service
+@DubboService
 public class EdDashboardServiceImpl implements EdDashboardService {
 
     @Autowired
     private EdDashboardServiceMapper edDashboardServiceMapper;
 
     /**
+     * @param enter
      * @Description
      * @Author: AlexLi
      * @Date: 2020/2/14 15:29
      * @Param: enter
      * @Return: map
      * @desc: 所有的订单统计
-     * @param enter
      */
     @Override
     public Map<String, Integer> allCountByStatus(GeneralEnter enter) {
         // 所有状态统计 除拒绝订单外
-        List<CountByStatusResult> countByStatusResultList=edDashboardServiceMapper.allCountByStatus(enter);
+        List<CountByStatusResult> countByStatusResultList = edDashboardServiceMapper.allCountByStatus(enter);
         // 查询拒绝订单
-        CountByStatusResult refuseCount=edDashboardServiceMapper.refuseCount(enter);
+        CountByStatusResult refuseCount = edDashboardServiceMapper.refuseCount(enter);
 
         Map<String, Integer> map = new HashMap<>();
-        if (CollectionUtils.isNotEmpty(countByStatusResultList)){
+        if (CollectionUtils.isNotEmpty(countByStatusResultList)) {
             for (CountByStatusResult item : countByStatusResultList) {
                 map.put(item.getStatus(), item.getTotalCount());
             }
@@ -48,20 +52,20 @@ public class EdDashboardServiceImpl implements EdDashboardService {
                 map.put(status.getValue(), 0);
             }
         }
-        if (refuseCount!=null){
-            map.put(refuseCount.getStatus(),refuseCount.getTotalCount());
+        if (refuseCount != null) {
+            map.put(refuseCount.getStatus(), refuseCount.getTotalCount());
         }
         return map;
     }
 
     /**
+     * @param enter
      * @Description
      * @Author: AlexLi
      * @Date: 2020/2/14 15:48
      * @Param: enter
      * @Return: MobileBDeliveryChartResult
      * @desc: 订单月统计
-     * @param enter
      */
     @Override
     public EdMobileBExpressOrderChartResult mobileBExpressOrderChart(DateTimeParmEnter enter) {
@@ -77,7 +81,7 @@ public class EdDashboardServiceImpl implements EdDashboardService {
 
         if (list.size() == 0) {
             EdMobileBExpressOrderChartResult edMobileBExpressOrderChartResult = new EdMobileBExpressOrderChartResult();
-            dayList.forEach(item->{
+            dayList.forEach(item -> {
                 EdMonthlyExpressOrderChartResult edMonthlyExpressOrderChartResult = new EdMonthlyExpressOrderChartResult();
                 edMonthlyExpressOrderChartResult.setTimes(item);
                 allMap.put(item, edMonthlyExpressOrderChartResult);

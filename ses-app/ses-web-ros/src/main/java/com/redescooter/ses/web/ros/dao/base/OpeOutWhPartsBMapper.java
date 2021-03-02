@@ -1,13 +1,8 @@
 package com.redescooter.ses.web.ros.dao.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.redescooter.ses.web.ros.dm.OpeOutWhPartsB;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
+import com.redescooter.ses.web.ros.dm.OpeOutWhPartsB;import org.apache.ibatis.annotations.Param;import java.util.List;
 
-import java.util.List;
-
-@Mapper
 public interface OpeOutWhPartsBMapper extends BaseMapper<OpeOutWhPartsB> {
     int updateBatch(List<OpeOutWhPartsB> list);
 

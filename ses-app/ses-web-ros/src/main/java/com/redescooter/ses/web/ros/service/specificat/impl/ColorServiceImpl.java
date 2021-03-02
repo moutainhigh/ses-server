@@ -2,12 +2,19 @@ package com.redescooter.ses.web.ros.service.specificat.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.specificat.ColorServiceMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeColor;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBomDraft;
+import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeColorService;
@@ -18,9 +25,10 @@ import com.redescooter.ses.web.ros.service.specificat.ColorService;
 import com.redescooter.ses.web.ros.vo.specificat.ColorDataResult;
 import com.redescooter.ses.web.ros.vo.specificat.ColorListResult;
 import com.redescooter.ses.web.ros.vo.specificat.ColorSaveOrEditEnter;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -38,7 +46,7 @@ public class ColorServiceImpl implements ColorService {
     @Autowired
     private OpeColorService opeColorService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired
@@ -54,6 +62,7 @@ public class ColorServiceImpl implements ColorService {
     private OpeProductionScooterBomDraftService opeProductionScooterBomDraftService;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult colorSave(ColorSaveOrEditEnter enter) {
         // 去空格
         SesStringUtils.objStringTrim(enter);
@@ -61,7 +70,7 @@ public class ColorServiceImpl implements ColorService {
         checkFiledLength(enter);
         // 校验色值唯一
         checkColorValue(enter);
-        OpeColor  color = new OpeColor();
+        OpeColor color = new OpeColor();
         color.setColorName(enter.getColorName());
         color.setColorValue(enter.getColorValue());
         color.setCreatedBy(enter.getUserId());
@@ -75,31 +84,31 @@ public class ColorServiceImpl implements ColorService {
     }
 
 
-    public void checkColorValue(ColorSaveOrEditEnter enter){
-        QueryWrapper<OpeColor>  qw =  new QueryWrapper<>();
-        qw.eq(OpeColor.COL_COLOR_VALUE,enter.getColorValue());
-        if(enter.getId() != null){
-            qw.ne(OpeColor.COL_ID,enter.getId());
+    public void checkColorValue(ColorSaveOrEditEnter enter) {
+        QueryWrapper<OpeColor> qw = new QueryWrapper<>();
+        qw.eq(OpeColor.COL_COLOR_VALUE, enter.getColorValue());
+        if (enter.getId() != null) {
+            qw.ne(OpeColor.COL_ID, enter.getId());
         }
         Integer count = opeColorService.count(qw);
-        if (count > 0){
+        if (count > 0) {
             throw new SesWebRosException(ExceptionCodeEnums.COLOR_VALUE_EXIST.getCode(), ExceptionCodeEnums.COLOR_VALUE_EXIST.getMessage());
         }
     }
 
 
     /**
-     * @Author Aleks
-     * @Description  校验字段长度是否正确（暂时只要求校验色值）
-     * @Date  2020/9/29 11:07
-     * @Param [enter]
      * @return
+     * @Author Aleks
+     * @Description 校验字段长度是否正确（暂时只要求校验色值）
+     * @Date 2020/9/29 11:07
+     * @Param [enter]
      **/
-    public void checkFiledLength(ColorSaveOrEditEnter enter){
-        if(Strings.isNullOrEmpty(enter.getColorValue())){
+    public void checkFiledLength(ColorSaveOrEditEnter enter) {
+        if (Strings.isNullOrEmpty(enter.getColorValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.COLOR_VALUE_NOT_NULL.getCode(), ExceptionCodeEnums.COLOR_VALUE_NOT_NULL.getMessage());
         }
-        if(enter.getColorValue().length() != 7){
+        if (enter.getColorValue().length() != 7) {
             throw new SesWebRosException(ExceptionCodeEnums.COLOR_VALUE_LENGTH_ERROR.getCode(), ExceptionCodeEnums.COLOR_VALUE_LENGTH_ERROR.getMessage());
         }
     }
@@ -108,36 +117,37 @@ public class ColorServiceImpl implements ColorService {
     @Override
     public PageResult<ColorListResult> colorList(PageEnter enter) {
         int num = colorServiceMapper.listNum();
-        if (num == 0){
+        if (num == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        List<ColorListResult>  list = colorServiceMapper.colorList(enter);
+        List<ColorListResult> list = colorServiceMapper.colorList(enter);
         return PageResult.create(enter, num, list);
     }
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult colorDelete(IdEnter enter) {
         // todo 后期加校验  判断颜色是否被使用
         // 2020 10 14追加校验 判断颜色是否被使用（销售整车）
         QueryWrapper<OpeSaleScooter> qw = new QueryWrapper<>();
-        qw.eq(OpeSaleScooter.COL_COLOR_ID,enter.getId());
+        qw.eq(OpeSaleScooter.COL_COLOR_ID, enter.getId());
         int count = opeSaleScooterService.count(qw);
-        if(count > 0){
+        if (count > 0) {
             throw new SesWebRosException(ExceptionCodeEnums.COLOR_IS_USED.getCode(), ExceptionCodeEnums.COLOR_IS_USED.getMessage());
         }
         // 2020 10 14追加校验 判断颜色是否被使用（整车）
         QueryWrapper<OpeProductionScooterBom> scooterBomQueryWrapper = new QueryWrapper<>();
-        scooterBomQueryWrapper.eq(OpeProductionScooterBom.COL_COLOR_ID,enter.getId());
+        scooterBomQueryWrapper.eq(OpeProductionScooterBom.COL_COLOR_ID, enter.getId());
         int count1 = opeProductionScooterBomService.count(scooterBomQueryWrapper);
-        if(count1 > 0){
+        if (count1 > 0) {
             throw new SesWebRosException(ExceptionCodeEnums.COLOR_IS_USED.getCode(), ExceptionCodeEnums.COLOR_IS_USED.getMessage());
         }
         // 2020 10 14追加校验 判断颜色是否被使用（整车草稿）
         QueryWrapper<OpeProductionScooterBomDraft> scooterBomDraftQueryWrapper = new QueryWrapper<>();
-        scooterBomDraftQueryWrapper.eq(OpeProductionScooterBomDraft.COL_COLOR_ID,enter.getId());
+        scooterBomDraftQueryWrapper.eq(OpeProductionScooterBomDraft.COL_COLOR_ID, enter.getId());
         int count2 = opeProductionScooterBomDraftService.count(scooterBomDraftQueryWrapper);
-        if(count2 > 0){
+        if (count2 > 0) {
             throw new SesWebRosException(ExceptionCodeEnums.COLOR_IS_USED.getCode(), ExceptionCodeEnums.COLOR_IS_USED.getMessage());
         }
         opeColorService.removeById(enter.getId());

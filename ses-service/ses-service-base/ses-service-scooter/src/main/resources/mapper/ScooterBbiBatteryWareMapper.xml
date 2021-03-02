@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.scooter.dao.ScooterBbiBatteryWareMapper">
+
+    <!--批量更新电池仓位信息,T_T这样做是减少数据库连接数占用-->
+    <update id="batchUpdateBatteryWare" parameterType="com.redescooter.ses.api.scooter.vo.emqx.BatteryWareDTO">
+        <foreach collection="batteryWares" item="item" separator=";">
+            update sco_scooter_bbi_battery_ware
+            set battery_circuit_open = #{item.batteryCircuitOpen},
+            diff_voltage = #{item.diffVoltage},
+            electricity_breakdown = #{item.electricityBreakdown},
+            `enable` = #{item.enable},
+            have_battery = #{item.haveBattery},
+            mos_breakdown = #{item.mosBreakdown},
+            voltage_breakdown = #{item.voltageBreakdown},
+            updated_time = #{item.updatedTime}
+            where scooter_no = #{item.scooterNo} and ware_no = #{item.wareNo}
+        </foreach>
+    </update>
+
+    <!--批量新增电池仓位信息-->
+    <insert id="batchInsertBatteryWare" parameterType="com.redescooter.ses.api.scooter.vo.emqx.BatteryWareDTO">
+        insert into sco_scooter_bbi_battery_ware (id, ware_no,
+        scooter_no, battery_circuit_open, diff_voltage,
+        electricity_breakdown, `enable`, have_battery,
+        mos_breakdown, voltage_breakdown,created_time, updated_time)
+        <foreach collection="batteryWares" item="item" open="values" separator=",">
+            (#{item.id,jdbcType=BIGINT}, #{item.wareNo,jdbcType=INTEGER},
+            #{item.scooterNo,jdbcType=VARCHAR}, #{item.batteryCircuitOpen,jdbcType=BOOLEAN}, #{item.diffVoltage,jdbcType=BOOLEAN},
+            #{item.electricityBreakdown,jdbcType=BOOLEAN}, #{item.enable,jdbcType=BOOLEAN}, #{item.haveBattery,jdbcType=BOOLEAN},
+            #{item.mosBreakdown,jdbcType=BOOLEAN}, #{item.voltageBreakdown,jdbcType=BOOLEAN},
+            #{item.createdTime,jdbcType=TIMESTAMP}, #{item.createdTime,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+
+</mapper>

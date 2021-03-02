@@ -9,18 +9,27 @@ import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PublicSecretResult;
+import com.redescooter.ses.api.common.vo.base.StringResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.SesStringUtils;
-import com.redescooter.ses.tool.utils.accountType.RsaUtils;
+import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpePayOrder;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
+import com.redescooter.ses.web.ros.service.base.OpePayMchNotifyService;
+import com.redescooter.ses.web.ros.service.base.OpePayOrderService;
+import com.redescooter.ses.web.ros.service.base.OpePayReceiptService;
+import com.redescooter.ses.web.ros.service.base.OpeRefundOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeTradePayRecordService;
 import com.redescooter.ses.web.ros.service.stripe.StripeService;
 import com.stripe.Stripe;
 import com.stripe.model.Event;
@@ -32,7 +41,7 @@ import com.stripe.param.PaymentIntentCreateParams;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -83,14 +92,15 @@ public class StripeServiceImpl implements StripeService {
     @Autowired
     private OpeTradePayRecordService opeTradePayRecordService;
 
-    @Reference
+    @DubboReference
     private MailMultiTaskService mailMultiTaskService;
 
     @Autowired
     private OpeCustomerService opeCustomerService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
+
     @Value("${Request.privateKey}")
     private String privatekey;
 
@@ -155,13 +165,12 @@ public class StripeServiceImpl implements StripeService {
     @Override
     public GeneralResult succeeHooks(String enter) {
         if (StringUtils.isEmpty(enter)) {
-//            return new GeneralResult(String.valueOf(UUID.randomUUID()));
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         if (JSONObject.parseObject(enter).size() == 0) {
-//            return new GeneralResult(String.valueOf(UUID.randomUUID()));
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
+
         String payload = enter;
         log.info("=============================");
         log.info("网络钩子数据回调===={}", payload);
@@ -179,7 +188,7 @@ public class StripeServiceImpl implements StripeService {
         EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
         StripeObject stripeObject = dataObjectDeserializer.getObject().get();
 
-        PayResponseBody payResponseBody = generateResponse((PaymentIntent)stripeObject, new PayResponseBody());
+        PayResponseBody payResponseBody = generateResponse((PaymentIntent) stripeObject, new PayResponseBody());
 
         log.info("===============结果==============");
         log.info(JSONObject.toJSONString(payResponseBody));
@@ -192,11 +201,11 @@ public class StripeServiceImpl implements StripeService {
 
         if (StringUtils.isEmpty(enter)) {
 //            return new GeneralResult(String.valueOf(UUID.randomUUID()));
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         if (JSONObject.parseObject(enter).size() == 0) {
 //            return new GeneralResult(String.valueOf(UUID.randomUUID()));
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         String payload = enter;
         log.info("=============================");
@@ -215,7 +224,7 @@ public class StripeServiceImpl implements StripeService {
         EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
         StripeObject stripeObject = dataObjectDeserializer.getObject().get();
 
-        PayResponseBody payResponseBody = generateResponse((PaymentIntent)stripeObject, new PayResponseBody());
+        PayResponseBody payResponseBody = generateResponse((PaymentIntent) stripeObject, new PayResponseBody());
 
         log.info("=============================");
         log.info(payResponseBody.toString());
@@ -234,11 +243,11 @@ public class StripeServiceImpl implements StripeService {
     public GeneralResult cancelledPaymentIntent(String enter) {
         if (StringUtils.isEmpty(enter)) {
 //            return new GeneralResult(String.valueOf(UUID.randomUUID()));
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         if (JSONObject.parseObject(enter).size() == 0) {
 //            return new GeneralResult(String.valueOf(UUID.randomUUID()));
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         String payload = enter;
         log.info("=============================");
@@ -257,7 +266,7 @@ public class StripeServiceImpl implements StripeService {
         EventDataObjectDeserializer dataObjectDeserializer = event.getDataObjectDeserializer();
         StripeObject stripeObject = dataObjectDeserializer.getObject().get();
 
-        PayResponseBody payResponseBody = generateResponse((PaymentIntent)stripeObject, new PayResponseBody());
+        PayResponseBody payResponseBody = generateResponse((PaymentIntent) stripeObject, new PayResponseBody());
 
         log.info("===============结果==============");
         log.info(JSONObject.toJSONString(payResponseBody));
@@ -314,7 +323,7 @@ public class StripeServiceImpl implements StripeService {
 
         OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(orderId);
         if (customerInquiry == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(),ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
 
         BigDecimal price = customerInquiry.getPrepaidDeposit();
@@ -335,9 +344,9 @@ public class StripeServiceImpl implements StripeService {
 
         //将预定客户转化为潜在客户
         OpeCustomer opeCustomer = opeCustomerService.getById(customerInquiry.getCustomerId());
-        if (!org.apache.commons.lang3.StringUtils.equals(opeCustomer.getStatus(),CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue()) ||
-                !org.apache.commons.lang3.StringUtils.equals(opeCustomer.getStatus(),CustomerStatusEnum.TRASH_CUSTOMER.getValue())
-        ){
+        if (!org.apache.commons.lang3.StringUtils.equals(opeCustomer.getStatus(), CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue()) ||
+                !org.apache.commons.lang3.StringUtils.equals(opeCustomer.getStatus(), CustomerStatusEnum.TRASH_CUSTOMER.getValue())
+        ) {
             opeCustomer.setTelephone(customerInquiry.getTelephone());
             opeCustomer.setAddress(customerInquiry.getAddress());
             opeCustomer.setStatus(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue());
@@ -367,7 +376,7 @@ public class StripeServiceImpl implements StripeService {
         enter.setToUserId(0L);
         enter.setUserId(0L);
         enter.setPrice(customerInquiry.getAmountObligation().toString());
-        enter.setFullName(customerInquiry.getFirstName()+" "+customerInquiry.getLastName());
+        enter.setFullName(customerInquiry.getFirstName() + " " + customerInquiry.getLastName());
         enter.setModel(ProductModelEnums.getProductModelEnumsByValue(customerInquiry.getProductModel()).getMessage());
         mailMultiTaskService.subscriptionPaySucceedSendmail(enter);
     }
@@ -420,8 +429,8 @@ public class StripeServiceImpl implements StripeService {
     public PublicSecretResult publicSecret() {
         PublicSecretResult result = new PublicSecretResult();
         String secret = publicSecret;
-        String front = secret.substring(0,secret.length()/2);
-        String behind = secret.substring(secret.length()/2,secret.length());
+        String front = secret.substring(0, secret.length() / 2);
+        String behind = secret.substring(secret.length() / 2, secret.length());
         String whole = front + behind;
         System.out.println(whole);
         try {

@@ -11,7 +11,13 @@ import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
+import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
+import com.redescooter.ses.api.common.vo.base.CityNameEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.TokenResult;
+import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.vo.common.CityPostResult;
@@ -20,8 +26,8 @@ import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
+import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
-import com.redescooter.ses.tool.utils.accountType.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
@@ -41,16 +47,20 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @ClassName:WebsiteServiceImpl
@@ -69,13 +79,13 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     @Autowired
     private JedisCluster jedisCluster;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired
     private OpeCustomerMapper opeCustomerMapper;
 
-    @Reference
+    @DubboReference
     private MailMultiTaskService mailMultiTaskService;
 
     @Autowired
@@ -87,7 +97,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     @Value("${Request.privateKey}")
     private String privatekey;
 
-    @Reference
+    @DubboReference
     private CityBaseService cityBaseService;
 
     /**
@@ -96,7 +106,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public TokenResult login(LoginEnter enter) {
         //入参对象去空格
@@ -155,7 +165,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult logout(GeneralEnter enter) {
         String token = enter.getToken();
@@ -169,7 +179,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult signUp(SignUpEnter enter) {
 
@@ -339,6 +349,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         userToken.setTimestamp(enter.getTimestamp());
         userToken.setTimeZone(enter.getTimeZone());
         userToken.setVersion(enter.getVersion());
+        userToken.setDeptId(opeSysUser.getDeptId());
 
         try {
             Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);

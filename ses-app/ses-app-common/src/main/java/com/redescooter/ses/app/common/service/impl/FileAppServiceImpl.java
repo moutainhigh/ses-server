@@ -2,10 +2,8 @@ package com.redescooter.ses.app.common.service.impl;
 
 import com.aliyun.oss.ClientConfiguration;
 import com.aliyun.oss.OSSClient;
-import com.aliyun.oss.common.comm.Protocol;
 import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.PutObjectResult;
-import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.enums.oss.ProtocolEnums;
 import com.redescooter.ses.api.common.exception.BaseException;
 import com.redescooter.ses.app.common.service.FileAppService;
@@ -28,7 +26,7 @@ public class FileAppServiceImpl implements FileAppService {
     private OssConfig ossConfig;
 
     @Override
-    public String uplaod(String bucket,String dirName, MultipartFile file) {
+    public String uplaod(String bucket, String dirName, MultipartFile file) {
         OSSClient ossClient = null;
         String fileName = null;
         int mb = 0;
@@ -40,9 +38,9 @@ public class FileAppServiceImpl implements FileAppService {
             String full = file.getOriginalFilename();
             String suffix = full.substring(full.indexOf("."), full.length());
             Random random = new Random();
-            if (StringUtils.isNotEmpty(dirName)){
-                fileName = dirName+"/"+System.currentTimeMillis() + random.nextInt(10000) + suffix;
-            }else{
+            if (StringUtils.isNotEmpty(dirName)) {
+                fileName = dirName + "/" + System.currentTimeMillis() + random.nextInt(10000) + suffix;
+            } else {
                 fileName = System.currentTimeMillis() + random.nextInt(10000) + suffix;
             }
             if (StringUtils.isEmpty(bucket)) {
@@ -65,8 +63,8 @@ public class FileAppServiceImpl implements FileAppService {
         } finally {
             ossClient.shutdown();
         }
-        if (StringUtils.isNotEmpty(dirName)){
-            return "https://" + bucket + "." + ossConfig.getPublicEndpointDomain() +"/"+dirName+ "/" + fileName;
+        if (StringUtils.isNotEmpty(dirName)) {
+            return "https://" + bucket + "." + ossConfig.getPublicEndpointDomain() + "/" + dirName + "/" + fileName;
         }
         return "https://" + bucket + "." + ossConfig.getPublicEndpointDomain() + "/" + fileName;
     }
@@ -78,8 +76,7 @@ public class FileAppServiceImpl implements FileAppService {
         ClientConfiguration conf = new ClientConfiguration();
         conf.setProtocol(ProtocolEnums.getProtocol(ossConfig.getProtocol()));
 
-        OSSClient ossClient = new OSSClient(ossConfig.getInternalEndpoint(), ossConfig.getAccessKeyId(),
-                ossConfig.getSecretAccesskey(),conf);
+        OSSClient ossClient = new OSSClient(ossConfig.getInternalEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getSecretAccesskey(), conf);
         if (url.indexOf("//") >= 0) {
             url = url.split("//")[1];
         }
@@ -92,6 +89,5 @@ public class FileAppServiceImpl implements FileAppService {
         }
         return input;
     }
-
 
 }

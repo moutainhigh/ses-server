@@ -1,22 +1,22 @@
 package com.redescooter.ses.service.hub.source.consumer.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
 import com.redescooter.ses.api.hub.vo.HubSaveScooterEnter;
+import com.redescooter.ses.api.hub.vo.QueryDriverScooterResult;
 import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.source.consumer.dm.HubConUserScooter;
 import com.redescooter.ses.service.hub.source.consumer.service.base.HubConUserScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.hub.vo.QueryDriverScooterResult;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,19 +24,19 @@ import java.util.List;
 
 /**
  * @ClassName:ScooterService
- * @description: ScooterService
+ * @description: ScooterMobileCService
  * @author: Alex
  * @Version：1.3
  * @create: 2020/01/01 19:17
  */
 @DS("consumer")
-@Service
+@DubboService
 public class HubCustomerScooterServiceImpl implements CusotmerScooterService {
 
     @Autowired
     private HubConUserScooterService hubConUserScooterService;
 
-    @Reference
+    @DubboReference
     private  IdAppService idAppService;
 
     /**
@@ -68,6 +68,7 @@ public class HubCustomerScooterServiceImpl implements CusotmerScooterService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult saveScooter(List<HubSaveScooterEnter> enter) {
         List<HubConUserScooter> saveHubConUserScooterList = new ArrayList<>();
         enter.forEach(item -> {

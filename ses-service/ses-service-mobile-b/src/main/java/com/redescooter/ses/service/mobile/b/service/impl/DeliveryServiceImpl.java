@@ -1,7 +1,6 @@
 package com.redescooter.ses.service.mobile.b.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.BizType;
@@ -44,12 +43,12 @@ import com.redescooter.ses.service.mobile.b.dm.base.CorDelivery;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDeliveryTrace;
 import com.redescooter.ses.service.mobile.b.dm.base.CorUserProfile;
 import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
-import com.redescooter.ses.tool.utils.CO2MoneyConversionUtil;
-import com.redescooter.ses.tool.utils.DateUtil;
-import com.redescooter.ses.tool.utils.StatisticalUtil;
+import com.redescooter.ses.tool.utils.chart.StatisticalUtil;
+import com.redescooter.ses.tool.utils.co2.CO2MoneyConversionUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,9 +71,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * @Version：1.3
  * @create: 2019/12/29 14:38
  */
-@Service
+@DubboService
 public class DeliveryServiceImpl implements DeliveryService {
-
 
     @Autowired
     private CorDeliveryMapper corDeliveryMapper;
@@ -84,6 +82,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Autowired
     private DeliveryTraceService deliveryTraceService;
+
     @Autowired
     private CorUserProfileMapper corUserProfileMapper;
 
@@ -93,16 +92,16 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Autowired
     private CorDeliveryTraceMapper corDeliveryTraceMapper;
 
-    @Reference
+    @DubboReference
     private TenantBaseService tenantBaseService;
 
-    @Reference
+    @DubboReference
     private ScooterService scooterService;
 
-    @Reference
+    @DubboReference
     private ScooterIotService scooterIotService;
 
-    @Reference
+    @DubboReference
     private PushService pushService;
 
     // 创建 开始订单锁
@@ -217,7 +216,7 @@ public class DeliveryServiceImpl implements DeliveryService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult start(StartEnter enter) {
         // 上锁
@@ -290,7 +289,7 @@ public class DeliveryServiceImpl implements DeliveryService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult refuse(RefuseEnter enter) {
 
@@ -334,7 +333,7 @@ public class DeliveryServiceImpl implements DeliveryService {
                 .bizId(delivery.getId())
                 .bizType(BizType.DELIVERY.getValue())
                 .status(DeliveryStatusEnums.REJECTED.getValue())
-                .args( new String[]{delivery.getOrderNo(), new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString(), enter.getReason()})
+                .args(new String[]{delivery.getOrderNo(), new StringBuilder().append(corUserProfile.getFirstName() + " " + corUserProfile.getLastName()).toString(), enter.getReason()})
                 .belongId(delivery.getCreatedBy())
                 .systemId(AppIDEnums.SAAS_WEB.getSystemId())
                 .appId(AppIDEnums.SAAS_WEB.getAppId())
@@ -349,7 +348,7 @@ public class DeliveryServiceImpl implements DeliveryService {
                 .bizId(delivery.getId())
                 .bizType(BizType.DELIVERY.getValue())
                 .status(DeliveryStatusEnums.REJECTED.getValue())
-                .args(new String[]{delivery.getOrderNo(),enter.getReason()})
+                .args(new String[]{delivery.getOrderNo(), enter.getReason()})
                 .belongId(delivery.getDelivererId())
                 .systemId(AppIDEnums.SAAS_APP.getSystemId())
                 .appId(AppIDEnums.SAAS_APP.getAppId())
@@ -367,7 +366,7 @@ public class DeliveryServiceImpl implements DeliveryService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public CompleteResult complete(CompleteEnter enter) {
         List<String> deliveryStatus = new ArrayList<>();

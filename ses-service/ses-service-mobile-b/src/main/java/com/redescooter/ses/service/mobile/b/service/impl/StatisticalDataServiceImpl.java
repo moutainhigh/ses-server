@@ -1,21 +1,12 @@
 package com.redescooter.ses.service.mobile.b.service.impl;
 
-import java.math.BigDecimal;
-import java.util.*;
-
-import com.redescooter.ses.api.mobile.b.exception.MobileBException;
-import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.mobile.b.exception.MobileBException;
 import com.redescooter.ses.api.mobile.b.service.StatisticalDataService;
 import com.redescooter.ses.api.mobile.b.vo.AllMobileBScooterChartResult;
 import com.redescooter.ses.api.mobile.b.vo.MobileBDeliveryChartResult;
@@ -37,8 +28,24 @@ import com.redescooter.ses.service.mobile.b.dm.base.CorDriverRideStatDetail;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter;
 import com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStat;
 import com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStatDetail;
+import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @ClassName:StatisticalDataServiceImpl
@@ -47,7 +54,7 @@ import com.redescooter.ses.tool.utils.DateUtil;
  * @Version：1.3
  * @create: 2019/12/30 17:01
  */
-@Service
+@DubboService
 public class StatisticalDataServiceImpl implements StatisticalDataService {
 
     @Autowired
@@ -62,7 +69,7 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
     @Autowired
     private CorDriverRideStatDetailMapper corDriverRideStatDetailMapper;
 
-    @Autowired
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired
@@ -83,7 +90,7 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveDriverRideStat(List<SaveDeliveryStatEnter> enter) {
 
@@ -160,7 +167,7 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveScooterRideStat(List<SaveDeliveryStatEnter> enter) {
         List<CorScooterRideStatDetail> saveCorScooterRideStatDetailList = new ArrayList<>();
@@ -244,8 +251,8 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
 
         Map<String, MonthlyDeliveryChartResult> allMap = new LinkedHashMap<>();
         Map<String, MonthlyDeliveryChartResult> listMap = new LinkedHashMap<>();
-        if (Objects.isNull(enter.getStartDateTime()) || Objects.isNull(enter.getEndDateTime())){
-            throw  new MobileBException(ExceptionCodeEnums.DATE_IS_EMPTY.getCode(),ExceptionCodeEnums.DATE_IS_EMPTY.getMessage());
+        if (Objects.isNull(enter.getStartDateTime()) || Objects.isNull(enter.getEndDateTime())) {
+            throw new MobileBException(ExceptionCodeEnums.DATE_IS_EMPTY.getCode(), ExceptionCodeEnums.DATE_IS_EMPTY.getMessage());
         }
 
         List<String> dayList = new LinkedList();
@@ -308,19 +315,23 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
         corDriverRideStatQueryWrapper.eq(CorDriverRideStat.COL_DRIVER_ID, corDriver.getId());
         corDriverRideStatQueryWrapper.last("LIMIT 1");
         CorDriverRideStat corDriverRideStat = corDriverRideStatMapper.selectOne(corDriverRideStatQueryWrapper);
-
+// 获取指定日期格式向前N天时间集合
+        List<String> dayList = new LinkedList();
+//        dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
+        dayList = DateUtil.getBetweenDates(enter.getStartDateTime(), enter.getEndDateTime());
+        MobileBScooterChartResult result = null;
         if (corDriverRideStat == null) {
+            for (String str : dayList) {
+                result = new MobileBScooterChartResult();
+                result.setTimes(str);
+                map.put(str, result);
+            }
             return new AllMobileBScooterChartResult(map);
         }
 
         enter.setUserId(corDriver.getId());
         List<MobileBScooterChartResult> list = statisticalDataServiceMapper.mobileBScooterChart(enter);
-        // 获取指定日期格式向前N天时间集合
-        List<String> dayList = new LinkedList();
-//        dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
-        dayList = DateUtil.getBetweenDates(enter.getStartDateTime(), enter.getEndDateTime());
-        if (list.size() > 0) {
-            MobileBScooterChartResult result = null;
+        if (CollectionUtils.isNotEmpty(list)) {
 
             for (String str : dayList) {
                 for (MobileBScooterChartResult chart : list) {
@@ -333,6 +344,12 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
                     result.setTimes(str);
                     map.put(str, result);
                 }
+            }
+        } else {
+            for (String str : dayList) {
+                result = new MobileBScooterChartResult();
+                result.setTimes(str);
+                map.put(str, result);
             }
         }
         return new AllMobileBScooterChartResult(map);

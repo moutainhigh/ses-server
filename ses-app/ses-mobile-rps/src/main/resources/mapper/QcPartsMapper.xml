@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.qcorder.QcPartsMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeQcPartsB">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="qc_id" jdbcType="BIGINT" property="qcId" />
+        <result column="parts_id" jdbcType="INTEGER" property="partsId" />
+        <result column="parts_name" jdbcType="VARCHAR" property="partsName" />
+        <result column="parts_no" jdbcType="VARCHAR" property="partsNo" />
+        <result column="parts_type" jdbcType="INTEGER" property="partsType" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
+        <result column="qualified_qty" jdbcType="INTEGER" property="qualifiedQty" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--质检单部件详情自定义返回结果-->
+    <resultMap id="QcPartsDetailResultMap" type="com.redescooter.ses.mobile.rps.vo.qc.QcOrderProductDetailDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="qc_id" jdbcType="BIGINT" property="qcId" />
+        <result column="bom_id" jdbcType="BIGINT" property="bomId" />
+        <result column="cn_name" jdbcType="VARCHAR" property="name" />
+        <result column="parts_no" jdbcType="VARCHAR" property="number" />
+        <result column="parts_type" jdbcType="INTEGER" property="partsType" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="qualified_qty" jdbcType="INTEGER" property="qualifiedQty" />
+        <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
+        <result column="id_calss" jdbcType="BOOLEAN" property="idClass" />
+        <!--部件序列号信息-->
+        <collection property="productSerialNumberList" ofType="com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO">
+            <result column="sn_id" jdbcType="BIGINT" property="id" />
+            <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
+            <result column="lot" jdbcType="VARCHAR" property="lot" />
+            <result column="name" jdbcType="VARCHAR" property="name" />
+            <result column="number" jdbcType="VARCHAR" property="partsNo" />
+            <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+        </collection>
+    </resultMap>
+
+    <!--根据qcId查询质检单部件信息-->
+    <select id="getQcPartsByQcId" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.qc.QcOrderProductDTO">
+        select parts.id, parts.qc_id qcId, pp.id bomId, pp.cn_name `name`, pp.parts_no `number`,
+        parts.qty, parts.qualified_qty qualifiedQty, parts.unqualified_qty unqualifiedQty,
+        parts.qty - (parts.unqualified_qty + parts.qualified_qty) pendingQcQty, pp.id_calss idClass
+        from ope_qc_parts_b parts
+        left join ope_production_parts pp
+        on parts.parts_id = pp.id and pp.dr = 0 and pp.`disable` = 0
+        where parts.dr = 0 and parts.qc_id = #{qcId}
+    </select>
+
+    <!--根据id查询质检单部件详情-->
+    <select id="getQcPartsDetailById" parameterType="java.lang.Long" resultMap="QcPartsDetailResultMap">
+        select parts.id, parts.qc_id, pp.id bom_id, pp.cn_name, pp.parts_no,pp.parts_type,parts.qty, parts.qualified_qty,
+        parts.unqualified_qty, serial.id sn_id, serial.serial_num, serial.lot,pp.cn_name `name`, pp.parts_no `number`,
+        s.supplier_name,pp.id_calss
+        from ope_qc_parts_b parts
+        left join ope_production_parts pp
+        on parts.parts_id = pp.id and pp.dr = 0 and pp.`disable` = 0
+        left join ope_supplier s
+        on pp.supplier_id = s.id and s.dr = 0
+        left join ope_qc_order_serial_bind serial
+        on parts.id = serial.order_b_id and serial.dr = 0
+        where parts.dr = 0 and parts.id = #{id}
+    </select>
+
+    <!--根据id查询质检单部件信息-->
+    <select id="getQcPartsById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_qc_parts_b
+	    where dr = 0 and id = #{id}
+    </select>
+
+    <!--修改质检单部件信息-->
+    <update id="updateQcParts" parameterType="com.redescooter.ses.mobile.rps.dm.OpeQcPartsB">
+        update ope_qc_parts_b
+        <set>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="qcId != null">
+                qc_id = #{qcId,jdbcType=BIGINT},
+            </if>
+            <if test="partsId != null">
+                parts_id = #{partsId,jdbcType=INTEGER},
+            </if>
+            <if test="partsName != null">
+                parts_name = #{partsName,jdbcType=VARCHAR},
+            </if>
+            <if test="partsNo != null">
+                parts_no = #{partsNo,jdbcType=VARCHAR},
+            </if>
+            <if test="partsType != null">
+                parts_type = #{partsType,jdbcType=INTEGER},
+            </if>
+            <if test="qty != null">
+                qty = #{qty,jdbcType=INTEGER},
+            </if>
+            <if test="unqualifiedQty != null">
+                unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER},
+            </if>
+            <if test="qualifiedQty != null">
+                qualified_qty = #{qualifiedQty,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

@@ -14,19 +14,51 @@ import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.scooterqc.ScooterQcServiceMapper;
-import com.redescooter.ses.mobile.rps.dm.*;
+import com.redescooter.ses.mobile.rps.dm.OpeAssemblyBOrder;
+import com.redescooter.ses.mobile.rps.dm.OpeAssemblyBQc;
+import com.redescooter.ses.mobile.rps.dm.OpeAssemblyLotTrace;
+import com.redescooter.ses.mobile.rps.dm.OpeAssemblyOrder;
+import com.redescooter.ses.mobile.rps.dm.OpeAssemblyQcItem;
+import com.redescooter.ses.mobile.rps.dm.OpeAssemblyQcTrace;
+import com.redescooter.ses.mobile.rps.dm.OpePartsProduct;
+import com.redescooter.ses.mobile.rps.dm.OpeProductAssembly;
+import com.redescooter.ses.mobile.rps.dm.OpeProductQcTemplate;
+import com.redescooter.ses.mobile.rps.dm.OpeProductQcTemplateB;
+import com.redescooter.ses.mobile.rps.dm.OpeStock;
+import com.redescooter.ses.mobile.rps.dm.OpeWhse;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.BussinessNumberService;
 import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
-import com.redescooter.ses.mobile.rps.service.base.*;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyBOrderService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyBQcService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyLotTraceService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyOrderService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyQcItemService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyQcTraceService;
+import com.redescooter.ses.mobile.rps.service.base.OpePartsProductService;
+import com.redescooter.ses.mobile.rps.service.base.OpeProductAssemblyService;
+import com.redescooter.ses.mobile.rps.service.base.OpeProductQcTemplateBService;
+import com.redescooter.ses.mobile.rps.service.base.OpeProductQcTemplateService;
+import com.redescooter.ses.mobile.rps.service.base.OpeStockService;
+import com.redescooter.ses.mobile.rps.service.base.OpeWhseService;
 import com.redescooter.ses.mobile.rps.service.scooterqc.ScooterQcService;
-import com.redescooter.ses.mobile.rps.vo.scooterqc.*;
+import com.redescooter.ses.mobile.rps.vo.scooterqc.CheckScooterSerilaNEnter;
+import com.redescooter.ses.mobile.rps.vo.scooterqc.CheckScooterSerilaNResult;
+import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcIdEnter;
+import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcIdItemEnter;
+import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcItemEnter;
+import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcItemOptionEnter;
+import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcItemOptionResult;
+import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcItemResult;
+import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcOneResult;
+import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcPartResult;
+import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcResidueNumResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -34,7 +66,6 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -85,7 +116,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
     @Autowired
     private OpeProductAssemblyService opeProductAssemblyService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -94,7 +125,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
      * @Date 2020/4/14 14:37
      * @Param [enter]
      **/
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public PageResult<ScooterQcOneResult> scooterQcList(PageEnter enter) {
         int count = scooterQcServiceMapper.scooterQcListCount();
@@ -130,7 +161,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
      * @Date 2020/4/14 14:37
      * @Param [enter]
      **/
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public PageResult<ScooterQcPartResult> partListById(ScooterQcIdEnter enter) {
         int count = scooterQcServiceMapper.partListByIdCount();
@@ -167,7 +198,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
      * @Date 2020/4/14 14:37
      * @Param [enter]
      **/
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public List<ScooterQcItemResult> scooterQcItem(ScooterQcIdItemEnter enter) {
         // 先查询组组装单是否存在
@@ -218,7 +249,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
      * @Date 2020/4/14 14:37
      * @Param [enter]
      **/
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public ScooterQcResidueNumResult setScooterQcItem(ScooterQcItemEnter enter) {
         // 返回的结果集

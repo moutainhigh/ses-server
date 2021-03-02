@@ -1,7 +1,10 @@
 package com.redescooter.ses.app.common.controller;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.CityNameEnter;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.vo.common.CityByPageEnter;
 import com.redescooter.ses.api.foundation.vo.common.CityResult;
@@ -9,8 +12,12 @@ import com.redescooter.ses.api.foundation.vo.common.CountryCityResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.web.bind.annotation.*;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -26,7 +33,7 @@ import java.util.List;
 @RequestMapping(value = "/city")
 public class CityController {
 
-    @Reference
+    @DubboReference
     private CityBaseService cityBaseService;
 
     @IgnoreLoginCheck
@@ -50,11 +57,11 @@ public class CityController {
         return new Response<>(cityBaseService.queryChildlevel(enter));
     }
 
-
     @IgnoreLoginCheck
     @PostMapping("/countryCityPostCode")
     @ApiOperation(value = "Get PostCode")
     public Response<List<CountryCityResult>> countryCityPostCode(@ModelAttribute @ApiParam("Parameter") CityNameEnter cityNameEnter) {
         return new Response<>(cityBaseService.countryCityPostCode(cityNameEnter));
     }
+
 }

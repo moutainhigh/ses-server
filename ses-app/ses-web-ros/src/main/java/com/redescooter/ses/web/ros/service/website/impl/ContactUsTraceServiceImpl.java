@@ -8,7 +8,7 @@ import com.redescooter.ses.web.ros.dm.OpeContactUs;
 import com.redescooter.ses.web.ros.dm.OpeContactUsTrace;
 import com.redescooter.ses.web.ros.service.base.OpeContactUsTraceService;
 import com.redescooter.ses.web.ros.service.website.ContactUsTraceService;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +30,7 @@ public class ContactUsTraceServiceImpl implements ContactUsTraceService {
     @Autowired
     private ContactUsTraceMapper contactUsTraceMapper;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Override

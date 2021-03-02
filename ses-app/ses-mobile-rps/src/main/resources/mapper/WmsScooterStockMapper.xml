@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.wms.WmsScooterStockMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="stock_type" jdbcType="INTEGER" property="stockType" />
+        <result column="group_id" jdbcType="BIGINT" property="groupId" />
+        <result column="color_id" jdbcType="BIGINT" property="colorId" />
+        <result column="able_stock_qty" jdbcType="INTEGER" property="ableStockQty" />
+        <result column="used_stock_qty" jdbcType="INTEGER" property="usedStockQty" />
+        <result column="wait_in_stock_qty" jdbcType="INTEGER" property="waitInStockQty" />
+        <result column="wait_out_stock_qty" jdbcType="INTEGER" property="waitOutStockQty" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+        <result column="def1" jdbcType="VARCHAR" property="def1" />
+        <result column="def2" jdbcType="VARCHAR" property="def2" />
+        <result column="def3" jdbcType="VARCHAR" property="def3" />
+        <result column="def4" jdbcType="VARCHAR" property="def4" />
+        <result column="def5" jdbcType="DOUBLE" property="def5" />
+    </resultMap>
+
+    <!--修改成品库车辆库存信息-->
+    <update id="updateWmsScooterStock" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock">
+        update ope_wms_scooter_stock
+        <set>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="stockType != null">
+                stock_type = #{stockType,jdbcType=INTEGER},
+            </if>
+            <if test="groupId != null">
+                group_id = #{groupId,jdbcType=BIGINT},
+            </if>
+            <if test="colorId != null">
+                color_id = #{colorId,jdbcType=BIGINT},
+            </if>
+            <if test="ableStockQty != null">
+                able_stock_qty = #{ableStockQty,jdbcType=INTEGER},
+            </if>
+            <if test="usedStockQty != null">
+                used_stock_qty = #{usedStockQty,jdbcType=INTEGER},
+            </if>
+            <if test="waitInStockQty != null">
+                wait_in_stock_qty = #{waitInStockQty,jdbcType=INTEGER},
+            </if>
+            <if test="waitOutStockQty != null">
+                wait_out_stock_qty = #{waitOutStockQty,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据groupId、colorId查询成品库车辆库存信息-->
+    <select id="getWmsScooterStockByGroupIdAndColorId" resultMap="BaseResultMap">
+        select * from ope_wms_scooter_stock
+	    where dr = 0 and stock_type = 1 and group_id = #{groupId}
+        and color_id = #{colorId}
+    </select>
+
+    <!--批量修改成品库车辆库存信息-->
+    <update id="batchUpdateWmsScooterStock" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock">
+        <foreach collection="opeWmsScooterStockList" item="item" separator=";">
+            update ope_wms_scooter_stock
+            <set>
+                <if test="item.ableStockQty != null">
+                    able_stock_qty = #{item.ableStockQty,jdbcType=INTEGER},
+                </if>
+                <if test="item.usedStockQty != null">
+                    used_stock_qty = #{item.usedStockQty,jdbcType=INTEGER},
+                </if>
+                <if test="item.waitInStockQty != null">
+                    wait_in_stock_qty = #{item.waitInStockQty,jdbcType=INTEGER},
+                </if>
+                <if test="item.waitOutStockQty != null">
+                    wait_out_stock_qty = #{item.waitOutStockQty,jdbcType=INTEGER},
+                </if>
+                <if test="item.updatedBy != null">
+                    updated_by = #{item.updatedBy,jdbcType=BIGINT},
+                </if>
+                <if test="item.updatedTime != null">
+                    updated_time = #{item.updatedTime,jdbcType=TIMESTAMP},
+                </if>
+            </set>
+            where id = #{item.id}
+        </foreach>
+    </update>
+
+    <!--批量新增成品库车辆库存信息-->
+    <insert id="batchInsertWmsScooterStock" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock">
+        insert ope_wms_scooter_stock(id, dr, stock_type, group_id, color_id, able_stock_qty, used_stock_qty, wait_in_stock_qty,
+        wait_out_stock_qty, created_by, created_time, updated_by, updated_time)
+        <foreach collection="opeWmsScooterStockList" item="item" open="values" separator=",">
+            (#{item.id}, #{item.dr}, #{item.stockType}, #{item.groupId}, #{item.colorId}, #{item.ableStockQty}, #{item.usedStockQty},
+            #{item.waitInStockQty}, #{item.waitOutStockQty}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime})
+        </foreach>
+    </insert>
+
+    <!--根据bomId查询成品库车辆id-->
+    <select id="getWmsScooterStockIdByBomId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select scooter.id
+        from ope_wms_scooter_stock scooter
+        left join ope_production_scooter_bom bom
+        on scooter.group_id = bom.group_id and scooter.color_id = bom.color_id
+        and bom.bom_status = 1 and bom.dr = 0
+        where scooter.dr = 0 and bom.id = #{bomId}
+    </select>
+
+</mapper>

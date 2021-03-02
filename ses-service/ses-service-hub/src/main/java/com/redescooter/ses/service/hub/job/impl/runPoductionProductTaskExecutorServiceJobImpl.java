@@ -10,10 +10,11 @@ import com.redescooter.ses.service.hub.source.operation.dm.OpeProductionScooterB
 import com.redescooter.ses.service.hub.source.operation.service.base.OpeProductionCombinBomService;
 import com.redescooter.ses.service.hub.source.operation.service.base.OpeProductionScooterBomService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 @Slf4j
-@Service
+@DubboService
 public class runPoductionProductTaskExecutorServiceJobImpl implements RunPoductionTaskExecutorServiceJob {
 
     @Autowired
@@ -31,7 +32,7 @@ public class runPoductionProductTaskExecutorServiceJobImpl implements RunPoducti
     @Autowired
     private OpeProductionScooterBomService opeProductionScooterBomService;
 
-    @Autowired
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -40,7 +41,7 @@ public class runPoductionProductTaskExecutorServiceJobImpl implements RunPoducti
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public JobResult poductionCombinationTask(GeneralEnter enter) {
         List<OpeProductionCombinBom> opeProductionCombinBomList =
@@ -89,7 +90,7 @@ public class runPoductionProductTaskExecutorServiceJobImpl implements RunPoducti
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public JobResult productionScooterTask(GeneralEnter enter) {
         List<OpeProductionScooterBom> productionScooterBomList =

@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
@@ -28,7 +29,7 @@ public class OutboundOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "出库单号")
     private String outWhNo;
 
-    @ApiModelProperty(value = "出库单状态")
+    @ApiModelProperty(value = "出库单状态，-1:新建，0：待出库，10：质检中，20：已出库，30：已取消")
     private Integer outWhStatus;
 
     @ApiModelProperty(value = "出库单类型")
@@ -55,8 +56,21 @@ public class OutboundOrderDetailResult extends GeneralResult {
     @ApiModelProperty(value = "创建人邮箱")
     private String mail;
 
-    @ApiModelProperty("发货单id")
-    private Long invoiceId;
+    @ApiModelProperty("关联的单据id")
+    private Long relationOrderId;
+
+    @ApiModelProperty("关联的单据号")
+    private String relationOrderNo;
+
+    @ApiModelProperty("备注")
+    private String remark;
+
+    /**
+     * 入库仓库。1:成品库，2:原料库，3:不合格品库
+     */
+    @TableField(value = "wh_type")
+    @ApiModelProperty(value = "入库仓库。1:成品库，2:原料库，3:不合格品库")
+    private Integer whType;
 
     @ApiModelProperty(value = "产品列表")
     private List<OrderProductDetailResult> invoiceProductList;

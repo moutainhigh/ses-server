@@ -17,5 +17,5 @@ import lombok.*;
 public class StringEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "值",required = true)
-    private String st;
+    private String keyword;
 }

@@ -1,14 +1,5 @@
 package com.redescooter.ses.service.mobile.c.service;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.dubbo.config.annotation.Service;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -20,7 +11,15 @@ import com.redescooter.ses.service.mobile.c.dm.base.ConScooterRideStat;
 import com.redescooter.ses.service.mobile.c.dm.base.ConUserScooter;
 import com.redescooter.ses.service.mobile.c.service.base.ConScooterRideStatService;
 import com.redescooter.ses.service.mobile.c.service.base.ConUserScooterService;
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:IdDashboardServiceImpl
@@ -29,7 +28,7 @@ import com.redescooter.ses.tool.utils.DateUtil;
  * @Version：1.3
  * @create: 2020/02/20 14:45
  */
-@Service
+@DubboService
 public class IdDashboardServiceImpl implements IdDashboardService {
 
     @Autowired
@@ -52,17 +51,17 @@ public class IdDashboardServiceImpl implements IdDashboardService {
      */
     @Override
     public ScooterChartResult allScooterChart(GeneralEnter enter) {
-        QueryWrapper<ConUserScooter> conUserScooterQueryWrapper=new QueryWrapper();
-        conUserScooterQueryWrapper.eq(ConUserScooter.COL_DR,0);
-        conUserScooterQueryWrapper.eq(ConUserScooter.COL_USER_ID,enter.getUserId());
+        QueryWrapper<ConUserScooter> conUserScooterQueryWrapper = new QueryWrapper();
+        conUserScooterQueryWrapper.eq(ConUserScooter.COL_DR, 0);
+        conUserScooterQueryWrapper.eq(ConUserScooter.COL_USER_ID, enter.getUserId());
         ConUserScooter conUserScooter = conUserScooterService.getOne(conUserScooterQueryWrapper);
         if (conUserScooter == null) {
             return new ScooterChartResult();
         }
         // 查询骑行数据
-        QueryWrapper<ConScooterRideStat> conScooterRideStatQueryWrapper=new QueryWrapper<>();
-        conScooterRideStatQueryWrapper.eq(ConScooterRideStat.COL_DR,0);
-        conScooterRideStatQueryWrapper.eq(ConScooterRideStat.COL_SCOOTER_ID,conUserScooter.getScooterId());
+        QueryWrapper<ConScooterRideStat> conScooterRideStatQueryWrapper = new QueryWrapper<>();
+        conScooterRideStatQueryWrapper.eq(ConScooterRideStat.COL_DR, 0);
+        conScooterRideStatQueryWrapper.eq(ConScooterRideStat.COL_SCOOTER_ID, conUserScooter.getScooterId());
         ConScooterRideStat conScooterRideStat = conScooterRideStatService.getOne(conScooterRideStatQueryWrapper);
         if (conScooterRideStat == null) {
             return new ScooterChartResult();
@@ -88,17 +87,19 @@ public class IdDashboardServiceImpl implements IdDashboardService {
     public AllScooterChartResult scooterChart(DateTimeParmEnter enter) {
 
         Map<String, ScooterChartResult> allMap = new LinkedHashMap<>();
-
+        List<String> dayList = new LinkedList();
+        // 获取指定日期格式向前N天时间集合
+//            dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
+        dayList = DateUtil.getBetweenDates(enter.getStartDateTime(), enter.getEndDateTime());
         List<ScooterChartResult> list = idDashboardServiceMapper.scooterChart(enter);
-
-        if (list.size() == 0) {
-            return new AllScooterChartResult();
+        ScooterChartResult result = null;
+        if (CollectionUtils.isEmpty(list)) {
+            for (String str : dayList) {
+                result = new ScooterChartResult();
+                result.setTimes(str);
+                allMap.put(str, result);
+            }
         } else {
-            ScooterChartResult result = null;
-            List<String> dayList = new LinkedList();
-            // 获取指定日期格式向前N天时间集合
-            dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
-
             for (String str : dayList) {
                 for (ScooterChartResult chart : list) {
                     if (chart.getTimes().equals(str)) {
@@ -113,9 +114,9 @@ public class IdDashboardServiceImpl implements IdDashboardService {
             }
         }
 
-        AllScooterChartResult result = new AllScooterChartResult();
-        result.setAllMap(allMap);
-        result.setRequestId(enter.getRequestId());
-        return result;
+        AllScooterChartResult scooterChartResult = new AllScooterChartResult();
+        scooterChartResult.setAllMap(allMap);
+        scooterChartResult.setRequestId(enter.getRequestId());
+        return scooterChartResult;
     }
 }

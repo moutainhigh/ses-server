@@ -42,4 +42,11 @@ public interface SequenceName {
     String PLA_SYS_GROUP_SETTING = "PLA_SYS_GROUP_SETTING";
 
     String PLA_SYS_PARAM_SETTING = "PLA_SYS_PARAM_SETTING";
+
+    String PLA_WORK_ORDER = "pla_work_order";
+
+    String PLA_WORK_ORDER_LOG = "pla_work_order_log";
+
+    String PLA_APP_VERSION_UPDATE_LOG = "PLA_APP_VERSION_UPDATE_LOG";
+
 }

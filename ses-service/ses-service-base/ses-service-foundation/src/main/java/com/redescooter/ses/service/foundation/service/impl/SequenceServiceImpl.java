@@ -6,14 +6,18 @@ import com.redescooter.ses.service.foundation.dao.SequenceMapper;
 import com.redescooter.ses.service.foundation.dm.Sequence;
 import com.redescooter.ses.service.foundation.dm.SequenceDefination;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 @Slf4j
-@Service
+@DubboService
 public class SequenceServiceImpl implements SequenceService {
 
     private Map<String, Sequence[]> sequenceCache = new HashMap<>();

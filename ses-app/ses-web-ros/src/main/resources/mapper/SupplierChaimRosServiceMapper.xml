@@ -44,7 +44,7 @@
         part.en_name            as productEnName,
         part.fr_name            as productFrName,
         part.parts_type         as typeId,
-        part.updated_time       as refuseTime,
+        sheet.updated_time       as refuseTime,
         sheet.price             as productPrice,
         sheet.currency_type as unitId
         from ope_production_parts part

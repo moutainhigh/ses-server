@@ -4,13 +4,12 @@ import com.redescooter.ses.api.common.enums.job.JobDefaultError;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.jiguang.JobResult;
 import com.redescooter.ses.api.hub.job.RunRtDeliveryTaskExecutorServiceJob;
-import com.redescooter.ses.api.mobile.b.job.RunDeliveryTaskExecutorServiceJob;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.handler.IJobHandler;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import com.xxl.job.core.log.XxlJobLogger;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
@@ -25,7 +24,8 @@ import java.util.Calendar;
 @Slf4j
 @Component
 public class RtDeliveryTimeOutTask {
-    @Reference
+
+    @DubboReference
     private RunRtDeliveryTaskExecutorServiceJob runRtDeliveryTaskExecutorServiceJob;
 
     @XxlJob("rtDeliveryTimeOutTask")

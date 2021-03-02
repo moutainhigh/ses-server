@@ -40,6 +40,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/wms/cn/whOut")
 public class WhOutController {
+
     @Autowired
     private WhOutService whOutService;
 

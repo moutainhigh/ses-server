@@ -15,7 +15,7 @@ import com.redescooter.ses.api.proxy.service.PushProxyService;
 import com.redescooter.ses.api.proxy.vo.jiguang.PushProxyEnter;
 import com.redescooter.ses.service.proxy.config.PushConfigs;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-@Service
+@DubboService
 public class PushProxyServiceImpl implements PushProxyService {
 
     @Autowired

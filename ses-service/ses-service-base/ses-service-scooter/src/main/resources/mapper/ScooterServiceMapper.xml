@@ -99,4 +99,104 @@
         </if>
         limit 1
     </select>
+
+    <!--根据Id更新车辆锁状态-->
+    <update id="updateScooterStatusById">
+        update sco_scooter
+        set `status` = #{status,jdbcType=VARCHAR}, updated_by = #{userId,jdbcType=BIGINT}, updated_time = now()
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <!--根据Id查询车辆信息-->
+    <select id="getScooterInfoById" parameterType="java.lang.Long"
+            resultType="com.redescooter.ses.api.common.vo.scooter.BaseScooterResult">
+        select s.id id,s.picture pictures,s.scooter_no scooterNo,s.tablet_sn tabletSn,s.`status` `status`,
+        s.available_status availableStatus,s.box_status boxStatus,s.model model,s.license_plate licensePlate,
+        s.license_plate_picture licensePlatePicture,s.license_plate_time licensePlateTime,
+        s.scooter_id_picture scooterIdPicture,s.insurance insurance,s.insure_time insureTime,s.revision revision,
+        ecu.id scooterEcuId,ecu.longitude longitule,ecu.latitude latitude,ecu.battery battery,
+        ifnull(ecu.total_miles, 0) totalmileage,ecu.bluetooth_mac_address bluetoothMacAddress,
+        ecu.bluetooth_name bluetoothName
+        from sco_scooter s
+        left join sco_scooter_ecu ecu
+        on s.tablet_sn = ecu.sn
+        where s.id = #{id}
+    </select>
+
+    <!--根据scooterNo查询车辆锁状态-->
+    <select id="getScooterStatusByTabletSn" parameterType="java.lang.String" resultType="java.lang.String">
+        select `status` from sco_scooter
+        where dr = 0 and tablet_sn = #{tabletSn}
+    </select>
+
+    <!--根据tabletSn查询车辆编号-->
+    <select id="getScooterNoByTabletSn" parameterType="java.lang.String" resultType="java.lang.String">
+        select scooter_no from sco_scooter
+	    where tablet_sn = #{tabletSn} and dr = '0'
+    </select>
+
+    <!--根据tabletSn更新车辆锁状态-->
+    <update id="updateScooterStatusAndTotalMilesByEcu">
+        update sco_scooter
+	    set `status` = #{status}, total_mileage = #{totalMiles}, updated_time = #{date}
+	    where tablet_sn = #{tabletSn}
+    </update>
+
+    <!--查询所有车辆平板序列号-->
+    <select id="getAllScooterTabletSn" resultType="java.lang.String">
+        select tablet_sn from sco_scooter
+	    where dr = 0
+    </select>
+
+    <!--批量新增车辆信息-->
+    <insert id="batchInsertScooter" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooter">
+        insert into sco_scooter(id, scooter_no, tablet_sn, `status`, total_mileage, available_status,
+        box_status, model, created_by, created_time, updated_by, updated_time)
+        values
+        <foreach collection="scooterList" item="item" separator=",">
+            (#{item.id}, #{item.scooterNo},#{item.tabletSn} , #{item.status}, #{item.totalMileage}, #{item.availableStatus},
+            #{item.boxStatus}, #{item.model}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime})
+        </foreach>
+    </insert>
+
+    <!--查询车辆数量-->
+    <select id="countByScooter" resultType="java.lang.Integer">
+        select count(*) from sco_scooter
+	    where dr = 0
+    </select>
+
+    <!--根据tabletSn修改车辆型号-->
+    <update id="updateScooterModelByTabletSn">
+        update sco_scooter
+	    set model = #{scooterModel}, updated_time = #{updateTime}
+	    where tablet_sn = #{tabletSn}
+    </update>
+
+    <!--根据tabletSn查询车辆信息-->
+    <select id="getScooterByTabletSn" parameterType="java.lang.String" resultType="com.redescooter.ses.api.common.vo.scooter.BaseScooterResult">
+        select s.id id,s.picture pictures,s.scooter_no scooterNo,s.tablet_sn tabletSn,s.`status` `status`,
+        s.available_status availableStatus,s.box_status boxStatus,s.model model,s.license_plate licensePlate,
+        s.license_plate_picture licensePlatePicture,s.license_plate_time licensePlateTime,
+        s.scooter_id_picture scooterIdPicture,s.insurance insurance,s.insure_time insureTime,s.revision revision,
+        ecu.id scooterEcuId,ecu.longitude longitule,ecu.latitude latitude,ecu.battery battery,
+        ifnull(ecu.total_miles, 0) totalmileage,ecu.bluetooth_mac_address bluetoothMacAddress,
+        ecu.bluetooth_name bluetoothName
+        from sco_scooter s
+        left join sco_scooter_ecu ecu
+        on s.tablet_sn = ecu.sn
+        where s.tablet_sn = #{tabletSn}
+    </select>
+
+    <!--根据tabletSn查询车辆id-->
+    <select id="getScooterIdByTabletSn" parameterType="java.lang.String" resultType="java.lang.Long">
+        select id from sco_scooter
+        where dr = 0 and tablet_sn = #{tabletSn}
+    </select>
+
+    <!--查询当天生产车辆编号信息-->
+    <select id="getToDayScooterNos" resultType="java.lang.String">
+        select scooter_no from sco_scooter
+		where dr = 0 and created_time between concat(CURDATE(),' ', ' 00:00:00') and concat(CURDATE(), ' ','23:59:59')
+    </select>
+
 </mapper>

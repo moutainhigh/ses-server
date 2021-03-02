@@ -58,4 +58,8 @@ public class GeneralEnter implements Serializable {
 
     @ApiModelProperty(value = "城市", hidden = true)
     private String country;
+
+    // 这个地方不用deptId 是因为所有的入参都继承了这个类  里面有很多deptId了
+    @ApiModelProperty(value = "部门id",hidden = true)
+    private Long opeDeptId;
 }

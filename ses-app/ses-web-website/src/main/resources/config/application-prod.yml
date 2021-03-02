@@ -1,0 +1,98 @@
+#日志路径
+log:
+  file:
+    path: ${log.path}@profile-active@
+    max-size: 128MB
+    max-history: 180
+
+dubbo:                                                                                                                  ##DUBBO配置
+  registry:                                                                                                             #注册中心
+    address: zookeeper://10.1.1.142:2181?backup=10.1.1.142:2182,10.1.1.142:2183
+
+spring:
+  #上传配置
+  http:
+  servlet:
+    multipart:
+      max-request-size: 1000MB
+      max-file-size: 20MB
+      enabled: true
+  #数据库连接
+  datasource:
+    url: jdbc:mysql://10.1.2.53:2021/website?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    username: rede
+    password: rede1qaz2wsx
+    druid:
+      initial-size: 8
+      min-idle: 1
+      max-active: 20
+      max-wait: 60000
+      # 监控页面的用户名和密码 以及页面地址
+      stat-view-servlet:
+        login-username: rede
+        login-password: admin
+        enabled: true
+        url-pattern: /druid/*
+  #REDIS集群配置
+  redis:
+    cluster:
+      nodes:
+        - 10.1.2.53:7000
+        - 10.1.2.53:7001
+        - 10.1.2.53:7002
+        - 10.1.2.53:7003
+        - 10.1.2.53:7004
+        - 10.1.2.53:7005
+  # swagger在线文档配置
+  swagger:
+    enabled: false                                       # 是否启用swagger
+
+## stripe pay
+rede:
+  stripe:
+    currency: eur
+    payment_method_types: card
+    payment_event: payment_intent.succeeded
+    publishable_key: pk_live_Pze51XBNr8tI4pThesU7DEHD00a8pjUbmi
+    secret_key: rk_live_Ea5zybiHwnLnY7bn98jaoRJQ00OPG1gEBe
+    receipt_email: etienne@redescooter.fr
+
+oss:                                                                                                                    #阿里oss上传
+  #oss 使用HTTPS、HTTP请求方式
+  protocol: HTTPS
+excel:
+  folder: ${log.path}@profile-active@/projectExcel
+
+sendinblue:
+  listIds: 117
+
+monday:
+  url: https://api.monday.com/v2
+  authorization: eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjI5MjE5MzMxLCJ1aWQiOjUwODM2NTksImlhZCI6IjIwMTktMTItMzBUMTA6NTU6MTEuMDAwWiIsInBlciI6Im1lOndyaXRlIn0.Z_dXLUCgiEUoHQXzeFlOqeG2jfSeiyKIdBNdwaAOKrA
+  paramQuery: query
+  paramVariables: variables
+  httpMethod: POST
+  MediaType: application/x-www-form-urlencoded
+  #预订单业务
+  orderFormBoardName: Préco clients RED Série E
+  orderFormBoardBackName: Pré-vente
+  orderFormGroupName: Backlog
+  #联系我们
+  contactUsBoardName: (RFQ) Relation client RED Série E
+  contactUsBoardBackName: laisser un message
+  contactUsGroupName: Backlog
+  #订阅邮件
+  subEmailBoardName: RED Abonnements par e-mail
+  subEmailBoardBackName: abonnement
+  subEmailGroupName: Backlog
+  # 工作空间 alex:132750
+  workspaceId: 21182
+  workspaceBackId: 199275
+  #模板Id
+  templeteId: 581923336
+  load-template: true
+
+constant-us-email:
+  sale-principal:
+    - valentin@redescooter.fr
+    - etienne@redescooter.fr

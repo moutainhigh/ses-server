@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.website.dao.OrderMapper">
+    <resultMap id="getOrderDetailsMap" type="com.redescooter.ses.web.website.vo.order.OrderDetailsResult">
+        <id column="orderId" jdbcType="BIGINT" property="orderId"/>
+        <result column="orderNo" jdbcType="VARCHAR" property="orderNo"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="orderType" jdbcType="VARCHAR" property="orderType"/>
+        <result column="productColour" jdbcType="VARCHAR" property="productColour"/>
+        <result column="productName" jdbcType="VARCHAR" property="productName"/>
+        <result column="deliveryType" jdbcType="VARCHAR" property="deliveryType"/>
+        <result column="freight" jdbcType="DECIMAL" property="freight"/>
+        <result column="productPrice" jdbcType="DECIMAL" property="productPrice"/>
+        <result column="totalPrice" jdbcType="DECIMAL" property="totalPrice"/>
+        <result column="amountPaid" jdbcType="DECIMAL" property="amountPaid"/>
+        <result column="paymentName" jdbcType="VARCHAR" property="paymentName"/>
+        <result column="payStatus" jdbcType="VARCHAR" property="payStatus"/>
+        <result column="scooterQuantity" jdbcType="INTEGER" property="scooterQuantity"/>
+        <result column="batteryQty" jdbcType="INTEGER" property="batteryQty"/>
+        <result column="etdDeliveryTime" jdbcType="TIMESTAMP" property="etdDeliveryTime"/>
+        <result column="createdTime" jdbcType="TIMESTAMP" property="createdTime"/>
+        <collection property="orderBlist" javaType="java.util.ArrayList"
+                    ofType="com.redescooter.ses.web.website.vo.order.orderBlist">
+            <id column="orderBId" jdbcType="BIGINT" property="orderBId"/>
+            <result column="enName" jdbcType="VARCHAR" property="enName"/>
+            <result column="partsPrice" jdbcType="VARCHAR" property="partsPrice"/>
+            <result column="partsQty" jdbcType="INTEGER" property="partsQty"/>
+        </collection>
+    </resultMap>
+    <select id="getOrderDetails" resultMap="getOrderDetailsMap">
+        select so.id                as orderId,
+               so.order_no          as orderNo,
+               so.status,
+               so.pay_status        as payStatus,
+               so.order_type        as orderType,
+               spt.en_name          as productName,
+               so.freight,
+               sc.colour_name       as productColour,
+               so.delivery_type     as deliveryType,
+               spte.payment_name    as paymentName,
+               so.scooter_quantity  as scooterQuantity,
+               so.battery_qty       as batteryQty,
+               so.etd_delivery_time as etdDeliveryTime,
+               so.product_price     as productPrice,
+               so.total_price       as totalPrice,
+               so.amount_paid       as amountPaid,
+               sob.id               as orderBId,
+               sps.en_name          as enName,
+               sob.parts_qty        as partsQty,
+               sob.parts_price      as partsPrice,
+               sob.created_time     as createdTime
+        from site_order so
+                     left join site_order_b sob on so.id = sob.order_id and sob.dr = 0
+                     left join site_parts sps on sob.parts_id = sps.id and sps.dr = 0
+                     left join site_product spt on so.product_id = spt.id and spt.dr = 0
+                     left join site_colour sc on so.colour_id = sc.id and sc.dr = 0
+                     left join site_payment_type spte on so.payment_type_id = spte.id and spte.dr = 0
+        where so.dr = 0
+          and so.id = #{id}
+    </select>
+
+    <select id="getOrderlist" resultMap="getOrderDetailsMap">
+        select so.id                as orderId,
+               so.order_no          as orderNo,
+               so.status,
+               so.pay_status        as payStatus,
+               so.order_type        as orderType,
+               spt.en_name          as productName,
+               so.freight,
+               sc.colour_name       as productColour,
+               so.delivery_type     as deliveryType,
+               spte.payment_name    as paymentName,
+               so.scooter_quantity  as scooterQuantity,
+               so.battery_qty       as batteryQty,
+               so.etd_delivery_time as etdDeliveryTime,
+               so.product_price     as productPrice,
+               so.total_price       as totalPrice,
+               so.amount_paid       as amountPaid,
+               sob.id               as orderBId,
+               sps.en_name          as enName,
+               sob.parts_qty        as partsQty,
+               sob.parts_price      as partsPrice,
+               sob.created_time     as createdTime
+        from site_order so
+                     left join site_order_b sob on so.id = sob.order_id and sob.dr = 0
+                     left join site_parts sps on sob.parts_id = sps.id and sps.dr = 0
+                     left join site_product spt on so.product_id = spt.id and spt.dr = 0
+                     left join site_colour sc on so.colour_id = sc.id and sc.dr = 0
+                     left join site_payment_type spte on so.payment_type_id = spte.id and spte.dr = 0
+        where so.dr = 0
+          and so.customer_id = #{id}
+    </select>
+
+
+    <select id="getProductModelByOrderId" resultType="java.lang.String">
+        select
+           product_model_name
+        from site_product_model model
+        left join site_product product on product.product_model_id = model.id
+        left join site_order order on order.product_id = product.id
+        where model.dr = 0 and product.dr = 0 and order.dr = 0 and order.id = #{orderId}
+
+    </select>
+</mapper>

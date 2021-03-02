@@ -1,14 +1,19 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.math.BigDecimal;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 组装单
@@ -64,10 +69,10 @@ public class OpeCombinOrder {
     private String combinNo;
 
     /**
-     * 组装单状态， 1：草稿，10：待备料，20:备料完成，30：待组装，40：组装中，50：待质检，60：质检中，70：待入库，80：部分入库，90：已入库
+     * 组装单状态 1草稿 10待备料 20备料完成 30组装中 40组装完成 45质检中 50质检完成
      */
     @TableField(value = "combin_status")
-    @ApiModelProperty(value = "组装单状态， 1：草稿，10：待备料，20:备料完成，30：待组装，40：组装中，50：待质检，60：质检中，70：待入库，80：部分入库，90：已入库")
+    @ApiModelProperty(value = "组装单状态 1草稿 10待备料 20备料完成 30组装中 40组装完成 45质检中 50质检完成")
     private Integer combinStatus;
 
     /**

@@ -1,11 +1,11 @@
 package com.redescooter.ses.mobile.client.controller;
 
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.api.foundation.service.LoginJPushProService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.account.VerifyAccountEnter;
@@ -14,10 +14,17 @@ import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
 import com.redescooter.ses.api.foundation.vo.message.LoginPushEnter;
 import com.redescooter.ses.mobile.client.service.TokenService;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Mr.lijiating
@@ -35,11 +42,12 @@ public class UserTokenController {
 
     @Autowired
     private TokenService tokenService;
-    @Reference
-    private UserTokenService userTokenService;
-    @Reference
-    private LoginJPushProService loginJPushProService;
 
+    @DubboReference
+    private UserTokenService userTokenService;
+
+    @DubboReference
+    private LoginJPushProService loginJPushProService;
 
     @IgnoreLoginCheck
     @ApiOperation(value = "登入接口", response = LoginResult.class)
@@ -57,8 +65,7 @@ public class UserTokenController {
     @IgnoreLoginCheck
     @ApiOperation(value = "登入确认", response = LoginResult.class)
     @RequestMapping(value = "/login/confirm/{confirmRequestId}")
-    public Response<LoginResult> loginConfirm(@PathVariable("confirmRequestId") String confirmRequestId,
-                                              LoginConfirmEnter enter) {
+    public Response<LoginResult> loginConfirm(@PathVariable("confirmRequestId") String confirmRequestId, LoginConfirmEnter enter) {
         enter.setConfirmRequestId(confirmRequestId);
         return new Response<>(userTokenService.loginConfirm(enter));
     }

@@ -38,7 +38,14 @@ spring:
         - 172.31.5.73:7003
         - 172.31.5.73:7004
         - 172.31.5.73:7005
-
+# MQTT配置信息(本地启动使用本地证书)
+mqtt:
+  ca: /root/certs/my_root_ca.pem
+  clientCrt: /root/certs/client.pem
+  clientKey: /root/certs/client.key
+  timeout: 60
+  keepalive: 60
+  url: ssl://client.redemotors.com
 
 
 
@@ -57,7 +64,3 @@ spring:
 #  flow-dataid: @project.artifactId@-flow
 #  degra-dedataid: @project.artifactId@-degra
 #  system-dataid: @project.artifactId@-sys
-
-#35.180.46.199:7332;35.180.46.199:7332 环境2：13.209.4.155:7332
-iot:
-  address: 106.14.206.178:7332

@@ -11,5 +11,5 @@ import com.redescooter.ses.api.common.vo.base.VerificationCodeEnter;
  * @Version V1.0
  **/
 public interface CommonService {
-  BooleanResult checkVerificationCode(VerificationCodeEnter enter);
+    BooleanResult checkVerificationCode(VerificationCodeEnter enter);
 }

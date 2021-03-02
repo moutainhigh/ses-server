@@ -2,24 +2,34 @@ package com.redescooter.ses.web.ros.controller.restproduction.assembley;
 
 import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.restproductionorder.assembly.ProductionAssemblyOrderService;
 import com.redescooter.ses.web.ros.vo.restproduct.BomNameData;
 import com.redescooter.ses.web.ros.vo.restproduct.BomNoEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.CombinNameData;
 import com.redescooter.ses.web.ros.vo.restproduct.CombinNameEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.*;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasListEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.ProductionPurchasListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.AssemblyOrderDetailEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionAssemblyOrderDetailResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionAssemblyOrderListEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.ProductionAssemblyOrderListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.assembly.SaveAssemblyOrderEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetailProductListResult;
 import com.redescooter.ses.web.ros.vo.specificat.ColorDataResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -30,9 +40,9 @@ import java.util.Map;
  * @description: ProductionAssemblyOrderController
  * @author: Alex
  * @Version：1.3
- * @create: 2020/11/12 16:32 
+ * @create: 2020/11/12 16:32
  */
-@Api(tags = {"Assembly组装单"})
+@Api(tags = {"组装单"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/restproduction/assembly")
@@ -40,7 +50,6 @@ public class ProductionAssemblyOrderController {
 
     @Autowired
     private ProductionAssemblyOrderService productionAssemblyOrderService;
-
 
     @PostMapping(value = "/countByType")
     @ApiOperation(value = "分组统计", response = Map.class)
@@ -91,7 +100,6 @@ public class ProductionAssemblyOrderController {
         return new Response<>(productionAssemblyOrderService.delete(enter));
     }
 
-
     @PostMapping(value = "/scooterGroupData")
     @ApiOperation(value = "根据车辆分组", response = SpecificatGroupDataResult.class)
     public Response<List<SpecificatGroupDataResult>> scooterGroupData(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
@@ -119,10 +127,9 @@ public class ProductionAssemblyOrderController {
     @IgnoreLoginCheck
     @GetMapping(value = "/export")
     @ApiOperation(value = "组装单导出产品", response = GeneralResult.class)
-    public Response<GeneralResult> export( @ApiParam("id")Long id, HttpServletResponse response) {
-        return new Response<>(productionAssemblyOrderService.export(id,response));
+    public Response<GeneralResult> export(@ApiParam("id") Long id, HttpServletResponse response) {
+        return new Response<>(productionAssemblyOrderService.export(id, response));
     }
-
 
     //************************  以下为模拟RPS操作的方法 *****************************
 
@@ -132,20 +139,17 @@ public class ProductionAssemblyOrderController {
         return new Response<>(productionAssemblyOrderService.startCombin(enter));
     }
 
-
     @PostMapping(value = "/endCombin")
     @ApiOperation(value = "模拟RPS的组装完成操作", response = GeneralResult.class)
     public Response<GeneralResult> endCombin(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(productionAssemblyOrderService.endCombin(enter));
     }
 
-
     @PostMapping(value = "/startQc")
     @ApiOperation(value = "模拟RPS对质检单的开始质检的操作", response = GeneralResult.class)
     public Response<GeneralResult> startQc(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(productionAssemblyOrderService.startQc(enter));
     }
-
 
     @PostMapping(value = "/endQc")
     @ApiOperation(value = "模拟RPS对质检单的质检完成的操作", response = GeneralResult.class)

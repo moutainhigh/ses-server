@@ -1,7 +1,6 @@
 #Springboot 基础配置
 server:
-  ##port: ${random.int[10000,19999]}
-  port: 38090
+  port: 8803
   servlet:
     encoding:
       force: true
@@ -19,6 +18,8 @@ spring:
     basename: i18n/messages
     fallback-to-system-locale: false
     encoding: UTF-8
+  autoconfigure:
+    exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
   #数据库连接
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -42,6 +43,9 @@ spring:
         login-password: admin
         enabled: false
         url-pattern: /druid/*
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: UTC
   #REDIS集群配置
   redis:
     cluster:
@@ -49,16 +53,29 @@ spring:
     timeout: 6000  # 连接超时时长（毫秒）
     jedis:
       pool:
-        max-active: 1000  # 连接池最大连接数（使用负值表示没有限制）
+        max-active: -1  # 连接池最大连接数（使用负值表示没有限制）
         max-wait: -1    # 连接池最大阻塞等待时间（使用负值表示没有限制）
         max-idle: 200      # 连接池中的最大空闲连接
         min-idle: 50       # 连接池中的最小空闲连接
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: UTC
   # swagger配置
   swagger:
     enabled: false                                       # 是否启用swagger
+#Springboot-actuator 配置,后续添加prometheus采集指标数据,Grafana可视化监控数据
+management:
+  server:
+    port: 8102
+    base-path: "/management"
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: "/monitor"
+      #设置暴露所有端点
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      #设置单个端点（/shutdown）可用
+      enabled: true
 #DUBBO 配置
 dubbo:
   application:

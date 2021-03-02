@@ -39,4 +39,6 @@ public class UserToken extends GeneralResult {
     private String language;
 
     private String country;
+
+    private Long deptId;
 }

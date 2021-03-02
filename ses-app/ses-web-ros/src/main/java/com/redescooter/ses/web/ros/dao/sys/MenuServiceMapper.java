@@ -49,4 +49,15 @@ public interface MenuServiceMapper {
      * @return
      **/
     List<OpeSysMenu> menusByUserId(@Param("userId") Long userId);
+
+    /**
+     * 返回二级菜单和三级菜单
+     */
+    List<MenuDatasListResult> getSecondAndThirdMenu();
+
+    /**
+     * 得到除了自身外的其他所有目录和二级菜单和三级菜单
+     */
+    List<MenuDatasListResult> getAllCatalogAndMenu(@Param("id") Long id);
+
 }

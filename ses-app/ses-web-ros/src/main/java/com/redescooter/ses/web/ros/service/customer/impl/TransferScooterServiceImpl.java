@@ -27,7 +27,7 @@ import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
 import com.redescooter.ses.api.hub.vo.HubSaveScooterEnter;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.MapUtil;
+import com.redescooter.ses.tool.utils.map.MapUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.CustomerServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
@@ -41,18 +41,28 @@ import com.redescooter.ses.web.ros.service.base.OpeStockBillService;
 import com.redescooter.ses.web.ros.service.base.OpeStockProdProductService;
 import com.redescooter.ses.web.ros.service.base.OpeStockService;
 import com.redescooter.ses.web.ros.service.customer.TransferScooterService;
-import com.redescooter.ses.web.ros.vo.customer.*;
+import com.redescooter.ses.web.ros.vo.customer.ChooseScooterResult;
+import com.redescooter.ses.web.ros.vo.customer.ScooterCustomerResult;
+import com.redescooter.ses.web.ros.vo.customer.TransferScooterEnter;
+import com.redescooter.ses.web.ros.vo.customer.TransferScooterListEnter;
 import com.redescooter.ses.web.ros.vo.transferscooter.ChooseScooterListResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -64,6 +74,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class TransferScooterServiceImpl implements TransferScooterService {
+
     @Autowired
     private CustomerServiceMapper customerServiceMapper;
 
@@ -73,7 +84,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
     @Autowired
     private OpeStockProdProductService opeStockProdProductService;
 
-    @Reference
+    @DubboReference
     private ScooterService scooterService;
 
     @Autowired
@@ -82,18 +93,17 @@ public class TransferScooterServiceImpl implements TransferScooterService {
     @Autowired
     private OpeStockService opeStockService;
 
-    @Reference
+    @DubboReference
     private AccountBaseService accountBaseService;
 
-    @Reference
+    @DubboReference
     private CorporateScooterService corporateScooterService;
 
-    @Reference
+    @DubboReference
     private CusotmerScooterService cusotmerScooterService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
-
 
     /**
      * 车辆用户分配信息
@@ -110,17 +120,16 @@ public class TransferScooterServiceImpl implements TransferScooterService {
 
         // 查询是否有库存
         List<OpeStockProdProduct> opeStockProdProductList = opeStockProdProductService.list(new LambdaQueryWrapper<OpeStockProdProduct>().eq(OpeStockProdProduct::getStatus,
-                StockProductPartStatusEnums.AVAILABLE.getValue()).eq(OpeStockProdProduct::getDr,0));
-        if (CollectionUtils.isEmpty(opeStockProdProductList)){
-            scooterCustomerResults.forEach(item->{
+                StockProductPartStatusEnums.AVAILABLE.getValue()).eq(OpeStockProdProduct::getDr, 0));
+        if (CollectionUtils.isEmpty(opeStockProdProductList)) {
+            scooterCustomerResults.forEach(item -> {
                 item.setHasProductStock(Boolean.FALSE);
             });
-        }else {
-            scooterCustomerResults.forEach(item->{
+        } else {
+            scooterCustomerResults.forEach(item -> {
                 item.setHasProductStock(Boolean.TRUE);
             });
         }
-
         return PageResult.create(enter, count, scooterCustomerResults);
     }
 
@@ -174,7 +183,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult transferScooter(TransferScooterEnter enter) {
 
@@ -199,7 +208,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
             numberPlate
                     .append(transferScooterListEnter.getNumberPlate().substring(0, 2)).
                     append("-").
-                    append(transferScooterListEnter.getNumberPlate().substring(2,transferScooterListEnter.getNumberPlate().length() - 2))
+                    append(transferScooterListEnter.getNumberPlate().substring(2, transferScooterListEnter.getNumberPlate().length() - 2))
                     .append("-")
                     .append(transferScooterListEnter.getNumberPlate().substring(transferScooterListEnter.getNumberPlate().length() - 2));
             transferScooterListEnter.setNumberPlate(numberPlate.toString());
@@ -219,7 +228,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
 
         //验证前端输入的车辆数量
         if (opeCustomer.getAssignationScooterQty() != null && opeCustomer.getAssignationScooterQty() != 0) {
-            if ((opeCustomer.getScooterQuantity()-opeCustomer.getAssignationScooterQty()) < transferScooterListEnterList.size()) {
+            if ((opeCustomer.getScooterQuantity() - opeCustomer.getAssignationScooterQty()) < transferScooterListEnterList.size()) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getMessage());
             }
         }
@@ -273,7 +282,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         //查询库存
         Collection<OpeStock> opeStockList =
                 opeStockService.listByIds(opeStockProdProductList.stream().map(OpeStockProdProduct::getStockId).collect(Collectors.toList()));
-        if(CollectionUtils.isEmpty(opeStockList)){
+        if (CollectionUtils.isEmpty(opeStockList)) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(),
                     ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
@@ -374,7 +383,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         HubSaveScooterEnter scooterEnter = HubSaveScooterEnter.builder()
                 .scooterId(item.getId())
                 .model(ScooterModelEnums.SCOOTER_125_CC.getValue())
-            .longitude(MapUtil.randomLonLat(Constant.lng)).latitude(MapUtil.randomLonLat(Constant.lng))
+                .longitude(MapUtil.randomLonLat(Constant.lng)).latitude(MapUtil.randomLonLat(Constant.lng))
                 .licensePlate(item.getNumberPlate())
                 .licensePlatePicture(null)
                 .status(ScooterStatusEnums.AVAILABLE.getValue())

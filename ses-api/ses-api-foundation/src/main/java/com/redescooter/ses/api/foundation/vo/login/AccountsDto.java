@@ -1,7 +1,5 @@
 package com.redescooter.ses.api.foundation.vo.login;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

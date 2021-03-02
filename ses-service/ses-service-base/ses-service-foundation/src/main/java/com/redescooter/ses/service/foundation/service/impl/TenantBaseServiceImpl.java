@@ -3,13 +3,16 @@ package com.redescooter.ses.service.foundation.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
-import com.redescooter.ses.api.common.enums.customer.CustomerIndustryEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenanNodeEventEnum;
 import com.redescooter.ses.api.common.enums.tenant.TenantBussinessStatus;
 import com.redescooter.ses.api.common.enums.tenant.TenantBussinessWeek;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
+import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserBaseService;
@@ -30,15 +33,18 @@ import com.redescooter.ses.service.foundation.dm.base.PlaTenantConfig;
 import com.redescooter.ses.service.foundation.dm.base.PlaTenantNode;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.DateUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import com.redescooter.ses.tool.utils.date.DateUtil;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:TenantBaseServiceImpl
@@ -47,10 +53,10 @@ import java.util.*;
  * @Version：1.3
  * @create: 2019/12/23 14:01
  */
-@Service
+@DubboService
 public class TenantBaseServiceImpl implements TenantBaseService {
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired
@@ -77,7 +83,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Long saveTenant(DateTimeParmEnter<BaseCustomerResult> enter) {
         // 保存租户
@@ -101,6 +107,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult saveTenantNode(DateTimeParmEnter<BaseCustomerResult> enter, String event) {
         PlaTenantNode plaTenantNode = buildPlaTenantNodeSingle(enter, event);
         plaTenantNodeMapper.insert(plaTenantNode);
@@ -142,7 +149,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveTenantConfig(SaveTenantConfigEnter enter) {
 

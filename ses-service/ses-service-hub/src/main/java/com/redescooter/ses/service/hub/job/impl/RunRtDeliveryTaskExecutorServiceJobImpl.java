@@ -13,10 +13,10 @@ import com.redescooter.ses.service.hub.source.corporate.dm.CorDeliveryTrace;
 import com.redescooter.ses.service.hub.source.corporate.service.base.CorDeliveryService;
 import com.redescooter.ses.service.hub.source.corporate.service.base.CorDeliveryTraceService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.MapUtil;
+import com.redescooter.ses.tool.utils.map.MapUtil;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import java.util.List;
  * @Version：1.3
  * @create: 2020/01/16 14:58
  */
-@Service
+@DubboService
 public class RunRtDeliveryTaskExecutorServiceJobImpl implements RunRtDeliveryTaskExecutorServiceJob {
 
     @Autowired
@@ -39,7 +39,7 @@ public class RunRtDeliveryTaskExecutorServiceJobImpl implements RunRtDeliveryTas
     @Autowired
     private CorDeliveryTraceService corDeliveryTraceService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**

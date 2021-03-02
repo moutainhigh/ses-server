@@ -46,15 +46,10 @@
         where cdy.dr = 0
         and cdy.tenant_id = #{tenantId}
         and driver.user_id = #{userId}
-        <if test="dateTime == null">
-            and (DATE_FORMAT(cdy.created_time, '%Y-%m-%d') between DATE_FORMAT(SUBDATE(now(), INTERVAL 1 month),
-            '%Y-%m-%d')
-            and DATE_FORMAT(now(), '%Y-%m-%d'))
-        </if>
-        <if test="dateTime != null">
-            and (DATE_FORMAT(cdy.created_time, '%Y-%m-%d') between DATE_FORMAT(SUBDATE(#{dateTime} , INTERVAL 1
-            month),'%Y-%m-%d')
-            and DATE_FORMAT(#{dateTime}, '%Y-%m-%d'))
+        <if test="startDateTime != null">
+            <if test="endDateTime != null">
+                and cdy.created_time between #{startDateTime} and #{endDateTime}
+            </if>
         </if>
         group by times
     </select>

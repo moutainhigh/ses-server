@@ -23,7 +23,8 @@ public enum BomCommonTypeEnums {
 
     /********产品创建时使用********/
     SCOOTER("Scooter", "整车", "4"),
-    COMBINATION("Combination", "组合", "5");
+    COMBINATION("Combination", "组合", "5"),
+    ECU_METER("Ecu_Meter", "ECU仪表", "6");
 
     private String code;
 

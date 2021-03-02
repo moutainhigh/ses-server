@@ -6,15 +6,15 @@ log:
     max-history: 180
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://localhost:22181
+    address: zookeeper://192.168.2.211:2182
   metadata-report:
-    address: zookeeper://localhost:22181
+    address: zookeeper://192.168.2.211:2182
 spring:
   #数据库连接
   datasource:
-    url: jdbc:mysql://localhost:3306/consumer?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://47.105.215.239:3306/consumer?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: 1qaz2wsx
+    password: rede,1qaz2wsx
     druid:
       initial-size: 8
       min-idle: 1
@@ -24,9 +24,9 @@ spring:
   redis:
     cluster:
       nodes:
-        - 192.168.2.200:7000
-        - 192.168.2.200:7001
-        - 192.168.2.200:7002
-        - 192.168.2.200:7003
-        - 192.168.2.200:7004
-        - 192.168.2.200:7005
+        - 192.168.2.211:7000
+        - 192.168.2.211:7001
+        - 192.168.2.211:7002
+        - 192.168.2.211:7003
+        - 192.168.2.211:7004
+        - 192.168.2.211:7005

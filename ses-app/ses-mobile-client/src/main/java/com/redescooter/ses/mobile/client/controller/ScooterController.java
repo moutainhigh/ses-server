@@ -4,57 +4,71 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
-import com.redescooter.ses.api.mobile.b.service.ScooterMobileService;
-import com.redescooter.ses.api.mobile.b.vo.LockEnter;
-import com.redescooter.ses.api.mobile.c.service.IdScooterService;
-import com.redescooter.ses.api.mobile.c.vo.ScooterNavigationEnter;
+import com.redescooter.ses.api.common.vo.scooter.ScooterLockDTO;
+import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
+import com.redescooter.ses.mobile.client.service.ScooterService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 
 /**
- * @ClassName:ScooterController
- * @description: ScooterController
- * @author: Alex
- * @Version：1.3
- * @create: 2019/12/30 13:38
+ * 车辆相关接口管理
+ *
+ * @author assert
+ * @date 2020/11/18 15:34
  */
-@Slf4j
-@Api(tags = {"车辆模块"})
 @CrossOrigin
+@Api(tags = {"车辆模块"})
 @RestController
-@RequestMapping(value = "/scooter", method = RequestMethod.POST)
+@RequestMapping(value = "/scooter", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ScooterController {
 
-    @Reference
-    private ScooterMobileService scooterMobileService;
+    @Resource
+    private ScooterService scooterService;
 
-    @Reference
-    private IdScooterService idScooterService;
-
+    /**
+     * 查询车辆信息
+     *
+     * @param: enter
+     * @return: com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.scooter.BaseScooterResult>
+     * @author: assert
+     * @date: 2020/11/17
+     */
     @ApiOperation(value = "车辆信息")
-    @RequestMapping(value = "/scooterInfor")
-    public Response<BaseScooterResult> scooterInfor(@ModelAttribute GeneralEnter enter) {
-        return new Response<>(scooterMobileService.scooterInfor(enter));
+    @PostMapping(value = "/info")
+    public Response<BaseScooterResult> scooterInfo(@ModelAttribute GeneralEnter enter) {
+        return new Response<>(scooterService.getScooterInfo(enter));
     }
 
+    /**
+     * 车辆开关锁
+     *
+     * @param: lock
+     * @return: com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
+     * @author: assert
+     * @date: 2020/11/17
+     */
     @ApiOperation(value = "车辆开关锁")
-    @RequestMapping(value = "/lock")
-    public Response<GeneralResult> lock(@ModelAttribute LockEnter enter) {
-        return new Response<>(scooterMobileService.lock(enter));
+    @PostMapping(value = "/lock")
+    public Response<GeneralResult> lock(@ModelAttribute ScooterLockDTO lock) {
+        return new Response<>(scooterService.lock(lock));
     }
 
-    // 为C端 在开放两个 开始导航 、结束导航接口
-
-    @ApiOperation(value = "车辆导航")
-    @RequestMapping(value = "/scooterNavigation")
-    public Response<GeneralResult> scooterNavigation(@ModelAttribute ScooterNavigationEnter enter) {
-        return new Response<>(idScooterService.scooterNavigation(enter));
+    /**
+     * 车辆开关导航
+     *
+     * @param: enter
+     * @return: com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
+     * @author: assert
+     * @date: 2020/11/17
+     */
+    @ApiOperation(value = "车辆开关导航")
+    @PostMapping(value = "/navigation")
+    public Response<GeneralResult> scooterNavigation(@ModelAttribute ScooterNavigationDTO enter) {
+        return new Response<>(scooterService.scooterNavigation(enter));
     }
+
 }

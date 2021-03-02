@@ -7,6 +7,7 @@
       <id column="id" jdbcType="BIGINT" property="id"/>
       <result column="dr" jdbcType="INTEGER" property="dr"/>
       <result column="scooter_no" jdbcType="VARCHAR" property="scooterNo"/>
+      <result column="tablet_sn" jdbcType="VARCHAR" property="tabletSn"/>
       <result column="picture" jdbcType="VARCHAR" property="picture"/>
       <result column="status" jdbcType="VARCHAR" property="status"/>
       <result column="total_mileage" jdbcType="BIGINT" property="totalMileage"/>
@@ -31,7 +32,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-      id, dr, scooter_no, picture, `status`, total_mileage, available_status, box_status,
+      id, dr, scooter_no, tablet_sn, picture, `status`, total_mileage, available_status, box_status,
       model, license_plate, license_plate_picture, license_plate_time, scooter_id_picture,
       insure_time, insurance, revision, created_by, created_time, updated_by, updated_time,
       def2, def3, def5, def6
@@ -48,6 +49,11 @@
           <trim prefix="scooter_no = case" suffix="end,">
               <foreach collection="list" index="index" item="item">
                   when id = #{item.id,jdbcType=BIGINT} then #{item.scooterNo,jdbcType=VARCHAR}
+              </foreach>
+          </trim>
+          <trim prefix="tablet_sn = case" suffix="end,">
+              <foreach collection="list" index="index" item="item">
+                  when id = #{item.id,jdbcType=BIGINT} then #{item.tabletSn,jdbcType=VARCHAR}
               </foreach>
           </trim>
           <trim prefix="picture = case" suffix="end,">
@@ -176,6 +182,13 @@
                 <foreach collection="list" index="index" item="item">
                     <if test="item.scooterNo != null">
                         when id = #{item.id,jdbcType=BIGINT} then #{item.scooterNo,jdbcType=VARCHAR}
+                    </if>
+                </foreach>
+            </trim>
+            <trim prefix="tablet_sn = case" suffix="end,">
+                <foreach collection="list" index="index" item="item">
+                    <if test="item.tabletSn != null">
+                        when id = #{item.id,jdbcType=BIGINT} then #{item.tabletSn,jdbcType=VARCHAR}
                     </if>
                 </foreach>
             </trim>
@@ -335,13 +348,13 @@
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
       insert into sco_scooter
-      (id, dr, scooter_no, picture, `status`, total_mileage, available_status, box_status,
+      (id, dr, scooter_no, tablet_sn, picture, `status`, total_mileage, available_status, box_status,
       model, license_plate, license_plate_picture, license_plate_time, scooter_id_picture,
       insure_time, insurance, revision, created_by, created_time, updated_by, updated_time,
       def2, def3, def5, def6)
       values
       <foreach collection="list" item="item" separator=",">
-          (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.scooterNo,jdbcType=VARCHAR},
+          (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.scooterNo,jdbcType=VARCHAR},#{item.tabletSn,jdbcType=VARCHAR}
           #{item.picture,jdbcType=VARCHAR}, #{item.status,jdbcType=VARCHAR}, #{item.totalMileage,jdbcType=BIGINT},
           #{item.availableStatus,jdbcType=VARCHAR}, #{item.boxStatus,jdbcType=VARCHAR}, #{item.model,jdbcType=VARCHAR},
           #{item.licensePlate,jdbcType=VARCHAR}, #{item.licensePlatePicture,jdbcType=VARCHAR},
@@ -355,12 +368,12 @@
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooter">
     <!--@mbg.generated-->
       insert into sco_scooter
-      (id, dr, scooter_no, picture, `status`, total_mileage, available_status, box_status,
+      (id, dr, scooter_no, table_sn, picture, `status`, total_mileage, available_status, box_status,
       model, license_plate, license_plate_picture, license_plate_time, scooter_id_picture,
       insure_time, insurance, revision, created_by, created_time, updated_by, updated_time,
       def2, def3, def5, def6)
       values
-      (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{scooterNo,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR},
+      (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{scooterNo,jdbcType=VARCHAR}, #{tabletSn,jdbcType=VARCHAR},#{picture,jdbcType=VARCHAR},
       #{status,jdbcType=VARCHAR}, #{totalMileage,jdbcType=BIGINT}, #{availableStatus,jdbcType=VARCHAR},
       #{boxStatus,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, #{licensePlate,jdbcType=VARCHAR},
       #{licensePlatePicture,jdbcType=VARCHAR}, #{licensePlateTime,jdbcType=TIMESTAMP},
@@ -372,6 +385,7 @@
       id = #{id,jdbcType=BIGINT},
       dr = #{dr,jdbcType=INTEGER},
       scooter_no = #{scooterNo,jdbcType=VARCHAR},
+      tablet_sb = #{tabletSn,jdbcType=VARCHAR},
       picture = #{picture,jdbcType=VARCHAR},
       `status` = #{status,jdbcType=VARCHAR},
       total_mileage = #{totalMileage,jdbcType=BIGINT},
@@ -406,6 +420,9 @@
           </if>
           <if test="scooterNo != null">
               scooter_no,
+          </if>
+          <if test="tabletSn != null">
+              tablet_sn,
           </if>
           <if test="picture != null">
               picture,
@@ -482,6 +499,9 @@
           <if test="scooterNo != null">
               #{scooterNo,jdbcType=VARCHAR},
           </if>
+          <if test="tabletSn != null">
+              #{tabletSn,jdbcType=VARCHAR},
+          </if>
           <if test="picture != null">
               #{picture,jdbcType=VARCHAR},
           </if>
@@ -556,6 +576,9 @@
           </if>
           <if test="scooterNo != null">
               scooter_no = #{scooterNo,jdbcType=VARCHAR},
+          </if>
+          <if test="tabletSn != null">
+              tablet_sn = #{tabletSn,jdbcType=VARCHAR},
           </if>
           <if test="picture != null">
               picture = #{picture,jdbcType=VARCHAR},

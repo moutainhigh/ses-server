@@ -9,6 +9,8 @@ import java.math.BigDecimal;
  */
 public interface Constant {
 
+    String DEFAULT_VERSION = "1.2.1";
+
     String DEFAULT_LANGUAGE = "en";
 
     String DEFAULT_COUNTRY = "US";

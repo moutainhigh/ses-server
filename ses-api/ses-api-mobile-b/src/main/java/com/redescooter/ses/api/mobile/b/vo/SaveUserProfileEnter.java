@@ -1,6 +1,8 @@
 package com.redescooter.ses.api.mobile.b.vo;
 
+import com.redescooter.ses.api.common.annotation.MaximumLength;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.mobile.b.exception.ValidationExceptionCode;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,9 +38,11 @@ public class SaveUserProfileEnter extends GeneralEnter {
     private String picture;
 
     @ApiModelProperty(value = "名")
+    @MaximumLength(value = "30",code = ValidationExceptionCode.NAME_IS_TOO_LONG,message = "字符过长")
     private String firstName;
 
     @ApiModelProperty(value = "姓")
+    @MaximumLength(value = "30",code = ValidationExceptionCode.NAME_IS_TOO_LONG,message = "字符过长")
     private String lastName;
 
     @ApiModelProperty(value = "全名")

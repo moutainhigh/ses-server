@@ -2,8 +2,8 @@ package com.redescooter.ses.service.mobile.b.service.express;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.JedisConstant;
+import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.expressDelivery.ExpressDeliveryDetailStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderEventEnums;
@@ -21,6 +21,8 @@ import com.redescooter.ses.api.common.vo.edorder.BaseExpressOrderTraceEnter;
 import com.redescooter.ses.api.common.vo.message.PushMsgBo;
 import com.redescooter.ses.api.common.vo.scooter.IotScooterEnter;
 import com.redescooter.ses.api.foundation.service.PushService;
+import com.redescooter.ses.api.foundation.service.base.UserBaseService;
+import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.mobile.b.exception.MobileBException;
 import com.redescooter.ses.api.mobile.b.service.express.EdOrderDeliveryTraceService;
 import com.redescooter.ses.api.mobile.b.service.express.EdOrderService;
@@ -29,6 +31,7 @@ import com.redescooter.ses.api.mobile.b.vo.CompleteResult;
 import com.redescooter.ses.api.mobile.b.vo.StartEnter;
 import com.redescooter.ses.api.mobile.b.vo.express.EdRfuseEnter;
 import com.redescooter.ses.api.mobile.b.vo.express.OrderResult;
+import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.api.scooter.service.ScooterIotService;
 import com.redescooter.ses.service.mobile.b.constant.SequenceName;
 import com.redescooter.ses.service.mobile.b.dao.EdOrderServiceMapper;
@@ -46,61 +49,66 @@ import com.redescooter.ses.service.mobile.b.service.base.CorTenantScooterService
 import com.redescooter.ses.service.mobile.b.service.base.CorUserProfileService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
-import com.redescooter.ses.tool.utils.CO2MoneyConversionUtil;
-import com.redescooter.ses.tool.utils.DateUtil;
-import com.redescooter.ses.tool.utils.MapUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.tool.utils.co2.CO2MoneyConversionUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
+import com.redescooter.ses.tool.utils.map.MapUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@DubboService
 public class EdOrderServiceImpl implements EdOrderService {
 
-    @Autowired
-    private EdOrderServiceMapper edOrderServiceMapper;
-
-    @Autowired
-    private CorExpressOrderService corExpressOrderService;
-
-    @Autowired
-    private CorExpressDeliveryDetailService corExpressDeliveryDetailService;
-
-    @Autowired
-    private CorTenantScooterService corTenantScooterService;
-
-    @Autowired
-    private EdOrderDeliveryTraceService edOrderDeliveryTraceService;
-
-    @Autowired
-    private CorExpressDeliveryService corExpressDeliveryService;
-
-    @Autowired
-    private CorUserProfileService corUserProfileService;
-
-    @Autowired
-    private JedisService jedisService;
-
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
-    @Reference
+    @DubboReference
     private ScooterIotService scooterIotService;
 
-    @Reference
+    @DubboReference
     private PushService pushService;
 
+    @DubboReference
+    private ScooterEmqXService scooterEmqXService;
+
+    @DubboReference
+    private UserBaseService userBaseService;
+
+    @Resource
+    private EdOrderServiceMapper edOrderServiceMapper;
+
+    @Resource
+    private CorExpressOrderService corExpressOrderService;
+
+    @Resource
+    private CorExpressDeliveryDetailService corExpressDeliveryDetailService;
+
+    @Resource
+    private CorTenantScooterService corTenantScooterService;
+
+    @Resource
+    private EdOrderDeliveryTraceService edOrderDeliveryTraceService;
+
+    @Resource
+    private CorExpressDeliveryService corExpressDeliveryService;
+
+    @Resource
+    private CorUserProfileService corUserProfileService;
+
+    @Resource
+    private JedisService jedisService;
 
     /**
      * @param enter
@@ -146,7 +154,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @Return: GeneralResult
      * @desc: 开始订单
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult start(StartEnter enter) {
         // 是否有正在进行的订单
@@ -188,19 +196,19 @@ public class EdOrderServiceImpl implements EdOrderService {
 
         // 骑行数据维护
         CorExpressDelivery corExpressDelivery = corExpressDeliveryService.getById(deliveryDetail.getExpressDeliveryId());
-        if(corExpressDelivery.getDrivenMileage().equals(null)){
+        if (corExpressDelivery.getDrivenMileage().equals(null)) {
             corExpressDelivery.setDrivenMileage(new BigDecimal(enter.getMileage()).add(corExpressDelivery.getDrivenMileage()));
-        }else {
+        } else {
             corExpressDelivery.setDrivenMileage(new BigDecimal(enter.getMileage()));
         }
-        if(corExpressDelivery.getCo2().equals(null)){
+        if (corExpressDelivery.getCo2().equals(null)) {
             corExpressDelivery.setCo2(corExpressDelivery.getCo2().add(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(Long.valueOf(enter.getMileage())))));
-        }else {
+        } else {
             corExpressDelivery.setCo2(new BigDecimal(enter.getMileage()));
         }
-        if(corExpressDelivery.getSavings().equals(null)){
+        if (corExpressDelivery.getSavings().equals(null)) {
             corExpressDelivery.setSavings(corExpressDelivery.getSavings().add(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(Long.valueOf(enter.getMileage())))));
-        }else {
+        } else {
             corExpressDelivery.setSavings(new BigDecimal(enter.getMileage()));
         } // 刚开始第一单
         if (corExpressDelivery.getOrderCompleteNum() == 0) {
@@ -211,6 +219,17 @@ public class EdOrderServiceImpl implements EdOrderService {
 
         // 获取正在骑行的车辆记录
         CorDriverScooter corDriverScooter = edOrderServiceMapper.queryScooterIdByUserId(enter.getUserId(), enter.getTenantId());
+
+        /**
+         * 开始订单 -- 开启导航
+         */
+//        ScooterNavigationDTO scooterNavigation = new ScooterNavigationDTO();
+//        scooterNavigation.setEvent(CommonEvent.START.getValue());
+//        scooterNavigation.setLat(enter.getLat());
+//        scooterNavigation.setLng(enter.getLng());
+//
+//        scooterEmqXService.scooterNavigation(scooterNavigation, corDriverScooter.getScooterId(), getUserServiceType(enter));
+
         // 开启导航
         IotScooterEnter iotScooterEnter = new IotScooterEnter();
         BeanUtils.copyProperties(enter, iotScooterEnter);
@@ -233,8 +252,8 @@ public class EdOrderServiceImpl implements EdOrderService {
                 deliveryDetail.getExpressOrderId(),
                 corDriverScooter.getDriverId(),
                 corDriverScooter.getScooterId()
-                , corTenantScooter.getLatitude()
-                , corTenantScooter.getLatitude()
+                , corTenantScooter == null ? new BigDecimal(enter.getLng()) : corTenantScooter.getLongitule()
+                , corTenantScooter == null ? new BigDecimal(enter.getLat()) : corTenantScooter.getLatitude()
                 , ExpressOrderStatusEnums.SHIPPING.getValue(),
                 ExpressOrderEventEnums.SHIPPING.getValue(), null);
 
@@ -251,7 +270,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @Return: GeneralResult
      * @desc: 拒绝订单
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult refuse(EdRfuseEnter enter) {
         try {
@@ -330,8 +349,8 @@ public class EdOrderServiceImpl implements EdOrderService {
                     deliveryDetail.getExpressOrderId(),
                     corDriverScooter.getDriverId(),
                     corDriverScooter.getScooterId(),
-                    corTenantScooter.getLatitude(),
-                    corTenantScooter.getLatitude(),
+                    corTenantScooter == null ? new BigDecimal(enter.getLng()) : corTenantScooter.getLongitule(),
+                    corTenantScooter == null ? new BigDecimal(enter.getLat()) : corTenantScooter.getLatitude(),
                     ExpressOrderStatusEnums.REJECTED.getValue(),
                     ExpressOrderEventEnums.REJECTED.getValue(),
                     enter.getReason());
@@ -415,7 +434,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @Return: CompleteResult
      * @desc: 完成订单
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public CompleteResult complete(CompleteEnter enter) {
         //验证订单是否存在
@@ -474,6 +493,19 @@ public class EdOrderServiceImpl implements EdOrderService {
         corTenantScooterQueryWrapper.eq(CorTenantScooter.COL_TENANT_ID, enter.getTenantId());
         CorTenantScooter corTenantScooter = corTenantScooterService.getOne(corTenantScooterQueryWrapper);
 
+        /**
+         * 完成订单 -- 结束导航
+         */
+//        ScooterNavigationDTO scooterNavigation = new ScooterNavigationDTO();
+//        scooterNavigation.setEvent(CommonEvent.END.getValue());
+//        scooterNavigation.setLat(enter.getLat());
+//        scooterNavigation.setLng(enter.getLng());
+//        // 现在暂时不确定本次导航所花时间和行驶距离数据来源
+//        scooterNavigation.setMileage(null);
+//        scooterNavigation.setDuration(null);
+//
+//        scooterEmqXService.scooterNavigation(scooterNavigation, corDriverScooter.getScooterId(), getUserServiceType(enter));
+
         // 结束导航
         IotScooterEnter iotScooterEnter = new IotScooterEnter();
         BeanUtils.copyProperties(enter, iotScooterEnter);
@@ -501,8 +533,8 @@ public class EdOrderServiceImpl implements EdOrderService {
                 deliveryDetail.getExpressOrderId(),
                 corDriverScooter.getDriverId(),
                 corDriverScooter.getScooterId(),
-                corTenantScooter.getLatitude(),
-                corTenantScooter.getLatitude(),
+                corTenantScooter == null ? new BigDecimal(enter.getLng()) : corTenantScooter.getLongitule(),
+                corTenantScooter == null ? new BigDecimal(enter.getLat()) : corTenantScooter.getLatitude(),
                 ExpressOrderStatusEnums.COMPLETED.getValue(),
                 ExpressOrderEventEnums.COMPLETED.getValue(), null
         );
@@ -581,9 +613,9 @@ public class EdOrderServiceImpl implements EdOrderService {
         baseExpressOrderTraceEnter.setEvent(event);
         baseExpressOrderTraceEnter.setReason(reason);
         baseExpressOrderTraceEnter.setEventTime(new Date());
-        baseExpressOrderTraceEnter.setLongitude(new BigDecimal(StringUtils.isNotBlank(lng) == true ? lng : "0"));
-        baseExpressOrderTraceEnter.setLatitude(new BigDecimal(StringUtils.isNotBlank(lat) == true ? lat : "0"));
-        baseExpressOrderTraceEnter.setGeohash(MapUtil.geoHash(StringUtils.isNotBlank(lng) == true ? lng : "0", StringUtils.isNotBlank(lat) == true ? lat : "0"));
+        baseExpressOrderTraceEnter.setLongitude(new BigDecimal(StringUtils.isNotBlank(lng) ? lng : "0"));
+        baseExpressOrderTraceEnter.setLatitude(new BigDecimal(StringUtils.isNotBlank(lat) ? lat : "0"));
+        baseExpressOrderTraceEnter.setGeohash(MapUtil.geoHash(StringUtils.isNotBlank(lng) ? lng : "0", StringUtils.isNotBlank(lat) ? lat : "0"));
         baseExpressOrderTraceEnter.setScooterId(scooterId);
         baseExpressOrderTraceEnter.setScooterLatitude(scooterLat);
         baseExpressOrderTraceEnter.setScooterLongitude(scooterLng);
@@ -640,4 +672,25 @@ public class EdOrderServiceImpl implements EdOrderService {
         pushParameter.put("pushType", pushMsg.getPushType());
         pushService.pushMessage(JSON.toJSONString(pushParameter));
     }
+
+    /**
+     * 获取用户业务类型 1-2B 2-2C
+     *
+     * @param enter
+     * @return
+     */
+    private int getUserServiceType(GeneralEnter enter) {
+        int userServiceType = 0;
+
+        QueryUserResult queryUserResult = userBaseService.queryUserById(enter);
+        if (!AccountTypeEnums.WEB_REPAIR.getAccountType().equals(queryUserResult.getUserType())
+                || !AccountTypeEnums.APP_PERSONAL.getAccountType().equals(queryUserResult.getUserType())) {
+            userServiceType = 1;
+        } else if (AccountTypeEnums.APP_PERSONAL.getAccountType().equals(queryUserResult.getUserType())) {
+            userServiceType = 2;
+        }
+
+        return userServiceType;
+    }
+
 }

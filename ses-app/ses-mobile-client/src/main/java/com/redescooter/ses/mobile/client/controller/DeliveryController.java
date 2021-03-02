@@ -1,6 +1,5 @@
 package com.redescooter.ses.mobile.client.controller;
 
-import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -16,7 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,10 +36,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/delivery", method = RequestMethod.POST)
 public class DeliveryController {
 
-    @Reference
+    @DubboReference
     private DeliveryService deliveryService;
 
-    @ApiOperation(value = "订单列表")
+    @ApiOperation(value = "餐厅订单列表")
     @RequestMapping(value = "/list")
     public Response<DeliveryListResult> list(@ModelAttribute DeliveryListEnter enter) {
         return new Response<>(deliveryService.list(enter));
@@ -54,7 +53,7 @@ public class DeliveryController {
 
     @ApiOperation(value = "开始订单")
     @RequestMapping(value = "/start")
-    public Response<GeneralResult> start(@ModelAttribute @ApiParam("请求参数")StartEnter enter) {
+    public Response<GeneralResult> start(@ModelAttribute @ApiParam("请求参数") StartEnter enter) {
         return new Response<>(deliveryService.start(enter));
     }
 

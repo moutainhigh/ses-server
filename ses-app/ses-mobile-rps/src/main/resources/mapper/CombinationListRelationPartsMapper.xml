@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.combinorder.CombinationListRelationPartsMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeCombinListRelationParts">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="relation_id" jdbcType="BIGINT" property="relationId" />
+        <result column="relation_type" jdbcType="INTEGER" property="relationType" />
+        <result column="parts_id" jdbcType="BIGINT" property="partsId" />
+        <result column="parts_no" jdbcType="VARCHAR" property="partsNo" />
+        <result column="parts_type" jdbcType="INTEGER" property="partsType" />
+        <result column="id_calss" jdbcType="INTEGER" property="idCalss" />
+        <result column="qty" jdbcType="INTEGER" property="qty" />
+        <result column="scan_code_qty" jdbcType="INTEGER" property="scanCodeQty" />
+        <result column="cn_name" jdbcType="VARCHAR" property="cnName" />
+        <result column="en_name" jdbcType="VARCHAR" property="enName" />
+        <result column="fr_name" jdbcType="VARCHAR" property="frName" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--根据relationId、bomId查询组装单清单关联部件信息-->
+    <select id="getCombinationListRelationPartsByRIdAndBId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_combin_list_relation_parts
+	    where dr = 0 and relation_id = #{relationId} and parts_id = #{bomId}
+    </select>
+
+    <!--修改组装单清单关联部件信息-->
+    <update id="updateCombinListRelationParts" parameterType="com.redescooter.ses.mobile.rps.dm.OpeCombinListRelationParts">
+        update ope_combin_list_relation_parts
+        <set>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="relationId != null">
+                relation_id = #{relationId,jdbcType=BIGINT},
+            </if>
+            <if test="relationType != null">
+                relation_type = #{relationType,jdbcType=INTEGER},
+            </if>
+            <if test="partsId != null">
+                parts_id = #{partsId,jdbcType=BIGINT},
+            </if>
+            <if test="partsNo != null">
+                parts_no = #{partsNo,jdbcType=VARCHAR},
+            </if>
+            <if test="partsType != null">
+                parts_type = #{partsType,jdbcType=INTEGER},
+            </if>
+            <if test="idCalss != null">
+                id_calss = #{idCalss,jdbcType=INTEGER},
+            </if>
+            <if test="qty != null">
+                qty = #{qty,jdbcType=INTEGER},
+            </if>
+            <if test="scanCodeQty != null">
+                scan_code_qty = #{scanCodeQty,jdbcType=INTEGER},
+            </if>
+            <if test="cnName != null">
+                cn_name = #{cnName,jdbcType=VARCHAR},
+            </if>
+            <if test="enName != null">
+                en_name = #{enName,jdbcType=VARCHAR},
+            </if>
+            <if test="frName != null">
+                fr_name = #{frName,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <!--根据relationId查询部件扫码数量-->
+    <select id="getScanCodeQtyByRelationId" parameterType="java.lang.Long" resultType="java.lang.Integer">
+        select IFNULL(sum(scan_code_qty),0) from ope_combin_list_relation_parts
+	    where dr = 0 and relation_id = #{relationId}
+    </select>
+
+    <!--批量新增组装单清单关联部件信息-->
+    <insert id="batchInsertCombinationListRelationParts" parameterType="com.redescooter.ses.mobile.rps.dm.OpeCombinListRelationParts">
+        insert ope_combin_list_relation_parts(id, dr, relation_id, relation_type, parts_id, parts_no, parts_type, id_calss, qty,
+        scan_code_qty, cn_name, en_name, fr_name, created_by, created_time, updated_by, updated_time)
+        <foreach collection="opeCombinListRelationPartsList" item="item" open="values" separator=",">
+            (#{item.id}, #{item.dr}, #{item.relationId}, #{item.relationType}, #{item.partsId}, #{item.partsNo}, #{item.partsType},
+            #{item.idCalss}, #{item.qty}, #{item.scanCodeQty}, #{item.cnName}, #{item.enName}, #{item.frName}, #{item.createdBy},
+            #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime})
+        </foreach>
+    </insert>
+
+</mapper>

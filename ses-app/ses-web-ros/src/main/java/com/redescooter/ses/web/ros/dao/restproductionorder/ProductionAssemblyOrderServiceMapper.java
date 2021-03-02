@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
 import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
+import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.BomNameData;
 import com.redescooter.ses.web.ros.vo.restproduct.BomNoEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.CombinNameData;
@@ -29,7 +30,7 @@ import java.util.Set;
  * @description: ProductionAssemblyOrderServiceMapper
  * @author: Alex
  * @Version：1.3
- * @create: 2020/11/12 11:56 
+ * @create: 2020/11/12 11:56
  */
 public interface ProductionAssemblyOrderServiceMapper {
 
@@ -190,4 +191,7 @@ public interface ProductionAssemblyOrderServiceMapper {
      * @return
      **/
     List<ProductionCombinAssemblyExport> combinExportList(@Param("combinId") Long combinId);
+
+
+    List<InWhRelationOrderResult> relationCombineOrderData(@Param("enter") CombinationListEnter enter);
 }

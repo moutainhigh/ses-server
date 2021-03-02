@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.qcorder.QcOrderMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeQcOrder">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+        <result column="dept_id" jdbcType="BIGINT" property="deptId" />
+        <result column="country_type" jdbcType="INTEGER" property="countryType" />
+        <result column="qc_no" jdbcType="VARCHAR" property="qcNo" />
+        <result column="qc_status" jdbcType="INTEGER" property="qcStatus" />
+        <result column="order_type" jdbcType="INTEGER" property="orderType" />
+        <result column="relation_order_id" jdbcType="BIGINT" property="relationOrderId" />
+        <result column="relation_order_no" jdbcType="VARCHAR" property="relationOrderNo" />
+        <result column="relation_order_type" jdbcType="INTEGER" property="relationOrderType" />
+        <result column="qc_type" jdbcType="INTEGER" property="qcType" />
+        <result column="qc_qty" jdbcType="INTEGER" property="qcQty" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="qc_completion_time" jdbcType="TIMESTAMP" property="qcCompletionTime" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="INTEGER" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--质检单列表查询条件-->
+    <sql id="getQcOrderListWhere">
+        <if test="orderType != null">and order_type = #{orderType}</if>
+        <if test="type != null">and qc_type = #{type}</if>
+        <if test="status == 0">and qc_status in(1, 10)</if>
+        <if test="status == 1">and qc_status = 20</if>
+    </sql>
+    
+    <!--质检单据类型数量统计-->
+    <select id="getQcOrderTypeCount" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select order_type `status`, count(id) totalCount
+        from ope_qc_order
+        where dr = 0
+        group by order_type
+    </select>
+
+    <!--质检类型数量统计-->
+    <select id="getQcTypeCount" parameterType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO"
+            resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select qc_type `status`, count(id) totalCount
+        from ope_qc_order
+        where dr = 0 and order_type = #{type}
+        <if test="status == 0">and qc_status in(1, 10)</if>
+        <if test="status == 1">and qc_status = 20</if>
+        group by qc_type
+    </select>
+
+    <!--质检单数量统计-->
+    <select id="countByQcOrder" parameterType="com.redescooter.ses.mobile.rps.vo.qc.QueryQcOrderParamDTO" resultType="java.lang.Integer">
+        select count(*) from ope_qc_order
+	    where dr = 0
+	    <include refid="getQcOrderListWhere" />
+    </select>
+
+    <!--质检单列表查询-->
+    <select id="getQcOrderList" parameterType="com.redescooter.ses.mobile.rps.vo.qc.QueryQcOrderParamDTO"
+            resultType="com.redescooter.ses.mobile.rps.vo.qc.QueryQcOrderResultDTO">
+        select id, qc_no qcNo, qc_qty qcQty, order_type orderType, qc_type `type`, qc_status `status`
+        from ope_qc_order
+        where dr = 0
+        <include refid="getQcOrderListWhere" />
+        order by created_time asc
+        limit #{startRow}, #{pageSize}
+    </select>
+
+    <!--根据id查询质检单详情-->
+    <select id="getQcOrderDetailById" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.qc.QcOrderDetailDTO">
+        select id, qc_no qcNo, qc_qty qcQty, order_type orderType, qc_type `type`, qc_status `status`,
+        qc_completion_time qcCompletionTime
+        from ope_qc_order
+        where dr = 0 and id = #{id}
+    </select>
+
+    <!--修改质检单信息-->
+    <update id="updateQcOrder" parameterType="com.redescooter.ses.mobile.rps.dm.OpeQcOrder">
+        update ope_qc_order
+        <set>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="tenantId != null">
+                tenant_id = #{tenantId,jdbcType=BIGINT},
+            </if>
+            <if test="deptId != null">
+                dept_id = #{deptId,jdbcType=BIGINT},
+            </if>
+            <if test="countryType != null">
+                country_type = #{countryType,jdbcType=INTEGER},
+            </if>
+            <if test="qcNo != null">
+                qc_no = #{qcNo,jdbcType=VARCHAR},
+            </if>
+            <if test="qcStatus != null">
+                qc_status = #{qcStatus,jdbcType=INTEGER},
+            </if>
+            <if test="orderType != null">
+                order_type = #{orderType,jdbcType=INTEGER},
+            </if>
+            <if test="relationOrderId != null">
+                relation_order_id = #{relationOrderId,jdbcType=BIGINT},
+            </if>
+            <if test="relationOrderNo != null">
+                relation_order_no = #{relationOrderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="relationOrderType != null">
+                relation_order_type = #{relationOrderType,jdbcType=INTEGER},
+            </if>
+            <if test="qcType != null">
+                qc_type = #{qcType,jdbcType=INTEGER},
+            </if>
+            <if test="qcQty != null">
+                qc_qty = #{qcQty,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="qcCompletionTime != null">
+                qc_completion_time = #{qcCompletionTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=INTEGER},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <!--根据id查询质检单信息-->
+    <select id="getQcOrderById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_qc_order
+	    where dr = 0 and id = #{id}
+    </select>
+
+    <!--获取质检单所有数量-->
+    <select id="allCountByQcOrder" resultType="java.lang.Integer">
+        select count(*) from ope_qc_order
+	    where dr = 0
+    </select>
+
+    <!--根据relationId、relationType检查质检单是否存在-->
+    <select id="isExistsQcOrderByRelationIdByType" resultType="java.lang.Integer">
+        select count(*) from ope_qc_order
+	    where dr = 0 and relation_order_id = #{relationId} and relation_order_type = #{relationType}
+    </select>
+
+</mapper>

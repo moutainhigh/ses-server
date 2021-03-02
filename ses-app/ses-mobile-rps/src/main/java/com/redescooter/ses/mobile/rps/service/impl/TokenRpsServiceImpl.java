@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
 import com.redescooter.ses.api.common.constant.CacheConstants;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
@@ -18,11 +17,13 @@ import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.mobile.rps.dao.base.OpeSysUserMapper;
 import com.redescooter.ses.mobile.rps.dao.base.OpeSysUserProfileMapper;
+import com.redescooter.ses.mobile.rps.dm.OpeSysRpsUser;
 import com.redescooter.ses.mobile.rps.dm.OpeSysUser;
 import com.redescooter.ses.mobile.rps.dm.OpeSysUserRole;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.TokenRpsService;
+import com.redescooter.ses.mobile.rps.service.base.OpeSysRpsUserService;
 import com.redescooter.ses.mobile.rps.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
@@ -31,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,15 +47,23 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class TokenRpsServiceImpl implements TokenRpsService {
+
     @Autowired
     private JedisCluster jedisCluster;
+
     @Autowired
     private OpeSysUserMapper sysUserMapper;
+
     @Autowired
     private OpeSysUserProfileMapper sysUserProfileMapper;
+
     @Autowired
     private OpeSysUserRoleService sysUserRoleService;
-    @Reference
+
+    @Autowired
+    private OpeSysRpsUserService opeSysRpsUserService;
+
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -63,11 +72,9 @@ public class TokenRpsServiceImpl implements TokenRpsService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public TokenResult login(LoginEnter enter) {
-
-
         //用户名密码去除空格
         enter.setLoginName(SesStringUtils.stringTrim(enter.getLoginName()));
         enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
@@ -220,7 +227,7 @@ public class TokenRpsServiceImpl implements TokenRpsService {
         userToken.setTimestamp(enter.getTimestamp());
         userToken.setTimeZone(enter.getTimeZone());
         userToken.setVersion(enter.getVersion());
-
+        userToken.setDeptId(user.getDeptId() == null ? 0L : user.getDeptId());
         try {
             Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);
             map.remove("requestId");
@@ -237,10 +244,62 @@ public class TokenRpsServiceImpl implements TokenRpsService {
     }
 
     private void setAuth(long roleId) {
-
         String key = new StringBuilder().append(roleId).append(":::").append(CacheConstants.MENU_DETAILS).toString();
-
         Boolean aBoolean = jedisCluster.exists(key);
+    }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public TokenResult rpsLogin(LoginEnter enter) {
+        //用户名密码去除空格
+        enter.setLoginName(SesStringUtils.stringTrim(enter.getLoginName()));
+        enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
+
+        QueryWrapper<OpeSysRpsUser> wrapper = new QueryWrapper<>();
+        wrapper.eq(OpeSysUser.COL_LOGIN_NAME, enter.getLoginName());
+        wrapper.last("limit 1");
+        OpeSysRpsUser sysUser = opeSysRpsUserService.getOne(wrapper);
+        //用户名验证，及根据用户名未查到改用户，则该用户不存在
+        if (sysUser == null) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        //状态验证
+        if (StringUtils.equals(sysUser.getStatus(), SysUserStatusEnum.LOCK.getCode())) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.THE_ACCOUNT_HAS_BEEN_FROZEN.getCode(), ExceptionCodeEnums.THE_ACCOUNT_HAS_BEEN_FROZEN.getMessage());
+        }
+        if (StringUtils.equals(sysUser.getStatus(), SysUserStatusEnum.CANCEL.getCode())) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.ACCOUNT_CANCELLED.getCode(), ExceptionCodeEnums.ACCOUNT_CANCELLED.getMessage());
+        }
+        if (StringUtils.equals(sysUser.getStatus(), SysUserStatusEnum.EXPIRED.getCode())) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.ACCOUNT_EXPIRED.getCode(), ExceptionCodeEnums.ACCOUNT_EXPIRED.getMessage());
+        }
+        String password = DigestUtils.md5Hex(enter.getPassword() + sysUser.getSalt());
+
+        if (!password.equals(sysUser.getPassword())) {
+            throw new SesMobileRpsException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
+
+        //清除上次登录token信息
+        if (StringUtils.isNotBlank(sysUser.getLastLoginToken())) {
+            jedisCluster.del(sysUser.getLastLoginToken());
+        }
+        //将token及用户相关信息 放到Redis中
+        OpeSysUser user = new OpeSysUser();
+        org.springframework.beans.BeanUtils.copyProperties(sysUser, user);
+        UserToken userToken = setToken(enter, user);
+        //获取用户角色,更新至缓存
+        //  setAuth(userRole.getRoleId());
+
+        sysUser.setLastLoginToken(userToken.getToken());
+        sysUser.setLastLoginTime(new Date(enter.getTimestamp()));
+        sysUser.setLastLoginIp(enter.getClientIp());
+        sysUser.setUpdatedBy(enter.getUserId());
+        sysUser.setUpdatedTime(new Date());
+
+        opeSysRpsUserService.saveOrUpdate(sysUser);
+        TokenResult result = new TokenResult();
+        result.setToken(userToken.getToken());
+        result.setRequestId(enter.getRequestId());
+        return result;
     }
 }

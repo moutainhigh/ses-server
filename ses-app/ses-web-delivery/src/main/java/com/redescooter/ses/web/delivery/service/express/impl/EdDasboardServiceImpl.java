@@ -1,15 +1,14 @@
 package com.redescooter.ses.web.delivery.service.express.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
 import com.redescooter.ses.api.common.enums.expressOrder.ExpressOrderStatusEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.foundation.service.base.TenantBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryTenantResult;
-import com.redescooter.ses.tool.utils.DateUtil;
 import com.redescooter.ses.tool.utils.chart.OrderChartUtils;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.delivery.dao.EdDasboardServiceMapper;
 import com.redescooter.ses.web.delivery.dao.OrderStatisticsServiceMapper;
 import com.redescooter.ses.web.delivery.dm.CorTenantScooter;
@@ -17,28 +16,42 @@ import com.redescooter.ses.web.delivery.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.delivery.exception.SesWebDeliveryException;
 import com.redescooter.ses.web.delivery.service.base.CorTenantScooterService;
 import com.redescooter.ses.web.delivery.service.express.EdDasboardService;
-import com.redescooter.ses.web.delivery.vo.*;
+import com.redescooter.ses.web.delivery.vo.DeliveryChartDto;
+import com.redescooter.ses.web.delivery.vo.DeliveryChartEnter;
+import com.redescooter.ses.web.delivery.vo.DeliveryChartListResult;
+import com.redescooter.ses.web.delivery.vo.DeliveryChartResult;
+import com.redescooter.ses.web.delivery.vo.ScooterMapResult;
+import com.redescooter.ses.web.delivery.vo.ScooterRideDataResult;
+import com.redescooter.ses.web.delivery.vo.TopTenEnter;
+import com.redescooter.ses.web.delivery.vo.TopTenResult;
 import com.redescooter.ses.web.delivery.vo.edorder.ExpressOrderMapResult;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class EdDasboardServiceImpl implements EdDasboardService {
+
     @Autowired
     private EdDasboardServiceMapper edDasboardServiceMapper;
+
     @Autowired
     private CorTenantScooterService tenantScooterService;
 
     @Autowired
     private OrderStatisticsServiceMapper orderStatisticsServiceMapper;
 
-    @Reference
+    @DubboReference
     private TenantBaseService tenantBaseService;
 
     /**
@@ -94,11 +107,9 @@ public class EdDasboardServiceImpl implements EdDasboardService {
     @Override
     public ScooterRideDataResult scooterRideData(GeneralEnter enter) {
         ScooterRideDataResult result = edDasboardServiceMapper.scooterRideData(enter);
-
         if (result == null) {
             new ScooterRideDataResult();
         }
-
         return result;
     }
 
@@ -148,7 +159,6 @@ public class EdDasboardServiceImpl implements EdDasboardService {
      */
     @Override
     public DeliveryChartListResult eDDeliveryChartList(DeliveryChartEnter enter) {
-
         enter.setStatus(ExpressOrderStatusEnums.COMPLETED.getValue());
         Map<String, DeliveryChartResult> map = new LinkedHashMap<>();
         List<DeliveryChartResult> deliveryChartResults = new ArrayList<>();
@@ -167,7 +177,6 @@ public class EdDasboardServiceImpl implements EdDasboardService {
                 dateTimeParmToday.setDateTime(enter.getDateTimes());
                 deliveryChartResults = orderStatisticsServiceMapper.eDDliveryChartToday(dateTimeParmToday);
                 break;
-
             case 7:
                 //近七日<7Day（单位为日，显示近7天配送数据，点击某一日可查看该日数据，并且时间筛选变更为返回）
                 Date start7 = DateUtil.addDays(enter.getDateTimes(), -7);
@@ -179,7 +188,6 @@ public class EdDasboardServiceImpl implements EdDasboardService {
 
                 deliveryChartResults = orderStatisticsServiceMapper.eDDeliveryChart7Day(dateTimeParm7);
                 break;
-
             case 30:
                 //近30日<30Day（单位为日，显示近30天配送数据，点击某一日可查看该日数据，并且时间筛选变更为返回）
                 Date start30 = DateUtil.addDays(enter.getDateTimes(), -30);
@@ -190,7 +198,6 @@ public class EdDasboardServiceImpl implements EdDasboardService {
                 dateTimeParm30.setStartDateTime(start30);
                 deliveryChartResults = orderStatisticsServiceMapper.eDDeliveryChart30Day(dateTimeParm30);
                 break;
-
             case 365:
                 //年Year（单位为月，显示截止至今所有数据，点击某一月可查看该月数据，点击某一日可查看该日数据
                 Date start365 = DateUtil.addDays(enter.getDateTimes(), -365);
@@ -201,10 +208,8 @@ public class EdDasboardServiceImpl implements EdDasboardService {
                 dateTimeParm365.setStartDateTime(start365);
                 deliveryChartResults = orderStatisticsServiceMapper.eDDeliveryChart365Day(dateTimeParm365);
                 break;
-
             default:
                 throw new SesWebDeliveryException(ExceptionCodeEnums.OPERATION_ERROR.getCode(), ExceptionCodeEnums.OPERATION_ERROR.getMessage());
-
         }
 
         List<String> dateList = new LinkedList();
@@ -233,8 +238,8 @@ public class EdDasboardServiceImpl implements EdDasboardService {
                     map.put(str, result);
                 }
             }
-        }else{
-            map=null;
+        } else {
+            map = null;
         }
 
         DeliveryChartListResult result = new DeliveryChartListResult();
@@ -242,9 +247,7 @@ public class EdDasboardServiceImpl implements EdDasboardService {
         result.setAvg(avg);
         result.setMax(max);
         result.setMin(min);
-
         return result;
     }
-
 
 }

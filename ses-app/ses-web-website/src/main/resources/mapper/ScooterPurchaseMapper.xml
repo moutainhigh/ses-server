@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.website.dao.ScooterPurchaseMapper">
+    <resultMap id="getProductDetailByModelMap" type="com.redescooter.ses.web.website.vo.product.ProductsResult">
+        <id column="productId" jdbcType="BIGINT" property="productId"/>
+        <result column="cn_name" jdbcType="VARCHAR" property="cnName"/>
+        <result column="fr_name" jdbcType="VARCHAR" property="frName"/>
+        <result column="en_name" jdbcType="VARCHAR" property="enName"/>
+        <result column="product_model_id" jdbcType="BIGINT" property="productModelId"/>
+        <result column="picture" jdbcType="VARCHAR" property="picture"/>
+        <result column="min_battery_num" jdbcType="INTEGER" property="minBatteryNum"/>
+        <result column="mater_parameter" jdbcType="VARCHAR" property="materParameter"/>
+        <result column="other_parameter" jdbcType="VARCHAR" property="otherParameter"/>
+        <result column="speed" jdbcType="VARCHAR" property="speed"/>
+        <result column="power" jdbcType="VARCHAR" property="power"/>
+        <result column="mileage" jdbcType="VARCHAR" property="mileage"/>
+        <result column="charge_cycle" jdbcType="VARCHAR" property="chargeCycle"/>
+        <collection property="colourDetailslist" javaType="java.util.ArrayList"
+                    ofType="com.redescooter.ses.web.website.vo.product.ColourDetailsResult">
+            <id column="colourId" jdbcType="BIGINT" property="id"/>
+            <result column="colour_name" jdbcType="VARCHAR" property="colourName"/>
+            <result column="colour_RGB" jdbcType="VARCHAR" property="colourRgb"/>
+            <result column="colour_16" jdbcType="VARCHAR" property="colour16"/>
+        </collection>
+    </resultMap>
+
+    <select id="getProductDetailByModel" resultMap="getProductDetailByModelMap">
+        select sp.id as productId,
+               sp.cn_name,
+               sp.fr_name,
+               sp.en_name,
+               sp.product_model_id,
+               sp.picture,
+               sp.min_battery_num,
+               sp.after_sales_flag,
+               sp.added_services_flag,
+               sp.mater_parameter,
+               sp.other_parameter,
+               sp.speed,
+               sp.power,
+               sp.mileage,
+               sp.charge_cycle,
+               sc.id as colourId,
+               sc.colour_name,
+               sc.colour_RGB,
+               sc.colour_16
+        from site_product sp
+                     left join site_product_colour spc on sp.id = spc.product_id
+                     left join site_colour sc on spc.colour_id = sc.id and sc.dr = 0
+        where sp.dr = 0
+          and sp.product_model_id = #{id}
+    </select>
+
+    <select id="getPartsList" resultType="com.redescooter.ses.web.website.vo.parts.PartsDetailsResult">
+        select id as partsId,
+               parts_type,
+               parts_number,
+               cn_name,
+               fr_name,
+               en_name,
+               picture,
+               price,
+               sources,
+               currency_unit,
+               amount_discount,
+               remark
+        from site_parts
+                where dr = 0
+        <if test="keyword != null and keyword != ''">
+            and (
+                    en_name like concat('%', #{keyword}, '%')
+                            or cn_name like concat('%', #{keyword}, '%')
+                            or fr_name like concat('%', #{keyword}, '%')
+                    )
+        </if>
+    </select>
+
+    <select id="getScooterConfigList" resultType="com.redescooter.ses.web.website.vo.product.ProductPartsDetailsResult">
+        select spp.id as productPartsId,
+               spp.parts_id,
+               spp.product_id,
+               spp.parameter,
+               spp.qty,
+               sp.en_name,
+               sp.price * spp.qty as price
+        from site_product_parts spp
+                     left join site_parts sp on spp.parts_id = sp.id and sp.dr = 0
+                where spp.dr = 0
+        <if test="id != null">
+            and spp.product_id = #{id}
+        </if>
+    </select>
+
+    <select id="modelAndPriceList" resultType="com.redescooter.ses.web.website.vo.product.ModelPriceResult">
+        select spm.id                 as modelid,
+               spm.product_model_name as productModelName,
+               spp.id                 as productPriceId,
+               spp.price_type         as priceType,
+               spp.price,
+               spp.start_price        as startPrice
+        from site_product_model spm
+                     left join site_product_price spp on spm.id = spp.product_model_id and spp.dr = 0
+        where spm.dr = 0
+          and spp.price_type = 0
+        group by modelid, productPriceId
+    </select>
+</mapper>

@@ -4,7 +4,7 @@
     <sql id="where_ExpressOrder_List">
         where a.tenant_id=#{tenantId}
         and a.dr=0
-        <if test="status != null">
+        <if test="status != null and status != ''">
             and a.status=#{status}
         </if>
         <if test="city != null and city != ''">
@@ -81,7 +81,7 @@
         left join cor_tenant_scooter scooter on trace.scooter_id = scooter.scooter_id and scooter.dr = 0
         left join cor_user_profile e on e.user_id = d.user_id and e.dr = 0
         <include refid="where_ExpressOrder_List"/>
-        order by a.created_time desc
+        order by a.created_time desc,a.id
         limit #{startRow},#{pageSize}
 
     </select>

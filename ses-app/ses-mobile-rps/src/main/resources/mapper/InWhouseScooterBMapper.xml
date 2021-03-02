@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.inwhorder.InWhouseScooterBMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeInWhouseScooterB">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="in_wh_id" jdbcType="BIGINT" property="inWhId" />
+        <result column="group_id" jdbcType="BIGINT" property="groupId" />
+        <result column="color_id" jdbcType="BIGINT" property="colorId" />
+        <result column="scooter_bom_id" jdbcType="BIGINT" property="scooterBomId" />
+        <result column="combin_qty" jdbcType="INTEGER" property="combinQty" />
+        <result column="able_in_wh_qty" jdbcType="INTEGER" property="ableInWhQty" />
+        <result column="in_wh_qty" jdbcType="INTEGER" property="inWhQty" />
+        <result column="act_in_wh_qty" jdbcType="INTEGER" property="actInWhQty" />
+        <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--InWhOrderScooterResultMap-->
+    <resultMap id="InWhOrderScooterResultMap" type="com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDetailDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="in_wh_id" jdbcType="BIGINT" property="inWhId" />
+        <result column="bom_id" jdbcType="BIGINT" property="bomId" />
+        <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+        <result column="color_value" jdbcType="VARCHAR" property="colorValue" />
+        <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+        <result column="in_wh_qty" jdbcType="INTEGER" property="qty" />
+        <result column="act_in_wh_qty" jdbcType="INTEGER" property="actInWhQty" />
+        <result column="unqualified_qty" jdbcType="INTEGER" property="unqualifiedQty" />
+        <result column="id_class" jdbcType="BOOLEAN" property="idClass" />
+        <!--一对多映射(车辆序列号信息)-->
+        <collection property="productSerialNumberList" ofType="com.redescooter.ses.mobile.rps.vo.outwhorder.ProductSerialNumberDTO">
+            <result column="sn_id" jdbcType="BIGINT" property="id" />
+            <result column="lot" jdbcType="VARCHAR" property="lot" />
+            <result column="serial_num" jdbcType="VARCHAR" property="serialNum" />
+            <result column="factory_name" jdbcType="VARCHAR" property="factoryName" />
+        </collection>
+    </resultMap>
+
+    <!--根据id查询入库单车辆信息-->
+    <select id="getInWhouseScooterById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_in_whouse_scooter_b
+	    where dr = 0 and id = #{id}
+    </select>
+
+    <!--修改入库单车辆信息-->
+    <update id="updateInWhouseScooter" parameterType="com.redescooter.ses.mobile.rps.dm.OpeInWhouseScooterB">
+        update ope_in_whouse_scooter_b
+        <set>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="inWhId != null">
+                in_wh_id = #{inWhId,jdbcType=BIGINT},
+            </if>
+            <if test="groupId != null">
+                group_id = #{groupId,jdbcType=BIGINT},
+            </if>
+            <if test="colorId != null">
+                color_id = #{colorId,jdbcType=BIGINT},
+            </if>
+            <if test="scooterBomId != null">
+                scooter_bom_id = #{scooterBomId,jdbcType=BIGINT},
+            </if>
+            <if test="combinQty != null">
+                combin_qty = #{combinQty,jdbcType=INTEGER},
+            </if>
+            <if test="ableInWhQty != null">
+                able_in_wh_qty = #{ableInWhQty,jdbcType=INTEGER},
+            </if>
+            <if test="inWhQty != null">
+                in_wh_qty = #{inWhQty,jdbcType=INTEGER},
+            </if>
+            <if test="actInWhQty != null">
+                act_in_wh_qty = #{actInWhQty,jdbcType=INTEGER},
+            </if>
+            <if test="unqualifiedQty != null">
+                unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据inWhId查询入库单车辆信息-->
+    <select id="getInWhOrderScooterByInWhId" parameterType="java.lang.Long"
+            resultType="com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDTO">
+        select iws.id, iws.in_wh_id inWhId, bom.id bomId,sg.group_name groupName, c.color_name colorName, c.color_value colorValue,
+        iws.in_wh_qty qty, iws.act_in_wh_qty actInWhQty, iws.unqualified_qty unqualifiedQty, true idClass
+        from ope_in_whouse_scooter_b iws
+        left join ope_specificat_group sg
+        on iws.group_id = sg.id and sg.dr = 0
+        left join ope_color c
+        on iws.color_id = c.id and c.dr = 0
+        left join ope_production_scooter_bom bom
+        on iws.group_id = bom.group_id and iws.color_id = bom.color_id and bom.bom_status = 1 and bom.dr = 0
+        where iws.dr = 0 and iws.in_wh_id = #{inWhId}
+    </select>
+
+    <!--根据id查询入库单车辆信息(工厂名称默认为“奥格工厂”)-->
+    <select id="getInWhOrderScooterById" parameterType="java.lang.Long" resultMap="InWhOrderScooterResultMap">
+        select iws.id, iws.in_wh_id, bom.id bom_id,sg.group_name, c.color_name, c.color_value,
+        iws.in_wh_qty, iws.act_in_wh_qty, iws.unqualified_qty, true id_class, serial.id sn_id,serial.lot,
+        '奥格工厂' factory_name, serial.serial_num
+        from ope_in_whouse_scooter_b iws
+        left join ope_specificat_group sg
+        on iws.group_id = sg.id and sg.dr = 0
+        left join ope_color c
+        on iws.color_id = c.id and c.dr = 0
+        left join ope_production_scooter_bom bom
+        on iws.group_id = bom.group_id and iws.color_id = bom.color_id and bom.bom_status = 1 and bom.dr = 0
+        left join ope_in_whouse_order_serial_bind serial
+        on iws.id = serial.order_b_id and serial.dr = 0
+        where iws.dr = 0 and iws.id = #{id}
+    </select>
+
+</mapper>

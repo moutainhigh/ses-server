@@ -22,11 +22,10 @@ import com.redescooter.ses.service.scooter.dm.base.ScoScooterNavigation;
 import com.redescooter.ses.service.scooter.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.scooter.service.base.ScoScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.MapUtil;
+import com.redescooter.ses.tool.utils.map.MapUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,45 +44,49 @@ import java.util.List;
  * @create: 2019/12/27 10:15
  */
 @Slf4j
-@Service
+@DubboService
 public class ScooterIotServiceImpl implements ScooterIotService {
 
     @Autowired
     private ScoScooterService scoScooterService;
-
     @Autowired
     private ScoScooterNavigationMapper scoScooterNavigationMapper;
-
     @Autowired
     private IdAppService idAppService;
-
     @Autowired
     private ScooterRecordService scooterRecordService;
-
     @Autowired
     private ScooterService scooterService;
-
-/*    @Autowired
-    private IotAdminService iotAdminService;*/
-
+    /*    @Autowired
+        private IotAdminService iotAdminService;*/
     @Autowired
     private ScooterIotServiceMapper scooterIotServiceMapper;
 
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult navigation(IotScooterEnter enter) {
         ScoScooter scoScooter = checkIotScooterEnterParameter(enter);
 
         List<Long> idEnterList = new ArrayList<>();
         idEnterList.add(enter.getId());
-        List<BaseScooterResult> scooterList = scooterService.scooterInfor(idEnterList);
-        if (CollectionUtils.isEmpty(scooterList)) {
+        /**
+         * -scooterService.scooterInfor(idEnterList)这个方法废弃使用,因为这个方法对数据操作所涉及到的表有已经废弃掉了的表
+         * -废弃表：scooter库 -- sco_scooter_status表
+         */
+//        List<BaseScooterResult> scooterList = scooterService.scooterInfor(idEnterList);
+        BaseScooterResult scooterResult = scooterService.getScooterInfoById(enter.getId());
+        if (null == scooterResult) {
             throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
         }
-
+        if (scooterResult.getLatitude() == null) {
+            scooterResult.setLatitude(enter.getLatitude());
+        }
+        if (scooterResult.getLongitule() == null) {
+            scooterResult.setLongitule(enter.getLongitude());
+        }
         List<SaveScooterRecordEnter<BaseScooterEnter>> saveScooterRecordEnterList = new ArrayList<>();
-        SaveScooterRecordEnter<BaseScooterEnter> saveScooterRecordEnter = buildBaseScooterEnterSaveScooterRecordEnterSingle(enter, scooterList);
+        SaveScooterRecordEnter<BaseScooterEnter> saveScooterRecordEnter = buildBaseScooterEnterSaveScooterRecordEnterSingle(enter, scooterResult);
         // 查询是否在正在进行的导航
         QueryWrapper<ScoScooterNavigation> scoScooterNavigationQueryWrapper = new QueryWrapper<>();
         scoScooterNavigationQueryWrapper.eq(ScoScooterNavigation.COL_SCOOTER_ID, enter.getId());
@@ -106,7 +109,7 @@ public class ScooterIotServiceImpl implements ScooterIotService {
         if (enter.getBluetoothCommunication()) {
             switch (enter.getEvent()) {
                 case "1":
-                    ScoScooterNavigation savaNaviation = buildScoScooterNavigation(enter, scooterList.get(0), NavigationStatus.START.getValue());
+                    ScoScooterNavigation savaNaviation = buildScoScooterNavigation(enter, scooterResult, NavigationStatus.START.getValue());
                     scoScooterNavigationMapper.insert(savaNaviation);
                     saveScooterRecordEnter.setActionType(ScooterActionTypeEnums.START_NAVIGATION.getValue());
                     //调用IOT 服务开启导航
@@ -121,7 +124,7 @@ public class ScooterIotServiceImpl implements ScooterIotService {
         } else {
             // 开始导航
             if (StringUtils.equals(CommonEvent.START.getValue(), enter.getEvent())) {
-                ScoScooterNavigation savaNaviation = buildScoScooterNavigation(enter, scooterList.get(0), NavigationStatus.START.getValue());
+                ScoScooterNavigation savaNaviation = buildScoScooterNavigation(enter, scooterResult, NavigationStatus.START.getValue());
                 scoScooterNavigationMapper.insert(savaNaviation);
 
                 saveScooterRecordEnter.setActionType(ScooterActionTypeEnums.START_NAVIGATION.getValue());
@@ -142,21 +145,27 @@ public class ScooterIotServiceImpl implements ScooterIotService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult lock(IotScooterEnter enter) {
         ScoScooter scoScooter = checkIotScooterEnterParameter(enter);
 
         List<Long> idEnterList = new ArrayList<>();
         idEnterList.add(enter.getId());
-        List<BaseScooterResult> scooterList = scooterService.scooterInfor(idEnterList);
-        if (CollectionUtils.isEmpty(scooterList)) {
+        /**
+         * -scooterService.scooterInfor(idEnterList)这个方法废弃使用,因为这个方法对数据操作所涉及到的表有已经废弃掉了的表
+         * -废弃表：scooter库 -- sco_scooter_status表
+         */
+//        List<BaseScooterResult> scooterList = scooterService.scooterInfor(idEnterList);
+        BaseScooterResult scooterResult = scooterService.getScooterInfoById(enter.getId());
+        if (null == scooterResult) {
             throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
         }
 
         List<SaveScooterRecordEnter<BaseScooterEnter>> saveScooterRecordEnterList = new ArrayList<>();
-        SaveScooterRecordEnter<BaseScooterEnter> saveScooterRecordEnter = buildBaseScooterEnterSaveScooterRecordEnterSingle(enter, scooterList);
+        SaveScooterRecordEnter<BaseScooterEnter> saveScooterRecordEnter = buildBaseScooterEnterSaveScooterRecordEnterSingle(enter, scooterResult);
 
         if (StringUtils.equals(enter.getEvent(), CommonEvent.START.getValue())) {
-            if (StringUtils.equals(scooterList.get(0).getStatus(), ScooterLockStatusEnums.LOCK.getValue())) {
+            if (StringUtils.equals(scooterResult.getStatus(), ScooterLockStatusEnums.LOCK.getValue())) {
                 return new GeneralResult(enter.getRequestId());
             } else {
                 // 更新车锁状态
@@ -169,7 +178,7 @@ public class ScooterIotServiceImpl implements ScooterIotService {
                 //iotAdminService.masterLock(scoScooter.getScooterNo(), Lock.MASTER);
             }
         } else {
-            if (StringUtils.equals(scooterList.get(0).getStatus(), ScooterLockStatusEnums.UNLOCK.getValue())) {
+            if (StringUtils.equals(scooterResult.getStatus(), ScooterLockStatusEnums.UNLOCK.getValue())) {
                 return new GeneralResult(enter.getRequestId());
             } else {
                 // 更新车锁状态
@@ -241,12 +250,12 @@ public class ScooterIotServiceImpl implements ScooterIotService {
      * buildBaseScooterEnterSaveScooterRecordEnter
      *
      * @param enter
-     * @param scooterList
+     * @param scooterResult
      * @return
      */
-    private SaveScooterRecordEnter<BaseScooterEnter> buildBaseScooterEnterSaveScooterRecordEnterSingle(IotScooterEnter enter, List<BaseScooterResult> scooterList) {
+    private SaveScooterRecordEnter<BaseScooterEnter> buildBaseScooterEnterSaveScooterRecordEnterSingle(IotScooterEnter enter, BaseScooterResult scooterResult) {
         BaseScooterEnter baseScooterEnter = new BaseScooterEnter();
-        BeanUtils.copyProperties(scooterList.get(0), baseScooterEnter);
+        BeanUtils.copyProperties(scooterResult, baseScooterEnter);
         baseScooterEnter.setUserId(enter.getUserId());
         baseScooterEnter.setTenantId(enter.getTenantId());
         SaveScooterRecordEnter<BaseScooterEnter> saveScooterRecordEnter = new SaveScooterRecordEnter();

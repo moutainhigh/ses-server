@@ -4,12 +4,27 @@
 
     <sql id="WHERE_ORDERLIST">
         where whorder.dr = 0
-        <if test="status != null">
-            and  whorder.out_wh_status =#{status}
+        <if test="outWhStatus != null">
+            and  whorder.out_wh_status =#{outWhStatus}
+        </if>
+        <if test="outType != null">
+            and  whorder.out_type =#{outType}
+        </if>
+        <if test="countryType != null">
+            and  whorder.country_type =#{countryType}
         </if>
         <if test="classType != null">
            and  whorder.out_wh_type=#{classType}
         </if>
+        <choose>
+            <when test="source == null">
+              and whorder.source = 0
+            </when>
+            <otherwise>
+                and whorder.source = #{source}
+            </otherwise>
+        </choose>
+
         <if test="keyword != null and keyword != ''">
             and (
             staff.full_name like concat ('%',#{keyword},'%') or
@@ -22,7 +37,7 @@
         select out_wh_type as status
              , count(1)     as totalCount
         from ope_out_whouse_order
-        where dr = 0
+        where dr = 0 and country_type = 1 and source = 0
         group by status
     </select>
 
@@ -58,8 +73,8 @@
 
     <select id="detail" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderDetailResult">
         select whorder.id            as id,
-                whorder.relation_id    as invoiceId,
-                whorder.relation_no    as invoiceNo,
+                whorder.relation_id    as relationOrderId,
+                whorder.relation_no    as relationOrderNo,
                whorder.out_wh_no     as outWhNo,
                whorder.out_wh_status as outWhStatus,
                whorder.out_wh_type   as outWhType,
@@ -71,9 +86,11 @@
                whorder.created_time  as createDate,
                whorder.mail          as mail,
                staff.first_name      as createByFirstName,
-               staff.last_name       as createByLastName
+               staff.last_name       as createByLastName,
+               whorder.wh_type,
+               whorder.remark
         from ope_out_whouse_order whorder
-                     inner join ope_sys_staff staff on whorder.created_by = staff.id and staff.dr = 0
+        inner join ope_sys_staff staff on whorder.created_by = staff.id and staff.dr = 0
         where whorder.dr=0
         and whorder.id=#{id}
     </select>
@@ -89,17 +106,18 @@
         from ope_out_wh_scooter_b scooterB
                      left join ope_specificat_group spgroup on scooterb.group_id = spgroup.id and spgroup.dr = 0
                      left join ope_color color on color.id = scooterB.color_id and color.dr = 0
-        where scooterB.out_wh_id=#{id}
+        where scooterB.out_wh_id=#{id} and scooterB.dr = 0
     </select>
 
     <select id="productionCombinByBussId" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult">
         select combinB.id     as id,
                combin.en_name as name,
                combin.bom_no  as serialN,
-               combinB.qty    as totalQty
+               combinB.qty    as totalQty,
+               combinB.production_combin_bom_id as productId
         from ope_out_wh_combin_b combinB
                      left join ope_production_combin_bom combin on combinB.production_combin_bom_id = combin.id and combin.dr = 0
-        where combinB.out_wh_id=#{id}
+        where combinB.out_wh_id=#{id} and combinB.dr = 0
     </select>
 
     <select
@@ -108,9 +126,57 @@
                parts.en_name    as name,
                parts.parts_no   as serialN,
                parts.parts_type as partType,
-               partB.qty        as totalQty
+               partB.qty        as totalQty,
+               partB.parts_id as productId
         from ope_out_wh_parts_b partB
                      left join ope_production_parts parts on parts.id = partB.parts_id and parts.dr = 0
-        where partB.out_wh_id=#{id}
+        where partB.out_wh_id=#{id} and partB.dr = 0
+    </select>
+
+    <select id="invoiceData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult">
+        select
+        id as relationOrderId,
+        invoice_no as relationOrderNo
+        from ope_invoice_order
+        where dr = 0 and invoice_type = #{enter.classType} and invoice_status in (10,20,30)
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and invoice_no like concat('%', #{enter.keyword}, '%')
+        </if>
+    </select>
+
+    <select id="relationInvoiceScooterData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOrUpdateOutScooterBEnter">
+        select
+          scooterB.group_id,
+          spgroup.group_name,
+          scooterB.color_id,
+          color.color_name,
+          color.color_value,
+          scooterB.qty
+        from ope_invoice_scooter_b scooterB
+        left join ope_specificat_group spgroup on scooterb.group_id = spgroup.id and spgroup.dr = 0
+        left join ope_color color on color.id = scooterB.color_id and color.dr = 0
+        where scooterB.invoice_id=#{invoiceId}
+    </select>
+
+    <select id="relationInvoiceCombinData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOrUpdateOutCombinBEnter">
+        select
+        invoicecombin.combin_name,
+        bom.bom_no as combin_no,
+        invoicecombin.production_combin_bom_id,
+        invoicecombin.qty
+        from ope_invoice_combin_b invoicecombin
+        left join ope_production_combin_bom bom on bom.id = invoicecombin.production_combin_bom_id
+        where invoicecombin.dr = 0 and invoice_id = #{invoiceId}
+    </select>
+
+    <select id="relationInvoicePartsData" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOrUpdateOutPartsBEnter">
+        select
+          parts_id,
+          parts_name,
+          parts_no,
+          parts_type,
+          qty
+        from ope_invoice_parts_b
+        where dr = 0 and invoice_id = #{invoiceId}
     </select>
 </mapper>

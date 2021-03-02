@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
-import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
@@ -12,8 +11,8 @@ import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.sys.SysUserProfileService;
 import com.redescooter.ses.web.ros.vo.sys.user.UserInfoResult;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import redis.clients.jedis.JedisCluster;
 
 import java.util.Map;
@@ -28,6 +27,7 @@ import java.util.Map;
 @Slf4j
 @Service
 public class SysUserProfileServiceImpl implements SysUserProfileService {
+
     @Autowired
     OpeSysUserProfileService opeSysUserProfileService;
 
@@ -36,6 +36,7 @@ public class SysUserProfileServiceImpl implements SysUserProfileService {
 
     @Autowired
     private JedisCluster jedisCluster;
+
     /**
      * 用户信息
      *
@@ -73,10 +74,10 @@ public class SysUserProfileServiceImpl implements SysUserProfileService {
 //                .countryCode(user.getCountryCode())
 //                .build();
         QueryWrapper<OpeSysStaff> qw = new QueryWrapper();
-        qw.eq(OpeSysStaff.COL_ID,enter.getUserId());
+        qw.eq(OpeSysStaff.COL_ID, enter.getUserId());
         qw.last("limit 1");
         OpeSysStaff staff = opeSysStaffService.getOne(qw);
-        if (staff == null){
+        if (staff == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         UserInfoResult result = new UserInfoResult();
@@ -88,9 +89,9 @@ public class SysUserProfileServiceImpl implements SysUserProfileService {
         result.setFullName(staff.getFullName());
         result.setEmail(staff.getEmail());
         result.setTelNumber(staff.getTelephone());
-        result.setGender(staff.getGender()==null?"1":staff.getGender()+"");
+        result.setGender(staff.getGender() == null ? "1" : staff.getGender() + "");
         result.setBirthday(staff.getBirthday());
-        result.setCertificateType(staff.getCertificateType()==null?"1":staff.getCertificateType().toString());
+        result.setCertificateType(staff.getCertificateType() == null ? "1" : staff.getCertificateType().toString());
         result.setCertificateNegativeAnnex(staff.getCertificatPicture1());
         result.setCertificatePositiveAnnex(staff.getCertificatPicture2());
         // 从缓存获取 需不需要重置密码（第一次登陆）
@@ -100,7 +101,7 @@ public class SysUserProfileServiceImpl implements SysUserProfileService {
             // 如果缓存存在
             Map<String, String> map = jedisCluster.hgetAll(key);
             String value = map.get("flag");
-            if ("1".equals(value)){
+            if ("1".equals(value)) {
                 flag = true;
             }
             jedisCluster.del(key);

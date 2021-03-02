@@ -18,12 +18,18 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSalePartsService;
 import com.redescooter.ses.web.ros.service.restproduction.SalePartsService;
-import com.redescooter.ses.web.ros.vo.restproduct.*;
+import com.redescooter.ses.web.ros.vo.restproduct.PartsNameData;
+import com.redescooter.ses.web.ros.vo.restproduct.PartsNoData;
+import com.redescooter.ses.web.ros.vo.restproduct.PartsNoEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.SaleListEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.SalePartsListResult;
+import com.redescooter.ses.web.ros.vo.restproduct.SalePartsSaveOrUpdateEnter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -51,10 +57,11 @@ public class SalePartsServiceImpl implements SalePartsService {
     @Autowired
     private JedisService jedisService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult saveSaleParts(SalePartsSaveOrUpdateEnter enter) {
         // 去空格
         enter = SesStringUtils.objStringTrim(enter);
@@ -87,6 +94,7 @@ public class SalePartsServiceImpl implements SalePartsService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult editSaleParts(SalePartsSaveOrUpdateEnter enter) {
         // 去空格
         enter = SesStringUtils.objStringTrim(enter);
@@ -107,12 +115,14 @@ public class SalePartsServiceImpl implements SalePartsService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult deleteSaleParts(IdEnter enter) {
         opeSalePartsService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult editSalePartsStatus(IdEnter enter) {
         // 编辑这玩意之前有个安全码的校验  并把结果放在Redis中  这里再次验证一下安全码校验是否通过
         String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();

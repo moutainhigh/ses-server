@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ import lombok.Data;
  * @Version V1.0
  **/
 @Data
+@ApiModel("关联的生产采购单部件信息")
 public class SaveOrUpdatePartsBEnter {
 
     @ApiModelProperty(value="部件id")
@@ -29,7 +31,7 @@ public class SaveOrUpdatePartsBEnter {
     private Integer purchaseQty;
 
     @ApiModelProperty(value="可入库数量")
-    private Integer ableInWhQty;
+    private Integer ableInWhQty = 0;
 
     @ApiModelProperty(value="入库数量")
     private Integer inWhQty = 1;

@@ -7,23 +7,27 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.dao.log.LogServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysLog;
 import com.redescooter.ses.web.ros.service.base.OpeSysLogService;
 import com.redescooter.ses.web.ros.service.log.SysLogService;
-import com.redescooter.ses.web.ros.vo.log.*;
+import com.redescooter.ses.web.ros.vo.log.LogDetailResult;
+import com.redescooter.ses.web.ros.vo.log.LogExport;
+import com.redescooter.ses.web.ros.vo.log.LogListEnter;
+import com.redescooter.ses.web.ros.vo.log.LogListResult;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Put;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.text.Style;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -105,7 +109,6 @@ public class SysLogServiceImpl implements SysLogService {
         QueryWrapper<OpeSysLog> qw = new QueryWrapper<>();
         qw.select(OpeSysLog.COL_ID,OpeSysLog.COL_LOG_TYPE,OpeSysLog.COL_IF_SUCCESS);
         List<OpeSysLog> logs = opeSysLogService.list(qw);
-//        List<OpeSysLog> logs = opeSysLogService.list();
         num1 = logs.stream().filter(o->o.getLogType() == 1).collect(Collectors.toList()).size();
         num2 = logs.stream().filter(o->o.getLogType() == 2).collect(Collectors.toList()).size();
         num3 = logs.stream().filter(o->o.getIfSuccess() == 0).collect(Collectors.toList()).size();

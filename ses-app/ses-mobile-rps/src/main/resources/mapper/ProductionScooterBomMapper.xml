@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.production.ProductionScooterBomMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeProductionScooterBom">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+        <result column="dept_id" jdbcType="BIGINT" property="deptId" />
+        <result column="version_identificat" jdbcType="VARCHAR" property="versionIdentificat" />
+        <result column="bom_no" jdbcType="VARCHAR" property="bomNo" />
+        <result column="procurement_cycle" jdbcType="INTEGER" property="procurementCycle" />
+        <result column="effective_date" jdbcType="DATE" property="effectiveDate" />
+        <result column="group_id" jdbcType="BIGINT" property="groupId" />
+        <result column="color_id" jdbcType="BIGINT" property="colorId" />
+        <result column="disable" jdbcType="INTEGER" property="disable" />
+        <result column="bom_status" jdbcType="INTEGER" property="bomStatus" />
+        <result column="announ_user_id" jdbcType="BIGINT" property="announUserId" />
+        <result column="op_announ_user_id" jdbcType="BIGINT" property="opAnnounUserId" />
+        <result column="versoin" jdbcType="VARCHAR" property="versoin" />
+        <result column="parts_qty" jdbcType="INTEGER" property="partsQty" />
+        <result column="cn_name" jdbcType="VARCHAR" property="cnName" />
+        <result column="en_name" jdbcType="VARCHAR" property="enName" />
+        <result column="fr_name" jdbcType="VARCHAR" property="frName" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--根据id查询车辆bom信息-->
+    <select id="getScooterBomById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_production_scooter_bom
+	    where dr = 0 and bom_status = 1 and id = #{id}
+    </select>
+
+    <!--根据id查询车辆型号-->
+    <select id="getScooterModelById" parameterType="java.lang.Long" resultType="java.lang.String">
+        select concat(sg.group_name,' -- ', c.color_name)
+        from ope_production_scooter_bom bom
+        left join ope_specificat_group sg
+        on bom.group_id = sg.id and sg.dr = 0
+        left join ope_color c
+        on bom.color_id = c.id and c.dr = 0
+        where bom.dr = 0 and bom.bom_status = 1 and bom.id = #{id}
+    </select>
+
+</mapper>

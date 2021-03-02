@@ -6,7 +6,7 @@ import com.redescooter.ses.api.proxy.exception.ProxyException;
 import com.redescooter.ses.api.proxy.service.IMailService;
 import com.redescooter.ses.service.proxy.exception.ExceptionCodeEnums;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -31,10 +31,8 @@ import java.util.Map;
  * @ClassName: IMailServiceImpl
  * @Function: TODO
  */
-
-
 @Slf4j
-@Service
+@DubboService
 @Component
 public class IMailServiceImpl implements IMailService {
 

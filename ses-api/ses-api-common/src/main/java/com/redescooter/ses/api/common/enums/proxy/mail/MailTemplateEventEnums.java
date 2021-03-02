@@ -41,6 +41,7 @@ public enum MailTemplateEventEnums {
     ENTRUST_SIGN_TO_CONSIGNOR("委托单签收给发货人的邮件",23,"entrust_sign_to_consignor","ENTRUST_SIGN_TO_CONSIGNOR"),
     ENTRUST_SIGN_TO_CONSIGNEE("委托单签收给收货人的邮件",24,"entrust_sign_to_consignee","ENTRUST_SIGN_TO_CONSIGNEE"),
     ENTRUST_DELIVERY_TO_CONSIGNEE("委托单发货给收货人的邮件",25,"entrust_delivery_to_consignee","ENTRUST_DELIVERY_TO_CONSIGNEE"),
+    OMS_FORGET_PSD_SEND_MAIL("OMS忘记密码发送邮件", 26, "oms_forget_psd_send_mail", "OMS_FORGET_PSD_SEND_MAIL"),
     ;
     private String mome;
 

@@ -14,7 +14,7 @@ public class PlaMailTemplate implements Serializable {
     /**
      * 主键
      */
-    @TableField(value = "id")
+    @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value = "主键")
     private Long id;
 
@@ -41,7 +41,7 @@ public class PlaMailTemplate implements Serializable {
     private Integer mailTemplateNo;
 
     @TableField(value = "name")
-    @ApiModelProperty(value = "null")
+    @ApiModelProperty(value = "名称")
     private String name;
 
     /**

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.admin.dev.dao.scooter.AdminScooterPartsMapper">
+
+    <!--批量新增车辆配件信息-->
+    <insert id="batchInsertAdminScooterParts" parameterType="com.redescooter.ses.admin.dev.vo.scooter.AdminScooterPartsDTO">
+        insert into adm_scooter_parts(id, scooter_id, `name`, sn, qty, created_by, created_time, updated_by, updated_time)
+        <foreach collection="scooterPartsList" item="item" open="values" separator=",">
+            (
+                #{item.id}, #{item.scooterId}, #{item.name}, #{item.sn}, #{item.qty},
+                #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime}
+            )
+        </foreach>
+    </insert>
+
+</mapper>

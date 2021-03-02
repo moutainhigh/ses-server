@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.rps.dao.inwhorder.InWhOrderMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrder">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
+        <result column="dept_id" jdbcType="BIGINT" property="deptId" />
+        <result column="country_type" jdbcType="INTEGER" property="countryType" />
+        <result column="in_wh_no" jdbcType="VARCHAR" property="inWhNo" />
+        <result column="in_wh_status" jdbcType="INTEGER" property="inWhStatus" />
+        <result column="wh_type" jdbcType="INTEGER" property="whType" />
+        <result column="order_type" jdbcType="INTEGER" property="orderType" />
+        <result column="relation_order_id" jdbcType="BIGINT" property="relationOrderId" />
+        <result column="relation_order_no" jdbcType="VARCHAR" property="relationOrderNo" />
+        <result column="relation_order_type" jdbcType="INTEGER" property="relationOrderType" />
+        <result column="in_wh_type" jdbcType="INTEGER" property="inWhType" />
+        <result column="in_wh_qty" jdbcType="INTEGER" property="inWhQty" />
+        <result column="source" jdbcType="INTEGER" property="source" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="qc_completion_time" jdbcType="TIMESTAMP" property="qcCompletionTime" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--入库单列表查询条件-->
+    <sql id="InWarehouseOrderListWhere">
+        <if test="orderType != null">and order_type = #{orderType}</if>
+        <if test="type != null">and in_wh_type = #{type}</if>
+        <if test="status == 0">and in_wh_status = 1</if>
+        <if test="status == 1">and in_wh_status = 10</if>
+    </sql>
+
+    <!--获取所有入库单类型数量-->
+    <select id="getInWarehouseOrderTypeCount" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select order_type `status`, count(id) totalCount
+        from ope_in_whouse_order
+        where dr = 0
+        group by order_type
+    </select>
+
+    <!--获取所有入库类型数量-->
+    <select id="getInWarehouseTypeCount" parameterType="com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO"
+            resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
+        select in_wh_type `status`, count(id) totalCount
+        from ope_in_whouse_order
+        where dr = 0 and order_type = #{type}
+        <if test="status == 0">and in_wh_status = 1</if>
+        <if test="status == 1">and in_wh_status = 10</if>
+        group by in_wh_type
+    </select>
+
+    <!--获取入库单数量-->
+    <select id="countByInWhOrder" parameterType="com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderParamDTO"
+            resultType="java.lang.Integer">
+        select count(*) from ope_in_whouse_order
+	    where dr = 0
+	    <include refid="InWarehouseOrderListWhere" />
+    </select>
+
+    <!--入库单列表查询-->
+    <select id="getInWarehouseOrderList" parameterType="com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderParamDTO"
+            resultType="com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderResultDTO">
+        select id, in_wh_no inWhNo, in_wh_qty qty, order_type orderType,
+        in_wh_type `type`, in_wh_status `status`
+	    from ope_in_whouse_order
+	    where dr = 0
+	    <include refid="InWarehouseOrderListWhere" />
+        order by created_time asc
+        limit #{startRow}, #{pageSize}
+    </select>
+
+    <!--修改入库单信息-->
+    <update id="updateInWhOrder" parameterType="com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrder">
+        update ope_in_whouse_order
+        <set>
+            <if test="dr != null">
+                dr = #{dr,jdbcType=INTEGER},
+            </if>
+            <if test="tenantId != null">
+                tenant_id = #{tenantId,jdbcType=INTEGER},
+            </if>
+            <if test="deptId != null">
+                dept_id = #{deptId,jdbcType=BIGINT},
+            </if>
+            <if test="countryType != null">
+                country_type = #{countryType,jdbcType=INTEGER},
+            </if>
+            <if test="inWhNo != null">
+                in_wh_no = #{inWhNo,jdbcType=VARCHAR},
+            </if>
+            <if test="inWhStatus != null">
+                in_wh_status = #{inWhStatus,jdbcType=INTEGER},
+            </if>
+            <if test="whType != null">
+                wh_type = #{whType,jdbcType=INTEGER},
+            </if>
+            <if test="orderType != null">
+                order_type = #{orderType,jdbcType=INTEGER},
+            </if>
+            <if test="relationOrderId != null">
+                relation_order_id = #{relationOrderId,jdbcType=BIGINT},
+            </if>
+            <if test="relationOrderNo != null">
+                relation_order_no = #{relationOrderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="relationOrderType != null">
+                relation_order_type = #{relationOrderType,jdbcType=INTEGER},
+            </if>
+            <if test="inWhType != null">
+                in_wh_type = #{inWhType,jdbcType=INTEGER},
+            </if>
+            <if test="inWhQty != null">
+                in_wh_qty = #{inWhQty,jdbcType=INTEGER},
+            </if>
+            <if test="source != null">
+                `source` = #{source,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="qcCompletionTime != null">
+                qc_completion_time = #{qcCompletionTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createdBy != null">
+                created_by = #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                created_time = #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                updated_by = #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据id查询入库单详情-->
+    <select id="getInWhOrderDetailById" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderDetailDTO">
+        select id, in_wh_no inWhNo, in_wh_qty qty, order_type orderType,
+        in_wh_type `type`, in_wh_status `status`, remark, qc_completion_time qcCompletionTime
+	    from ope_in_whouse_order
+	    where dr = 0 and id = #{id}
+    </select>
+
+    <!--根据id查询入库单信息-->
+    <select id="getInWhOrderById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_in_whouse_order
+	    where dr = 0 and id = #{id}
+    </select>
+
+    <!--获取入库单所有数量-->
+    <select id="allCountByInWhOrder" resultType="java.lang.Integer">
+        select count(*) from ope_in_whouse_order
+	    where dr = 0
+    </select>
+
+</mapper>

@@ -36,6 +36,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/production/wh")
 public class PurchasingWhController {
+
     @Autowired
     private PurchasingWhService purchasingWhService;
 

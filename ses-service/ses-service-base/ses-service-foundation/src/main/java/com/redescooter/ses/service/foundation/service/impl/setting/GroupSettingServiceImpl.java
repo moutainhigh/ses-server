@@ -19,7 +19,8 @@ import com.redescooter.ses.service.foundation.service.base.PlaSysGroupSettingSer
 import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,14 +29,13 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *  @author: alex
- *  @Date: 2020/9/16 18:45
- *  @version：V ROS 1.7.1
- *  @Description:
+ * @author: alex
+ * @Date: 2020/9/16 18:45
+ * @version：V ROS 1.7.1
+ * @Description:
  */
-@Service
+@DubboService
 public class GroupSettingServiceImpl implements GroupSettingService {
-
 
     @Autowired
     private GroupSettingServiceMapper groupSettingServiceMapper;
@@ -43,11 +43,12 @@ public class GroupSettingServiceImpl implements GroupSettingService {
     @Autowired
     private PlaSysGroupSettingService plaSysGroupSettingService;
 
-    @Autowired
+    @DubboReference
     private IdAppService idAppService;
 
     /**
      * 分组列表
+     *
      * @param enter
      * @return
      */
@@ -68,6 +69,7 @@ public class GroupSettingServiceImpl implements GroupSettingService {
 
     /**
      * 详情
+     *
      * @param enter
      * @return
      */
@@ -89,10 +91,11 @@ public class GroupSettingServiceImpl implements GroupSettingService {
 
     /**
      * 保存分组
+     *
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveGroupEnter enter) {
         PlaSysGroupSetting plaSysGroupSetting = null;
@@ -117,7 +120,7 @@ public class GroupSettingServiceImpl implements GroupSettingService {
         return PlaSysGroupSetting.builder()
                 .dr(0)
                 .groupName(enter.getGroupName())
-            .systemType(enter.getSystemType().getValue())
+                .systemType(enter.getSystemType().getValue())
                 .desc(enter.getDesc())
                 .enable(StringUtils.equals(enter.getEnable(), "0") ? Boolean.FALSE : Boolean.TRUE)
                 .updatedBy(enter.getUserId())
@@ -127,17 +130,18 @@ public class GroupSettingServiceImpl implements GroupSettingService {
 
     /**
      * 删除分组
+     *
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult delete(IdEnter enter) {
         PlaSysGroupSetting plaSysGroupSetting = plaSysGroupSettingService.getById(enter.getId());
         if (plaSysGroupSetting == null) {
             throw new FoundationException(ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getMessage());
         }
-        if(plaSysGroupSetting.getEnable()){
+        if (plaSysGroupSetting.getEnable()) {
             throw new FoundationException(ExceptionCodeEnums.ENABLE_NOT_DELETE.getCode(), ExceptionCodeEnums.ENABLE_NOT_DELETE.getMessage());
         }
         plaSysGroupSettingService.removeById(enter.getId());
@@ -146,6 +150,7 @@ public class GroupSettingServiceImpl implements GroupSettingService {
 
     /**
      * 导出
+     *
      * @param id
      * @return
      */
@@ -154,15 +159,15 @@ public class GroupSettingServiceImpl implements GroupSettingService {
         List<GroupResult> results = new ArrayList<>();
         // id可能是多个  用，隔开的
         QueryWrapper<PlaSysGroupSetting> qw = new QueryWrapper<>();
-        qw.in(PlaSysGroupSetting.COL_ID,id.split(","));
+        qw.in(PlaSysGroupSetting.COL_ID, id.split(","));
         List<PlaSysGroupSetting> groupSettings = plaSysGroupSettingService.list(qw);
-        if(CollectionUtils.isNotEmpty(groupSettings)){
+        if (CollectionUtils.isNotEmpty(groupSettings)) {
             for (PlaSysGroupSetting setting : groupSettings) {
                 GroupResult result = new GroupResult();
                 result.setId(setting.getId());
                 result.setGroupName(setting.getGroupName());
                 result.setDesc(setting.getDesc());
-                result.setEnable(setting.getEnable()==null?0:(setting.getEnable()?1:0));
+                result.setEnable(setting.getEnable() == null ? 0 : (setting.getEnable() ? 1 : 0));
                 result.setCreatedTime(setting.getCreatedTime());
                 result.setCreatedById(setting.getCreatedBy());
                 result.setUpdatedById(setting.getUpdatedBy());
@@ -175,9 +180,10 @@ public class GroupSettingServiceImpl implements GroupSettingService {
 
     /**
      * 导入
+     *
      * @param enter
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult importGroup(GeneralEnter enter) {
         return new GeneralResult(enter.getRequestId());

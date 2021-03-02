@@ -1,0 +1,147 @@
+#日志路径
+log:
+  file:
+    path: ${log.path}@profile-active@
+    max-size: 128MB
+    max-history: 180
+## DUBBO 配置
+dubbo:
+  registry: #注册中心
+    address: zookeeper://192.168.1.100:2181
+  metadata-report:
+    address: zookeeper://192.168.1.100:2181
+spring:                                                                                                                 #spring config
+  http:                                                                                                                 #上传配置
+  servlet:
+    multipart:
+      max-request-size: 1000MB
+      max-file-size: 20MB
+      enabled: true
+  datasource:                                                                                                           #数据库连接
+    url: jdbc:mysql://localhost:3306/website?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 1qaz2wsx
+    druid:
+      initial-size: 8
+      min-idle: 1
+      max-active: 20
+      max-wait: 60000
+      stat-view-servlet:                                                                                                #监控页面的用户名和密码 以及页面地址
+        login-username: rede
+        login-password: admin
+        enabled: true
+        url-pattern: /druid/*
+  #REDIS集群配置
+  redis:
+    cluster:
+      nodes:
+        - 192.168.1.100:7000
+        - 192.168.1.100:7001
+        - 192.168.1.100:7002
+        - 192.168.1.100:7003
+        - 192.168.1.100:7004
+        - 192.168.1.100:7005
+  #rabbitmq配置
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    default-requeue-rejected: false
+    # 开启消息发送确认机制（生产者--》交换机）
+    publisher-confirms: true
+    listener:
+      simple:
+        # 开启消息手动确认
+        acknowledge-mode: MANUAL #（NONE：不确认 AUTO：自动确认 MANUAL：手动确认）#消息确认包含 发送确认、接受确认
+  swagger:
+    enabled: true
+    group:
+      auth-API:
+        group-name: Auth API
+        title: LogIn/LogOut
+        description: LogIn/LogOut Service
+        base-package: com.redescooter.ses.web.website.controller.AuthentionController
+        path-regex: /token/auth/.*
+        path-mapping: /
+        version: v1.2.1
+        license: RedE Circulation within the company
+        license-url: '#'
+        terms-of-service-url: https://api.redelectric.fr/
+        contact:
+          name: Jerry
+          email: jerry@redescooter.com
+          url: https://github.com/mrjerryli
+      Website-API:
+        group-name: Website API
+        title: Website
+        description: Website Service
+        base-package: com.redescooter.ses.web.website.controller.business
+        path-regex: /.*
+        path-mapping: /
+        version: v1.2.1
+        license: RedE Circulation within the company
+        license-url: '#'
+        terms-of-service-url: https://api.redelectric.fr/
+        contact:
+          name: Jerry
+          email: jerry@redescooter.com
+          url: https://github.com/mrjerryli
+      DataManagement-API:
+        group-name: Config API
+        title: Config
+        description: Config Service
+        base-package: com.redescooter.ses.web.website.controller.config
+        path-regex: /.*
+        path-mapping: /
+        version: v1.2.1
+        license: RedE Circulation within the company
+        license-url: '#'
+        terms-of-service-url: https://api.redelectric.fr/
+        contact:
+          name: Jerry
+          email: jerry@redescooter.com
+          url: https://github.com/mrjerryli
+## stripe pay
+rede:
+  stripe-config:
+    currency: eur
+    payment_method_types: card
+    payment_event: accept_a_payment
+    publishable_key: pk_test_IsulbIcuGZ9e0z7K0EDECS5D00niQEDqL6
+    secret_key: sk_test_8BOq2D5p1eS4pKyBbdjoWwgS00plcIG6cI
+    receipt_email: etienne@redescooter.fr
+
+excel:
+  folder: ${log.path}@profile-active@/projectExcel
+sendinblue:
+  listIds: 119
+monday:
+  url: https://api.monday.com/v2
+  authorization: eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjI5MjE5MzMxLCJ1aWQiOjUwODM2NTksImlhZCI6IjIwMTktMTItMzBUMTA6NTU6MTEuMDAwWiIsInBlciI6Im1lOndyaXRlIn0.Z_dXLUCgiEUoHQXzeFlOqeG2jfSeiyKIdBNdwaAOKrA
+  paramQuery: query
+  paramVariables: variables
+  httpMethod: POST
+  MediaType: application/x-www-form-urlencoded
+  #预订单业务
+  orderFormBoardName: local Website Order
+  orderFormBoardBackName: Pré-vente
+  orderFormGroupName: Backlog
+  #联系我们
+  contactUsBoardName: local Website AboutUs
+  contactUsBoardBackName: laisser un message
+  contactUsGroupName: Backlog
+  #订阅邮件
+  subEmailBoardName: local Website Email
+  subEmailBoardBackName: abonnement
+  subEmailGroupName: Backlog
+  # 工作空间 alex:132750
+  workspaceId: 21182
+  #模板Id
+  templeteId: 581923336
+  load-template: false
+
+constant-us-email:
+  sale-principal:
+    - test@redescooter.com

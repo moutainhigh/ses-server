@@ -1,17 +1,21 @@
 package com.redescooter.ses.mobile.client.controller.meter;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.mobile.b.service.meter.MeterService;
-import com.redescooter.ses.api.mobile.b.vo.DeliveryListEnter;
-import com.redescooter.ses.api.mobile.b.vo.DeliveryListResult;
 import com.redescooter.ses.api.mobile.b.vo.meter.MeterDeliveryOrderReuslt;
 import com.redescooter.ses.api.mobile.b.vo.meter.MeterOrderEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.web.bind.annotation.*;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @ClassName:MeterController
@@ -27,7 +31,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/meter", method = RequestMethod.POST)
 public class MeterController {
 
-    @Reference
+    @DubboReference
     private MeterService meterService;
 
     @IgnoreLoginCheck
@@ -37,5 +41,17 @@ public class MeterController {
         return new Response<>(meterService.meterOrder(enter));
     }
 
+    /**
+     * 同步订单数量到平板(车辆每次开锁时调用)
+     * @param enter
+     * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
+     * @author assert
+     * @date 2020/12/18
+    */
+    @ApiOperation(value = "同步订单数量到平板", notes = "同步订单数量到平板(车辆每次开锁时调用)")
+    @PostMapping(value = "/syncOrderQuantity")
+    public Response<GeneralResult> syncOrderQuantity(@ModelAttribute MeterOrderEnter enter) {
+        return new Response<>(meterService.syncOrderQuantity(enter));
+    }
 
 }

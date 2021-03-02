@@ -12,7 +12,6 @@
     <name>ses-starter-dubbo</name>
     <description>Demo project for Spring Boot</description>
 
-
     <dependencyManagement>
         <dependencies>
             <!-- Apache dubbo  -->
@@ -23,24 +22,35 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- dubbo-springboot-starter 引入-->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-spring-boot-starter</artifactId>
+                <version>${dubbo.version}</version>
+            </dependency>
+            <!-- dubbo 元数据 -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-metadata-report-zookeeper</artifactId>
+                <version>${dubbo.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
-        <!--集成dubbo-->
+        <!-- dubbo-springboot-starter 引入-->
         <dependency>
             <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo</artifactId>
-            <version>${dubbo.version}</version>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- dubbo 元数据 -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-metadata-report-zookeeper</artifactId>
             <exclusions>
-                <!--排除这个slf4j-log4j12-->
                 <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
+                    <groupId>org.apache.dubbo</groupId>
+                    <artifactId>dubbo-remoting-api</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -58,12 +68,6 @@
             </exclusions>
             <type>pom</type>
         </dependency>
-        <!-- dubbo-springboot-starter 引入-->
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-spring-boot-starter</artifactId>
-            <version>${dubbo.version}</version>
-        </dependency>
         <!-- dubbo 序列化 -->
         <dependency>
             <groupId>org.apache.dubbo</groupId>
@@ -74,13 +78,11 @@
                     <artifactId>objenesis</artifactId>
                     <groupId>org.objenesis</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>log4j</artifactId>
+                    <groupId>log4j</groupId>
+                </exclusion>
             </exclusions>
-        </dependency>
-        <!-- dubbo 元数据 -->
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-metadata-report-zookeeper</artifactId>
-            <version>${dubbo.version}</version>
         </dependency>
     </dependencies>
 

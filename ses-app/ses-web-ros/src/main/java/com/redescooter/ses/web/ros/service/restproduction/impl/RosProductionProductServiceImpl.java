@@ -16,7 +16,7 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.app.common.service.excel.ImportExcelService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionProductServiceMapper;
 import com.redescooter.ses.web.ros.dm.*;
@@ -32,9 +32,9 @@ import com.redescooter.ses.web.ros.vo.restproduct.*;
 import com.redescooter.ses.web.ros.vo.restproduct.production.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Service;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -158,26 +158,23 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      */
     @Override
     public PageResult<RosProductionScooterListResult> scooterList(RosProductionScooterListEnter enter) {
-
-        List<RosProductionScooterListResult> rosProductionScooterListResults = new ArrayList<>();
+        List<RosProductionScooterListResult> result = new ArrayList<>();
         int count = 0;
         if (enter.getClassType().equals(ClassTypeEnums.TYPE_ONE.getValue())) {
             count = rosProductionProductServiceMapper.scooterDraftListCount(enter);
             if (count == 0) {
                 return PageResult.createZeroRowResult(enter);
             }
-            rosProductionScooterListResults = rosProductionProductServiceMapper.scooterDraftList(enter);
+            result = rosProductionProductServiceMapper.scooterDraftList(enter);
         }
         if (enter.getClassType().equals(ClassTypeEnums.TYPE_TWO.getValue())) {
-            count = rosProductionProductServiceMapper.scooterBomListCount(enter,
-                    ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
+            count = rosProductionProductServiceMapper.scooterBomListCount(enter, ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
             if (count == 0) {
                 return PageResult.createZeroRowResult(enter);
             }
-            rosProductionScooterListResults = rosProductionProductServiceMapper.scooterBomList(enter,
-                    ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
+            result = rosProductionProductServiceMapper.scooterBomList(enter, ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
         }
-        return PageResult.create(enter, count, rosProductionScooterListResults);
+        return PageResult.create(enter, count, result);
     }
 
     /**
@@ -262,7 +259,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         return new BooleanResult(Boolean.TRUE);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public ImportProductionProductResult importProductionProduct(ImportPartsEnter enter) {
         ImportProductionProductResult importProductionProductResult = new ImportProductionProductResult();
@@ -426,7 +423,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult rosSaveProductionProduct(RosSaveProductionProductEnter enter) {
         List<ProductionProductEnter> partList = null;
@@ -721,7 +718,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult takeEffect(RosProuductionTypeEnter enter) {
         String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
@@ -812,7 +809,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult productionProductDisable(RosProuductionTypeEnter enter) {
         String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
@@ -926,7 +923,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult delete(RosProuductionTypeEnter enter) {
         if (enter.getProductionProductType().equals(Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()))) {

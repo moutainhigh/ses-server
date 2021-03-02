@@ -7,7 +7,7 @@ import com.redescooter.ses.api.hub.service.corporate.CorporateDriverService;
 import com.redescooter.ses.service.hub.source.corporate.dm.CorDriver;
 import com.redescooter.ses.service.hub.source.corporate.service.base.CorDriverService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
@@ -21,7 +21,7 @@ import java.util.List;
  * @Function: TODO
  */
 @Slf4j
-@Service
+@DubboService
 public class CorporateDriverServiceimpl implements CorporateDriverService {
 
     @Autowired

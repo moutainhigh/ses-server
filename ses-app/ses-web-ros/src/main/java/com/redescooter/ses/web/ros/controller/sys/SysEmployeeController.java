@@ -35,9 +35,9 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/sys/employee")
 public class SysEmployeeController {
+
     @Autowired
     private EmployeeService employeeService;
-
 
     @PostMapping(value = "/list")
     @ApiOperation(value = "员工列表", response = DeptEmployeeListResult.class)
@@ -69,4 +69,5 @@ public class SysEmployeeController {
     public Response<GeneralResult> trushEmployee(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(employeeService.trushEmployee(enter));
     }
+
 }

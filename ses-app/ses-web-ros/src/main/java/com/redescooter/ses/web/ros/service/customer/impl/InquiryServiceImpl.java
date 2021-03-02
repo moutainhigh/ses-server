@@ -13,15 +13,19 @@ import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.oss.ProtocolEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.starter.common.config.OssConfig;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
-import com.redescooter.ses.tool.utils.accountType.RsaUtils;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.InquiryServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
@@ -37,12 +41,12 @@ import com.redescooter.ses.web.ros.utils.ExcelUtil;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryExportResult;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
-import com.redescooter.ses.web.ros.vo.website.SaveAboutUsEnter;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
+import com.redescooter.ses.web.ros.vo.website.SaveAboutUsEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,7 +58,12 @@ import redis.clients.jedis.JedisCluster;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:InquiryServiceImpl
@@ -66,7 +75,6 @@ import java.util.*;
 @Slf4j
 @Service
 public class InquiryServiceImpl implements InquiryService {
-
 
     @Autowired
     private OpeCustomerInquiryService opeCustomerInquiryService;
@@ -80,13 +88,13 @@ public class InquiryServiceImpl implements InquiryService {
     @Autowired
     private OpeCustomerService opeCustomerService;
 
-    @Reference
+    @DubboReference
     private MailMultiTaskService mailMultiTaskService;
 
-    @Reference
+    @DubboReference
     private CityBaseService cityBaseService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Value("${Request.privateKey}")
@@ -131,7 +139,7 @@ public class InquiryServiceImpl implements InquiryService {
      * @date: 2020/3/5 15:03
      * @Version: Ros 1.3
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveAboutUs(SaveAboutUsEnter saveAboutUsEnter) {
         //入参去空格
@@ -331,7 +339,7 @@ public class InquiryServiceImpl implements InquiryService {
         baseMailTaskEnter.setUserRequestId(enter.getRequestId());
         baseMailTaskEnter.setRequestId(enter.getRequestId());
         //暂时为个人端预定
-        baseMailTaskEnter.setEvent(MailTemplateEventEnums.CUSTOMER_INQUIRY_PAY_DEPOSIT.getEvent());
+        baseMailTaskEnter.setEvent(MailTemplateEventEnums.CUSTOMER_INQUIRY_LAST_PARAGRAPH.getEvent());
         baseMailTaskEnter.setMailAppId(AppIDEnums.SES_ROS.getValue());
         baseMailTaskEnter.setMailSystemId(AppIDEnums.SES_ROS.getSystemId());
         mailMultiTaskService.addCustomerInquiryPayLastParagraphTask(baseMailTaskEnter);
@@ -349,7 +357,7 @@ public class InquiryServiceImpl implements InquiryService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult acceptInquiry(IdEnter enter) {
         QueryWrapper<OpeCustomerInquiry> opeCustomerInquiryQueryWrapper = new QueryWrapper<>();
@@ -382,7 +390,7 @@ public class InquiryServiceImpl implements InquiryService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult declineInquiry(IdEnter enter) {
         QueryWrapper<OpeCustomerInquiry> opeCustomerInquiryQueryWrapper = new QueryWrapper<>();
@@ -409,7 +417,7 @@ public class InquiryServiceImpl implements InquiryService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult inquiryExport(InquiryListEnter enter) {
         String excelPath = "";
@@ -421,10 +429,10 @@ public class InquiryServiceImpl implements InquiryService {
             for (InquiryExportResult inquiry : list) {
                 inquiry.setCreatedTime(DateUtil.dateAddHour(inquiry.getCreatedTime(), 8));
                 dataMap.add(toMap(inquiry, i));
-                i ++;
+                i++;
             }
             String sheetName = "Inquiry";
-            String[] headers = {"ID", "fullName", "email", "bankCardname", "district", "address", "productName", "color", "batteryQty", "amountObligation","amountPaid", "totalPrice", "time"};
+            String[] headers = {"ID", "fullName", "email", "bankCardname", "district", "address", "productName", "color", "batteryQty", "amountObligation", "amountPaid", "totalPrice", "time"};
             String exportExcelName = String.valueOf(System.currentTimeMillis());
             try {
                 String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName, excelFolder);
@@ -461,17 +469,17 @@ public class InquiryServiceImpl implements InquiryService {
     private Map<String, Object> toMap(InquiryExportResult opeCustomerInquiry, Integer i) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("ID", i);
-        map.put("fullName", opeCustomerInquiry.getCustomerFullName()==null?"--":opeCustomerInquiry.getCustomerFullName());
-        map.put("email", opeCustomerInquiry.getEmail()==null?"--":opeCustomerInquiry.getEmail());
-        map.put("bankCardname", opeCustomerInquiry.getBankCardName()==null?"--":opeCustomerInquiry.getBankCardName());
-        map.put("district", opeCustomerInquiry.getPostcode()==null?"--":opeCustomerInquiry.getPostcode());
-        map.put("address", opeCustomerInquiry.getAddress()==null?"--":opeCustomerInquiry.getAddress());
-        map.put("productName", opeCustomerInquiry.getProductName()==null?"--":opeCustomerInquiry.getProductName());
-        map.put("color", opeCustomerInquiry.getColorName()==null?"--":opeCustomerInquiry.getColorName());
-        map.put("batteryQty", opeCustomerInquiry.getBatteryQty()==null?0:opeCustomerInquiry.getBatteryQty());
-        map.put("amountObligation", opeCustomerInquiry.getBalance()==null?0.00:opeCustomerInquiry.getBalance());
-        map.put("amountPaid", opeCustomerInquiry.getAmountPaid()==null?0.00:opeCustomerInquiry.getAmountPaid());
-        map.put("totalPrice", opeCustomerInquiry.getTotalPrice()==null?0.00:opeCustomerInquiry.getTotalPrice());
+        map.put("fullName", opeCustomerInquiry.getCustomerFullName() == null ? "--" : opeCustomerInquiry.getCustomerFullName());
+        map.put("email", opeCustomerInquiry.getEmail() == null ? "--" : opeCustomerInquiry.getEmail());
+        map.put("bankCardname", opeCustomerInquiry.getBankCardName() == null ? "--" : opeCustomerInquiry.getBankCardName());
+        map.put("district", opeCustomerInquiry.getPostcode() == null ? "--" : opeCustomerInquiry.getPostcode());
+        map.put("address", opeCustomerInquiry.getAddress() == null ? "--" : opeCustomerInquiry.getAddress());
+        map.put("productName", opeCustomerInquiry.getProductName() == null ? "--" : opeCustomerInquiry.getProductName());
+        map.put("color", opeCustomerInquiry.getColorName() == null ? "--" : opeCustomerInquiry.getColorName());
+        map.put("batteryQty", opeCustomerInquiry.getBatteryQty() == null ? 0 : opeCustomerInquiry.getBatteryQty());
+        map.put("amountObligation", opeCustomerInquiry.getBalance() == null ? 0.00 : opeCustomerInquiry.getBalance());
+        map.put("amountPaid", opeCustomerInquiry.getAmountPaid() == null ? 0.00 : opeCustomerInquiry.getAmountPaid());
+        map.put("totalPrice", opeCustomerInquiry.getTotalPrice() == null ? 0.00 : opeCustomerInquiry.getTotalPrice());
         map.put("time", opeCustomerInquiry.getCreatedTime() == null ? "--" : DateUtil.format(opeCustomerInquiry.getCreatedTime(), ""));
         return map;
     }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.specificat.SpecificatDefMapper">
+
+    <!--新增规格自定义项-->
+    <insert id="batchInsertSpecificatDef" parameterType="com.redescooter.ses.api.common.vo.specification.SpecificDefDTO">
+        insert into operation.ope_specificat_def(id, specificat_id, def_group_id,def_name, def_value,
+        created_by, created_time, updated_by,updated_time)
+        <foreach collection="specificDefList" item="item" open="values" separator=",">
+            (#{item.id}, #{item.specificatId}, #{item.specificDefGroupId},#{item.defName}, #{item.defValue}, #{item.createdBy},
+            #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime})
+        </foreach>
+    </insert>
+
+    <!--批量修改自定义项信息-->
+    <update id="batchUpdateSpecificatDef" parameterType="com.redescooter.ses.api.common.vo.specification.SpecificDefDTO">
+        <foreach collection="specificDefList" item="item" separator=";">
+            update ope_specificat_def_group
+            set def_name = #{item.defName}, def_value = #{item.defValue}, updated_by = #{item.updatedBy},
+            updated_time = #{item.updatedTime}
+            where id = #{item.id}
+        </foreach>
+    </update>
+
+    <!--根据id物理删除自定义项信息-->
+    <delete id="deleteSpecificatDefById" parameterType="java.lang.Long">
+        delete from ope_specificat_def
+	    where specificat_id = #{specificId}
+    </delete>
+
+</mapper>

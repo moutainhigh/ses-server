@@ -3,7 +3,6 @@ package com.redescooter.ses.web.delivery.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.DateConstant;
-import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.BizType;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryEventEnums;
@@ -17,7 +16,6 @@ import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.IdsEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.message.PushMsgBo;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
@@ -29,8 +27,8 @@ import com.redescooter.ses.api.foundation.vo.tenant.TenantConfigInfoResult;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
-import com.redescooter.ses.tool.utils.DateUtil;
-import com.redescooter.ses.tool.utils.MapUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
+import com.redescooter.ses.tool.utils.map.MapUtil;
 import com.redescooter.ses.web.delivery.constant.SequenceName;
 import com.redescooter.ses.web.delivery.dao.OrderDeliveryServiceMapper;
 import com.redescooter.ses.web.delivery.dao.base.CorUserProfileMapper;
@@ -66,7 +64,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -93,28 +91,38 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
 
     @Autowired
     private OrderDeliveryServiceMapper orderDeliveryServiceMapper;
+
     @Autowired
     private CorDeliveryService deliveryService;
+
     @Autowired
     private CorDriverScooterService driverScooterService;
+
     @Autowired
     private CorDeliveryTraceService deliveryTraceService;
+
     @Autowired
     private CorDriverService driverService;
+
     @Autowired
     private JedisCluster jedisCluster;
+
     @Autowired
     private CorUserProfileMapper corUserProfileMapper;
 
-    @Reference
+    @DubboReference
     private TenantBaseService tenantBaseService;
-    @Reference
+
+    @DubboReference
     private IdAppService idAppService;
-    @Reference
+
+    @DubboReference
     private GenerateService generateService;
-    @Reference
+
+    @DubboReference
     private ScooterService scooterService;
-    @Reference
+
+    @DubboReference
     private PushService pushService;
 
     /**
@@ -123,7 +131,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveOrderDeliveryEnter enter) {
         //系统默认30分钟
@@ -165,7 +173,6 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
             }
             // 获取店铺配置
             TenantConfigInfoResult tenantConfigInfoResult = tenantBaseService.tenantConfigInfo(enter);
-
 
             CorDelivery deliverySave = new CorDelivery();
             BeanUtils.copyProperties(enter, deliverySave);
@@ -243,9 +250,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      */
     @Override
     public Map<String, Integer> countStatus(GeneralEnter enter) {
-
         List<CountByStatusResult> countByStatusResults = orderDeliveryServiceMapper.countStatus(enter);
-
         Map<String, Integer> map = new HashMap<>();
         for (CountByStatusResult item : countByStatusResults) {
             map.put(item.getStatus(), item.getTotalCount());
@@ -271,7 +276,6 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
             return PageResult.createZeroRowResult(page);
         }
         return PageResult.create(page, totalRows, orderDeliveryServiceMapper.list(page));
-
     }
 
     /**
@@ -282,7 +286,6 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      */
     @Override
     public DeliveryDetailsResult details(IdEnter enter) {
-
         if (enter.getId() == null || enter.getId() == 0) {
             throw new SesWebDeliveryException(ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getMessage());
         }
@@ -300,7 +303,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
         QueryTenantResult queryTenantResult = tenantBaseService.queryTenantById(new IdEnter(details.getTenantId()));
         details.setTenantLat(queryTenantResult.getLatitude().toString());
         details.setTenantLng(queryTenantResult.getLongitude().toString());
-        if(scooter.size()>0){
+        if (scooter.size() > 0) {
             details.setBattery(String.valueOf(scooter.get(0).getBattery()));
         }
         return details;
@@ -321,7 +324,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult closed(ClosedEnter enter) {
         if (enter.getId() == null || enter.getId() == 0) {
@@ -433,7 +436,6 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      */
     @Override
     public DriverDeliveryInfoResult driverDeliveryInfor(IdEnter enter) {
-
         DriverDeliveryInfoResult result = orderDeliveryServiceMapper.driverDeliveryInfor(enter);
 
         if (result == null) {
@@ -496,7 +498,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
 
         ScooterMapResult scooterMapResult = orderDeliveryServiceMapper.driverInfo(enter);
         if (scooterMapResult != null) {
-            if(scooterResultList.size()>0){
+            if (scooterResultList.size() > 0) {
                 scooterMapResult.setId(scooterResultList.get(0).getId());
                 scooterMapResult.setLng(scooterResultList.get(0).getLongitule().toString());
                 scooterMapResult.setLat(scooterResultList.get(0).getLatitude().toString());
@@ -528,7 +530,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult deliveryReset(DeliveryResetEnter enter) {
 
@@ -556,7 +558,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
         corDelivery.setEta(DateUtil.parse(DateUtil.payDesignationTime(enter.getDuration()), DateConstant.DEFAULT_DATETIME_FORMAT));
         corDelivery.setStatus(DeliveryStatusEnums.PENDING.getValue());
         corDelivery.setDelivererId(corDriver.getUserId());
-        corDelivery.setEta(DateUtils.addMinutes(new Date(), tenantConfigInfoResult.getEstimatedDuration().intValue()/60));
+        corDelivery.setEta(DateUtils.addMinutes(new Date(), tenantConfigInfoResult.getEstimatedDuration().intValue() / 60));
         corDelivery.setLabel(null);
         corDelivery.setUpdatedBy(enter.getUserId());
         corDelivery.setUpdatedTime(new Date());

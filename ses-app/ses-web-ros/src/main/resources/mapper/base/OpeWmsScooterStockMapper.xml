@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeWmsScooterStockMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeWmsScooterStock">
+    <!--@mbg.generated-->
+    <!--@Table ope_wms_scooter_stock-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="stock_type" jdbcType="INTEGER" property="stockType" />
+    <result column="group_id" jdbcType="BIGINT" property="groupId" />
+    <result column="color_id" jdbcType="BIGINT" property="colorId" />
+    <result column="able_stock_qty" jdbcType="INTEGER" property="ableStockQty" />
+    <result column="used_stock_qty" jdbcType="INTEGER" property="usedStockQty" />
+    <result column="wait_in_stock_qty" jdbcType="INTEGER" property="waitInStockQty" />
+    <result column="wait_out_stock_qty" jdbcType="INTEGER" property="waitOutStockQty" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def4" jdbcType="VARCHAR" property="def4" />
+    <result column="def5" jdbcType="DOUBLE" property="def5" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, stock_type, group_id, color_id, able_stock_qty, used_stock_qty, wait_in_stock_qty, 
+    wait_out_stock_qty, remark, created_by, created_time, updated_by, updated_time, def1, 
+    def2, def3, def4, def5
+  </sql>
+</mapper>

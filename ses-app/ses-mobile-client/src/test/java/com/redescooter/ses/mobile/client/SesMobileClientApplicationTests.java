@@ -1,23 +1,38 @@
 package com.redescooter.ses.mobile.client;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
+import lombok.extern.log4j.Log4j;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.text.DateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
+@Log4j
 public class SesMobileClientApplicationTests {
 
-    @Before
+    private LocalDateTime beginTime = LocalDateTime.now();
+
+    @Before("setUp")
     public void setUp() throws Exception {
-        System.out.println("单元测试开始--------------------->");
+        DateFormat dateFormat = DateFormat.getDateTimeInstance();
+        String now = dateFormat.toString();
+
+        log.info("单元测试开始-------<<<<>>>" + now);
     }
 
-    @After
-    public void tearDown() throws Exception {
-        System.out.println("单元测试结束--------------------->");
-    }
+    @After("getDown")
+    public void getDown() throws Exception {
+        Long opetime = Duration.between(beginTime, LocalDateTime.now()).toMillis();
+        log.info("单元测试结束-------<<<<>>>耗时：" + opetime);
 
+    }
 }

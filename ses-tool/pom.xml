@@ -26,6 +26,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-api-common</artifactId>
         </dependency>
@@ -38,5 +43,12 @@
             <artifactId>spring-test</artifactId>
             <scope>compile</scope>
         </dependency>
+        <!--ssl-->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+            <version>1.47</version>
+        </dependency>
+
     </dependencies>
 </project>

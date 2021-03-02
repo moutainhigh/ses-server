@@ -7,14 +7,17 @@ import com.redescooter.ses.api.common.exception.BaseException;
 import com.redescooter.ses.api.common.exception.BusinessException;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
-import com.redescooter.ses.tool.utils.ValidationUtil;
+import com.redescooter.ses.tool.aspect.ValidationUtil;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.base.TokenRosService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.utils.SpringContextUtils;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -24,6 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -57,13 +62,15 @@ public class ControllerAspect {
 
     @Around("execution(* com.redescooter.ses.web.ros.controller..*.*(..))")
     public Object check(ProceedingJoinPoint point) throws Throwable {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
         Object[] objs = point.getArgs();
         try {
             for (Object obj : objs) {
                 if (obj instanceof GeneralEnter) {
                     //TODO 多个参数处理优化
                     GeneralEnter enter = (GeneralEnter) obj;
-                    checkEnterParameter(enter);
+                    checkEnterParameter(enter,request);
                     checkToken(point, enter);
                 }
                 ValidationUtil.validation(obj);
@@ -115,8 +122,7 @@ public class ControllerAspect {
             argTypes[i] = point.getArgs()[i].getClass();
         }
         try {
-            method = point.getTarget().getClass()
-                    .getMethod(point.getSignature().getName(), argTypes);
+            method = point.getTarget().getClass().getMethod(point.getSignature().getName(), argTypes);
         } catch (NoSuchMethodException e) {
             log.error("get method failure:", e);
         }
@@ -125,7 +131,7 @@ public class ControllerAspect {
             UserToken userToken = tokenRosService.checkToken(enter);
             enter.setUserId(userToken.getUserId());
             enter.setTenantId(userToken.getTenantId());
-
+            enter.setOpeDeptId(userToken.getDeptId());
             //TODO 接口权限验证
             checkPermission(point, enter);
         }
@@ -144,31 +150,46 @@ public class ControllerAspect {
      * @param point
      */
     private void checkPermission(ProceedingJoinPoint point, GeneralEnter enter) {
-        // todo 2020 9 14 判断如果是管理员账号，则不需要经过这个校验，直接retrue出去就行
+        // todo 2020 9 14 判断如果是管理员账号，则不需要经过这个校验，直接return出去就行
+        /*LambdaQueryWrapper<OpeSysUser> userWrapper = new LambdaQueryWrapper<>();
+        userWrapper.eq(OpeSysUser::getId, enter.getUserId());
+        userWrapper.eq(OpeSysUser::getDef1, SysUserSourceEnum.SYSTEM.getValue());
+        userWrapper.last("limit 1");
+        OpeSysUser admin = opeSysUserService.getOne(userWrapper);
+        if (admin.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
+            return;
+        }*/
+
         HttpServletRequest request = SpringContextUtils.getHttpServletRequest();
         String requestPath = request.getRequestURI().substring(request.getContextPath().length());
         requestPath = filterUrl(requestPath);
         log.info("拦截请求 >> " + requestPath + ";请求类型 >> " + request.getMethod());
+        // 得到该用户拥有的权限path
         List<String> permsList = opeSysUserService.findPerms(enter.getUserId());
         // todo 接口的权限控制，等数据库的数据完善了  再将下面注释的两行（154、164）放开
-        if(!CollectionUtils.isNotEmpty(permsList)){
-//            throw new SesWebRosException(ExceptionCodeEnums.NO_PERM.getCode(), ExceptionCodeEnums.NO_PERM.getMessage());
+        if (CollectionUtils.isEmpty(permsList)) {
+            //throw new SesWebRosException(ExceptionCodeEnums.NO_PERM.getCode(), ExceptionCodeEnums.NO_PERM.getMessage());
         }
         boolean flag = false;
         for (String perm : permsList) {
-            if(perm.contains(requestPath)){
+            if (perm.contains(requestPath)) {
                 flag = true;
                 break;
             }
         }
-        if(!flag){
-//            throw new SesWebRosException(ExceptionCodeEnums.NO_PERM.getCode(), ExceptionCodeEnums.NO_PERM.getMessage());
+        if (!flag) {
+            //throw new SesWebRosException(ExceptionCodeEnums.NO_PERM.getCode(), ExceptionCodeEnums.NO_PERM.getMessage());
         }
     }
 
-    private void checkEnterParameter(GeneralEnter enter) {
+    @SneakyThrows
+    private void checkEnterParameter(GeneralEnter enter,HttpServletRequest request) {
         if (StringUtils.isEmpty(enter.getRequestId())) {
             enter.setRequestId(UUID.randomUUID().toString().replaceAll("-", ""));
+        }
+        /**笨方法解决@RequestBody映射参数的问题**/
+        if (StringUtils.isEmpty(enter.getLanguage())) {
+            BeanUtils.populate(enter, request.getParameterMap());
         }
         if (StringUtils.isEmpty(enter.getLanguage())) {
             enter.setLanguage(Locale.ENGLISH.getLanguage());
@@ -177,9 +198,9 @@ public class ControllerAspect {
         if (StringUtils.isBlank(enter.getCountry())) {
             throw new SesWebRosException(ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getMessage());
         }
-//        if (SesStringUtils.isBlank(enter.getLanguage())) {
-//            throw new CrmWebException(ExceptionCodeEnums.LANGUAGE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.LANGUAGE_CANNOT_EMPTY.getMessage());
-//        }
+        if (SesStringUtils.isBlank(enter.getLanguage())) {
+            throw new SesWebRosException(ExceptionCodeEnums.LANGUAGE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.LANGUAGE_CANNOT_EMPTY.getMessage());
+        }
         if (StringUtils.isBlank(enter.getClientType())) {
             throw new SesWebRosException(ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getMessage());
         }

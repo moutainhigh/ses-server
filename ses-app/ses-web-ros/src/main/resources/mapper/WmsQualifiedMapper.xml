@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.wms.cn.china.WmsQualifiedMapper">
+
+    <select id="totalRows" resultType="int">
+        select count(*) from ope_wms_qualified_scooter_stock stock
+        where stock.dr = 0
+        <include refid="scooterListCondition"/>
+    </select>
+
+    <select id="scooterList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedScooterListResult">
+        select
+        stock.id,
+        stock.qty,
+        group1.group_name,
+        color.color_name,
+        color.color_value
+        from ope_wms_qualified_scooter_stock stock
+        left join ope_specificat_group group1 on group1.id = stock.group_id
+        left join ope_color color on color.id = stock.color_id
+        where stock.dr = 0
+        <include refid="scooterListCondition"/>
+        order by stock.qty desc
+        limit #{enter.startRow},#{enter.pageSize}
+    </select>
+
+    <sql id="scooterListCondition">
+        <if test="enter.groupId != null">
+            and stock.group_id = #{enter.groupId}
+        </if>
+        <if test="enter.colorId != null">
+            and stock.color_id = #{enter.colorId}
+        </if>
+    </sql>
+
+    <select id="scooterDetail" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishScooterDetailResult">
+        select
+          stock.id,
+          group1.group_name,
+          color.color_name,
+          color.color_value
+        from ope_wms_qualified_scooter_stock stock
+        left join ope_specificat_group group1 on group1.id = stock.group_id
+        left join ope_color color on color.id = stock.color_id
+        where stock.dr = 0 and stock.id = #{id}
+    </select>
+
+    <select id="combinCotalRows" resultType="int">
+        select count(*) from ope_wms_qualified_combin_stock
+        where dr = 0
+        <include refid="combinListCondition"/>
+    </select>
+
+
+    <select id="combinList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedCombinListResult">
+        select
+          id,
+          combin_no,
+          cn_name,
+          en_name,
+          fr_name,
+          qty
+        from ope_wms_qualified_combin_stock
+        where dr = 0
+        <include refid="combinListCondition"/>
+        order by qty
+        limit #{enter.startRow},#{enter.pageSize}
+    </select>
+
+    <sql id="combinListCondition">
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and (
+            combin_no like concat('%',#{enter.keyword},'%')
+            or en_name like concat('%',#{enter.keyword},'%')
+            or cn_name like concat('%',#{enter.keyword},'%')
+            )
+        </if>
+    </sql>
+
+    <select id="combinDetail" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishCombinDetailResult">
+        select
+          id,
+          combin_no,
+          cn_name,
+          en_name
+        from ope_wms_qualified_combin_stock
+        where dr = 0 and id = #{id}
+    </select>
+
+    <select id="partsCotalRows" resultType="int">
+        select count(*)
+        from ope_wms_qualified_parts_stock
+        where dr = 0
+        <include refid="partsListCondition"/>
+    </select>
+
+    <select id="partsList" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsQualifiedPartsListResult">
+        select
+          id,
+          parts_no,
+          parts_id,
+          cn_name,
+          en_name,
+          fr_name,
+          qty,
+          parts_type
+        from ope_wms_qualified_parts_stock
+        where dr = 0
+        <include refid="partsListCondition"/>
+        order by qty desc
+        limit #{enter.startRow},#{enter.pageSize}
+    </select>
+
+    <sql id="partsListCondition">
+        <if test="enter.partsType != null">
+            and parts_type = #{enter.partsType}
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and (
+            parts_no like concat('%',#{enter.keyword},'%')
+            or en_name like concat('%',#{enter.keyword},'%')
+            or cn_name like concat('%',#{enter.keyword},'%')
+            )
+        </if>
+    </sql>
+
+    <select id="partsDetail" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialpartsStockDetailResult">
+        select
+          id,
+          parts_no,
+          parts_type,
+          en_name,
+          cn_name
+        from ope_wms_qualified_parts_stock
+        where dr = 0 and id = #{id}
+    </select>
+
+    <select id="qualifiedTodayStockCount" resultType="java.lang.Integer">
+        select IFNULL(sum(in_wh_qty) ,0) from ope_wms_stock_record
+        where dr = 0 and record_type = #{recordType} and relation_type in (4,5,6)
+           and created_time like concat('%',#{date},'%') and stock_type = 1
+    </select>
+
+    <!-- 中国仓库不合格品库车辆,组装件和部件详情count -->
+    <!--<select id="getDetailCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_wms_stock_serial_number
+        where dr = 0 and stock_type = 1 and relation_id = #{enter.id}
+        <if test="enter.type != null">
+            and relation_type = #{enter.type}
+        </if>
+    </select>-->
+
+    <!-- 中国仓库不合格品库车辆,组装件和部件详情 -->
+    <!--<select id="getDetail" resultType="com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult">
+        select *
+        from ope_wms_stock_serial_number
+        where dr = 0 and stock_type = 1 and relation_id = #{enter.id}
+        <if test="enter.type != null">
+            and relation_type = #{enter.type}
+        </if>
+        order by created_time desc
+        limit #{enter.startRow}, #{enter.pageSize}
+    </select>-->
+
+</mapper>

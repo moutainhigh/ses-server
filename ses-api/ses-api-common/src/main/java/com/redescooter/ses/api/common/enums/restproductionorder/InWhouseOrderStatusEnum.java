@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * @ClassNameInWhouseOrderEnum
- * @Description
+ * @Description 入库单状态
  * @Author Aleks
  * @Date2020/11/11 18:17
  * @Version V1.0

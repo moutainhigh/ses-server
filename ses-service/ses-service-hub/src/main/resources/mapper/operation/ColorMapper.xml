@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.hub.source.operation.dao.ColorMapper">
+
+    <!--BaseResultMap-->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.api.common.vo.scooter.ColorDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+        <result column="color_value" jdbcType="VARCHAR" property="colorValue" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    </resultMap>
+
+    <!--根据id查询颜色信息-->
+    <select id="getColorInfoById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select * from ope_color
+	    where id = #{id} and dr = 0
+    </select>
+
+    <!--查询颜色信息列表(下拉列表使用)-->
+    <select id="getScooterColorList" resultType="com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO">
+        select id,color_name `name`
+        from ope_color
+        where dr = 0
+    </select>
+
+</mapper>

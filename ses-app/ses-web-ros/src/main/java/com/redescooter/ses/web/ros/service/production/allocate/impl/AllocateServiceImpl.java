@@ -10,9 +10,9 @@ import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.production.ProductionTypeEnums;
 import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
-import com.redescooter.ses.api.common.enums.whse.WhseTypeEnums;
 import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderEventEnums;
 import com.redescooter.ses.api.common.enums.production.allocate.AllocateOrderStatusEnums;
+import com.redescooter.ses.api.common.enums.whse.WhseTypeEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -54,7 +54,7 @@ import com.redescooter.ses.web.ros.vo.production.allocate.SaveAllocateEnter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -92,7 +92,7 @@ public class AllocateServiceImpl implements AllocateService {
     @Autowired
     private OpeStockService opeStockService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired
@@ -155,9 +155,9 @@ public class AllocateServiceImpl implements AllocateService {
      */
     @Override
     public PageResult<AllocateOrderResult> list(AllocateOrderEnter enter) {
-      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
-        return PageResult.createZeroRowResult(enter);
-      }
+        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+            return PageResult.createZeroRowResult(enter);
+        }
         List<String> statusList = new ArrayList();
         if (StringUtils.equals(ProductionTypeEnums.TODO.getValue(), enter.getClassType())) {
             for (AllocateOrderStatusEnums item : AllocateOrderStatusEnums.values()) {
@@ -232,7 +232,7 @@ public class AllocateServiceImpl implements AllocateService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startPrepare(IdEnter enter) {
         OpeAllocate opeAllocate = checkAllocate(enter.getId(), AllocateOrderStatusEnums.PENDING.getValue());
@@ -259,7 +259,7 @@ public class AllocateServiceImpl implements AllocateService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startAllocate(IdEnter enter) {
         OpeAllocate opeAllocate = checkAllocate(enter.getId(), AllocateOrderStatusEnums.PREPARE.getValue());
@@ -286,7 +286,7 @@ public class AllocateServiceImpl implements AllocateService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult cancelAllocate(IdEnter enter) {
         List<OpeStock> updateOpeStock = Lists.newArrayList();
@@ -392,7 +392,7 @@ public class AllocateServiceImpl implements AllocateService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult inWhAllocate(IdEnter enter) {
         //入库单
@@ -519,11 +519,11 @@ public class AllocateServiceImpl implements AllocateService {
      * @param saveAllocateEnter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveAllocate(SaveAllocateEnter saveAllocateEnter) {
-      //SaveAllocateEnter参数值去空格
-      SaveAllocateEnter enter = SesStringUtils.objStringTrim(saveAllocateEnter);
+        //SaveAllocateEnter参数值去空格
+        SaveAllocateEnter enter = SesStringUtils.objStringTrim(saveAllocateEnter);
         //配件、付款信息转换
         List<ProductionPartsEnter> productionPartsEnterList = null;
         // 出库单集合
@@ -536,7 +536,7 @@ public class AllocateServiceImpl implements AllocateService {
         List<OpeStock> opeStockList = null;
 
         try {
-              productionPartsEnterList = JSONArray.parseArray(enter.getPartList(), ProductionPartsEnter.class);
+            productionPartsEnterList = JSONArray.parseArray(enter.getPartList(), ProductionPartsEnter.class);
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }

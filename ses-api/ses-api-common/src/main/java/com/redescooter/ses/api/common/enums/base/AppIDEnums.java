@@ -19,7 +19,7 @@ public enum AppIDEnums {
     SAAS_REPAIR_WEB("SAAS_REPAIR_WEB", SystemIDEnums.REDE_SAAS.getSystemId(), "3", "SaaS维修"),
     SES_ROS("SES_ROS", SystemIDEnums.REDE_SES.getSystemId(), "4", "RedE办公系统"),
     SES_DEV("SES_DEV", SystemIDEnums.REDE_DEV.getSystemId(), "5", "RedE开发系统"),
-    SES_WEBSITE("SES_WEBSITE", SystemIDEnums.REDE_SES.getSystemId(), "6", "RedE官网系统"),
+    SES_WEBSITE("SES_WEBSITE", SystemIDEnums.REDE_SITE.getSystemId(), "6", "RedE官网系统"),
     ;
 
     //应用ID
@@ -40,5 +40,24 @@ public enum AppIDEnums {
         }
         return null;
     }
+
+    public static String getSystemId(String appId) {
+        for (AppIDEnums item : AppIDEnums.values()) {
+            if (item.getAppId().equals(appId)) {
+                return item.getSystemId();
+            }
+        }
+        return null;
+    }
+
+    public static AppIDEnums checkAppId(String appId) {
+        for (AppIDEnums item : AppIDEnums.values()) {
+            if (item.getAppId().equals(appId)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
 
 }

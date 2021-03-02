@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.scooter.dao.base.ScoScooterBbiBatteryWareMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.scooter.dm.base.ScoScooterBbiBatteryWare">
+    <!--@mbg.generated-->
+    <!--@Table sco_scooter_bbi_battery_ware-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="ware_no" jdbcType="INTEGER" property="wareNo" />
+    <result column="scooter_no" jdbcType="VARCHAR" property="scooterNo" />
+    <result column="battery_circuit_open" jdbcType="BOOLEAN" property="batteryCircuitOpen" />
+    <result column="diff_voltage" jdbcType="BOOLEAN" property="diffVoltage" />
+    <result column="electricity_breakdown" jdbcType="BOOLEAN" property="electricityBreakdown" />
+    <result column="enable" jdbcType="BOOLEAN" property="enable" />
+    <result column="have_battery" jdbcType="BOOLEAN" property="haveBattery" />
+    <result column="mos_breakdown" jdbcType="BOOLEAN" property="mosBreakdown" />
+    <result column="voltage_breakdown" jdbcType="BOOLEAN" property="voltageBreakdown" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, ware_no, scooter_no, battery_circuit_open, diff_voltage, electricity_breakdown, 
+    `enable`, have_battery, mos_breakdown, voltage_breakdown, created_by, created_time, 
+    updated_by, updated_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from sco_scooter_bbi_battery_ware
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from sco_scooter_bbi_battery_ware
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterBbiBatteryWare">
+    <!--@mbg.generated-->
+    insert into sco_scooter_bbi_battery_ware (id, dr, ware_no, 
+      scooter_no, battery_circuit_open, diff_voltage, 
+      electricity_breakdown, `enable`, have_battery, 
+      mos_breakdown, voltage_breakdown, created_by, 
+      created_time, updated_by, updated_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{wareNo,jdbcType=INTEGER}, 
+      #{scooterNo,jdbcType=VARCHAR}, #{batteryCircuitOpen,jdbcType=BOOLEAN}, #{diffVoltage,jdbcType=BOOLEAN}, 
+      #{electricityBreakdown,jdbcType=BOOLEAN}, #{enable,jdbcType=BOOLEAN}, #{haveBattery,jdbcType=BOOLEAN}, 
+      #{mosBreakdown,jdbcType=BOOLEAN}, #{voltageBreakdown,jdbcType=BOOLEAN}, #{createdBy,jdbcType=BIGINT}, 
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterBbiBatteryWare">
+    <!--@mbg.generated-->
+    insert into sco_scooter_bbi_battery_ware
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="dr != null">
+        dr,
+      </if>
+      <if test="wareNo != null">
+        ware_no,
+      </if>
+      <if test="scooterNo != null">
+        scooter_no,
+      </if>
+      <if test="batteryCircuitOpen != null">
+        battery_circuit_open,
+      </if>
+      <if test="diffVoltage != null">
+        diff_voltage,
+      </if>
+      <if test="electricityBreakdown != null">
+        electricity_breakdown,
+      </if>
+      <if test="enable != null">
+        `enable`,
+      </if>
+      <if test="haveBattery != null">
+        have_battery,
+      </if>
+      <if test="mosBreakdown != null">
+        mos_breakdown,
+      </if>
+      <if test="voltageBreakdown != null">
+        voltage_breakdown,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="updatedBy != null">
+        updated_by,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="dr != null">
+        #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="wareNo != null">
+        #{wareNo,jdbcType=INTEGER},
+      </if>
+      <if test="scooterNo != null">
+        #{scooterNo,jdbcType=VARCHAR},
+      </if>
+      <if test="batteryCircuitOpen != null">
+        #{batteryCircuitOpen,jdbcType=BOOLEAN},
+      </if>
+      <if test="diffVoltage != null">
+        #{diffVoltage,jdbcType=BOOLEAN},
+      </if>
+      <if test="electricityBreakdown != null">
+        #{electricityBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="enable != null">
+        #{enable,jdbcType=BOOLEAN},
+      </if>
+      <if test="haveBattery != null">
+        #{haveBattery,jdbcType=BOOLEAN},
+      </if>
+      <if test="mosBreakdown != null">
+        #{mosBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="voltageBreakdown != null">
+        #{voltageBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterBbiBatteryWare">
+    <!--@mbg.generated-->
+    update sco_scooter_bbi_battery_ware
+    <set>
+      <if test="dr != null">
+        dr = #{dr,jdbcType=INTEGER},
+      </if>
+      <if test="wareNo != null">
+        ware_no = #{wareNo,jdbcType=INTEGER},
+      </if>
+      <if test="scooterNo != null">
+        scooter_no = #{scooterNo,jdbcType=VARCHAR},
+      </if>
+      <if test="batteryCircuitOpen != null">
+        battery_circuit_open = #{batteryCircuitOpen,jdbcType=BOOLEAN},
+      </if>
+      <if test="diffVoltage != null">
+        diff_voltage = #{diffVoltage,jdbcType=BOOLEAN},
+      </if>
+      <if test="electricityBreakdown != null">
+        electricity_breakdown = #{electricityBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="enable != null">
+        `enable` = #{enable,jdbcType=BOOLEAN},
+      </if>
+      <if test="haveBattery != null">
+        have_battery = #{haveBattery,jdbcType=BOOLEAN},
+      </if>
+      <if test="mosBreakdown != null">
+        mos_breakdown = #{mosBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="voltageBreakdown != null">
+        voltage_breakdown = #{voltageBreakdown,jdbcType=BOOLEAN},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=BIGINT},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=BIGINT},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooterBbiBatteryWare">
+    <!--@mbg.generated-->
+    update sco_scooter_bbi_battery_ware
+    set dr = #{dr,jdbcType=INTEGER},
+      ware_no = #{wareNo,jdbcType=INTEGER},
+      scooter_no = #{scooterNo,jdbcType=VARCHAR},
+      battery_circuit_open = #{batteryCircuitOpen,jdbcType=BOOLEAN},
+      diff_voltage = #{diffVoltage,jdbcType=BOOLEAN},
+      electricity_breakdown = #{electricityBreakdown,jdbcType=BOOLEAN},
+      `enable` = #{enable,jdbcType=BOOLEAN},
+      have_battery = #{haveBattery,jdbcType=BOOLEAN},
+      mos_breakdown = #{mosBreakdown,jdbcType=BOOLEAN},
+      voltage_breakdown = #{voltageBreakdown,jdbcType=BOOLEAN},
+      created_by = #{createdBy,jdbcType=BIGINT},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      updated_by = #{updatedBy,jdbcType=BIGINT},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

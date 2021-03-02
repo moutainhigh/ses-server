@@ -41,7 +41,6 @@ public class PartsRosController {
     @Autowired
     private ProductionQcTmepleteService productionQcTmepleteService;
 
-
     @PostMapping(value = "/save")
     @ApiOperation(value = "新增部件", response = GeneralResult.class)
     @AvoidDuplicateSubmit
@@ -50,13 +49,11 @@ public class PartsRosController {
         return new Response<>(partsRosService.partsSave(enter));
     }
 
-
     @PostMapping(value = "/delete")
     @ApiOperation(value = "删除部件", response = GeneralResult.class)
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") RosPartsBatchOpEnter enter) {
         return new Response<>(partsRosService.partsDelete(enter));
     }
-
 
     @PostMapping(value = "/edit")
     @ApiOperation(value = "编辑部件", response = GeneralResult.class)
@@ -64,13 +61,11 @@ public class PartsRosController {
         return new Response<>(partsRosService.partsEdit(enter));
     }
 
-
     @PostMapping(value = "/list")
     @ApiOperation(value = "部件列表", response = GeneralResult.class)
     public Response<PageResult<RosPartsListResult>> list(@ModelAttribute @ApiParam("请求参数") RosPartsListEnter enter) {
         return new Response<>(partsRosService.partsList(enter));
     }
-
 
     @PostMapping(value = "/announ")
     @ApiOperation(value = "发布部件", response = GeneralResult.class)
@@ -78,13 +73,11 @@ public class PartsRosController {
         return new Response<>(partsRosService.partsAnnoun(enter));
     }
 
-
     @PostMapping(value = "/importParts")
     @ApiOperation(value = "表格导入", response = ImportExcelPartsResult.class)
     public Response<List<OpeProductionPartsDraft>> importParts(@ModelAttribute @ApiParam("请求参数") ImportPartsEnter enter) {
         return new Response<>(partsRosService.importParts(enter));
     }
-
 
     @PostMapping(value = "/announUser")
     @ApiOperation(value = "发布人下拉数据源接口", response = StaffDataResult.class)
@@ -92,13 +85,11 @@ public class PartsRosController {
         return new Response<>(partsRosService.announUser(enter.getTenantId()));
     }
 
-
     @PostMapping(value = "/checkAnnounUserSafeCode")
     @ApiOperation(value = "校验发布人的安全码", response = Boolean.class)
     public Response<BooleanResult> principal(@ModelAttribute @ApiParam("请求参数") RosCheckAnnounSafeCodeEnter enter) {
         return new Response<>(partsRosService.checkAnnounUserSafeCode(enter));
     }
-
 
     @PostMapping(value = "/partsCopy")
     @ApiOperation(value = "复制部件", response = GeneralResult.class)
@@ -106,13 +97,11 @@ public class PartsRosController {
         return new Response<>(partsRosService.partsCopy(enter));
     }
 
-
     @PostMapping(value = "/partsDisable")
     @ApiOperation(value = "禁用部件", response = GeneralResult.class)
     public Response<GeneralResult> partsDisable(@ModelAttribute @ApiParam("请求参数") RosPartsBatchOpEnter enter) {
         return new Response<>(partsRosService.partsDisable(enter));
     }
-
 
     @PostMapping(value = "/listCount")
     @ApiOperation(value = "列表统计", response = GeneralResult.class)
@@ -120,13 +109,11 @@ public class PartsRosController {
         return new Response(partsRosService.listCount(enter));
     }
 
-
     @GetMapping(value = "/export")
     @ApiOperation(value = "导出", response = GeneralResult.class)
     public Response<GeneralResult> partsExport(@ApiParam("请求参数 id") String id, HttpServletResponse response) {
         return new Response(partsRosService.partsExport(id,response));
     }
-
 
     @PostMapping(value = "/saveAnnounCheck")
     @ApiOperation(value = "保存发布校验（校验当前的数据有没有重复的）", response = GeneralResult.class)
@@ -134,13 +121,11 @@ public class PartsRosController {
         return new Response(partsRosService.saveAnnounCheck(enter));
     }
 
-
     @PostMapping(value = "/saveAnnounCheck2")
     @ApiOperation(value = "保存发布校验（校验有没有跟真实数据重复）", response = GeneralResult.class)
     public Response<List<RosRepeatResult>> saveAnnounCheck2(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         return new Response(partsRosService.saveAnnounCheck2(enter));
     }
-
 
     @PostMapping(value = "/partsDisableCheck")
     @ApiOperation(value = "禁用部件的校验", response = GeneralResult.class)
@@ -150,8 +135,7 @@ public class PartsRosController {
 
     @PostMapping(value = "/qcTempleteDetail")
     @ApiOperation(value = "质检模板详情", response = QcTemplateDetailResult.class)
-    public Response<List<QcTemplateDetailResult>>
-        qcTempleteDetail(@ModelAttribute @ApiParam("请求参数") QcTempleteDetailEnter enter) {
+    public Response<List<QcTemplateDetailResult>> qcTempleteDetail(@ModelAttribute @ApiParam("请求参数") QcTempleteDetailEnter enter) {
         return new Response<>(productionQcTmepleteService.detail(enter));
     }
 

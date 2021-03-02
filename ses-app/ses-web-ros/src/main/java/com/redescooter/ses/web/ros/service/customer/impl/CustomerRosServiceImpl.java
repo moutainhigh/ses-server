@@ -24,9 +24,9 @@ import com.redescooter.ses.api.hub.common.UserProfileService;
 import com.redescooter.ses.api.hub.vo.EditUserProfileEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
-import com.redescooter.ses.tool.utils.StatisticalUtil;
+import com.redescooter.ses.tool.utils.chart.StatisticalUtil;
 import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import com.redescooter.ses.tool.utils.accountType.AccountTypeUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -43,11 +43,11 @@ import com.redescooter.ses.web.ros.vo.account.*;
 import com.redescooter.ses.web.ros.vo.customer.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import redis.clients.jedis.JedisCluster;
@@ -68,30 +68,39 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
     @Autowired
     private OpeCustomerMapper opeCustomerMapper;
+
     @Autowired
     private CustomerServiceMapper customerServiceMapper;
+
     @Autowired
     private OpeSysUserProfileMapper sysUserProfileMapper;
+
     @Autowired
     private JedisCluster jedisCluster;
-    @Reference
+
+    @DubboReference
     private IdAppService idAppService;
-    @Reference
+
+    @DubboReference
     private CityBaseService cityBaseService;
-    @Reference
+
+    @DubboReference
     private AccountBaseService accountBaseService;
-    @Reference
+
+    @DubboReference
     private TenantBaseService tenantBaseService;
-    @Reference
+
+    @DubboReference
     private MailMultiTaskService mailMultiTaskService;
-    @Reference
+
+    @DubboReference
     private UserBaseService userBaseService;
-    @Reference
+
+    @DubboReference
     private UserProfileService userProfileService;
 
     @Autowired
     private OpeSysUserService opeSysUserService;
-
 
     /**
      * 邮箱验证
@@ -101,13 +110,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public BooleanResult checkMail(String mail) {
-
         QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeCustomer.COL_EMAIL, mail);
         wrapper.eq(OpeCustomer.COL_DR, 0);
-
         Boolean mailBoolean = opeCustomerMapper.selectCount(wrapper) == 1 ? Boolean.TRUE : Boolean.FALSE;
-
         return new BooleanResult(mailBoolean);
     }
 
@@ -120,10 +126,9 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public IntResult checkMailCount(StringEnter enter) {
         //邮箱去空格
-        enter.setSt(SesStringUtils.stringTrim(enter.getSt()));
-
+        enter.setKeyword(SesStringUtils.stringTrim(enter.getKeyword()));
         QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
-        wrapper.eq(OpeCustomer.COL_EMAIL, enter.getSt());
+        wrapper.eq(OpeCustomer.COL_EMAIL, enter.getKeyword());
         wrapper.eq(OpeCustomer.COL_DR, 0);
         wrapper.ne(OpeCustomer.COL_STATUS, CustomerStatusEnum.TRASH_CUSTOMER.getValue());
         Integer count = opeCustomerMapper.selectCount(wrapper);
@@ -136,7 +141,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param createCustomerEnter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(CreateCustomerEnter createCustomerEnter) {
         //employeeListEnter参数值去空格
@@ -188,7 +193,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param editCustomerEnter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult edit(EditCustomerEnter editCustomerEnter) {
         //employeeListEnter参数值去空格
@@ -198,7 +203,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         //已存在客户 不可重复添加
         QueryWrapper<OpeCustomer> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getEmail());
-        queryWrapper.ne(OpeCustomer.COL_ID,enter.getId());
+        queryWrapper.ne(OpeCustomer.COL_ID, enter.getId());
         Integer count = opeCustomerMapper.selectCount(queryWrapper);
 
         if (count > 0) {
@@ -235,14 +240,14 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                 // corporate的用户文件表会存在邮箱重复的可能，所以这里需要取到platform的userId，带进去作为条件查询
                 userTypeList.add(AccountTypeEnums.WEB_RESTAURANT.getAccountType().intValue());
                 userTypeList.add(AccountTypeEnums.WEB_EXPRESS.getAccountType().intValue());
-                editUserProfileEnter.setUserId(userBaseService.getUserId(customer.getEmail(),userTypeList));
+                editUserProfileEnter.setUserId(userBaseService.getUserId(customer.getEmail(), userTypeList));
                 // saas 更新个人信息
                 userProfileService.editUserProfile2B(editUserProfileEnter);
             }
             if (customer.getTenantId() == 0 && StringUtils.equals(CustomerTypeEnum.PERSONAL.getValue(), customer.getCustomerType())) {
                 // TOc 更新个人信息
                 userTypeList.add(AccountTypeEnums.APP_PERSONAL.getAccountType().intValue());
-                editUserProfileEnter.setUserId(userBaseService.getUserId(customer.getEmail(),userTypeList));
+                editUserProfileEnter.setUserId(userBaseService.getUserId(customer.getEmail(), userTypeList));
                 userProfileService.editUserProfile2C(editUserProfileEnter);
             }
         }
@@ -324,8 +329,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                 throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_QTY_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.SCOOTER_QTY_IS_NOT_ILLEGAL.getMessage());
             }
         }
-        if(Strings.isNotBlank(enter.getTelephone())){
-            if(enter.getTelephone().length() < 8 || enter.getTelephone().length() > 20){
+        if (Strings.isNotBlank(enter.getTelephone())) {
+            if (enter.getTelephone().length() < 8 || enter.getTelephone().length() > 20) {
                 throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
             }
         }
@@ -340,7 +345,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public DetailsCustomerResult details(IdEnter enter) {
-
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
         if (opeCustomer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
@@ -441,8 +445,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public PageResult<DetailsCustomerResult> list(ListCustomerEnter page) {
-        if (page.getKeyword()!=null && page.getKeyword().length()>50){
-           return PageResult.createZeroRowResult(page);
+        if (page.getKeyword() != null && page.getKeyword().length() > 50) {
+            return PageResult.createZeroRowResult(page);
         }
         int totalRows = customerServiceMapper.customerListCount(page);
         if (totalRows == 0) {
@@ -471,7 +475,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult delete(IdEnter enter) {
         //验证客户是否开通SaaS账户等信息
@@ -479,9 +483,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (!opeCustomer.getStatus().equals(CustomerStatusEnum.TRASH_CUSTOMER.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
         }
-
         opeCustomerMapper.deleteById(enter.getId());
-
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -491,17 +493,17 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult trash(TrashCustomerEnter enter) {
 
         //验证客户是否开通SaaS账户等信息
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
-        if(customer == null){
+        if (customer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         // 校验该客户是否已激活
-        if(userBaseService.checkActivat(customer.getEmail())){
+        if (userBaseService.checkActivat(customer.getEmail())) {
             throw new SesWebRosException(ExceptionCodeEnums.ACTIVATION_CUSTOMER_NOT_DELETE.getCode(), ExceptionCodeEnums.ACTIVATION_CUSTOMER_NOT_DELETE.getMessage());
         }
         if (customer.getAccountFlag().equals(CustomerAccountFlagEnum.ACTIVATION.getValue())) {
@@ -526,7 +528,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult change(IdEnter enter) {
 
@@ -558,7 +560,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @date: 2019/12/18 17:39
      * @Version: ROS 1.0
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult openAccount(OpenAccountEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -604,9 +606,9 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public PageResult<AccountListResult> accountList(AccountListEnter enter) {
-      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
-        return PageResult.createZeroRowResult(enter);
-      }
+        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+            return PageResult.createZeroRowResult(enter);
+        }
         int countCustomer = customerServiceMapper.customerAccountCount(enter);
         if (countCustomer == 0) {
             return PageResult.createZeroRowResult(enter);
@@ -654,14 +656,14 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public Map<String, Integer> accountCountStatus(GeneralEnter enter) {
         // 查询内容
-      List<AccountListResult> accountList = customerServiceMapper.queryAccountRecordEamil(enter);
-      List<String> emailList = new ArrayList<>();
-      if (!CollectionUtils.isEmpty(accountList)) {
-          emailList = accountList.stream().map(AccountListResult::getEmail).collect(Collectors.toList());
-      }
-      QueryAccountCountStatusEnter queryAccountCountStatusEnter = new QueryAccountCountStatusEnter();
-      queryAccountCountStatusEnter.setEmailList(emailList);
-      return accountBaseService.customerAccountCountByStatus(queryAccountCountStatusEnter);
+        List<AccountListResult> accountList = customerServiceMapper.queryAccountRecordEamil(enter);
+        List<String> emailList = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(accountList)) {
+            emailList = accountList.stream().map(AccountListResult::getEmail).collect(Collectors.toList());
+        }
+        QueryAccountCountStatusEnter queryAccountCountStatusEnter = new QueryAccountCountStatusEnter();
+        queryAccountCountStatusEnter.setEmailList(emailList);
+        return accountBaseService.customerAccountCountByStatus(queryAccountCountStatusEnter);
     }
 
     /**
@@ -752,7 +754,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult freezeAccount(IdEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -776,7 +778,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult unFreezeAccount(IdEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -799,7 +801,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult renewAccont(RenewAccountEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -824,7 +826,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public VerificationCodeResult verificationCode(GeneralEnter enter) {
         // 定义 图片大小
@@ -839,7 +841,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         jedisCluster.expire(enter.getRequestId(), new Long(RedisExpireEnum.MINUTES_1.getSeconds()).intValue());
         VerificationCodeResult result = VerificationCodeResult.builder().base64Img(VerificationCodeImgUtil.base64String).build();
         result.setRequestId(enter.getRequestId());
-        log.info("获取code码为："+ code);
+        log.info("获取code码为：" + code);
         return result;
     }
 
@@ -847,7 +849,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult customerSetPassword(SetPasswordEnter enter) {
 
@@ -885,7 +887,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public BooleanResult sendEmailAgian(IdEnter enter) {
 
@@ -1174,8 +1176,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                 throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_QTY_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.SCOOTER_QTY_IS_NOT_ILLEGAL.getMessage());
             }
         }
-        if(Strings.isNotBlank(enter.getTelephone())){
-            if(enter.getTelephone().length() < 8 || enter.getTelephone().length() > 20){
+        if (Strings.isNotBlank(enter.getTelephone())) {
+            if (enter.getTelephone().length() < 8 || enter.getTelephone().length() > 20) {
                 throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
             }
         }

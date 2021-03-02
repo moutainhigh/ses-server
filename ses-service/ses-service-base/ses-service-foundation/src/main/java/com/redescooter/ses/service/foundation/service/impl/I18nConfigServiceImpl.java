@@ -13,7 +13,8 @@ import com.redescooter.ses.service.foundation.dao.base.PlaI18nConfigMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaI18nConfig;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,9 +29,8 @@ import java.util.List;
  * create: 2019-05-07 12:18
  */
 @Slf4j
-@Service
+@DubboService
 public class I18nConfigServiceImpl implements I18nConfigService {
-
 
     @Autowired
     private I18nConfigServiceMapper i18nConfigServiceMapper;
@@ -38,7 +38,7 @@ public class I18nConfigServiceImpl implements I18nConfigService {
     @Autowired
     private PlaI18nConfigMapper i18nConfigMapper;
 
-    @Autowired
+    @DubboReference
     private IdAppService idSerService;
 
     /**
@@ -49,7 +49,6 @@ public class I18nConfigServiceImpl implements I18nConfigService {
      */
     @Override
     public List<GetI18nConfigResult> getI18nConfig(GetI18nConfigEnter enter) {
-
         return i18nConfigServiceMapper.getI18nConfig(enter);
     }
 
@@ -88,7 +87,7 @@ public class I18nConfigServiceImpl implements I18nConfigService {
      * @param deleteI18nConfigEnter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void delete(DeleteI18nConfigEnter deleteI18nConfigEnter) {
 
@@ -102,7 +101,7 @@ public class I18nConfigServiceImpl implements I18nConfigService {
      * @param saveI18nConfigEnter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void save(SaveI18nConfigEnter saveI18nConfigEnter) {
         PlaI18nConfig i18nConfigBase = new PlaI18nConfig();

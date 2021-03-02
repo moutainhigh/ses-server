@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/bom/sales/service")
 public class SalesServiceController {
+
     @Autowired
     private SalseRosService salseRosService;
 

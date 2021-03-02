@@ -1,6 +1,6 @@
 #Springboot 基础配置
 server:
-  port: 28190
+  port: 8901
   servlet:
     context-path: /ses/t/ros/w/api
     encoding:
@@ -10,8 +10,6 @@ server:
   tomcat:
     uri-encoding: UTF-8
   shutdown: graceful #开启优雅停机，默认是立即停机IMMEDIATE
-  autoconfigure:
-    exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
 #基本信息配置
 spring:
   application:
@@ -22,6 +20,8 @@ spring:
     basename: i18n/messages
     fallback-to-system-locale: false
     encoding: UTF-8
+  autoconfigure:
+    exclude: com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure
   #数据库连接
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -49,7 +49,7 @@ spring:
     timeout: 6000  # 连接超时时长（毫秒）
     jedis:
       pool:
-        max-active: 1000  # 连接池最大连接数（使用负值表示没有限制）
+        max-active: -1  # 连接池最大连接数（使用负值表示没有限制）
         max-wait: -1    # 连接池最大阻塞等待时间（使用负值表示没有限制）
         max-idle: 200      # 连接池中的最大空闲连接
         min-idle: 50       # 连接池中的最小空闲连接
@@ -58,9 +58,8 @@ spring:
 #Springboot-actuator 配置,后续添加prometheus采集指标数据,Grafana可视化监控数据
 management:
   server:
-    port: 28188
-    servlet:
-      context-path: "/management"
+    port: 8109
+    base-path: "/management"
   endpoints:
     enabled-by-default: true
     web:
@@ -125,6 +124,7 @@ mybatis-plus:
     banner: true
     db-config:
       id-type: uuid
+      logic-delete-field: dr
       logic-delete-value: 1
       logic-not-delete-value: 0
       table-underline: true

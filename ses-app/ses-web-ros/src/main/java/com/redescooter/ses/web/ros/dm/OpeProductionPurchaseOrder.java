@@ -1,14 +1,18 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.math.BigDecimal;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 生产采购单表
@@ -23,7 +27,7 @@ public class OpeProductionPurchaseOrder {
     /**
      * 主键id
      */
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id")
     @ApiModelProperty(value = "主键id")
     private Long id;
 
@@ -43,10 +47,10 @@ public class OpeProductionPurchaseOrder {
     private String purchaseNo;
 
     /**
-     * 采购状态，1：草稿，10：采购中，20：待入库，30：部分入库，40：已入库，50：已完成，60：已取消
+     * 生产采购单状态 1草稿 10采购中 20已完成
      */
     @TableField(value = "purchase_status")
-    @ApiModelProperty(value = "采购状态，1：草稿，10：采购中，20：待入库，30：部分入库，40：已入库，50：已完成，60：已取消")
+    @ApiModelProperty(value = "生产采购单状态 1草稿 10采购中 20已完成")
     private Integer purchaseStatus;
 
     /**

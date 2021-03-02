@@ -17,10 +17,15 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author Mr.lijiating
@@ -46,8 +51,8 @@ public class ExcelServiceImpl implements ExcelService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ImportExcelOrderResult readExcelDataByOrder(ImportExcelOrderEnter enter) {
-
         ImportExcelOrderResult result = new ImportExcelOrderResult();
 
         ExcelImportResult<ExpressOrderExcleData> excelImportResult = importExcelService.setiExcelVerifyHandler(new OrdersExcelVerifyHandlerImpl()).importOssExcel(enter.getUrl(),
@@ -87,7 +92,7 @@ public class ExcelServiceImpl implements ExcelService {
         }
 
         //进行保存数据订单
-        edOrderService.saveOrders(successList,enter);
+        edOrderService.saveOrders(successList, enter);
 
         //数据返回
         result.setSuccess(Boolean.TRUE);
@@ -115,6 +120,5 @@ public class ExcelServiceImpl implements ExcelService {
             e.printStackTrace();
         }
     }
-
 
 }

@@ -13,7 +13,7 @@ import com.redescooter.ses.api.foundation.service.setting.GroupSettingService;
 import com.redescooter.ses.api.foundation.vo.setting.GroupListEnter;
 import com.redescooter.ses.api.foundation.vo.setting.GroupResult;
 import com.redescooter.ses.api.foundation.vo.setting.SaveGroupEnter;
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
@@ -23,11 +23,12 @@ import com.redescooter.ses.web.ros.vo.setting.RosGroupExportResult;
 import com.redescooter.ses.web.ros.vo.setting.RosGroupListEnter;
 import com.redescooter.ses.web.ros.vo.setting.RosSaveGroupEnter;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ import java.util.stream.Collectors;
 @Service
 public class RosGroupServiceImpl implements RosGroupService {
 
-    @Reference
+    @DubboReference
     private GroupSettingService groupSettingService;
 
     @Autowired
@@ -48,6 +49,7 @@ public class RosGroupServiceImpl implements RosGroupService {
 
     /**
      * 分组列表
+     *
      * @param enter
      * @return
      */
@@ -102,6 +104,7 @@ public class RosGroupServiceImpl implements RosGroupService {
 
     /**
      * 详情
+     *
      * @param enter
      * @return
      */
@@ -124,10 +127,12 @@ public class RosGroupServiceImpl implements RosGroupService {
 
     /**
      * 保存分组
+     *
      * @param enter
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult save(RosSaveGroupEnter enter) {
         SaveGroupEnter saveGroupEnter = new SaveGroupEnter();
         BeanUtils.copyProperties(enter, saveGroupEnter);
@@ -137,23 +142,26 @@ public class RosGroupServiceImpl implements RosGroupService {
 
     /**
      * 删除分组
+     *
      * @param enter
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult delete(IdEnter enter) {
         return groupSettingService.delete(enter);
     }
 
     /**
      * 导出
+     *
      * @param
      * @return
      */
     @Override
     public GeneralResult export(String id, HttpServletResponse response) {
         List<GroupResult> groupList = groupSettingService.export(id);
-        if(CollectionUtils.isNotEmpty(groupList)){
+        if (CollectionUtils.isNotEmpty(groupList)) {
             // 找到创建人的名字和修改人的名字
             getUserName(groupList);
             // 现在创建人和修改人都补全了
@@ -162,17 +170,17 @@ public class RosGroupServiceImpl implements RosGroupService {
                 RosGroupExportResult export = new RosGroupExportResult();
                 export.setGroupName(group.getGroupName());
                 export.setDescription(group.getDesc());
-                export.setEnable(group.getEnable()==1?"Yes":"No");
-                export.setFounder(group.getCreatedByFirstName()+" "+group.getCreatedByLastName());
-                if(Strings.isNullOrEmpty(export.getFounder())){
+                export.setEnable(group.getEnable() == 1 ? "Yes" : "No");
+                export.setFounder(group.getCreatedByFirstName() + " " + group.getCreatedByLastName());
+                if (Strings.isNullOrEmpty(export.getFounder())) {
                     export.setFounder("--");
                 }
-                export.setCreatedTime(group.getCreatedTime()==null?"--": DateUtil.format(DateUtil.dateAddHour(group.getCreatedTime(),8),""));
-                export.setUpdater(group.getUpdatedByFirstName()+" "+group.getUpdatedByLastName());
-                if(Strings.isNullOrEmpty(export.getUpdater())){
+                export.setCreatedTime(group.getCreatedTime() == null ? "--" : DateUtil.format(DateUtil.dateAddHour(group.getCreatedTime(), 8), ""));
+                export.setUpdater(group.getUpdatedByFirstName() + " " + group.getUpdatedByLastName());
+                if (Strings.isNullOrEmpty(export.getUpdater())) {
                     export.setFounder("--");
                 }
-                export.setUpdatedTime(group.getUpdatedTime()==null?"--": DateUtil.format(DateUtil.dateAddHour(group.getUpdatedTime(),8),""));
+                export.setUpdatedTime(group.getUpdatedTime() == null ? "--" : DateUtil.format(DateUtil.dateAddHour(group.getUpdatedTime(), 8), ""));
                 exportList.add(export);
             }
             try {
@@ -196,13 +204,13 @@ public class RosGroupServiceImpl implements RosGroupService {
     private void getUserName(List<GroupResult> groupList) {
         List<Long> createIds = groupList.stream().map(GroupResult::getCreatedById).collect(Collectors.toList());
         QueryWrapper<OpeSysStaff> qwCreat = new QueryWrapper<>();
-        qwCreat.in(OpeSysStaff.COL_ID,createIds);
+        qwCreat.in(OpeSysStaff.COL_ID, createIds);
         List<OpeSysStaff> creatUserList = opeSysStaffService.list(qwCreat);
-        if(CollectionUtils.isNotEmpty(creatUserList)){
+        if (CollectionUtils.isNotEmpty(creatUserList)) {
             // 补全创建人信息
             for (GroupResult result : groupList) {
                 for (OpeSysStaff staff : creatUserList) {
-                    if(result.getCreatedById().equals(staff.getId())){
+                    if (result.getCreatedById().equals(staff.getId())) {
                         result.setCreatedByFirstName(staff.getFirstName());
                         result.setCreatedByLastName(staff.getLastName());
                     }
@@ -212,13 +220,13 @@ public class RosGroupServiceImpl implements RosGroupService {
 
         List<Long> updateIds = groupList.stream().map(GroupResult::getUpdatedById).collect(Collectors.toList());
         QueryWrapper<OpeSysStaff> qwUpdate = new QueryWrapper<>();
-        qwUpdate.in(OpeSysStaff.COL_ID,updateIds);
+        qwUpdate.in(OpeSysStaff.COL_ID, updateIds);
         List<OpeSysStaff> updateUserList = opeSysStaffService.list(qwUpdate);
-        if(CollectionUtils.isNotEmpty(updateUserList)){
+        if (CollectionUtils.isNotEmpty(updateUserList)) {
             // 补全修改人信息
             for (GroupResult result : groupList) {
                 for (OpeSysStaff staff : updateUserList) {
-                    if(result.getUpdatedById().equals(staff.getId())){
+                    if (result.getUpdatedById().equals(staff.getId())) {
                         result.setUpdatedByFirstName(staff.getFirstName());
                         result.setUpdatedByLastName(staff.getLastName());
                     }

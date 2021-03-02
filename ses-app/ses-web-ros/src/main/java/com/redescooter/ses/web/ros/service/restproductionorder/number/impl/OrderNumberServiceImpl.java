@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderNumberTypeEnums;
 import com.redescooter.ses.api.common.vo.base.StringResult;
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.service.base.*;
@@ -14,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import static com.redescooter.ses.api.common.enums.restproductionorder.OrderNumberTypeEnums.IN_WHOUSE;
 
 @Service
 @Slf4j
@@ -46,13 +44,13 @@ public class OrderNumberServiceImpl implements OrderNumberService {
     private OpeInWhouseOrderService opeInWhouseOrderService;
 
     /**
+     * @param enter
      * @Description
      * @Author: alex
      * @Date: 2020/10/28 12:51
      * @Param: enter
      * @Return: StringResult
      * @desc: 订单编号
-     * @param enter
      */
     @Override
     public StringResult orderNumber(OrderNumberEnter enter) {
@@ -78,7 +76,7 @@ public class OrderNumberServiceImpl implements OrderNumberService {
                 return new StringResult(opeOutwhOrder == null ? generalOrderNum(null, OrderNumberTypeEnums.STOCK.getValue()) : generalOrderNum(opeOutwhOrder.getOutWhNo(),
                         OrderNumberTypeEnums.STOCK.getValue()));
             case 5:
-                //调拨单
+                //委托单
                 OpeEntrustOrder opeEntrustOrder = opeEntrustOrderService.getOne(new LambdaQueryWrapper<OpeEntrustOrder>().orderByDesc(OpeEntrustOrder::getCreatedTime).last("limit 1"));
                 return new StringResult(opeEntrustOrder == null ? generalOrderNum(null, OrderNumberTypeEnums.CONSIGN.getValue()) : generalOrderNum(opeEntrustOrder.getEntrustNo(),
                         OrderNumberTypeEnums.CONSIGN.getValue()));

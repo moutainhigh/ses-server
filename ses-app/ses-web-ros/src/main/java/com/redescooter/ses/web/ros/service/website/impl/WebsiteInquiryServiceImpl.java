@@ -19,9 +19,9 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.config.SendinBlueConfig;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.DateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
-import com.redescooter.ses.tool.utils.accountType.RsaUtils;
+import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.website.WebsiteInquiryServiceMapper;
 import com.redescooter.ses.web.ros.dm.*;
@@ -40,10 +40,10 @@ import okhttp3.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
@@ -84,7 +84,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Autowired
     private OpeCustomerService opeCustomerService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired
@@ -165,7 +165,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public SaveOrderFormResult saveOrderForm(SaveSaleOrderEnter enter) {
         //入参对象去空格
@@ -281,6 +281,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public SaveOrderFormResult editOrderForm(SaveSaleOrderEnter enter) {
 
         //入参对象去空格

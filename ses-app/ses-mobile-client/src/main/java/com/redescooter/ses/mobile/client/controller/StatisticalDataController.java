@@ -10,8 +10,12 @@ import com.redescooter.ses.api.mobile.b.vo.MobileBScooterChartResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.web.bind.annotation.*;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
@@ -29,7 +33,7 @@ import java.util.Map;
 @RequestMapping(value = "/data", method = RequestMethod.POST)
 public class StatisticalDataController {
 
-    @Reference
+    @DubboReference
     private StatisticalDataService statisticalDataService;
 
     @ApiOperation(value = "司机骑行总统计")

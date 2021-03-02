@@ -134,13 +134,11 @@ public class AssemblyController {
         return new Response<>(assemblyService.assemblyNode(enter));
     }
 
-
     @PostMapping(value = "/qcResultList")
     @ApiOperation(value = "质检结果列表", response = Map.class)
     public Response<Map<String, String>> qcResultList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(assemblyService.qcResultList(enter));
     }
-
 
     @PostMapping(value = "/assemblyQcInfo")
     @ApiOperation(value = "组装单质检记录", response = AssemblyQcInfoResult.class)

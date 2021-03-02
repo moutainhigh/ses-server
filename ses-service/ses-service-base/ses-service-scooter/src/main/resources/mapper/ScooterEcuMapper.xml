@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.scooter.dao.ScooterEcuMapper">
+
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.api.scooter.vo.emqx.ScooterEcuDTO">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="scooter_no" jdbcType="VARCHAR" property="scooterNo" />
+        <result column="battery" jdbcType="INTEGER" property="battery" />
+        <result column="bluetooth_mac_address" jdbcType="VARCHAR" property="bluetoothMacAddress" />
+        <result column="bluetooth_name" jdbcType="VARCHAR" property="bluetooth_name" />
+        <result column="iccid" jdbcType="VARCHAR" property="iccid" />
+        <result column="latitude" jdbcType="DECIMAL" property="latitude" />
+        <result column="longitude" jdbcType="DECIMAL" property="longitude" />
+        <result column="mobile_signal" jdbcType="INTEGER" property="mobileSignal" />
+        <result column="scooter_lock" jdbcType="BOOLEAN" property="scooterLock" />
+        <result column="sn" jdbcType="VARCHAR" property="tabletSn" />
+        <result column="speed" jdbcType="FLOAT" property="speed" />
+        <result column="standby_voltage" jdbcType="FLOAT" property="standbyVoltage" />
+        <result column="torsion" jdbcType="INTEGER" property="torsion" />
+        <result column="total_miles" jdbcType="INTEGER" property="totalMiles" />
+        <result column="version_code" jdbcType="VARCHAR" property="versionCode" />
+    </resultMap>
+
+    <update id="updateScooterEcu" parameterType="com.redescooter.ses.api.scooter.vo.emqx.ScooterEcuDTO">
+        update sco_scooter_ecu
+        <set>
+            <if test="scooterNo != null">
+                scooter_no = #{scooterNo,jdbcType=VARCHAR},
+            </if>
+            <if test="battery != null">
+                battery = #{battery,jdbcType=INTEGER},
+            </if>
+            <if test="bluetoothMacAddress != null">
+                bluetooth_mac_address = #{bluetoothMacAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="bluetooth_name != null">
+                bluetooth_name = #{bluetooth_name,jdbcType=VARCHAR},
+            </if>
+            <if test="iccid != null">
+                iccid = #{iccid,jdbcType=VARCHAR},
+            </if>
+            <if test="latitude != null">
+                latitude = #{latitude,jdbcType=DECIMAL},
+            </if>
+            <if test="longitude != null">
+                longitude = #{longitude,jdbcType=DECIMAL},
+            </if>
+            <if test="mobileSignal != null">
+                mobile_signal = #{mobileSignal,jdbcType=INTEGER},
+            </if>
+            <if test="scooterLock != null">
+                scooter_lock = #{scooterLock,jdbcType=BOOLEAN},
+            </if>
+            <if test="tabletSn != null">
+                sn = #{tabletSn,jdbcType=VARCHAR},
+            </if>
+            <if test="speed != null">
+                speed = #{speed,jdbcType=FLOAT},
+            </if>
+            <if test="standbyVoltage != null">
+                standby_voltage = #{standbyVoltage,jdbcType=FLOAT},
+            </if>
+            <if test="torsion != null">
+                torsion = #{torsion,jdbcType=INTEGER},
+            </if>
+            <if test="totalMiles != null">
+                total_miles = #{totalMiles,jdbcType=INTEGER},
+            </if>
+            <if test="versionCode != null">
+                version_code = #{versionCode,jdbcType=VARCHAR},
+            </if>
+            <if test="updatedTime != null">
+                updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <insert id="insertScooterEcu" parameterType="com.redescooter.ses.api.scooter.vo.emqx.ScooterEcuDTO">
+        insert into sco_scooter_ecu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="scooterNo != null">
+                scooter_no,
+            </if>
+            <if test="battery != null">
+                battery,
+            </if>
+            <if test="bluetoothMacAddress != null">
+                bluetooth_mac_address,
+            </if>
+            <if test="bluetooth_name != null">
+                bluetooth_name,
+            </if>
+            <if test="iccid != null">
+                iccid,
+            </if>
+            <if test="latitude != null">
+                latitude,
+            </if>
+            <if test="longitude != null">
+                longitude,
+            </if>
+            <if test="mobileSignal != null">
+                mobile_signal,
+            </if>
+            <if test="scooterLock != null">
+                scooter_lock,
+            </if>
+            <if test="tabletSn != null">
+                sn,
+            </if>
+            <if test="speed != null">
+                speed,
+            </if>
+            <if test="standbyVoltage != null">
+                standby_voltage,
+            </if>
+            <if test="torsion != null">
+                torsion,
+            </if>
+            <if test="totalMiles != null">
+                total_miles,
+            </if>
+            <if test="versionCode != null">
+                version_code,
+            </if>
+            <if test="createdBy != null">
+                created_by,
+            </if>
+            <if test="createdTime != null">
+                created_time,
+            </if>
+            <if test="updatedBy != null">
+                updated_by,
+            </if>
+            <if test="updatedTime != null">
+                updated_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="scooterNo != null">
+                #{scooterNo,jdbcType=VARCHAR},
+            </if>
+            <if test="battery != null">
+                #{battery,jdbcType=INTEGER},
+            </if>
+            <if test="bluetoothMacAddress != null">
+                #{bluetoothMacAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="bluetooth_name != null">
+                #{bluetooth_name,jdbcType=VARCHAR},
+            </if>
+            <if test="iccid != null">
+                #{iccid,jdbcType=VARCHAR},
+            </if>
+            <if test="latitude != null">
+                #{latitude,jdbcType=DECIMAL},
+            </if>
+            <if test="longitude != null">
+                #{longitude,jdbcType=DECIMAL},
+            </if>
+            <if test="mobileSignal != null">
+                #{mobileSignal,jdbcType=INTEGER},
+            </if>
+            <if test="scooterLock != null">
+                #{scooterLock,jdbcType=BOOLEAN},
+            </if>
+            <if test="tabletSn != null">
+                #{tabletSn,jdbcType=VARCHAR},
+            </if>
+            <if test="speed != null">
+                #{speed,jdbcType=FLOAT},
+            </if>
+            <if test="standbyVoltage != null">
+                #{standbyVoltage,jdbcType=FLOAT},
+            </if>
+            <if test="torsion != null">
+                #{torsion,jdbcType=INTEGER},
+            </if>
+            <if test="totalMiles != null">
+                #{totalMiles,jdbcType=INTEGER},
+            </if>
+            <if test="versionCode != null">
+                #{versionCode,jdbcType=VARCHAR},
+            </if>
+            <if test="createdBy != null">
+                #{createdBy,jdbcType=BIGINT},
+            </if>
+            <if test="createdTime != null">
+                #{createdTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatedBy != null">
+                #{updatedBy,jdbcType=BIGINT},
+            </if>
+            <if test="updatedTime != null">
+                #{updatedTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <!--根据车辆编号查询车辆ECU仪表数据-->
+    <select id="getScooterEcuBySerialNumber" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from sco_scooter_ecu
+        where `sn` = #{serialNumber} and `dr` = 0
+    </select>
+
+    <!--批量根据scooterId查询ECU仪表数据-->
+    <select id="batchGetScooterEcuByScooterId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select ecu.*
+        from sco_scooter s
+        inner join sco_scooter_ecu ecu
+        on s.tablet_sn = ecu.sn and ecu.dr = 0
+        where s.dr = 0
+        <foreach collection="scooterIds" item="scooterId" open="and s.id in(" separator="," close=")">
+            #{scooterId}
+        </foreach>
+    </select>
+
+    <!--根据tabletSnList查询车辆仪表ECU数据-->
+    <select id="getScooterEcuByTabletSnList" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select * from sco_scooter_ecu
+	    where dr = 0
+	    <foreach collection="tabletSnList" item="tabletSn" open="and sn in(" separator="," close=")">
+            #{tabletSn}
+        </foreach>
+    </select>
+
+
+    <update id="deleteScooterEcuById">
+        update sco_scooter_ecu set dr = 1 where id = #{id}
+    </update>
+</mapper>

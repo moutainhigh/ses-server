@@ -1,7 +1,7 @@
 package com.redescooter.ses.service.hub.aspect;
 
 import com.redescooter.ses.api.hub.exception.SeSHubException;
-import com.redescooter.ses.tool.utils.ServiceAspectUtil;
+import com.redescooter.ses.tool.aspect.ServiceAspectUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;

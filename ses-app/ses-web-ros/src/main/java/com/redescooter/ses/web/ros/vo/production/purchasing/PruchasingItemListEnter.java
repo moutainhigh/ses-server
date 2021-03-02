@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PruchasingItemListEnter extends PageEnter {
 
-    @ApiModelProperty(value = "类型")
+    @ApiModelProperty(value = "类型 1Parts 2Accessory 3Battery 6Ecu")
     private String productType;
 
     @ApiModelProperty(value = "供应商")
@@ -32,4 +32,10 @@ public class PruchasingItemListEnter extends PageEnter {
 
     @ApiModelProperty(value = "关键字")
     private String keyword;
+
+    @ApiModelProperty("仓库类型,1:中国仓库，2：法国仓库")
+    private Integer stockType;
+
+    @ApiModelProperty(value = "是否是不合格品库产生，0:否，1:是")
+    private Integer source;
 }

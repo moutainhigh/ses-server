@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "/admin/")
 public class AdminController {
+
     @Autowired
     private DeleteRosLoginDateService deleteRosLoginDateService;
 
