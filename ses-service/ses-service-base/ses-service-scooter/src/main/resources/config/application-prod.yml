@@ -4,25 +4,16 @@ log:
     path: ${log.path}@profile-active@
     max-size: 128MB
     max-history: 180
-
-# DUBBO 配置
-dubbo:                                                                                                                  ##DUBBO配置
-  registry:                                                                                                             #注册中心
-    address: zookeeper://172.31.5.73:2181?backup=172.31.5.73:2182,172.31.5.73:2183
-
-jasypt:
-  encryptor:
-    property:
-      prefix: RedE(   # 加密前缀
-      suffix: )            # 加密后缀
-    ivGeneratorClassname: org.jasypt.salt.RandomIVGenerator
-
+dubbo:
+  registry:
+    address: zookeeper://10.1.1.142:2181?backup=10.1.1.142:2182,10.1.1.142:2183
+  metadata-report:
+    address: zookeeper://10.1.1.142:2181?backup=10.1.1.142:2182,10.1.1.142:2183
 spring:
-  #数据库连接
-  datasource:                                                                                                           #数据库连接
-    url: RedE(w67gcY8zXtgJOayQO8BSE6SRYBVKRqEzB0JoX37pGcmutm+8Q1nO/vYitxVhbCOoC2txI3GrFV5dPEyvz0x/G0yKkICoZwRE6HrnFbmnBrg3bbqVqsn4BfdBChWxNJDEpaPHEXehsU6XCMJorHbuNltkBQxEzcqiiGGM9fScWLqp7pX7KFTUuRZ3QoScHIwFaLknxdPSusGJ6X3nhLF43ix9y3k9E6qg+TvQWGGjH2hjjOnPqllja/Cr59si0GsXoYAXp5UV+0W1V9zMeH+ojFPNIwZqpvlHRTKRU4jKJi2F/Hv4TbxzEFQ0am9XnYQd)
-    username: RedE(o8C1Nwm+Jz+qAJ5agE+v2w==)
-    password: RedE(INiYiZuqy0UL8XEMB+H2OTIXV4g2fUAzpOYfm7NcV7N32jRvUXgOEPFgID32+DI+)
+  datasource:
+    url: jdbc:mysql://10.1.2.53:2021/scooter_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    username: rede
+    password: rede1qaz2wsx
     druid:
       initial-size: 8
       min-idle: 1
@@ -32,12 +23,12 @@ spring:
   redis:
     cluster:
       nodes:
-        - 172.31.5.73:7000
-        - 172.31.5.73:7001
-        - 172.31.5.73:7002
-        - 172.31.5.73:7003
-        - 172.31.5.73:7004
-        - 172.31.5.73:7005
+        - 10.1.2.53:7000
+        - 10.1.2.53:7001
+        - 10.1.2.53:7002
+        - 10.1.2.53:7003
+        - 10.1.2.53:7004
+        - 10.1.2.53:7005
 # MQTT配置信息(本地启动使用本地证书)
 mqtt:
   ca: /root/certs/my_root_ca.pem
@@ -47,20 +38,3 @@ mqtt:
   keepalive: 60
   url: ssl://client.redemotors.com
 
-
-
-
-
-# 多注册中心配置
-#    reg2:
-#      group: hdg2
-#      address: zookeeper://zk1.t.xqcx.com:32181?backup=zk2.t.xqcx.com:32181,zk3.t.xqcx.com:32181
-
-
-# sentinel 规则文件位置，以下依次是：流控规则，降级规则，系统规则文件位置
-#sentinel:
-#  zk-address: zk1.t.xqcx.com:32181,zk2.t.xqcx.com:32181,zk3.t.xqcx.com:32181
-#  groupid: hdg_sentinel
-#  flow-dataid: @project.artifactId@-flow
-#  degra-dedataid: @project.artifactId@-degra
-#  system-dataid: @project.artifactId@-sys
