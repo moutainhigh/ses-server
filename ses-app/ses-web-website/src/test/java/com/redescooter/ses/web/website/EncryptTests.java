@@ -44,12 +44,14 @@ public class EncryptTests extends SesWebsiteApplicationTests {
 
     @Test
     public void encryptor() {
-        System.out.println(getEncryptResult("root"));
-        System.out.println(getEncryptResult("1qaz2wsx"));
+        String name = getEncryptResult("root");
+        String pwd = getEncryptResult("1qaz2wsx");
+        System.out.println(name);
+        System.out.println(pwd);
 
         log.info("==========================================");
 
-        System.out.println(getDecryptResult(getEncryptResult("root")));
-        System.out.println(getDecryptResult(getEncryptResult("1qaz2wsx")));
+        System.out.println(name);
+        System.out.println(pwd);
     }
 }
