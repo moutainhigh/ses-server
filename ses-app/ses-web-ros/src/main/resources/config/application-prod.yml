@@ -19,7 +19,7 @@ spring:
       enabled: true
   datasource:
     url: jdbc:mysql://10.1.2.53:2021/operation_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
-    username: rede
+    username: rede2
     password: rede1qaz2wsx
     druid:
       initial-size: 8
