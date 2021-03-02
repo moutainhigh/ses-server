@@ -22,8 +22,7 @@ spring:
     basename: i18n/messages
     fallback-to-system-locale: false
     encoding: UTF-8
-  #数据库连接
-  datasource:
+  datasource:                                                                                                           #数据库连接
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
@@ -36,9 +35,9 @@ spring:
       pool-prepared-statements: true
       max-open-prepared-statements: 20
       max-pool-prepared-statement-per-connection-size: 20
-      filters: stat
       connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
       use-global-data-source-stat: true
+      filters: stat,wall
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: UTC
