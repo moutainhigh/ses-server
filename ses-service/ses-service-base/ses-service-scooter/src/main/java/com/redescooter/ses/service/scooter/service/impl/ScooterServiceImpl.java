@@ -81,9 +81,7 @@ public class ScooterServiceImpl implements ScooterService {
         return scooterResultList;
     }
 
-
-
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveScooter(List<BaseScooterEnter> enter) {
         //目前只有车辆新建业务
@@ -167,6 +165,7 @@ public class ScooterServiceImpl implements ScooterService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult updateStatus(UpdateStatusEnter enter) {
         ScoScooter scoScooter = scoScooterService.query().eq(ScoScooter.COL_ID, enter.getId()).one();
         if (scoScooter == null) {
@@ -283,6 +282,7 @@ public class ScooterServiceImpl implements ScooterService {
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteScooterData(String sn) {
         // 先删除车辆、
         QueryWrapper<ScoScooter> sc = new QueryWrapper<>();

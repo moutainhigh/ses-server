@@ -26,7 +26,6 @@ import com.redescooter.ses.mobile.rps.dm.OpeAssemblyOrder;
 import com.redescooter.ses.mobile.rps.dm.OpeAssemblyOrderPart;
 import com.redescooter.ses.mobile.rps.dm.OpeAssemblyPreparation;
 import com.redescooter.ses.mobile.rps.dm.OpeParts;
-import com.redescooter.ses.mobile.rps.dm.OpePurchasB;
 import com.redescooter.ses.mobile.rps.dm.OpeStock;
 import com.redescooter.ses.mobile.rps.dm.OpeStockProdPart;
 import com.redescooter.ses.mobile.rps.dm.OpeStockPurchas;
@@ -37,11 +36,11 @@ import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAllocateBService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAllocateBTraceService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAllocateService;
-import com.redescooter.ses.mobile.rps.service.base.OpePartsService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyOrderPartService;
-import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyPreparationService;
-import com.redescooter.ses.mobile.rps.service.base.OpeStockBillService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyOrderService;
+import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyPreparationService;
+import com.redescooter.ses.mobile.rps.service.base.OpePartsService;
+import com.redescooter.ses.mobile.rps.service.base.OpeStockBillService;
 import com.redescooter.ses.mobile.rps.service.base.OpeStockProdPartService;
 import com.redescooter.ses.mobile.rps.service.base.OpeStockPurchasService;
 import com.redescooter.ses.mobile.rps.service.base.OpeStockService;
@@ -60,7 +59,7 @@ import com.redescooter.ses.mobile.rps.vo.preparematerial.SavePrepareMaterialPart
 import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -124,7 +123,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
     @Autowired
     private OpeStockService opeStockService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -163,7 +162,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult confirmPreparation(ConfirmPreparationEnter enter) {
         if (StringUtils.equals(enter.getSourceType(), SourceTypeEnums.ALLOCATE.getValue())) {
@@ -308,7 +307,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SavePrepareMaterialEnter enter) {
         //备料部件集合
@@ -361,6 +360,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult allocatePreparation(AllocatePreparationEnter enter) {
         //调拨单备料记录集合
         List<OpeAllocateBTrace> opeAllocateBTraceList = Lists.newArrayList();
@@ -592,6 +592,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult assemblyPreparation(AssemblyPreparationEnter enter) {
         //组装单备料集合
         List<OpeAssemblyPreparation> saveAssemblyPreparationList = Lists.newArrayList();
@@ -903,7 +904,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
                     opeStock.setWaitStoredTotal(item.getTotal() + opeStock.getWaitStoredTotal());
                     opeStock.setUpdatedTime(new Date());
                     saveOpeStockList.add(opeStock);
-                }else {
+                } else {
                     OpeParts parts = partsList.stream().filter(part -> item.getPartId().equals(part.getId())).findFirst().orElse(null);
                     //创建库存
                     saveOpeStockList.add(buildStock(whse, parts, item));

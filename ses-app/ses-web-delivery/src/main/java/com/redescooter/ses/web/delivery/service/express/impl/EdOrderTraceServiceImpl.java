@@ -2,15 +2,16 @@ package com.redescooter.ses.web.delivery.service.express.impl;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.edorder.BaseExpressOrderTraceEnter;
 import com.redescooter.ses.api.common.vo.edorder.BaseExpressOrderResult;
+import com.redescooter.ses.api.common.vo.edorder.BaseExpressOrderTraceEnter;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrderTrace;
 import com.redescooter.ses.web.delivery.service.base.CorExpressOrderTraceService;
 import com.redescooter.ses.web.delivery.service.express.EdOrderTraceService;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ public class EdOrderTraceServiceImpl implements EdOrderTraceService {
 
     @Autowired
     private CorExpressOrderTraceService corExpressOrderTraceService;
+
     /**
      * 批量订单记录
      *
@@ -34,10 +36,10 @@ public class EdOrderTraceServiceImpl implements EdOrderTraceService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void batchSaveExpressOrderTrace(List<BaseExpressOrderTraceEnter> enter) {
         List<CorExpressOrderTrace> corExpressOrderTraceList=new ArrayList<>();
         if (CollectionUtils.isNotEmpty(enter)) {
-
             enter.forEach(item -> {
                 CorExpressOrderTrace corExpressOrderTrace = new CorExpressOrderTrace();
                 BeanUtils.copyProperties(item, corExpressOrderTrace);
@@ -55,6 +57,7 @@ public class EdOrderTraceServiceImpl implements EdOrderTraceService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult saveExpressOrderTrace(BaseExpressOrderTraceEnter enter) {
         CorExpressOrderTrace corExpressOrderTrace = new CorExpressOrderTrace();
         BeanUtils.copyProperties(enter, corExpressOrderTrace);

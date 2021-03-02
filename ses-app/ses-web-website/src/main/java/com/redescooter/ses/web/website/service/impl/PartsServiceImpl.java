@@ -35,12 +35,11 @@ import java.util.List;
  * @Date 2021/1/6 3:55 下午
  * @Description 配件服务接口实现类
  **/
-
 @Slf4j
 @Service
 public class PartsServiceImpl implements PartsService {
 
-    @Autowired(required = true)
+    @Autowired
     private SitePartsService sitePartsService;
 
     @DubboReference
@@ -52,7 +51,7 @@ public class PartsServiceImpl implements PartsService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addParts(AddPartsEnter enter) {
         SiteParts addSitePartsVO = new SiteParts();
@@ -60,12 +59,12 @@ public class PartsServiceImpl implements PartsService {
         addSitePartsVO.setDr(Constant.DR_FALSE);
         addSitePartsVO.setStatus(CommonStatusEnums.NORMAL.getValue());
 
-        if(enter.getPartsType()==PartsTypeEnums.BATTERY.getValue()){
+        if (enter.getPartsType() == PartsTypeEnums.BATTERY.getValue()) {
             addSitePartsVO.setPartsType(PartsTypeEnums.BATTERY.getValue());
         }
-        if(enter.getPartsType()==PartsTypeEnums.ACCESSORY.getValue()){
+        if (enter.getPartsType() == PartsTypeEnums.ACCESSORY.getValue()) {
             addSitePartsVO.setPartsType(PartsTypeEnums.ACCESSORY.getValue());
-        }else{
+        } else {
             throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
                     ExceptionCodeEnums.PARAM_ERROR.getMessage());
         }
@@ -93,6 +92,7 @@ public class PartsServiceImpl implements PartsService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult modityParts(ModityPartsEnter enter) {
 
         SiteParts modityPartsClassVO = new SiteParts();
@@ -109,6 +109,7 @@ public class PartsServiceImpl implements PartsService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult removeParts(IdEnter enter) {
         sitePartsService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());

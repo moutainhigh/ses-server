@@ -47,7 +47,7 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addPaymentType(AddPaymentTypeEnter enter) {
         SitePaymentType addPaymentType = new SitePaymentType();

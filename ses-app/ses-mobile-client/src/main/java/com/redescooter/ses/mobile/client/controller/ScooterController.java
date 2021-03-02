@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 
 /**
  * 车辆相关接口管理
+ *
  * @author assert
  * @date 2020/11/18 15:34
  */
@@ -28,9 +29,9 @@ public class ScooterController {
     @Resource
     private ScooterService scooterService;
 
-
     /**
      * 查询车辆信息
+     *
      * @param: enter
      * @return: com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.scooter.BaseScooterResult>
      * @author: assert
@@ -44,6 +45,7 @@ public class ScooterController {
 
     /**
      * 车辆开关锁
+     *
      * @param: lock
      * @return: com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
      * @author: assert
@@ -57,6 +59,7 @@ public class ScooterController {
 
     /**
      * 车辆开关导航
+     *
      * @param: enter
      * @return: com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
      * @author: assert

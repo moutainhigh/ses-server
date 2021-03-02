@@ -18,38 +18,10 @@ import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproductionorder.OutboundOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.ProductionAssemblyOrderServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeCombinOrder;
-import com.redescooter.ses.web.ros.dm.OpeCombinOrderCombinB;
-import com.redescooter.ses.web.ros.dm.OpeCombinOrderScooterB;
-import com.redescooter.ses.web.ros.dm.OpeInvoiceOrder;
-import com.redescooter.ses.web.ros.dm.OpeOutWhCombinB;
-import com.redescooter.ses.web.ros.dm.OpeOutWhPartsB;
-import com.redescooter.ses.web.ros.dm.OpeOutWhScooterB;
-import com.redescooter.ses.web.ros.dm.OpeOutWhouseOrder;
-import com.redescooter.ses.web.ros.dm.OpeProductionCombinBom;
-import com.redescooter.ses.web.ros.dm.OpeProductionParts;
-import com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation;
-import com.redescooter.ses.web.ros.dm.OpeSysStaff;
-import com.redescooter.ses.web.ros.dm.OpeWmsCombinStock;
-import com.redescooter.ses.web.ros.dm.OpeWmsPartsStock;
-import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeCombinOrderCombinBService;
-import com.redescooter.ses.web.ros.service.base.OpeCombinOrderScooterBService;
-import com.redescooter.ses.web.ros.service.base.OpeCombinOrderService;
-import com.redescooter.ses.web.ros.service.base.OpeInvoiceOrderService;
-import com.redescooter.ses.web.ros.service.base.OpeOutWhCombinBService;
-import com.redescooter.ses.web.ros.service.base.OpeOutWhPartsBService;
-import com.redescooter.ses.web.ros.service.base.OpeOutWhScooterBService;
-import com.redescooter.ses.web.ros.service.base.OpeOutWhouseOrderService;
-import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
-import com.redescooter.ses.web.ros.service.base.OpeProductionPartsRelationService;
-import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
-import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
-import com.redescooter.ses.web.ros.service.base.OpeWmsCombinStockService;
-import com.redescooter.ses.web.ros.service.base.OpeWmsPartsStockService;
-import com.redescooter.ses.web.ros.service.base.OpeWmsScooterStockService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.assembly.ProductionAssemblyOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
@@ -67,28 +39,17 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.ListByBussIdEn
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderDetailResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.OutboundOrderListResult;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOrUpdateOutCombinBEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOrUpdateOutOrderEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOrUpdateOutPartsBEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOrUpdateOutScooterBEnter;
-import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.SaveOutboundOrderEnter;
+import com.redescooter.ses.web.ros.vo.restproductionorder.outboundorder.*;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.KeywordEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -170,7 +131,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
     @Autowired
     private OpeWmsPartsStockService opeWmsPartsStockService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -266,6 +227,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult delete(IdEnter enter) {
         opeOutWhouseOrderService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
@@ -381,7 +343,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
      * @Return: GeneralResult
      * @desc: 保存
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveOutboundOrderEnter enter) {
         OpeSysStaff opeSysStaff = opeSysStaffService.getById(enter.getUserId());
@@ -724,7 +686,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult outOrderSave(SaveOrUpdateOutOrderEnter enter) {
         // 去空格
         SesStringUtils.objStringTrim(enter);
@@ -771,7 +733,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult outOrderEdit(SaveOrUpdateOutOrderEnter enter) {
         OpeOutWhouseOrder outWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
         if (outWhouseOrder == null) {
@@ -899,7 +861,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                 // combin
                 // 组装件，先找到该组装单需要的组装件，再找到这些组装件需要哪些部件组成
                 QueryWrapper<OpeCombinOrderCombinB> combinBs = new QueryWrapper<>();
-                combinBs.eq(OpeCombinOrderScooterB.COL_COMBIN_ID, enter.getId());
+                combinBs.eq(OpeCombinOrderCombinB.COL_COMBIN_ID, enter.getId());
                 List<OpeCombinOrderCombinB> combinOrderCombinBS = opeCombinOrderCombinBomService.list(combinBs);
                 if (CollectionUtils.isNotEmpty(combinOrderCombinBS)) {
                     // 找到该组装单需要的组装件
@@ -942,7 +904,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult outWhConfirm(IdEnter enter) {
         OpeOutWhouseOrder opeOutWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
         if (opeOutWhouseOrder == null) {
@@ -1052,8 +1014,8 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         }
     }
 
-
     public void createOutOrderB(OpeOutWhouseOrder orderOrder, String st, Long userId) {
+        boolean flag = false;
         switch (orderOrder.getOutWhType()) {
             case 1:
                 // scooter
@@ -1065,8 +1027,11 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                 }
                 if (CollectionUtils.isNotEmpty(scooterEnters)) {
                     List<OpeOutWhScooterB> scooterBList = new ArrayList<>();
-                    orderOrder.setOutWhQty(scooterEnters.stream().mapToInt(SaveOrUpdateOutScooterBEnter::getQty).sum());
                     for (SaveOrUpdateOutScooterBEnter scooterEnter : scooterEnters) {
+                        if (null == scooterEnter.getQty()) {
+                            flag = true;
+                            break;
+                        }
                         OpeOutWhScooterB scooterB = new OpeOutWhScooterB();
                         BeanUtils.copyProperties(scooterEnter, scooterB);
                         scooterB.setId(idAppService.getId(SequenceName.OPE_OUT_WH_SCOOTER_B));
@@ -1077,6 +1042,10 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                         scooterB.setUpdatedTime(new Date());
                         scooterBList.add(scooterB);
                     }
+                    if (flag) {
+                        throw new SesWebRosException(ExceptionCodeEnums.NUMBER_NOT_EMPTY.getCode(), ExceptionCodeEnums.NUMBER_NOT_EMPTY.getMessage());
+                    }
+                    orderOrder.setOutWhQty(scooterEnters.stream().mapToInt(SaveOrUpdateOutScooterBEnter::getQty).sum());
                     opeOutWhScooterBService.saveOrUpdateBatch(scooterBList);
                 }
             default:
@@ -1091,8 +1060,11 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                 }
                 if (CollectionUtils.isNotEmpty(combinBEnters)) {
                     List<OpeOutWhCombinB> combinBList = new ArrayList<>();
-                    orderOrder.setOutWhQty(combinBEnters.stream().mapToInt(SaveOrUpdateOutCombinBEnter::getQty).sum());
                     for (SaveOrUpdateOutCombinBEnter combinBEnter : combinBEnters) {
+                        if (null == combinBEnter.getQty()) {
+                            flag = true;
+                            break;
+                        }
                         OpeOutWhCombinB combinB = new OpeOutWhCombinB();
                         BeanUtils.copyProperties(combinBEnter, combinB);
                         combinB.setId(idAppService.getId(SequenceName.OPE_OUT_WH_COMBIN_B));
@@ -1103,6 +1075,10 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                         combinB.setUpdatedTime(new Date());
                         combinBList.add(combinB);
                     }
+                    if (flag) {
+                        throw new SesWebRosException(ExceptionCodeEnums.NUMBER_NOT_EMPTY.getCode(), ExceptionCodeEnums.NUMBER_NOT_EMPTY.getMessage());
+                    }
+                    orderOrder.setOutWhQty(combinBEnters.stream().mapToInt(SaveOrUpdateOutCombinBEnter::getQty).sum());
                     opeOutWhCombinBService.saveOrUpdateBatch(combinBList);
                 }
                 break;
@@ -1116,8 +1092,11 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                 }
                 if (CollectionUtils.isNotEmpty(partsBEnters)) {
                     List<OpeOutWhPartsB> partsBList = new ArrayList<>();
-                    orderOrder.setOutWhQty(partsBEnters.stream().mapToInt(SaveOrUpdateOutPartsBEnter::getQty).sum());
                     for (SaveOrUpdateOutPartsBEnter partsBEnter : partsBEnters) {
+                        if (null == partsBEnter.getQty()) {
+                            flag = true;
+                            break;
+                        }
                         OpeOutWhPartsB partsB = new OpeOutWhPartsB();
                         BeanUtils.copyProperties(partsBEnter, partsB);
                         partsB.setId(idAppService.getId(SequenceName.OPE_OUT_WH_PARTS_B));
@@ -1128,6 +1107,10 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                         partsB.setUpdatedTime(new Date());
                         partsBList.add(partsB);
                     }
+                    if (flag) {
+                        throw new SesWebRosException(ExceptionCodeEnums.NUMBER_NOT_EMPTY.getCode(), ExceptionCodeEnums.NUMBER_NOT_EMPTY.getMessage());
+                    }
+                    orderOrder.setOutWhQty(partsBEnters.stream().mapToInt(SaveOrUpdateOutPartsBEnter::getQty).sum());
                     opeOutWhPartsBService.saveOrUpdateBatch(partsBList);
                 }
                 break;
@@ -1261,7 +1244,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
      * 模拟ROS开始质检
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult startQc(IdEnter enter) {
         OpeOutWhouseOrder opeOutWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
         if (opeOutWhouseOrder == null) {
@@ -1282,14 +1265,11 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
      * 模拟ROS结束质检
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult endQc(IdEnter enter) {
         OpeOutWhouseOrder opeOutWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
         if (opeOutWhouseOrder == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
-        }
-        if (!opeOutWhouseOrder.getOutWhStatus().equals(OutBoundOrderStatusEnums.QUALITY_INSPECTION.getValue())) {
-            throw new SesWebRosException(ExceptionCodeEnums.ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.ORDER_STATUS_ERROR.getMessage());
         }
         opeOutWhouseOrder.setOutStockTime(new Date());
         opeOutWhouseOrder.setOutWhStatus(NewOutBoundOrderStatusEnums.OUT_STOCK.getValue());
@@ -1323,7 +1303,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
      * @param combinId
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void createOutWhByCombin(Long combinId, Long userId) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(combinId);
         if (opeCombinOrder == null) {
@@ -1390,7 +1370,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
             case 2:
                 // 组装件，先找到该组装单需要的组装件，再找到这些组装件需要哪些部件组成
                 QueryWrapper<OpeCombinOrderCombinB> combinBs = new QueryWrapper<>();
-                combinBs.eq(OpeCombinOrderScooterB.COL_COMBIN_ID, combinId);
+                combinBs.eq(OpeCombinOrderCombinB.COL_COMBIN_ID, combinId);
                 List<OpeCombinOrderCombinB> combinOrderCombinBS = opeCombinOrderCombinBomService.list(combinBs);
                 if (CollectionUtils.isNotEmpty(combinOrderCombinBS)) {
                     // 找到该组装单需要的组装件
@@ -1418,7 +1398,6 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
                                             }
                                         }
                                         partsBEnter.setQty(relation.getPartsQty() * multipleNumber);
-                                        partsBEnter.setQty(relation.getPartsQty());
                                         partsBEnter.setPartsId(productionParts.getId());
                                         partsBEnterList.add(partsBEnter);
                                     }

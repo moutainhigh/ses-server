@@ -87,7 +87,8 @@ public class FrWhServiceImpl implements FrWhService {
 
 
     /**
-     *  出入库统计
+     * 出入库统计
+     *
      * @param enter
      * @return
      */
@@ -97,25 +98,26 @@ public class FrWhServiceImpl implements FrWhService {
         // 今日入库
         FrTodayInOrOutStockCountResult inWh = new FrTodayInOrOutStockCountResult();
         inWh.setType(1);
-        inWh.setScooterNum(wmsFinishStockMapper.frTodayScooterInOrOutStockCount(DateUtil.getDate(),1));
-        inWh.setCombinNum(wmsFinishStockMapper.frTodayCombinInOrOutStockCount(DateUtil.getDate(),1));
-        inWh.setPartsNum(wmsMaterialStockMapper.frTodayPartsInOrOutStockCount(DateUtil.getDate(),1));
+        inWh.setScooterNum(wmsFinishStockMapper.frTodayScooterInOrOutStockCount(DateUtil.getDate(), 1));
+        inWh.setCombinNum(wmsFinishStockMapper.frTodayCombinInOrOutStockCount(DateUtil.getDate(), 1));
+        inWh.setPartsNum(wmsMaterialStockMapper.frTodayPartsInOrOutStockCount(DateUtil.getDate(), 1));
         inWh.setCountNum(inWh.getScooterNum() + inWh.getCombinNum() + inWh.getPartsNum());
         list.add(inWh);
 
         // 今日出库
         FrTodayInOrOutStockCountResult outWh = new FrTodayInOrOutStockCountResult();
         outWh.setType(2);
-        outWh.setScooterNum(wmsFinishStockMapper.frTodayScooterInOrOutStockCount(DateUtil.getDate(),2));
-        outWh.setCombinNum(wmsFinishStockMapper.frTodayCombinInOrOutStockCount(DateUtil.getDate(),2));
-        outWh.setPartsNum(wmsMaterialStockMapper.frTodayPartsInOrOutStockCount(DateUtil.getDate(),2));
+        outWh.setScooterNum(wmsFinishStockMapper.frTodayScooterInOrOutStockCount(DateUtil.getDate(), 2));
+        outWh.setCombinNum(wmsFinishStockMapper.frTodayCombinInOrOutStockCount(DateUtil.getDate(), 2));
+        outWh.setPartsNum(wmsMaterialStockMapper.frTodayPartsInOrOutStockCount(DateUtil.getDate(), 2));
         outWh.setCountNum(outWh.getScooterNum() + outWh.getCombinNum() + outWh.getPartsNum());
         list.add(outWh);
         return list;
     }
 
     /**
-     *  库存统计
+     * 库存统计
+     *
      * @param enter
      * @return
      */
@@ -124,25 +126,26 @@ public class FrWhServiceImpl implements FrWhService {
         FrStockCountResult result = new FrStockCountResult();
         // 车辆
         QueryWrapper<OpeWmsScooterStock> scooter = new QueryWrapper<>();
-        scooter.eq(OpeWmsScooterStock.COL_STOCK_TYPE,2);
+        scooter.eq(OpeWmsScooterStock.COL_STOCK_TYPE, 2);
         List<OpeWmsScooterStock> scooterStockList = opeWmsScooterStockService.list(scooter);
-        result.setScooterNum(CollectionUtils.isEmpty(scooterStockList)?0:scooterStockList.stream().mapToInt(OpeWmsScooterStock::getAbleStockQty).sum());
+        result.setScooterNum(CollectionUtils.isEmpty(scooterStockList) ? 0 : scooterStockList.stream().mapToInt(OpeWmsScooterStock::getAbleStockQty).sum());
         // 组装件
         QueryWrapper<OpeWmsCombinStock> comb = new QueryWrapper<>();
-        comb.eq(OpeWmsCombinStock.COL_STOCK_TYPE,2);
+        comb.eq(OpeWmsCombinStock.COL_STOCK_TYPE, 2);
         List<OpeWmsCombinStock> combStockList = opeWmsCombinStockService.list(comb);
-        result.setCombinNum(CollectionUtils.isEmpty(combStockList)?0:combStockList.stream().mapToInt(OpeWmsCombinStock::getAbleStockQty).sum());
+        result.setCombinNum(CollectionUtils.isEmpty(combStockList) ? 0 : combStockList.stream().mapToInt(OpeWmsCombinStock::getAbleStockQty).sum());
         // 部件
         QueryWrapper<OpeWmsPartsStock> parts = new QueryWrapper<>();
-        parts.eq(OpeWmsPartsStock.COL_STOCK_TYPE,2);
+        parts.eq(OpeWmsPartsStock.COL_STOCK_TYPE, 2);
         List<OpeWmsPartsStock> partsStockList = opeWmsPartsStockService.list(parts);
-        result.setPartsNum(CollectionUtils.isEmpty(partsStockList)?0:partsStockList.stream().mapToInt(OpeWmsPartsStock::getAbleStockQty).sum());
+        result.setPartsNum(CollectionUtils.isEmpty(partsStockList) ? 0 : partsStockList.stream().mapToInt(OpeWmsPartsStock::getAbleStockQty).sum());
         return result;
     }
 
 
     /**
      * 法国仓库车辆库存列表
+     *
      * @param enter
      * @return
      */
@@ -160,6 +163,7 @@ public class FrWhServiceImpl implements FrWhService {
 
     /**
      * 法国仓库车辆库存详情
+     *
      * @param enter
      * @return
      */
@@ -178,6 +182,7 @@ public class FrWhServiceImpl implements FrWhService {
 
     /**
      * 法国组装件库存列表
+     *
      * @param enter
      * @return
      */
@@ -195,13 +200,14 @@ public class FrWhServiceImpl implements FrWhService {
 
     /**
      * 法国组装件库存详情
+     *
      * @param enter
      * @return
      */
     @Override
     public WmsfinishCombinDetailResult frCombinDetail(IdEnter enter) {
         OpeWmsCombinStock combinStock = opeWmsCombinStockService.getById(enter.getId());
-        if (combinStock == null){
+        if (combinStock == null) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
         WmsfinishCombinDetailResult result = wmsFinishStockMapper.finishCombinDetail(enter.getId());
@@ -214,6 +220,7 @@ public class FrWhServiceImpl implements FrWhService {
 
     /**
      * 法国部件的库存列表
+     *
      * @param enter
      * @return
      */
@@ -243,13 +250,14 @@ public class FrWhServiceImpl implements FrWhService {
 
     /**
      * 法国部件的库存详情
+     *
      * @param enter
      * @return
      */
     @Override
     public MaterialpartsStockDetailResult frPartsDetail(IdEnter enter) {
         OpeWmsPartsStock partsStock = opeWmsPartsStockService.getById(enter.getId());
-        if (partsStock == null){
+        if (partsStock == null) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
         MaterialpartsStockDetailResult result = wmsMaterialStockMapper.materialStockPartsDetail(enter.getId());
@@ -279,6 +287,7 @@ public class FrWhServiceImpl implements FrWhService {
 
     /**
      * 新建出库单时，计算同车型/颜色的车辆可用库存时多少（出库数量要小于库存数）
+     *
      * @param enter
      * @param whtype 1:中国仓库，2：法国仓库
      * @return
@@ -286,15 +295,15 @@ public class FrWhServiceImpl implements FrWhService {
     @Override
     public IntResult scooterNum(WmsFinishScooterListEnter enter, Integer whtype) {
         int num = 0;
-        if(enter.getGroupId() != null && enter.getColorId() != null) {
+        if (enter.getGroupId() != null && enter.getColorId() != null) {
             switch (enter.getSource()) {
                 case 0:
                     QueryWrapper<OpeWmsScooterStock> qw = new QueryWrapper<>();
-                    qw.eq(OpeWmsScooterStock.COL_GROUP_ID,enter.getGroupId());
-                    qw.eq(OpeWmsScooterStock.COL_COLOR_ID,enter.getColorId());
-                    qw.eq(OpeWmsScooterStock.COL_STOCK_TYPE,whtype);
+                    qw.eq(OpeWmsScooterStock.COL_GROUP_ID, enter.getGroupId());
+                    qw.eq(OpeWmsScooterStock.COL_COLOR_ID, enter.getColorId());
+                    qw.eq(OpeWmsScooterStock.COL_STOCK_TYPE, whtype);
                     List<OpeWmsScooterStock> list = opeWmsScooterStockService.list(qw);
-                    if (CollectionUtils.isNotEmpty(list)){
+                    if (CollectionUtils.isNotEmpty(list)) {
                         num = list.stream().mapToInt(OpeWmsScooterStock::getAbleStockQty).sum();
                     }
                 default:
@@ -302,11 +311,11 @@ public class FrWhServiceImpl implements FrWhService {
                 case 1:
                     // 说明是不合格品库正常创建出库单 可出库的数量来源与不合格品库的整车数量
                     QueryWrapper<OpeWmsQualifiedScooterStock> qualifiedScooterStockQueryWrapper = new QueryWrapper<>();
-                    qualifiedScooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_COLOR_ID,enter.getColorId());
-                    qualifiedScooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_GROUP_ID,enter.getGroupId());
+                    qualifiedScooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_COLOR_ID, enter.getColorId());
+                    qualifiedScooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_GROUP_ID, enter.getGroupId());
                     qualifiedScooterStockQueryWrapper.last("limit 1");
                     OpeWmsQualifiedScooterStock qualifiedScooterStock = opeWmsQualifiedScooterStockService.getOne(qualifiedScooterStockQueryWrapper);
-                    if (qualifiedScooterStock != null){
+                    if (qualifiedScooterStock != null) {
                         num = qualifiedScooterStock.getQty();
                     }
                     break;
@@ -321,18 +330,18 @@ public class FrWhServiceImpl implements FrWhService {
         Map<String, Integer> map = new HashMap<>();
         // 车辆
         QueryWrapper<OpeWmsScooterStock> scooter = new QueryWrapper<>();
-        scooter.eq(OpeWmsScooterStock.COL_STOCK_TYPE,enter.getStockType());
-        map.put("1",opeWmsScooterStockService.count(scooter));
+        scooter.eq(OpeWmsScooterStock.COL_STOCK_TYPE, enter.getStockType());
+        map.put("1", opeWmsScooterStockService.count(scooter));
 
         // 组装件
         QueryWrapper<OpeWmsCombinStock> combin = new QueryWrapper<>();
-        combin.eq(OpeWmsCombinStock.COL_STOCK_TYPE,enter.getStockType());
-        map.put("2",opeWmsCombinStockService.count(combin));
+        combin.eq(OpeWmsCombinStock.COL_STOCK_TYPE, enter.getStockType());
+        map.put("2", opeWmsCombinStockService.count(combin));
 
         // 部件
         QueryWrapper<OpeWmsPartsStock> parts = new QueryWrapper<>();
-        parts.eq(OpeWmsPartsStock.COL_STOCK_TYPE,enter.getStockType());
-        map.put("3",opeWmsPartsStockService.count(parts));
+        parts.eq(OpeWmsPartsStock.COL_STOCK_TYPE, enter.getStockType());
+        map.put("3", opeWmsPartsStockService.count(parts));
         return map;
     }
 

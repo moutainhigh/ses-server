@@ -37,11 +37,12 @@ public class SpecificatTypeController {
 
     /**
      * 新增规格类型,新接口(new)
+     *
      * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
      * @author assert
      * @date 2020/12/7
-    */
+     */
     @ApiOperation(value = "新增规格类型", notes = "新增规格类型,新接口(new)")
     @PostMapping(value = "/insert")
     @AvoidDuplicateSubmit
@@ -51,11 +52,12 @@ public class SpecificatTypeController {
 
     /**
      * 修改规格类型,新接口(new)
+     *
      * @param paramDTO
      * @return com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
      * @author assert
      * @date 2020/12/17
-    */
+     */
     @ApiOperation(value = "修改规格类型", notes = "修改规格类型,新接口(new)")
     @PostMapping(value = "/update")
     public Response<GeneralResult> updateSpecificType(@ModelAttribute InsertSpecificTypeParamDTO paramDTO) {
@@ -64,11 +66,12 @@ public class SpecificatTypeController {
 
     /**
      * 根据id查询规格类型详情
+     *
      * @param enter
      * @return com.redescooter.ses.api.common.vo.base.Response<QuerySpecificTypeDetailResultDTO>
      * @author assert
      * @date 2020/12/8
-    */
+     */
     @ApiOperation(value = "查询规格类型详情", notes = "根据id查询规格类型详情,新接口(new)")
     @PostMapping(value = "/detail")
     public Response<QuerySpecificTypeDetailResultDTO> getSpecificTypeDetailById(@ModelAttribute IdEnter enter) {

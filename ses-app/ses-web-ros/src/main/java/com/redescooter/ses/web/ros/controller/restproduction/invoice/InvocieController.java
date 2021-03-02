@@ -21,6 +21,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/restproduction/invoice")
 public class InvocieController {
+
     @Autowired
     private InvoiceOrderService invoiceOrderService;
 
@@ -36,13 +37,11 @@ public class InvocieController {
         return new Response<>(invoiceOrderService.statusList(enter));
     }
 
-
     @PostMapping(value = "/list")
     @ApiOperation(value = "列表", response = InvoiceOrderListResult.class)
     public Response<PageResult<InvoiceOrderListResult>> list(@ModelAttribute @ApiParam("请求参数") InvoiceOrderListEnter enter) {
         return new Response<>(invoiceOrderService.list(enter));
     }
-
 
     @PostMapping(value = "/detail")
     @ApiOperation(value = "详情", response = InvoiceOrderDetailResult.class)
@@ -73,6 +72,5 @@ public class InvocieController {
     public Response<GeneralResult> detail(@ModelAttribute @ApiParam("请求参数") SaveInvoiceEnter enter) {
         return new Response<>(invoiceOrderService.save(enter));
     }
-
 
 }

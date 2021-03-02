@@ -1,13 +1,12 @@
 package com.redescooter.ses.service.common.service.impl;
 
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.service.common.service.CityAppService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 
 import java.util.Map;
 
@@ -19,12 +18,11 @@ import java.util.Map;
  * @create: 2020/01/13 13:02
  */
 @Slf4j
-@Service
+@DubboService
 public class CityAppServiceImpl implements CityAppService {
 
-    @Reference
+    @DubboReference
     private CityBaseService cityBaseService;
-
 
     /**
      * 根据Code 查询城市名称

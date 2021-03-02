@@ -6,7 +6,6 @@ import com.redescooter.ses.app.common.service.FileAppService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,7 +48,6 @@ public class FileController {
                                        @PathVariable(required = false) String bucket,
                                        @PathVariable(required = false) String dirName,
                                        MultipartFile file) {
-
-        return new Response(true, fileAppService.uplaod(bucket,dirName, file));
+        return new Response(true, fileAppService.uplaod(bucket, dirName, file));
     }
 }

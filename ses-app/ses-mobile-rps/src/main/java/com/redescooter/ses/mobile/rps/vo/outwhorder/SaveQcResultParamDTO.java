@@ -40,7 +40,7 @@ public class SaveQcResultParamDTO extends GeneralEnter {
     @ApiModelProperty(value = "质检数量(无码产品传递)", dataType = "Integer")
     private Integer qcQty;
 
-    @ApiModelProperty(value = "车载平板序列号(车辆质检扫码时传递", dataType = "String")
+    @ApiModelProperty(value = "车载平板序列号(车辆质检扫码时传递)", dataType = "String")
     private String tabletSn;
 
     @ApiModelProperty(value = "蓝牙mac地址(仪表质检时传递)", dataType = "String")
@@ -50,8 +50,7 @@ public class SaveQcResultParamDTO extends GeneralEnter {
     @ApiModelProperty(value = "是否有序列号 true/false", dataType = "Boolean", required = true)
     private Boolean idClass;
 
-    @ApiModelProperty(value = "产品质检结果json数据, 格式：[{\"templateId\":\"质检模板id\",\"templateResultId\":\"质检结果id\"," +
-            "\"imageUrls\":\"质检图片,多个使用逗号隔开\",\"remark\":\"备注说明\"}]", required = true)
+    @ApiModelProperty(value = "产品质检结果json数据, 格式：[{\"templateId\":\"质检模板id\",\"templateResultId\":\"质检结果id\",\"imageUrls\":\"质检图片,多个使用逗号隔开\",\"remark\":\"备注说明\"}]", required = true)
     private String st;
 
 }

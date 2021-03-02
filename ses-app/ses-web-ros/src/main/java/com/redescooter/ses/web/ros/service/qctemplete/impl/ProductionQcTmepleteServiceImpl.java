@@ -9,22 +9,39 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.qctemplete.ProductionQcTempleteServiceMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeProductionCombinBom;
+import com.redescooter.ses.web.ros.dm.OpeProductionParts;
+import com.redescooter.ses.web.ros.dm.OpeProductionQualityTempate;
+import com.redescooter.ses.web.ros.dm.OpeProductionQualityTempateB;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionQualityTempateBService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionQualityTempateService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
 import com.redescooter.ses.web.ros.service.qctemplete.ProductionQcTmepleteService;
-import com.redescooter.ses.web.ros.vo.bom.*;
+import com.redescooter.ses.web.ros.vo.bom.QcItemTemplateEnter;
+import com.redescooter.ses.web.ros.vo.bom.QcResultEnter;
+import com.redescooter.ses.web.ros.vo.bom.QcResultResult;
+import com.redescooter.ses.web.ros.vo.bom.QcTemplateDetailResult;
+import com.redescooter.ses.web.ros.vo.bom.SaveQcTemplateEnter;
 import com.redescooter.ses.web.ros.vo.qctemplete.QcTempleteDetailEnter;
 import com.redescooter.ses.web.ros.vo.qctemplete.SaveByCopyIdEnter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -54,7 +71,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
     @Autowired
     private ProductionQcTempleteServiceMapper productionQcTmepleteServiceMapper;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -150,14 +167,14 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
         checkOpeProductionProduction(enter.getId(), enter.getProductionProductType());
 
         List<QcTemplateDetailResult> result = productionQcTmepleteServiceMapper.detail(enter);
-
         if (CollectionUtils.isEmpty(result)) {
-            return new ArrayList<>();
+            return Collections.EMPTY_LIST;
         }
         List<QcResultResult> qcResultResultList = productionQcTmepleteServiceMapper.detailQcResultList(result.stream().map(QcTemplateDetailResult::getId).collect(Collectors.toList()));
         if (CollectionUtils.isEmpty(qcResultResultList)) {
-            return new ArrayList<>();
+            return Collections.EMPTY_LIST;
         }
+
         result.forEach(item -> {
             item.setQcResultResultList(qcResultResultList.stream().filter(qcResult -> item.getId().equals(qcResult.getQualityTempateId())).collect(Collectors.toList()));
         });
@@ -171,7 +188,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveByCopyId(SaveByCopyIdEnter enter) {
         List<OpeProductionQualityTempate> opeProductionQualityTempateList =
@@ -273,24 +290,24 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
             case 4:
                 OpeProductionScooterBom productionScooterBom = opeProductionScooterBomService.getById(enter.getId());
 //                if (Objects.isNull(productionScooterBom.getQcFlag()) || !productionScooterBom.getQcFlag()) {
-                    productionScooterBom.setQcFlag(Boolean.TRUE);
-                    opeProductionScooterBomService.updateById(productionScooterBom);
+                productionScooterBom.setQcFlag(Boolean.TRUE);
+                opeProductionScooterBomService.updateById(productionScooterBom);
 //                }
                 break;
             case 5:
                 OpeProductionCombinBom productionCombinBom = opeProductionCombinBomService.getById(enter.getId());
                 //更改质检模版标示
 //                if (Objects.isNull(productionCombinBom.getQcFlag() || !productionCombinBom.getQcFlag())) {
-                    productionCombinBom.setQcFlag(Boolean.TRUE);
-                    opeProductionCombinBomService.updateById(productionCombinBom);
+                productionCombinBom.setQcFlag(Boolean.TRUE);
+                opeProductionCombinBomService.updateById(productionCombinBom);
 //                }
                 break;
             default:
                 OpeProductionParts opeProductionPart = opeProductionPartsService.getById(enter.getId());
                 //更改质检模版标示
 //                if (Objects.isNull(opeProductionPart.getQcFlag()) || !opeProductionPart.getQcFlag()) {
-                    opeProductionPart.setQcFlag(Boolean.TRUE);
-                    opeProductionPartsService.updateById(opeProductionPart);
+                opeProductionPart.setQcFlag(Boolean.TRUE);
+                opeProductionPartsService.updateById(opeProductionPart);
 //                }
                 break;
         }

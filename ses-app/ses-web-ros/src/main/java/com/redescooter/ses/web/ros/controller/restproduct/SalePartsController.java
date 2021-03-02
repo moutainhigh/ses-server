@@ -25,7 +25,6 @@ import java.util.List;
 @RequestMapping(value = "/sale/parts")
 public class SalePartsController {
 
-    
     @Autowired
     private SalePartsService salePartsService;
 
@@ -36,13 +35,11 @@ public class SalePartsController {
         return new Response<>(salePartsService.saveSaleParts(enter));
     }
 
-
     @PostMapping(value = "/list")
     @ApiOperation(value = "销售部件列表", response = SaleScooterListResult.class)
     public Response<PageResult<SalePartsListResult>> list(@ModelAttribute @ApiParam("请求参数") SaleListEnter enter) {
         return new Response(salePartsService.salePartsList(enter));
     }
-
 
     @PostMapping(value = "/edit")
     @ApiOperation(value = "编辑销售部件", response = GeneralResult.class)
@@ -50,13 +47,11 @@ public class SalePartsController {
         return new Response<>(salePartsService.editSaleParts(enter));
     }
 
-
     @PostMapping(value = "/delete")
     @ApiOperation(value = "删除销售部件", response = GeneralResult.class)
     public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(salePartsService.deleteSaleParts(enter));
     }
-
 
     @PostMapping(value = "/editSaleStatus")
     @ApiOperation(value = "销售状态的编辑", response = GeneralResult.class)
@@ -64,13 +59,11 @@ public class SalePartsController {
         return new Response<>(salePartsService.editSalePartsStatus(enter));
     }
 
-
     @PostMapping(value = "/partsNameData")
     @ApiOperation(value = "销售部件名称下拉接口", response = PartsNameData.class)
     public Response<List<PartsNameData>> partsNameData(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(salePartsService.partsNameData(enter));
     }
-
 
     @PostMapping(value = "/bomNoData")
     @ApiOperation(value = "销售部件编号下拉接口", response = PartsNoData.class)

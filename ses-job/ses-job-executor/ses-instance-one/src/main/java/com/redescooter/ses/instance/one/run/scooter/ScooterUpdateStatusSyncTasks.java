@@ -8,7 +8,7 @@ import com.xxl.job.core.handler.IJobHandler;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import com.xxl.job.core.log.XxlJobLogger;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
@@ -22,9 +22,8 @@ import java.util.Calendar;
 @Component
 public class ScooterUpdateStatusSyncTasks {
 
-    @Reference
+    @DubboReference
     private RunScooterTaskExecutorJobService runScooterTaskExecutorJobService;
-
 
     @XxlJob("scooterUpdateStatusSyncTasks")
     public ReturnT<String> scooterUpdateStatusSyncTasks(String param) throws Exception {

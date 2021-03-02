@@ -62,7 +62,7 @@ public class ImportExcelServiceImpl<T> implements ImportExcelService<T> {
             List<T> failList = new ArrayList<>();
             if (excelImportResult.getFailList().size() > 0) {
                 for (T t : excelImportResult.getFailList()) {
-                    if(!isAllFieldNull(t)){
+                    if (!isAllFieldNull(t)) {
                         failList.add(t);
                     }
                 }
@@ -93,11 +93,11 @@ public class ImportExcelServiceImpl<T> implements ImportExcelService<T> {
             //遍历属性
             f.setAccessible(true); // 设置属性是可以访问的(私有的也可以)
             Object val = f.get(obj);// 得到此属性的值
-            if (!Objects.isNull(val) && !f.getName().equals("errorMsg")  && !f.getName().equals("rowNum")) {//只要有1个属性不为空,那么就不是所有的属性值都为空
+            if (!Objects.isNull(val) && !f.getName().equals("errorMsg") && !f.getName().equals("rowNum")) {//只要有1个属性不为空,那么就不是所有的属性值都为空
                 flag = false;
                 break;
             }
-            i ++;
+            i++;
         }
         return flag;
     }

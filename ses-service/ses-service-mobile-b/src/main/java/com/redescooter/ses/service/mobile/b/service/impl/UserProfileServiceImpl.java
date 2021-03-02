@@ -18,10 +18,11 @@ import com.redescooter.ses.api.mobile.b.vo.UserProfileResult;
 import com.redescooter.ses.service.mobile.b.dao.base.CorUserProfileMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorUserProfile;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @ClassName:UserProfileServiceImpl
@@ -30,22 +31,22 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @Version：1.3
  * @create: 2019/12/30 15:24
  */
-@Service
+@DubboService
 public class UserProfileServiceImpl implements UserProfileMobileService {
 
     @Autowired
     private CorUserProfileMapper corUserProfileMapper;
 
-    @Reference
+    @DubboReference
     private ConsumerUserProfileService consumerUserProfileService;
 
-    @Reference
+    @DubboReference
     private AccountBaseService accountBaseService;
 
-    @Reference
+    @DubboReference
     private UserProfileService userProfileService;
 
-    @Reference
+    @DubboReference
     private UserBaseService userBaseService;
 
     /**
@@ -88,6 +89,7 @@ public class UserProfileServiceImpl implements UserProfileMobileService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult saveUserProfile(SaveUserProfileEnter enter) {
 
         QueryUserResult queryUserResult = userBaseService.queryUserById(enter);
@@ -98,15 +100,15 @@ public class UserProfileServiceImpl implements UserProfileMobileService {
 
             CorUserProfile update = new CorUserProfile();
             update.setId(enter.getId());
-            if (StringUtils.isNotBlank(enter.getPicture())){
+            if (StringUtils.isNotBlank(enter.getPicture())) {
                 update.setPicture(enter.getPicture());
             }
-            if (!StringUtils.isAllBlank(enter.getCertificateType(),enter.getCertificateNegativeAnnex(),enter.getCertificatePositiveAnnex())){
+            if (!StringUtils.isAllBlank(enter.getCertificateType(), enter.getCertificateNegativeAnnex(), enter.getCertificatePositiveAnnex())) {
                 update.setCertificateType(enter.getCertificateType());
                 update.setCertificateNegativeAnnex(enter.getCertificateNegativeAnnex());
                 update.setCertificatePositiveAnnex(enter.getCertificatePositiveAnnex());
             }
-            if (StringUtils.isAllBlank(enter.getCountryCode1(),enter.getTelNumber1())){
+            if (StringUtils.isAllBlank(enter.getCountryCode1(), enter.getTelNumber1())) {
                 update.setCountryCode1(enter.getCountryCode1());
                 update.setTelNumber1(enter.getTelNumber1());
             }

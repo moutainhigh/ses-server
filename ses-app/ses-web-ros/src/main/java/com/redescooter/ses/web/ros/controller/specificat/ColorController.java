@@ -37,20 +37,17 @@ public class ColorController {
         return new Response(colorService.colorSave(enter));
     }
 
-
     @PostMapping(value = "/colorList")
     @ApiOperation(value = "颜色列表", response = ColorListResult.class)
     public Response<PageResult<ColorListResult>> colorList(@ModelAttribute @ApiParam("请求参数") PageEnter enter) {
         return new Response(colorService.colorList(enter));
     }
 
-
     @PostMapping(value = "/colorDelete")
     @ApiOperation(value = "颜色删除", response = GeneralResult.class)
     public Response<GeneralResult> colorDelete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response(colorService.colorDelete(enter));
     }
-
 
     @PostMapping(value = "/colorData")
     @ApiOperation(value = "颜色下拉数据源接口", response = ColorDataResult.class)

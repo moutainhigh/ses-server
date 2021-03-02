@@ -1,9 +1,6 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
-import com.alibaba.druid.sql.visitor.functions.If;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
 import com.redescooter.ses.api.common.enums.mesage.MessageStatus;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -27,13 +24,12 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -46,16 +42,19 @@ import java.util.Locale;
  * @create: 2020/01/10 19:38
  */
 @Slf4j
-@Service
+@DubboService
 public class MessageServiceImpl implements MessageService {
 
     @Autowired
     private MessageServiceMapper messageServiceMapper;
+
     @Autowired
     private PlaMessageMapper plaMessageMapper;
+
     @Autowired
     private I18nServiceMessage i18nServiceMessage;
-    @Reference
+
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -115,7 +114,7 @@ public class MessageServiceImpl implements MessageService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult readMessage(ReadMessageEnter enter) {
         // enter 为空全部已读 不为空 指定读取
@@ -140,9 +139,9 @@ public class MessageServiceImpl implements MessageService {
                 if (!enter.getIds().contains(item.getId())) {
                     throw new FoundationException(ExceptionCodeEnums.MESSAGE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.MESSAGE_IS_NOT_EXIST.getMessage());
                 }
-                if (!StringUtils.equals(item.getStatus(), MessageStatus.UNREAD.getValue())) {
+                /*if (!StringUtils.equals(item.getStatus(), MessageStatus.UNREAD.getValue())) {
                     throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(), ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
-                }
+                }*/
             }
             item.setStatus(MessageStatus.READ.getValue());
             item.setUpdatedBy(enter.getUserId());
@@ -160,6 +159,7 @@ public class MessageServiceImpl implements MessageService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void save(MessageSaveEnter enter) {
         PlaMessage record = new PlaMessage();
 

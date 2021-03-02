@@ -93,7 +93,6 @@ public class PurchaseOrderController {
     }
 
 
-
     @PostMapping(value = "/allocateProductData")
     @ApiOperation(value = "调拨单的产品列表", response = AllocateProductListResult.class)
     public Response<AllocateProductListResult> allocateProductData(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
@@ -103,7 +102,7 @@ public class PurchaseOrderController {
 
     @PostMapping(value = "/listCount")
     @ApiOperation(value = "列表统计", response = Map.class)
-    public Response<Map<String,Integer>> listCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<Map<String, Integer>> listCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(purchaseOrderService.listCount(enter));
     }
 
@@ -119,7 +118,6 @@ public class PurchaseOrderController {
     public Response<List<PurchaseCalendarResult>> purchaseCalendar(@ModelAttribute @ApiParam("请求参数") PurchaseCalendarEnter enter) {
         return new Response<>(purchaseOrderService.purchaseCalendar(enter));
     }
-
 
 
 }

@@ -25,7 +25,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.map.MapUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +44,7 @@ import java.util.List;
  * @create: 2019/12/27 10:15
  */
 @Slf4j
-@Service
+@DubboService
 public class ScooterIotServiceImpl implements ScooterIotService {
 
     @Autowired
@@ -57,13 +57,13 @@ public class ScooterIotServiceImpl implements ScooterIotService {
     private ScooterRecordService scooterRecordService;
     @Autowired
     private ScooterService scooterService;
-/*    @Autowired
-    private IotAdminService iotAdminService;*/
+    /*    @Autowired
+        private IotAdminService iotAdminService;*/
     @Autowired
     private ScooterIotServiceMapper scooterIotServiceMapper;
 
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult navigation(IotScooterEnter enter) {
         ScoScooter scoScooter = checkIotScooterEnterParameter(enter);
@@ -79,10 +79,10 @@ public class ScooterIotServiceImpl implements ScooterIotService {
         if (null == scooterResult) {
             throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
         }
-        if(scooterResult.getLatitude() == null){
+        if (scooterResult.getLatitude() == null) {
             scooterResult.setLatitude(enter.getLatitude());
         }
-        if (scooterResult.getLongitule() == null){
+        if (scooterResult.getLongitule() == null) {
             scooterResult.setLongitule(enter.getLongitude());
         }
         List<SaveScooterRecordEnter<BaseScooterEnter>> saveScooterRecordEnterList = new ArrayList<>();
@@ -145,6 +145,7 @@ public class ScooterIotServiceImpl implements ScooterIotService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult lock(IotScooterEnter enter) {
         ScoScooter scoScooter = checkIotScooterEnterParameter(enter);
 
@@ -247,6 +248,7 @@ public class ScooterIotServiceImpl implements ScooterIotService {
 
     /**
      * buildBaseScooterEnterSaveScooterRecordEnter
+     *
      * @param enter
      * @param scooterResult
      * @return

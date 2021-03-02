@@ -1,6 +1,6 @@
 #Springboot 基础配置
 server:
-  port: 8888
+  port: 6666
   servlet:
     context-path: /ses/t/admin/w/dev/api
     encoding:

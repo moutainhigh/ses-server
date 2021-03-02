@@ -3,7 +3,7 @@ package com.redescooter.ses.service.foundation.service.impl;
 import com.redescooter.ses.api.foundation.service.base.GenerateService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.JedisCluster;
 
@@ -19,7 +19,7 @@ import java.util.List;
  * create: 2019-05-17 00:44
  */
 @Slf4j
-@Service
+@DubboService
 public class GenerateServiceImpl implements GenerateService {
 
     private static final char[] SEED = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};

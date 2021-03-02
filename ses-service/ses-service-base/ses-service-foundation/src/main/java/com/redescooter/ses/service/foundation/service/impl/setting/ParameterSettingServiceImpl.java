@@ -1,12 +1,25 @@
 package com.redescooter.ses.service.foundation.service.impl.setting;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.base.SystemTypeEnums;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BooleanEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.StringResult;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.setting.ParameterSettingService;
-import com.redescooter.ses.api.foundation.vo.setting.*;
+import com.redescooter.ses.api.foundation.vo.setting.ParameterGroupResultList;
+import com.redescooter.ses.api.foundation.vo.setting.ParameterListEnter;
+import com.redescooter.ses.api.foundation.vo.setting.ParameterListResult;
+import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
+import com.redescooter.ses.api.foundation.vo.setting.SaveParamentEnter;
+import com.redescooter.ses.api.foundation.vo.setting.SaveParameterBatchEnter;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.ParameterSettingServiceMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaSysGroupSetting;
@@ -17,27 +30,29 @@ import com.redescooter.ses.service.foundation.service.base.PlaSysParamSettingSer
 import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
- *  @author: alex
- *  @Date: 2020/9/16 18:52
- *  @version：V ROS 1.7.1
- *  @Description:
+ * @author: alex
+ * @Date: 2020/9/16 18:52
+ * @version：V ROS 1.7.1
+ * @Description:
  */
-
-@Service
+@DubboService
 public class ParameterSettingServiceImpl implements ParameterSettingService {
 
     @Autowired
     private PlaSysParamSettingService plaSysParamSettingService;
-
 
     @Autowired
     private PlaSysGroupSettingService plaSysGroupSettingService;
@@ -45,12 +60,13 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
     @Autowired
     private ParameterSettingServiceMapper parameterSettingServiceMapper;
 
-    @Autowired
+    @DubboReference
     private IdAppService idAppService;
 
 
     /**
      * 参数名称
+     *
      * @param enter
      * @return
      */
@@ -73,6 +89,7 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
 
     /**
      * 详情
+     *
      * @param enter
      * @return
      */
@@ -83,17 +100,18 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
 
     /**
      * 删除
+     *
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult delete(IdEnter enter) {
         PlaSysParamSetting plaSysParamSetting = plaSysParamSettingService.getById(enter.getId());
         if (plaSysParamSetting == null) {
             throw new FoundationException(ExceptionCodeEnums.PARAMETER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PARAMETER_IS_NOT_EXIST.getMessage());
         }
-        if(plaSysParamSetting.getEnable()){
+        if (plaSysParamSetting.getEnable()) {
             throw new FoundationException(ExceptionCodeEnums.ENABLE_NOT_DELETE.getCode(), ExceptionCodeEnums.ENABLE_NOT_DELETE.getMessage());
         }
         plaSysParamSettingService.removeById(enter.getId());
@@ -102,6 +120,7 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
 
     /**
      * 导出参数列表
+     *
      * @param ids
      * @return
      */
@@ -112,6 +131,7 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
 
     /**
      * 导出参数列表
+     *
      * @param enter
      * @return
      */
@@ -122,10 +142,11 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
 
     /**
      * 参数保存编辑
+     *
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveParamentEnter enter) {
         PlaSysGroupSetting plaSysGroupSetting = plaSysGroupSettingService.getById(enter.getGroupId());
@@ -153,6 +174,7 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
 
     /**
      * 下载模版
+     *
      * @param enter
      * @return
      */
@@ -163,6 +185,7 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
 
     /**
      * 分组列表
+     *
      * @param enter
      * @return
      */
@@ -191,6 +214,7 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
 
     /**
      * 参数名查询
+     *
      * @param parameterNames
      * @param systemType
      * @return
@@ -202,10 +226,11 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
 
     /**
      * 批量保存参数列表
+     *
      * @param saveParameterBatchEnterList
      * @param systemType
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveParameterBatchByImport(List<SaveParameterBatchEnter> saveParameterBatchEnterList, String systemType) {
 
@@ -232,6 +257,77 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
             plaSysParamSettingService.saveBatch(saveList);
         }
 
+    }
+
+    /**
+     * 根据分组名称获得此分组下的所有参数
+     */
+    @Override
+    public List<ParameterListResult> getAllParamByGroup(IdEnter enter) {
+        PlaSysGroupSetting group = plaSysGroupSettingService.getById(enter.getId());
+        if (null == group) {
+            throw new FoundationException(ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getMessage());
+        }
+        if (!group.getEnable()) {
+            throw new FoundationException(ExceptionCodeEnums.GROUP_NOT_ENABLE.getCode(), ExceptionCodeEnums.GROUP_NOT_ENABLE.getMessage());
+        }
+
+        List<ParameterListResult> result = Lists.newArrayList();
+        LambdaQueryWrapper<PlaSysParamSetting> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(PlaSysParamSetting::getDr, 0);
+        wrapper.eq(PlaSysParamSetting::getGroupId, enter.getId());
+        wrapper.eq(PlaSysParamSetting::getEnable, Boolean.TRUE);
+        List<PlaSysParamSetting> list = plaSysParamSettingService.list(wrapper);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (PlaSysParamSetting item : list) {
+                ParameterListResult model = new ParameterListResult();
+                BeanUtils.copyProperties(item, model);
+                result.add(model);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 根据分组名称获得此分组下的所有参数并分组
+     */
+    @Override
+    public List<Map<String, List<ParameterListResult>>> getAllParamByGrouping(IdEnter enter) {
+        PlaSysGroupSetting group = plaSysGroupSettingService.getById(enter.getId());
+        if (null == group) {
+            throw new FoundationException(ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getMessage());
+        }
+        if (!group.getEnable()) {
+            throw new FoundationException(ExceptionCodeEnums.GROUP_NOT_ENABLE.getCode(), ExceptionCodeEnums.GROUP_NOT_ENABLE.getMessage());
+        }
+
+        List<Map<String, List<ParameterListResult>>> result = Lists.newArrayList();
+        LambdaQueryWrapper<PlaSysParamSetting> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(PlaSysParamSetting::getDr, 0);
+        wrapper.eq(PlaSysParamSetting::getGroupId, enter.getId());
+        wrapper.eq(PlaSysParamSetting::getEnable, Boolean.TRUE);
+        List<PlaSysParamSetting> list = plaSysParamSettingService.list(wrapper);
+        Map<Long, List<PlaSysParamSetting>> collect = list.stream().collect(Collectors.groupingBy(o -> o.getGroupId()));
+
+        for (Map.Entry<Long, List<PlaSysParamSetting>> map : collect.entrySet()) {
+            Long key = map.getKey();
+            List<PlaSysParamSetting> value = map.getValue();
+
+            List<ParameterListResult> modelList = Lists.newArrayList();
+            if (CollectionUtils.isNotEmpty(value)) {
+                for (PlaSysParamSetting param : value) {
+                    ParameterListResult model = new ParameterListResult();
+                    BeanUtils.copyProperties(param, model);
+                    modelList.add(model);
+                }
+            }
+
+            Map<String, List<ParameterListResult>> res = Maps.newHashMap();
+            String groupName = plaSysGroupSettingService.getById(key).getGroupName();
+            res.put(groupName, modelList);
+            result.add(res);
+        }
+        return result;
     }
 
     private PlaSysParamSetting buildParament(SaveParamentEnter enter) {

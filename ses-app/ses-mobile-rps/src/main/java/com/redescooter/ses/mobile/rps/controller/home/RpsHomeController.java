@@ -13,6 +13,7 @@ import java.util.Map;
 
 /**
  * RPS首页接口管理
+ *
  * @author assert
  * @date 2021/2/3 9:39
  */
@@ -25,14 +26,14 @@ public class RpsHomeController {
     @Autowired
     private RpsHomeService rpsHomeService;
 
-
     /**
      * 获取所有单据数量
+     *
      * @param enter
-     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.Map<java.lang.Integer,java.lang.Integer>>
+     * @return com.redescooter.ses.api.common.vo.base.Response<java.util.Map < java.lang.Integer, java.lang.Integer>>
      * @author assert
      * @date 2021/2/3
-    */
+     */
     @ApiOperation(value = "获取所有单据数量")
     @PostMapping(value = "/countByAllOrder")
     public Response<Map<Integer, Integer>> getAllOrderCount(@ModelAttribute GeneralEnter enter) {

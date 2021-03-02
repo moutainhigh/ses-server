@@ -4,7 +4,7 @@ import com.redescooter.ses.api.foundation.job.RunDriverActivationStatusTaskExecu
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DriverActivationStatusTask {
 
-    @Reference
+    @DubboReference
     private RunDriverActivationStatusTaskExecutorServiceJob runDriverActivationStatusTaskExecutorServiceJob;
 
     @XxlJob("driverActivationStatusTask")

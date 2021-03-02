@@ -18,7 +18,6 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
-import com.redescooter.ses.web.ros.dao.base.OpePartsProductMapper;
 import com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpePartDraftQcTemplate;
 import com.redescooter.ses.web.ros.dm.OpePartDraftQcTemplateB;
@@ -61,14 +60,13 @@ import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -90,7 +88,7 @@ public class BomRosServiceImpl implements BomRosService {
     @Autowired
     private BomRosServiceMapper bomRosServiceMapper;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired
@@ -116,9 +114,6 @@ public class BomRosServiceImpl implements BomRosService {
 
     @Autowired
     private OpePartsDraftService opePartsDraftService;
-
-    @Autowired
-    private OpePartsProductMapper opePartsProductMapper;
 
     /**
      * @param enter
@@ -147,7 +142,7 @@ public class BomRosServiceImpl implements BomRosService {
      * @date: 2020/2/25 10:36
      * @Version: Ros 1.2
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveScooter(SaveScooterEnter saveScooterEnter) {
         //SaveScooterEnter参数值去空格
@@ -169,7 +164,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .dr(0)
                 .tenantId(0L)
                 .userId(enter.getUserId())
-            .status(String.valueOf(BomStatusEnums.NORMAL.getValue()))
+                .status(String.valueOf(BomStatusEnums.NORMAL.getValue()))
                 .snClass(BomSnClassEnums.SSC.getValue())
                 .productNumber(enter.getProductN())
                 .cnName(enter.getProductName())
@@ -240,7 +235,6 @@ public class BomRosServiceImpl implements BomRosService {
             opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_PARTS_PRODUCT_ID, enter.getId());
             opePartsProductBService.remove(opePartsProductBQueryWrapper);
         }
-
         opePartsProductService.saveOrUpdate(opePartsProduct);
         return new GeneralResult(enter.getRequestId());
     }
@@ -348,7 +342,7 @@ public class BomRosServiceImpl implements BomRosService {
      * @date: 2020/2/25 13:20
      * @Version: Ros 1.2
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult deleteScooterPart(DeletePartEnter enter) {
 
@@ -385,7 +379,7 @@ public class BomRosServiceImpl implements BomRosService {
      * @date: 2020/2/25 14:37
      * @Version: Ros 1.2
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult deleteScooter(IdEnter enter) {
         // 整车查询
@@ -492,6 +486,7 @@ public class BomRosServiceImpl implements BomRosService {
      * @Version: Ros 1.2
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult deleteCombinationPart(DeletePartEnter enter) {
         if (CollectionUtils.isEmpty(enter.getIds())) {
             return new GeneralResult(enter.getRequestId());
@@ -526,7 +521,7 @@ public class BomRosServiceImpl implements BomRosService {
      * @date: 2020/2/25 14:08
      * @Version: Ros 1.2
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult deleteCombination(IdEnter enter) {
         OpePartsProduct combination = opePartsProductService.getById(enter.getId());
@@ -560,7 +555,7 @@ public class BomRosServiceImpl implements BomRosService {
      * @date: 2020/2/25 14:29
      * @Version: Ros 1.2
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveCombination(SaveCombinationEnter enter) {
 
@@ -599,7 +594,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .tenantId(0L)
                 .userId(enter.getUserId())
                 .snClass(BomSnClassEnums.SSC.getValue())
-            .status(String.valueOf(BomStatusEnums.NORMAL.getValue()))
+                .status(String.valueOf(BomStatusEnums.NORMAL.getValue()))
                 .productNumber(enter.getProductN())
                 .cnName(enter.getProductCnName())
                 .frName(enter.getProductFrName())
@@ -702,7 +697,7 @@ public class BomRosServiceImpl implements BomRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult savePartsDraftQcTemplate(SaveQcTemplateEnter enter) {
         //数据保存集合
@@ -828,7 +823,7 @@ public class BomRosServiceImpl implements BomRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveProductQcTemplate(SaveQcTemplateEnter enter) {
         //数据保存集合
@@ -1132,7 +1127,7 @@ public class BomRosServiceImpl implements BomRosService {
                 .dr(0)
                 .tenantId(0L)
                 .userId(userId)
-            .status(String.valueOf(BomStatusEnums.NORMAL.getValue()))
+                .status(String.valueOf(BomStatusEnums.NORMAL.getValue()))
                 .partsProductId(ProductId)
                 .partsId(item.getId())
                 .partsQty(item.getQty())

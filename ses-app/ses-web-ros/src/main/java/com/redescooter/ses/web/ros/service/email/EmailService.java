@@ -2,10 +2,10 @@ package com.redescooter.ses.web.ros.service.email;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.email.EmailListEnter;
 import com.redescooter.ses.api.foundation.vo.mail.MailTemplateResult;
 import com.redescooter.ses.api.foundation.vo.mail.SaveMailTemplateEnter;
 import com.redescooter.ses.api.foundation.vo.mail.UpdateMailTemplateEnter;
-import com.redescooter.ses.web.ros.vo.email.EmailListEnter;
 
 import java.util.List;
 
@@ -46,5 +46,6 @@ public interface EmailService {
      * @param enter
      * @return
      */
-    List<MailTemplateResult> getList(EmailListEnter enter);
+    List<MailTemplateResult> list(EmailListEnter enter);
+
 }

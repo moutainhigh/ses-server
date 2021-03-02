@@ -15,7 +15,9 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.co2.CO2MoneyConversionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
@@ -27,7 +29,7 @@ import java.util.Date;
  * @date 2020/11/26 10:34
  */
 @Slf4j
-@Service
+@DubboService
 public class RideStatCServiceImpl implements RideStatCService {
 
     @Resource
@@ -38,13 +40,13 @@ public class RideStatCServiceImpl implements RideStatCService {
     private ScooterRideStatMapper scooterRideStatMapper;
     @Resource
     private ScooterRideStatDetailMapper scooterRideStatDetailMapper;
-    @Resource
+    @DubboReference
     private IdAppService idAppService;
     @Resource
     private TransactionTemplate transactionTemplate;
 
-
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertDriverAndScooterRideStat(InsertRideStatDataDTO rideStatData) {
         rideStatData.setDuration(rideStatData.getDuration() == 0 ? 1 : rideStatData.getDuration());
         rideStatData.setMileage(rideStatData.getMileage().equals(BigDecimal.ZERO) ? BigDecimal.ONE : rideStatData.getMileage());

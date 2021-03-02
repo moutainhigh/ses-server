@@ -1,7 +1,6 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.google.common.base.Strings;
@@ -38,15 +37,17 @@ import com.redescooter.ses.service.foundation.dm.base.*;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.foundation.service.base.PlaUserService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
+import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
@@ -61,9 +62,8 @@ import java.util.stream.Collectors;
  * @ClassName: UserTokenServiceImpl
  * @Function: TODO
  */
-
 @Slf4j
-@Service
+@DubboService
 public class UserTokenServiceImpl implements UserTokenService {
 
     @Autowired
@@ -93,11 +93,14 @@ public class UserTokenServiceImpl implements UserTokenService {
     @Autowired
     private LoginExtremeExperienceConfig loginExtremeExperienceConfig;
 
-    @Reference
+    @DubboReference
     private MailMultiTaskService mailMultiTaskService;
 
-    @Reference
+    @DubboReference
     private UserProfileService userProfileService;
+
+    @Value("${Request.privateKey}")
+    private  String privateKey;
 
     /**
      * 用户登录
@@ -106,6 +109,7 @@ public class UserTokenServiceImpl implements UserTokenService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public LoginResult login(LoginEnter enter) {
 
         //用户名密码去除空格
@@ -113,18 +117,18 @@ public class UserTokenServiceImpl implements UserTokenService {
         enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
 
         //用户名解密
-        /*if (enter.getPassword() != null && enter.getLoginName() != null) {
+        if (enter.getPassword() != null && enter.getLoginName() != null) {
             String decryptPassword = "";
             String loginName = "";
             try {
-                loginName = RsaUtils.decrypt(enter.getLoginName(), privatekey);
-                decryptPassword = RsaUtils.decrypt(enter.getPassword(), privatekey);
+                loginName = RsaUtils.decrypt(enter.getLoginName(), privateKey);
+                decryptPassword = RsaUtils.decrypt(enter.getPassword(), privateKey);
             } catch (Exception e) {
                 throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
             }
             enter.setPassword(decryptPassword);
             enter.setLoginName(loginName);
-        }*/
+        }
 
         if (enter.getAppId().equals(AppIDEnums.SAAS_WEB.getValue())) {
             // ① PC端登录逻辑
@@ -342,6 +346,7 @@ public class UserTokenServiceImpl implements UserTokenService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult accountDisabled(GeneralEnter enter) {
         // 判断当前账户是否存在
         PlaUser user = userMapper.selectById(enter.getUserId());
@@ -369,6 +374,7 @@ public class UserTokenServiceImpl implements UserTokenService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public LoginResult signIn(AccountsDto user, LoginEnter enter) {
 
         if (StringUtils.isNotBlank(user.getLastLoginToken())) {
@@ -398,7 +404,6 @@ public class UserTokenServiceImpl implements UserTokenService {
      */
     @Override
     public List<UserToken> getAppUser(GetUserEnter enter) {
-
         QueryWrapper<PlaUser> queryWrapper = new QueryWrapper<>();
         if (StringUtils.isNotBlank(enter.getEmail())) {
             queryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getEmail());
@@ -697,7 +702,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         userToken.setDeptId(enter.getOpeDeptId() == null ? new Long("0") : enter.getOpeDeptId());
         try {
             Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);
-            log.info("这个map里面的东西是： "+JSON.toJSONString(map));
+            log.info("这个map里面的东西是： " + JSON.toJSONString(map));
             map.remove("requestId");
             jedisCluster.hmset(token, map);
             jedisCluster.expire(token, new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
@@ -845,7 +850,7 @@ public class UserTokenServiceImpl implements UserTokenService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult chanagePassword(ChanagePasswordEnter enter) {
 
@@ -1004,7 +1009,6 @@ public class UserTokenServiceImpl implements UserTokenService {
 
         //密码去空格
         enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
-
 
         PlaUser plaUser = plaUserMapper.selectById(enter.getUserId());
         if (plaUser == null) {

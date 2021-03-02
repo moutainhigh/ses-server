@@ -39,7 +39,6 @@ public class InquiryController {
     @Autowired
     private InquiryService inquiryService;
 
-
     @PostMapping(value = "/countStatus")
     @ApiOperation(value = "状态统计", response = Map.class)
     public Response<Map<String, Integer>> countStatus(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {

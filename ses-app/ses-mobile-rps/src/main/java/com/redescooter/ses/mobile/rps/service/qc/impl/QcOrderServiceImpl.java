@@ -63,60 +63,80 @@ public class QcOrderServiceImpl implements QcOrderService {
 
     @DubboReference
     private IdAppService idAppService;
+
     @Autowired
     private OpeOrderQcItemMapper opeOrderQcItemMapper;
+
     @Autowired
     private OpeOrderQcTraceMapper opeOrderQcTraceMapper;
+
     @Autowired
     private ProductionQualityTemplateMapper templateMapper;
+
     @Autowired
     private ProductionScooterBomMapper scooterBomMapper;
+
     @Autowired
     private ProductionCombinBomMapper combinBomMapper;
+
     @Autowired
     private ProductionPartsMapper partsMapper;
+
     @Autowired
     private QcOrderMapper qcOrderMapper;
+
     @Autowired
     private QcScooterMapper qcScooterMapper;
+
     @Autowired
     private QcCombinMapper qcCombinMapper;
+
     @Autowired
     private QcPartsMapper qcPartsMapper;
+
     @Autowired
     private QcOrderSerialBindMapper qcOrderSerialBindMapper;
+
     @Autowired
     private OpeProductionPurchaseOrderService opeProductionPurchaseOrderService;
+
     @Autowired
     private OpeOutWhouseOrderService opeOutWhouseOrderService;
+
     @Autowired
     private CombinationOrderMapper combinationOrderMapper;
+
     @Autowired
     private WmsStockSerialNumberMapper wmsStockSerialNumberMapper;
+
     @Autowired
     private OpeWmsQualifiedScooterStockService opeWmsQualifiedScooterStockService;
+
     @Autowired
     private OpeWmsQualifiedCombinStockService opeWmsQualifiedCombinStockService;
+
     @Autowired
     private OpeWmsQualifiedPartsStockService opeWmsQualifiedPartsStockService;
+
     @Autowired
     private OpeCombinOrderService opeCombinOrderService;
+
     @Autowired
     private OpeWmsStockRecordMapper opeWmsStockRecordMapper;
+
     @Autowired
     private WmsScooterStockMapper wmsScooterStockMapper;
+
     @Autowired
     private WmsCombinStockMapper wmsCombinStockMapper;
+
     @Autowired
     private WmsPartsStockMapper wmsPartsStockMapper;
-
 
     @Override
     public Map<Integer, Integer> getQcOrderTypeCount(GeneralEnter enter) {
         List<CountByStatusResult> countByStatusResultList = qcOrderMapper.getQcOrderTypeCount();
-        /**
-         * {orderType, totalCount}
-         */
+        //TODO: {orderType, totalCount}
         Map<Integer, Integer> map = countByStatusResultList.stream().collect(
                 Collectors.toMap(r -> Integer.valueOf(r.getStatus()), CountByStatusResult::getTotalCount)
         );
@@ -132,13 +152,13 @@ public class QcOrderServiceImpl implements QcOrderService {
     @Override
     public Map<Integer, Integer> getQcTypeCount(CountByOrderTypeParamDTO paramDTO) {
         // 调整status值,避免恶意传参导致查询数据有问题
-        paramDTO.setStatus(paramDTO.getStatus() >= 1 ? 1:0);
+        paramDTO.setStatus(paramDTO.getStatus() >= 1 ? 1 : 0);
         List<CountByStatusResult> countByStatusResultList = qcOrderMapper.getQcTypeCount(paramDTO);
         /**
          * {qcType, totalCount}
          */
         Map<Integer, Integer> map = countByStatusResultList.stream().collect(
-                Collectors.toMap(r -> Integer.valueOf(r.getStatus()), CountByStatusResult:: getTotalCount)
+                Collectors.toMap(r -> Integer.valueOf(r.getStatus()), CountByStatusResult::getTotalCount)
         );
 
         for (QcTypeEnum item : QcTypeEnum.values()) {
@@ -151,12 +171,11 @@ public class QcOrderServiceImpl implements QcOrderService {
 
     @Override
     public PageResult<QueryQcOrderResultDTO> getQcOrderList(QueryQcOrderParamDTO paramDTO) {
-        paramDTO.setStatus(paramDTO.getStatus() >= 1 ? 1:0);
+        paramDTO.setStatus(paramDTO.getStatus() >= 1 ? 1 : 0);
         int count = qcOrderMapper.countByQcOrder(paramDTO);
         if (0 == count) {
             return PageResult.createZeroRowResult(paramDTO);
         }
-
         return PageResult.create(paramDTO, count, qcOrderMapper.getQcOrderList(paramDTO));
     }
 
@@ -278,7 +297,7 @@ public class QcOrderServiceImpl implements QcOrderService {
 
                 productType = QcTemplateProductTypeEnum.SCOOTER.getType();
                 break;
-            case 2 :
+            case 2:
                 OpeProductionCombinBom opeProductionCombinBom = combinBomMapper.getCombinBomById(paramDTO.getBomId());
                 RpsAssert.isNull(opeProductionCombinBom, ExceptionCodeEnums.COMBINATION_BOM_IS_NOT_EXISTS.getCode(),
                         ExceptionCodeEnums.COMBINATION_BOM_IS_NOT_EXISTS.getMessage());
@@ -315,7 +334,7 @@ public class QcOrderServiceImpl implements QcOrderService {
                 Collectors.groupingBy(ProductQcTemplateResultDTO::getTemplateId)
         );
 
-        productQcTemplateList.forEach(template ->{
+        productQcTemplateList.forEach(template -> {
             template.setQcTemplateResultList(templateBMap.get(template.getId()));
         });
 
@@ -351,7 +370,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         try {
             qcProductResultList = JSONArray.parseArray(paramDTO.getSt(), QcProductResultDTO.class);
         } catch (Exception e) {
-            throw new SesMobileRpsException(ExceptionCodeEnums.ILLEGAL_DATA.getCode(),ExceptionCodeEnums.ILLEGAL_DATA.getMessage());
+            throw new SesMobileRpsException(ExceptionCodeEnums.ILLEGAL_DATA.getCode(), ExceptionCodeEnums.ILLEGAL_DATA.getMessage());
         }
 
         /**
@@ -363,6 +382,7 @@ public class QcOrderServiceImpl implements QcOrderService {
 
         QueryQcTemplateResultDTO qcTemplateResult = getQcTemplateByIdAndType(queryParam);
         List<ProductQcTemplateDTO> productQcTemplateList = qcTemplateResult.getProductQcTemplateList();
+
         RpsAssert.isEmpty(productQcTemplateList, ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getCode(),
                 ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getMessage());
 
@@ -485,7 +505,7 @@ public class QcOrderServiceImpl implements QcOrderService {
                     scooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_COLOR_ID, scooterBom.getColorId());
 
                     OpeWmsQualifiedScooterStock opeWmsQualifiedScooterStock = opeWmsQualifiedScooterStockService.getOne(scooterStockQueryWrapper);
-                    if(null == opeWmsQualifiedScooterStock){
+                    if (null == opeWmsQualifiedScooterStock) {
                         opeWmsQualifiedScooterStock = new OpeWmsQualifiedScooterStock();
                         opeWmsQualifiedScooterStock.setId(idAppService.getId(SequenceName.OPE_WMS_QUALIFIED_SCOOTER_STOCK));
                         opeWmsQualifiedScooterStock.setDr(0);
@@ -641,13 +661,13 @@ public class QcOrderServiceImpl implements QcOrderService {
                 RpsAssert.isNull(opeQcPartsB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
                 // ECU仪表必须要传递蓝牙mac地址
-                RpsAssert.isTrue(BomCommonTypeEnums.ECU_METER.getValue().equals(opeQcPartsB.getPartsType()) && StringUtils.isBlank(paramDTO.getBluetoothMacAddress()),
+                RpsAssert.isTrue(BomCommonTypeEnums.ECU_METER.getValue().equals(String.valueOf(opeQcPartsB.getPartsType())) && StringUtils.isBlank(paramDTO.getBluetoothMacAddress()),
                         ExceptionCodeEnums.BLUETOOTH_MAC_ADDRESS_IS_EMPTY.getCode(), ExceptionCodeEnums.BLUETOOTH_MAC_ADDRESS_IS_EMPTY.getMessage());
 
                 opeQcOrder = qcOrderMapper.getQcOrderById(opeQcPartsB.getQcId());
                 // 限制无码产品重复质检, 并且无码产品质检数量必须和质检数量一致
                 if (!paramDTO.getIdClass()) {
-                    RpsAssert.isTrue(!qcQty.equals(opeQcPartsB.getQty()),ExceptionCodeEnums.QC_QTY_ERROR.getCode(),
+                    RpsAssert.isTrue(!qcQty.equals(opeQcPartsB.getQty()), ExceptionCodeEnums.QC_QTY_ERROR.getCode(),
                             ExceptionCodeEnums.QC_QTY_ERROR.getMessage());
                     RpsAssert.isTrue(opeQcPartsB.getUnqualifiedQty() > 0 || opeQcPartsB.getQualifiedQty() > 0,
                             ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(), ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
@@ -828,7 +848,6 @@ public class QcOrderServiceImpl implements QcOrderService {
         resultDTO.setSerialNum(ProductTypeEnums.PARTS.getValue().equals(paramDTO.getProductType()) ? serialNum : paramDTO.getSerialNum());
         resultDTO.setBluetoothMacAddress(paramDTO.getBluetoothMacAddress());
         resultDTO.setProductionDate(new Date());
-
         return resultDTO;
     }
 
@@ -898,6 +917,7 @@ public class QcOrderServiceImpl implements QcOrderService {
 
     /**
      * 检查产品是否质检完成
+     *
      * @param productList
      */
     private void checkQcQty(List<QcOrderProductDTO> productList) {

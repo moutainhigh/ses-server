@@ -14,9 +14,10 @@ import com.redescooter.ses.service.mobile.b.dm.base.CorDeliveryTrace;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.map.MapUtil;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,14 +30,16 @@ import java.util.List;
  * @Version：1.3
  * @create: 2019/12/29 16:15
  */
-@Service
+@DubboService
 public class DeliveryTraceServiceImpl implements DeliveryTraceService {
 
     @Autowired
     private CorDeliveryTraceMapper corDeliveryTraceMapper;
-    @Autowired
+
+    @DubboReference
     private IdAppService idAppService;
-    @Reference
+
+    @DubboReference
     private ScooterService scooterService;
 
     /**
@@ -46,6 +49,7 @@ public class DeliveryTraceServiceImpl implements DeliveryTraceService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult saveDeliveryTrace(List<SaveDeliveryTraceEnter<BaseDeliveryEnter>> enter) {
         if (CollectionUtils.isEmpty(enter)) {
             return null;
@@ -95,7 +99,7 @@ public class DeliveryTraceServiceImpl implements DeliveryTraceService {
         deliveryTrace.setLatitude(item.getT().getLatitude());
         deliveryTrace.setGeohash(MapUtil.geoHash(item.getT().getLongitude().toString(), item.getT().getLatitude().toString()));
         deliveryTrace.setScooterId(item.getT().getScooterId());
-        if(scooter.size()>0){
+        if (scooter.size() > 0) {
             deliveryTrace.setScooterLatitude(scooter.get(0).getLatitude());
             deliveryTrace.setScooterLongitude(scooter.get(0).getLongitule());
             deliveryTrace.setScooterLocationGeohash(MapUtil.geoHash(scooter.get(0).getLatitude().toString(), scooter.get(0).getLongitule().toString()));

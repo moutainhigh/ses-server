@@ -5,7 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.service.restproductionorder.outbound.OutboundOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchas.ProductionPurchasService;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboService;
 
 import javax.annotation.Resource;
 
@@ -13,11 +13,12 @@ import javax.annotation.Resource;
  * @author assert
  * @date 2021-01-10
  */
-@Service
+@DubboService
 public class RosOutWhOrderServiceImpl implements RosOutWhOrderService {
 
 	@Resource
 	private OutboundOrderService outboundOrderService;
+
 	@Resource
 	private ProductionPurchasService productionPurchasService;
 

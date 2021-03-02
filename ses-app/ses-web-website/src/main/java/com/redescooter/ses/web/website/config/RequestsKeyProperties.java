@@ -11,11 +11,17 @@ import org.springframework.stereotype.Component;
  **/
 @Data
 @Component
-@ConfigurationProperties(prefix = "requests-key")
+@ConfigurationProperties(prefix = "requests-key",ignoreInvalidFields=false)
 public class RequestsKeyProperties {
 
+    /**
+     * 解密私钥
+     */
     private String privateKey;
 
+    /**
+     * 加密公钥
+     */
     private String publicKey;
 
 }

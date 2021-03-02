@@ -28,10 +28,17 @@ import com.redescooter.ses.web.ros.vo.setting.ImportParameterExcleData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 /**
@@ -105,13 +112,13 @@ public class ExcelServiceImpl implements ExcelService {
             result.setFailNum(successList.size());
             result.setErrorMsgList(mapList);
             return result;
-        }else {
+        } else {
             // 验证导入的PartsN在数据库中是否存在
             List<String> partNos = successList.stream().map(ExpressPartsExcleData::getPartsN).collect(Collectors.toList());
             QueryWrapper<OpePartsDraft> qw = new QueryWrapper<>();
-            qw.in(OpePartsDraft.COL_PARTS_NUMBER,partNos);
-            List<OpePartsDraft> partsDraftList  = opePartsDraftService.list(qw);
-            if(CollectionUtils.isNotEmpty(partsDraftList)){
+            qw.in(OpePartsDraft.COL_PARTS_NUMBER, partNos);
+            List<OpePartsDraft> partsDraftList = opePartsDraftService.list(qw);
+            if (CollectionUtils.isNotEmpty(partsDraftList)) {
                 // 说明已存在这些partN了
                 Map<String, String> map = null;
                 List<Map<String, String>> errorMsgList = new ArrayList<>();
@@ -121,7 +128,7 @@ public class ExcelServiceImpl implements ExcelService {
                 List<String> list = partsDraftList.stream().map(OpePartsDraft::getPartsNumber).collect(Collectors.toList());
                 List<ExpressPartsExcleData> fail = new ArrayList<>();
                 for (ExpressPartsExcleData data : successList) {
-                    if(list.contains(data.getPartsN())){
+                    if (list.contains(data.getPartsN())) {
                         fail.add(data);
                     }
                 }
@@ -163,6 +170,7 @@ public class ExcelServiceImpl implements ExcelService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public ImportExcelPartsResult readExcelDataByParameter(ImportParameterEnter enter) {
         ImportExcelPartsResult result = new ImportExcelPartsResult();
 

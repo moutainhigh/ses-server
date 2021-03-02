@@ -20,9 +20,9 @@ import com.redescooter.ses.web.ros.service.production.RpsServvice;
 import com.redescooter.ses.web.ros.vo.production.ScanBarCodeEnter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -47,7 +47,7 @@ public class RpsServiceImpl implements RpsServvice {
     @Autowired
     private OpePurchasBQcService opePurchasBQcService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -57,7 +57,7 @@ public class RpsServiceImpl implements RpsServvice {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult scanBarCode(ScanBarCodeEnter enter) {
         OpePurchas opePurchas = opePurchasService.getById(enter.getPurchasingId());
         if (opePurchas == null) {

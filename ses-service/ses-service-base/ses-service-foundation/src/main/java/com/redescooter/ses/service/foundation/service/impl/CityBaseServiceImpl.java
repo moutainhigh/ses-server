@@ -10,7 +10,11 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
-import com.redescooter.ses.api.foundation.vo.common.*;
+import com.redescooter.ses.api.foundation.vo.common.CityByPageEnter;
+import com.redescooter.ses.api.foundation.vo.common.CityEnter;
+import com.redescooter.ses.api.foundation.vo.common.CityPostResult;
+import com.redescooter.ses.api.foundation.vo.common.CityResult;
+import com.redescooter.ses.api.foundation.vo.common.CountryCityResult;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.base.PlaCityMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaCity;
@@ -18,13 +22,16 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -32,15 +39,14 @@ import java.util.stream.Collectors;
  * author: jerry.li
  * create: 2019-05-27 17:05
  */
-
 @Slf4j
-@Service
+@DubboService
 public class CityBaseServiceImpl implements CityBaseService {
 
     @Autowired
     private PlaCityMapper cityMapper;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -200,17 +206,17 @@ public class CityBaseServiceImpl implements CityBaseService {
 
     @Override
     public List<CountryCityResult> countryAndCity() {
-        List<CountryCityResult>  resultList = new ArrayList<>();
+        List<CountryCityResult> resultList = new ArrayList<>();
         List<PlaCity> alls = cityMapper.countryAndCity();
-        countryCity(resultList,alls);
+        countryCity(resultList, alls);
         return resultList;
     }
 
 
-    public List<CountryCityResult> countryCity( List<CountryCityResult>  resultList,List<PlaCity> alls){
-        List<PlaCity> conuts = alls.stream().filter(all->all.getLevel() == 1).collect(Collectors.toList());
-        List<PlaCity> citys = alls.stream().filter(all->all.getLevel() == 2).collect(Collectors.toList());
-        if(CollectionUtils.isNotEmpty(conuts)){
+    public List<CountryCityResult> countryCity(List<CountryCityResult> resultList, List<PlaCity> alls) {
+        List<PlaCity> conuts = alls.stream().filter(all -> all.getLevel() == 1).collect(Collectors.toList());
+        List<PlaCity> citys = alls.stream().filter(all -> all.getLevel() == 2).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(conuts)) {
         }
         return resultList;
     }
@@ -228,23 +234,23 @@ public class CityBaseServiceImpl implements CityBaseService {
         Integer level = cityNameEnter.getLevel();
         List<CountryCityResult> list = new ArrayList<>();
         QueryWrapper<PlaCity> qw = new QueryWrapper<>();
-        switch (level){
+        switch (level) {
             case 1:
                 // 查询国家的
-                qw.eq(PlaCity.COL_LEVEL,1);
-                if(!Strings.isNullOrEmpty(cityNameEnter.getKeyWord())){
-                    qw.like(PlaCity.COL_NAME,cityNameEnter.getKeyWord());
+                qw.eq(PlaCity.COL_LEVEL, 1);
+                if (!Strings.isNullOrEmpty(cityNameEnter.getKeyWord())) {
+                    qw.like(PlaCity.COL_NAME, cityNameEnter.getKeyWord());
                 }
-                default:
-                    break;
+            default:
+                break;
             case 2:
                 // 查询城市
-                if(Strings.isNullOrEmpty(cityNameEnter.getKeyWord())){
+                if (Strings.isNullOrEmpty(cityNameEnter.getKeyWord())) {
                     return list;
                 }
-                qw.eq(PlaCity.COL_P_ID,cityNameEnter.getId());
-                if(!Strings.isNullOrEmpty(cityNameEnter.getKeyWord())){
-                    qw.like(PlaCity.COL_NAME,cityNameEnter.getKeyWord());
+                qw.eq(PlaCity.COL_P_ID, cityNameEnter.getId());
+                if (!Strings.isNullOrEmpty(cityNameEnter.getKeyWord())) {
+                    qw.like(PlaCity.COL_NAME, cityNameEnter.getKeyWord());
                 }
                 qw.select(" DISTINCT name");
                 qw.last(" group by name order by CHARACTER_LENGTH(name) limit 50");
@@ -252,25 +258,25 @@ public class CityBaseServiceImpl implements CityBaseService {
             case 3:
                 //查询邮政编码
                 // 查询邮编的时候 城市必传
-                if(Strings.isNullOrEmpty(cityNameEnter.getCity())){
+                if (Strings.isNullOrEmpty(cityNameEnter.getCity())) {
                     return list;
                 }
                 qw.isNotNull(PlaCity.COL_POST_CODE);
-                qw.eq(PlaCity.COL_NAME,cityNameEnter.getCity());
-                if(!Strings.isNullOrEmpty(cityNameEnter.getKeyWord())){
-                    qw.like(PlaCity.COL_POST_CODE,cityNameEnter.getKeyWord());
+                qw.eq(PlaCity.COL_NAME, cityNameEnter.getCity());
+                if (!Strings.isNullOrEmpty(cityNameEnter.getKeyWord())) {
+                    qw.like(PlaCity.COL_POST_CODE, cityNameEnter.getKeyWord());
                 }
                 break;
         }
         List<PlaCity> all = cityMapper.selectList(qw);
-        if(CollectionUtils.isNotEmpty(all)){
-            formatData(list,level,all);
+        if (CollectionUtils.isNotEmpty(all)) {
+            formatData(list, level, all);
         }
         return list;
     }
 
 
-    public List<CountryCityResult> formatData(List<CountryCityResult> list,Integer level, List<PlaCity> cityList) {
+    public List<CountryCityResult> formatData(List<CountryCityResult> list, Integer level, List<PlaCity> cityList) {
         switch (level) {
             case 1:
                 // 查询国家的
@@ -307,8 +313,8 @@ public class CityBaseServiceImpl implements CityBaseService {
 
     /**
      * 删除ArrayList中重复元素，保持顺序
-     *
-//     * @param list
+     * <p>
+     * //     * @param list
      */
 //    private List<CityEnter> removeDuplicateWithOrder(List<CityEnter> list) {
 //        Set set = new HashSet();
@@ -325,15 +331,14 @@ public class CityBaseServiceImpl implements CityBaseService {
 //
 //        return newList;
 //    }
-
     @Override
     public Long getDistrictId(String cityName, String districtPost) {
         QueryWrapper<PlaCity> qw = new QueryWrapper<>();
-        qw.eq(PlaCity.COL_NAME,cityName);
-        qw.eq(PlaCity.COL_POST_CODE,districtPost);
+        qw.eq(PlaCity.COL_NAME, cityName);
+        qw.eq(PlaCity.COL_POST_CODE, districtPost);
         qw.last("limit 1");
         PlaCity plaCity = cityMapper.selectOne(qw);
-        if(plaCity == null){
+        if (plaCity == null) {
             return 0L;
         }
         return plaCity.getId();

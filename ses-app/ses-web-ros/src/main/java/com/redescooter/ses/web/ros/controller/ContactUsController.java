@@ -26,38 +26,37 @@ import java.util.List;
 @RequestMapping(value = "/contactUs")
 public class ContactUsController {
 
-  @Autowired()
-  private ContactUsService contactUsService;
+    @Autowired
+    private ContactUsService contactUsService;
 
-  @PostMapping(value = "/list")
-  @ApiOperation(value = "联系我们列表")
-  public Response<PageResult<ContactUsListResult>> list(@ModelAttribute @ApiParam("请求参数") ContactUsListEnter enter) {
-    return new Response<>(contactUsService.list(enter));
-  }
+    @PostMapping(value = "/list")
+    @ApiOperation(value = "联系我们列表")
+    public Response<PageResult<ContactUsListResult>> list(@ModelAttribute @ApiParam("请求参数") ContactUsListEnter enter) {
+        return new Response<>(contactUsService.list(enter));
+    }
 
-  @PostMapping(value = "/detail")
-  @ApiOperation(value = "联系我们详情接口")
-  public Response<List<ContactUsDetailResult>> detail(@ModelAttribute @ApiParam("请求参数") ContactUsEnter enter) {
-    return new Response<>(contactUsService.detail(enter));
-  }
+    @PostMapping(value = "/detail")
+    @ApiOperation(value = "联系我们详情接口")
+    public Response<List<ContactUsDetailResult>> detail(@ModelAttribute @ApiParam("请求参数") ContactUsEnter enter) {
+        return new Response<>(contactUsService.detail(enter));
+    }
 
-  @PostMapping(value = "/trace")
-  @ApiOperation(value = "联系我们历史记录")
-  public Response<List<ContactUsHistoryResult>> trace(@ModelAttribute @ApiParam("请求参数") ContactUsEnter enter) {
-    return new Response<>(contactUsService.trace(enter));
-  }
+    @PostMapping(value = "/trace")
+    @ApiOperation(value = "联系我们历史记录")
+    public Response<List<ContactUsHistoryResult>> trace(@ModelAttribute @ApiParam("请求参数") ContactUsEnter enter) {
+        return new Response<>(contactUsService.trace(enter));
+    }
 
-  @PostMapping(value = "/reply")
-  @ApiOperation(value = "联系我们留言回复")
-  public Response<GeneralResult> reply(@ModelAttribute @ApiParam("请求参数") ContactUsMessageEnter enter) {
-    return new Response<>(contactUsService.message(enter));
-  }
+    @PostMapping(value = "/reply")
+    @ApiOperation(value = "联系我们留言回复")
+    public Response<GeneralResult> reply(@ModelAttribute @ApiParam("请求参数") ContactUsMessageEnter enter) {
+        return new Response<>(contactUsService.message(enter));
+    }
 
-
-  @PostMapping(value = "/export")
-  @ApiOperation(value = "联系我们导出")
-  public Response<GeneralResult> export(@ModelAttribute @ApiParam("请求参数") ContactUsListEnter enter) {
-    return new Response(contactUsService.export(enter));
-  }
+    @PostMapping(value = "/export")
+    @ApiOperation(value = "联系我们导出")
+    public Response<GeneralResult> export(@ModelAttribute @ApiParam("请求参数") ContactUsListEnter enter) {
+        return new Response(contactUsService.export(enter));
+    }
 
 }

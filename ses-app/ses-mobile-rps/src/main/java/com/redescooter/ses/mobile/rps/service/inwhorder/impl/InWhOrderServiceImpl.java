@@ -51,33 +51,45 @@ public class InWhOrderServiceImpl implements InWhOrderService {
 
     @DubboReference
     private IdAppService idAppService;
+
     @DubboReference
     private ScooterService scooterService;
+
     @Autowired
     private InWhOrderMapper inWhOrderMapper;
+
     @Autowired
     private InWhouseScooterBMapper inWhouseScooterBMapper;
+
     @Autowired
     private InWhouseCombinBMapper inWhouseCombinBMapper;
+
     @Autowired
     private InWhousePartsBMapper inWhousePartsBMapper;
+
     @Autowired
     private ProductionScooterBomMapper scooterBomMapper;
+
     @Autowired
     private ProductionCombinBomMapper combinBomMapper;
+
     @Autowired
     private ProductionPartsMapper partsMapper;
+
     @Autowired
     private InWhouseOrderSerialBindMapper inWhouseOrderSerialBindMapper;
+
     @Autowired
     private QcOrderSerialBindMapper qcOrderSerialBindMapper;
+
     @Autowired
     private WmsStockSerialNumberMapper wmsStockSerialNumberMapper;
+
     @Autowired
     private TransactionTemplate transactionTemplate;
+
     @Autowired
     private SaveWmsStockDataComponent saveWmsStockDataComponent;
-
 
     @Override
     public Map<Integer, Integer> getInWarehouseOrderTypeCount(GeneralEnter enter) {
@@ -94,7 +106,6 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 map.put(item.getValue(), 0);
             }
         }
-
         return map;
     }
 
@@ -113,7 +124,6 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 map.put(item.getValue(), 0);
             }
         }
-
         return map;
     }
 
@@ -123,15 +133,13 @@ public class InWhOrderServiceImpl implements InWhOrderService {
         if (0 == count) {
             return PageResult.createZeroRowResult(paramDTO);
         }
-
         return PageResult.create(paramDTO, count, inWhOrderMapper.getInWarehouseOrderList(paramDTO));
     }
 
     @Override
     public InWhOrderDetailDTO getInWarehouseOrderDetailById(IdEnter enter) {
         InWhOrderDetailDTO inWhOrderDetail = inWhOrderMapper.getInWhOrderDetailById(enter.getId());
-        RpsAssert.isNull(inWhOrderDetail, ExceptionCodeEnums.IN_WH_ORDER_IS_NOT_EXISTS.getCode(),
-                ExceptionCodeEnums.IN_WH_ORDER_IS_NOT_EXISTS.getMessage());
+        RpsAssert.isNull(inWhOrderDetail, ExceptionCodeEnums.IN_WH_ORDER_IS_NOT_EXISTS.getCode(), ExceptionCodeEnums.IN_WH_ORDER_IS_NOT_EXISTS.getMessage());
 
         List<InWhOrderProductDTO> productList = null;
         /**
@@ -148,7 +156,6 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 productList = inWhousePartsBMapper.getInWhOrderPartsByInWhId(inWhOrderDetail.getId());
                 break;
         }
-
         inWhOrderDetail.setProductList(productList);
         return inWhOrderDetail;
     }
@@ -171,7 +178,6 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 inWhOrderProductDetail = inWhousePartsBMapper.getInWhOrderPartsById(paramDTO.getProductId());
                 break;
         }
-
         return inWhOrderProductDetail;
     }
 
@@ -254,7 +260,7 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 RpsAssert.isNull(opeInWhousePartsB, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
                 // ECU仪表必须要传递蓝牙mac地址
-                RpsAssert.isTrue(BomCommonTypeEnums.ECU_METER.getValue().equals(opeInWhousePartsB.getPartsType())
+                RpsAssert.isTrue(BomCommonTypeEnums.ECU_METER.getValue().equals(String.valueOf(opeInWhousePartsB.getPartsType()))
                         && StringUtils.isBlank(paramDTO.getBluetoothMacAddress()), ExceptionCodeEnums.BLUETOOTH_MAC_ADDRESS_IS_EMPTY.getCode(),
                         ExceptionCodeEnums.BLUETOOTH_MAC_ADDRESS_IS_EMPTY.getMessage());
 
@@ -312,7 +318,6 @@ public class InWhOrderServiceImpl implements InWhOrderService {
         resultDTO.setLot(paramDTO.getLot());
         resultDTO.setSerialNum(paramDTO.getSerialNum());
         resultDTO.setProductionDate(new Date());
-
         return resultDTO;
     }
 
@@ -428,10 +433,7 @@ public class InWhOrderServiceImpl implements InWhOrderService {
         for (int i = 0; i < inWhOrderProductList.size(); i++) {
             qty += inWhOrderProductList.get(i).getActInWhQty();
         }
-
-        RpsAssert.isTrue(qty <= 0, ExceptionCodeEnums.IN_WH_QTY_ERROR.getCode(),
-                ExceptionCodeEnums.IN_WH_QTY_ERROR.getMessage());
-
+        RpsAssert.isTrue(qty <= 0, ExceptionCodeEnums.IN_WH_QTY_ERROR.getCode(), ExceptionCodeEnums.IN_WH_QTY_ERROR.getMessage());
     }
 
 }

@@ -1,16 +1,18 @@
 package com.redescooter.ses.admin.dev.service.base.impl;
 
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
 import com.redescooter.ses.admin.dev.dao.base.AdmScooterMapper;
 import com.redescooter.ses.admin.dev.dm.AdmScooter;
 import com.redescooter.ses.admin.dev.service.base.AdmScooterService;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+
 /**
-*@author assert
-*@date 2020/12/10 22:42
-*/
+ * @author assert
+ * @date 2020/12/10 22:42
+ */
 @Service
-public class AdmScooterServiceImpl implements AdmScooterService{
+public class AdmScooterServiceImpl implements AdmScooterService {
 
     @Resource
     private AdmScooterMapper admScooterMapper;

@@ -35,4 +35,6 @@ public interface ValidationExceptionCode {
     int REASON_CHARACTER_IS_TOO_LONG =10033;
     //原因非法
     int REASON_IS_ILLEGAL=10034;
+    // 名字太长了
+    int NAME_IS_TOO_LONG=10035;
 }

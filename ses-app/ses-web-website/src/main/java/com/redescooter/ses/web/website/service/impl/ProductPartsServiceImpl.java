@@ -38,7 +38,7 @@ public class ProductPartsServiceImpl implements ProductPartsService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addProductParts(AddProductPartsEnter enter) {
 

@@ -4,9 +4,6 @@ import com.redescooter.ses.api.common.vo.tree.TreeNode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.apache.poi.ss.formula.functions.T;
-
-import java.util.List;
 
 /**
  * @ClassName DeptTreeReslt

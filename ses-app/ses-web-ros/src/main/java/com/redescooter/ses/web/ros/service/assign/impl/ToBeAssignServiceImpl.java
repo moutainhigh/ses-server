@@ -10,7 +10,11 @@ import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
@@ -28,22 +32,62 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeExMapper;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeNodeMapper;
-import com.redescooter.ses.web.ros.dao.base.*;
+import com.redescooter.ses.web.ros.dao.base.OpeColorMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeProductionScooterBomMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeSaleScooterMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeSpecificatTypeMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeWmsScooterStockMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeWmsStockRecordMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.OpeInWhouseOrderSerialBindMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMapper;
-import com.redescooter.ses.web.ros.dm.*;
-import com.redescooter.ses.web.ros.enums.assign.*;
+import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
+import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
+import com.redescooter.ses.web.ros.dm.OpeColor;
+import com.redescooter.ses.web.ros.dm.OpeCustomer;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.dm.OpeInWhouseOrderSerialBind;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
+import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
+import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
+import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
+import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
+import com.redescooter.ses.web.ros.enums.assign.CustomerFormEnum;
+import com.redescooter.ses.web.ros.enums.assign.FactoryEnum;
+import com.redescooter.ses.web.ros.enums.assign.FlagEnum;
+import com.redescooter.ses.web.ros.enums.assign.IndustryTypeEnum;
+import com.redescooter.ses.web.ros.enums.assign.NodeEnum;
+import com.redescooter.ses.web.ros.enums.assign.ProductTypeEnum;
+import com.redescooter.ses.web.ros.enums.assign.ScooterTypeEnum;
+import com.redescooter.ses.web.ros.enums.assign.YearEnum;
 import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.assign.ToBeAssignService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
 import com.redescooter.ses.web.ros.vo.assign.done.enter.AssignedListEnter;
-import com.redescooter.ses.web.ros.vo.assign.tobe.enter.*;
-import com.redescooter.ses.web.ros.vo.assign.tobe.result.*;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextDetailEnter;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextEnter;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignListEnter;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignSeatNextDetailEnter;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignSeatNextEnter;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignSubmitDetailEnter;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignSubmitEnter;
+import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignColorResult;
+import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignDetailCustomerInfoResult;
+import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignDetailResult;
+import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignDetailScooterInfoResult;
+import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignDetailScooterInfoSubResult;
+import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignListResult;
+import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNodeResult;
+import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNodeScooterInfoResult;
+import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNodeScooterInfoSubResult;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +96,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description 车辆待分配ServiceImpl
@@ -106,22 +154,22 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @Autowired
     private OpeWmsStockSerialNumberService opeWmsStockSerialNumberService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
-    @Reference
+    @DubboReference
     private AccountBaseService accountBaseService;
 
-    @Reference
+    @DubboReference
     private ScooterService scooterService;
 
-    @Reference
+    @DubboReference
     private CorporateScooterService corporateScooterService;
 
-    @Reference
+    @DubboReference
     private CusotmerScooterService cusotmerScooterService;
 
-    @Reference
+    @DubboReference
     private ScooterMobileBService scooterMobileBService;
 
     /**

@@ -10,31 +10,78 @@ import com.redescooter.ses.api.common.enums.production.SourceTypeEnums;
 import com.redescooter.ses.api.common.enums.production.StockBillStatusEnums;
 import com.redescooter.ses.api.common.enums.rps.StockProductPartStatusEnums;
 import com.redescooter.ses.api.common.enums.whse.WhseTypeEnums;
-import com.redescooter.ses.api.common.enums.wms.*;
+import com.redescooter.ses.api.common.enums.wms.ConsignMethodEnums;
+import com.redescooter.ses.api.common.enums.wms.ConsignTypeEnums;
+import com.redescooter.ses.api.common.enums.wms.WhOutClassTypeEnums;
+import com.redescooter.ses.api.common.enums.wms.WhOutEventEnums;
+import com.redescooter.ses.api.common.enums.wms.WhOutStatusBEnums;
+import com.redescooter.ses.api.common.enums.wms.WhOutStatusEnums;
 import com.redescooter.ses.api.common.vo.CommonNodeResult;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.SaveNodeEnter;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.wms.cn.WhOutServiceMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeFrStock;
+import com.redescooter.ses.web.ros.dm.OpeFrStockBill;
+import com.redescooter.ses.web.ros.dm.OpeFrStockProduct;
+import com.redescooter.ses.web.ros.dm.OpeOutwhOrder;
+import com.redescooter.ses.web.ros.dm.OpeOutwhOrderB;
+import com.redescooter.ses.web.ros.dm.OpeOutwhTrace;
+import com.redescooter.ses.web.ros.dm.OpeStock;
+import com.redescooter.ses.web.ros.dm.OpeStockBill;
+import com.redescooter.ses.web.ros.dm.OpeStockProdProduct;
+import com.redescooter.ses.web.ros.dm.OpeStockPurchas;
+import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
+import com.redescooter.ses.web.ros.dm.OpeWhse;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.OpeFrStockBillService;
+import com.redescooter.ses.web.ros.service.base.OpeFrStockProductService;
+import com.redescooter.ses.web.ros.service.base.OpeFrStockService;
+import com.redescooter.ses.web.ros.service.base.OpeOutwhOrderBService;
+import com.redescooter.ses.web.ros.service.base.OpeOutwhOrderService;
+import com.redescooter.ses.web.ros.service.base.OpeOutwhTraceService;
+import com.redescooter.ses.web.ros.service.base.OpeStockBillService;
+import com.redescooter.ses.web.ros.service.base.OpeStockProdProductService;
+import com.redescooter.ses.web.ros.service.base.OpeStockPurchasService;
+import com.redescooter.ses.web.ros.service.base.OpeStockService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
+import com.redescooter.ses.web.ros.service.base.OpeWhseService;
 import com.redescooter.ses.web.ros.service.wms.cn.WhOutService;
-import com.redescooter.ses.web.ros.vo.wms.cn.*;
+import com.redescooter.ses.web.ros.vo.wms.cn.SavePartProductEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.StartWhOutOrderEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.WhOutConsigneeResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.WhOutDetailProductPartListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.WhOutDetailProductPartListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.WhOutDetailResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.WhOutOrderListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.WhOutOrderListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.WhOutProductListEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.WhOutProductListResult;
+import com.redescooter.ses.web.ros.vo.wms.cn.WhOutSaveEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.WhOutWhResult;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -88,7 +135,7 @@ public class WhOutServiceImpl implements WhOutService {
     @Autowired
     private OpeFrStockBillService opeFrStockBillService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
 
@@ -174,7 +221,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult cancel(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
@@ -206,7 +253,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult start(StartWhOutOrderEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
@@ -251,7 +298,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult prepareMaterial(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
@@ -288,6 +335,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult outwh(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
         if (opeOutwhOrder == null) {
@@ -313,8 +361,8 @@ public class WhOutServiceImpl implements WhOutService {
         orderBList.forEach(item -> {
             opeStocks.forEach(stock -> {
                 if (item.getStockId().equals(stock.getId())) {
-                    stock.setLockTotal(stock.getLockTotal()-item.getTotalCount());
-                    stock.setOutTotal(stock.getOutTotal()+item.getTotalCount());
+                    stock.setLockTotal(stock.getLockTotal() - item.getTotalCount());
+                    stock.setOutTotal(stock.getOutTotal() + item.getTotalCount());
                     stock.setUpdatedTime(new Date());
                     stock.setUpdatedBy(enter.getUserId());
                 }
@@ -348,7 +396,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult inWh(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
@@ -403,7 +451,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(WhOutSaveEnter enter) {
         List<SavePartProductEnter> savePartProductEnterList = new ArrayList<>();
@@ -606,7 +654,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveNode(SaveNodeEnter enter) {
         OpeOutwhTrace opeOutwhTrace = OpeOutwhTrace.builder()
@@ -633,7 +681,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @return
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void lockStock(List<Long> ids) {
 
         //查询子订单信息
@@ -650,7 +698,7 @@ public class WhOutServiceImpl implements WhOutService {
 
         //库存总表锁定库存
         outwhOrderBList.forEach(item -> {
-            Boolean stockExist=Boolean.FALSE;
+            Boolean stockExist = Boolean.FALSE;
             for (OpeStock stock : opeStocks) {
                 //库存锁定
                 if (item.getStockId().equals(stock.getId())) {
@@ -658,14 +706,14 @@ public class WhOutServiceImpl implements WhOutService {
                     if (stock.getAvailableTotal() < item.getTotalCount()) {
                         throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
                     }
-                    stockExist=Boolean.TRUE;
+                    stockExist = Boolean.TRUE;
                     stock.setLockTotal(stock.getLockTotal() + item.getTotalCount());
                     stock.setAvailableTotal(stock.getAvailableTotal() - item.getTotalCount());
                     stock.setUpdatedTime(new Date());
                     break;
                 }
             }
-            if (!stockExist){
+            if (!stockExist) {
                 throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.STOCK_IS_NOT_EXIST.getMessage());
             }
         });

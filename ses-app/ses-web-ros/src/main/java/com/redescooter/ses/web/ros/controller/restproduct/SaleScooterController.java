@@ -32,7 +32,6 @@ import java.util.Map;
 @RequestMapping(value = "/sale/scooter")
 public class SaleScooterController {
 
-
     @Autowired
     private SaleScooterService saleScooterService;
 
@@ -42,7 +41,6 @@ public class SaleScooterController {
     @Autowired
     private SpecificatTypeService specificatTypeService;
 
-
     @PostMapping(value = "/save")
     @ApiOperation(value = "新增销售车辆", response = GeneralResult.class)
     @AvoidDuplicateSubmit
@@ -50,13 +48,11 @@ public class SaleScooterController {
         return new Response<>(saleScooterService.saveSaleScooter(enter));
     }
 
-
     @PostMapping(value = "/edit")
     @ApiOperation(value = "编辑销售车辆", response = GeneralResult.class)
     public Response<GeneralResult> edit(@ModelAttribute @ApiParam("请求参数") SaleScooterSaveOrUpdateEnter enter) {
         return new Response<>(saleScooterService.editSaleScooter(enter));
     }
-
 
     @PostMapping(value = "/delete")
     @ApiOperation(value = "删除销售车辆", response = GeneralResult.class)
@@ -64,13 +60,11 @@ public class SaleScooterController {
         return new Response<>(saleScooterService.deleteSaleScooter(enter));
     }
 
-
     @PostMapping(value = "/editSaleStatus")
     @ApiOperation(value = "销售状态的编辑", response = GeneralResult.class)
     public Response<GeneralResult> editSaleScooterStatus(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(saleScooterService.editSaleScooterStatus(enter));
     }
-
 
     @PostMapping(value = "/list")
     @ApiOperation(value = "销售车辆列表", response = SaleScooterListResult.class)
@@ -78,13 +72,11 @@ public class SaleScooterController {
         return new Response(saleScooterService.saleScooterList(enter));
     }
 
-
     @PostMapping(value = "/specificatTypeData")
     @ApiOperation(value = "规格类型下拉数据源接口", response = SpecificatTypeDataResult.class)
     public Response<List<SpecificatTypeDataResult>> specificatTypeData(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response(specificatTypeService.specificatTypeData(enter));
     }
-
 
     @PostMapping(value = "/colorData")
     @ApiOperation(value = "颜色下拉数据源接口", response = ColorDataResult.class)
@@ -92,10 +84,10 @@ public class SaleScooterController {
         return new Response(colorService.colorData(enter));
     }
 
-
     @PostMapping(value = "/listCount")
     @ApiOperation(value = "列表统计", response = GeneralResult.class)
-    public Response<Map<String,Integer>> listCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+    public Response<Map<String, Integer>> listCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response(saleScooterService.listCount(enter));
     }
+
 }

@@ -295,22 +295,10 @@
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
-                    <configuration>
-                        <source>${java.version}</source>
-                        <target>${java.version}</target>
-                        <encoding>${encoding}</encoding>
-                        <testIncludes>
-                            <testInclude>none</testInclude>
-                        </testIncludes>
-                    </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>${maven-resources-plugin.version}</version>
-                    <configuration>
-                        <encoding>${encoding}</encoding>
-                        <useDefaultDelimiters>true</useDefaultDelimiters>
-                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -335,6 +323,7 @@
                 </executions>
                 <configuration>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                    <useDefaultDelimiters>true</useDefaultDelimiters>
                 </configuration>
             </plugin>
             <plugin>

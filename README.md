@@ -174,7 +174,7 @@ ses-server
 | ses-web-website        | 8900          | 8108       |
 | ses-web-ros            | 8901          | 8109       |
 | ses-web-delivery       | 8902          | 8110       |
-| ses-admin-dev          | 8888          | 1111       |
+| ses-admin-dev          | 6666          | 1111       |
 
 ### 七、打包
 

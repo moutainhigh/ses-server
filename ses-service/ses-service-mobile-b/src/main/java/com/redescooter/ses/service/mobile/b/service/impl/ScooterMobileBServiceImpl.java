@@ -17,8 +17,8 @@ import com.redescooter.ses.service.mobile.b.dao.base.CorDriverMapper;
 import com.redescooter.ses.service.mobile.b.dao.base.CorDriverScooterMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter;
 import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,14 +28,14 @@ import javax.annotation.Resource;
  * @author assert
  * @date 2020/11/18 17:49
  */
-@Service
+@DubboService
 public class ScooterMobileBServiceImpl implements ScooterMobileBService {
 
     @Resource
     private ScooterMobileServiceMapper scooterMobileServiceMapper;
-    @Reference
+    @DubboReference
     private ScooterService scooterService;
-    @Reference
+    @DubboReference
     private ScooterEmqXService scooterEmqXService;
 
     @Autowired
@@ -53,8 +53,10 @@ public class ScooterMobileBServiceImpl implements ScooterMobileBService {
          * 检查当前用户是否分配车辆
          */
         if (null == scooter) {
-            throw new MobileBException(ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getCode(),
-                    ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getMessage());
+//            throw new MobileBException(ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getCode(),
+//                    ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getMessage());
+            // todo 分布式异常没有处理  抛出的异常 上个系统接不到 改为返回null
+            return null;
         }
 
         /**

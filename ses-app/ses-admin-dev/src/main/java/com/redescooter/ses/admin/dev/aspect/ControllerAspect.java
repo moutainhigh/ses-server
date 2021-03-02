@@ -42,7 +42,6 @@ public class ControllerAspect {
     @Autowired
     private AdminTokenService adminTokenService;
 
-
     @Around("execution(* com.redescooter.ses.admin.dev.controller..*.*(..))")
     public Object check(ProceedingJoinPoint point) throws Throwable {
         Object[] objs = point.getArgs();

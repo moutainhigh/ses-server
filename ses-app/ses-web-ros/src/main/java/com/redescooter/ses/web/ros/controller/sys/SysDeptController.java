@@ -1,12 +1,27 @@
 package com.redescooter.ses.web.ros.controller.sys;
 
 import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
-import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.LogAnnotation;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
-import com.redescooter.ses.web.ros.vo.sys.dept.*;
+import com.redescooter.ses.web.ros.vo.sys.dept.AddDeptEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.DeptDetailsResult;
+import com.redescooter.ses.web.ros.vo.sys.dept.DeptListEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.DeptTypeResult;
+import com.redescooter.ses.web.ros.vo.sys.dept.EditDeptEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeListByDeptIdEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.EmployeeProfileResult;
+import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalResult;
+import com.redescooter.ses.web.ros.vo.sys.dept.PrincipalsEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.SaveDeptEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.SelectDeptResult;
+import com.redescooter.ses.web.ros.vo.sys.dept.TypeListEnter;
+import com.redescooter.ses.web.ros.vo.sys.dept.UpdateDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeListResult;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
@@ -36,6 +51,7 @@ public class SysDeptController {
 
     @Autowired
     private SysDeptService deptService;
+
     @Autowired
     private StaffService taffService;
 
@@ -59,7 +75,6 @@ public class SysDeptController {
     public Response<GeneralResult> saveDept(@ModelAttribute @ApiParam("请求参数") AddDeptEnter enter) {
         return new Response<>(deptService.addSave(enter));
     }
-
 
     @PostMapping(value = "/saveDeptSelectParent")
     @ApiOperation(value = "新建部门选择父级部门的接口--reseat", response = GeneralResult.class)

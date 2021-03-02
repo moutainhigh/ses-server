@@ -3,8 +3,6 @@ package com.redescooter.ses.web.ros.service.admin.impl;
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.additional.query.impl.QueryChainWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
@@ -13,33 +11,43 @@ import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.dept.DeptLevelEnums;
 import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
 import com.redescooter.ses.api.common.enums.employee.EmployeeStatusEnums;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
-import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.admin.AdminServiceStarterMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeSysDept;
+import com.redescooter.ses.web.ros.dm.OpeSysMenu;
+import com.redescooter.ses.web.ros.dm.OpeSysPosition;
+import com.redescooter.ses.web.ros.dm.OpeSysRole;
+import com.redescooter.ses.web.ros.dm.OpeSysRoleDept;
+import com.redescooter.ses.web.ros.dm.OpeSysStaff;
+import com.redescooter.ses.web.ros.dm.OpeSysUser;
+import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
+import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
 import com.redescooter.ses.web.ros.service.admin.AdminServiceStarter;
-import com.redescooter.ses.web.ros.service.base.*;
-import com.redescooter.ses.web.ros.service.base.impl.OpeSysUserRoleServiceImpl;
+import com.redescooter.ses.web.ros.service.base.OpeSysDeptService;
+import com.redescooter.ses.web.ros.service.base.OpeSysMenuService;
+import com.redescooter.ses.web.ros.service.base.OpeSysPositionService;
+import com.redescooter.ses.web.ros.service.base.OpeSysRoleDeptService;
+import com.redescooter.ses.web.ros.service.base.OpeSysRoleMenuService;
+import com.redescooter.ses.web.ros.service.base.OpeSysRoleSalesCidyService;
+import com.redescooter.ses.web.ros.service.base.OpeSysRoleService;
+import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
-import com.redescooter.ses.web.ros.service.sys.SalesAreaService;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @ClassName:AdminServiceImplStarter
@@ -92,10 +100,10 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
     @Autowired
     private OpeSysPositionService opeSysPositionService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
-    @Reference
+    @DubboReference
     private CityBaseService cityBaseService;
 
     /**
@@ -113,7 +121,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
      *
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveAdmin() {
         if (checkAdmin()) {
@@ -201,7 +209,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
      *
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     @PostConstruct
     public GeneralResult checkAdminDate() {
@@ -214,15 +222,15 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         }
 
         OpeSysUser sysUserServiceOne = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, Constant.ADMIN_USER_NAME).eq(OpeSysUser::getDef1,
-        SysUserSourceEnum.SYSTEM.getValue()).last("limit 1"));
+                SysUserSourceEnum.SYSTEM.getValue()).last("limit 1"));
         if (sysUserServiceOne == null) {
             //账号信息创建
             saveAdmin();
             return new GeneralResult();
         }
         log.info("---------------------开始验证admin管理员完整性--------------------------");
-        OpeSysPosition position = opeSysPositionService.getOne(new LambdaQueryWrapper<OpeSysPosition>().eq(OpeSysPosition::getDeptId,dept.getId()).last("limit 1"));
-        if(position == null){
+        OpeSysPosition position = opeSysPositionService.getOne(new LambdaQueryWrapper<OpeSysPosition>().eq(OpeSysPosition::getDeptId, dept.getId()).last("limit 1"));
+        if (position == null) {
             position = createOpeSysPosition(dept, sysUserServiceOne);
         }
         //查询是否有admin Role 没有的话
@@ -232,7 +240,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
             sysRole = saveRole(position.getId());
         }
         //查询员工 是否
-        OpeSysStaff opeSysStaff = opeSysStaffService.getOne(new LambdaQueryWrapper<OpeSysStaff>().eq(OpeSysStaff::getSysUserId,sysUserServiceOne.getId()).last("limit 1"));
+        OpeSysStaff opeSysStaff = opeSysStaffService.getOne(new LambdaQueryWrapper<OpeSysStaff>().eq(OpeSysStaff::getSysUserId, sysUserServiceOne.getId()).last("limit 1"));
         if (opeSysStaff == null) {
             OpeSysStaff saveOpeSysStaff = buildOpeSysStaff(sysUserServiceOne.getId());
             opeSysStaffService.save(saveOpeSysStaff);

@@ -8,11 +8,11 @@ import com.redescooter.ses.mobile.rps.dm.OpeAssembiyOrderTrace;
 import com.redescooter.ses.mobile.rps.dm.OpePurchasTrace;
 import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAllocateTraceService;
-import com.redescooter.ses.mobile.rps.service.base.OpePurchasTraceService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAssembiyOrderTraceService;
+import com.redescooter.ses.mobile.rps.service.base.OpePurchasTraceService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,8 +35,9 @@ public class ReceiptTraceServiceImpl implements ReceiptTraceService {
     @Autowired
     private OpeAllocateTraceService opeAllocateTraceService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
+
     @Autowired
     private OpePurchasTraceService opePurchasTraceService;
 
@@ -45,11 +46,11 @@ public class ReceiptTraceServiceImpl implements ReceiptTraceService {
      *
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveAllocateNode(SaveNodeEnter enter) {
         opeAllocateTraceService.save(OpeAllocateTrace.builder()
-                    .id(idAppService.getId(SequenceName.OPE_ALLOCATE_TRACE))
+                .id(idAppService.getId(SequenceName.OPE_ALLOCATE_TRACE))
                 .dr(0)
                 .tenantId(0L)
                 .userId(enter.getUserId())
@@ -72,7 +73,7 @@ public class ReceiptTraceServiceImpl implements ReceiptTraceService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveAssemblyNode(SaveNodeEnter enter) {
         opeAssembiyOrderTraceService.save(OpeAssembiyOrderTrace.builder()
@@ -91,14 +92,14 @@ public class ReceiptTraceServiceImpl implements ReceiptTraceService {
                 .build());
         return new GeneralResult(enter.getRequestId());
     }
+
     /**
      * 保存采购单节点
      *
      * @param enter
      * @return
      */
-
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult savePurchasingNode(SaveNodeEnter enter) {
         opePurchasTraceService.save(OpePurchasTrace.builder()

@@ -3,7 +3,9 @@ package com.redescooter.ses.service.foundation.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.redescooter.ses.api.common.vo.email.EmailListEnter;
 import com.redescooter.ses.api.foundation.service.MailTemplateManageService;
+import com.redescooter.ses.api.foundation.vo.mail.MailTemplateConfigResult;
 import com.redescooter.ses.api.foundation.vo.mail.MailTemplateResult;
+import com.redescooter.ses.api.foundation.vo.mail.QueryMailConfigEnter;
 import com.redescooter.ses.service.foundation.SesServiceFoundationApplicationTests;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -34,4 +36,13 @@ class MailTemplateManageServiceImplTest extends SesServiceFoundationApplicationT
         log.info("mailTemplateList={}", JSONObject.toJSONString(mailTemplateList));
 
     }
+
+    @Test
+    void listParameter() {
+        QueryMailConfigEnter enter = new QueryMailConfigEnter();
+        enter.setMailTemplateNo(1);
+        MailTemplateConfigResult result = mailTemplateManageService.listParameter(enter);
+        System.out.println(JSONObject.toJSONString(result));
+    }
+
 }

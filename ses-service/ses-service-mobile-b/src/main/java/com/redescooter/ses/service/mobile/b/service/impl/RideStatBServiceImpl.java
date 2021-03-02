@@ -15,7 +15,8 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.co2.CO2MoneyConversionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
@@ -27,7 +28,7 @@ import java.util.Date;
  * @date 2020/11/25 10:42
  */
 @Slf4j
-@Service
+@DubboService
 public class RideStatBServiceImpl implements RideStatBService {
 
     @Resource
@@ -38,7 +39,7 @@ public class RideStatBServiceImpl implements RideStatBService {
     private ScooterRideStatMapper scooterRideStatMapper;
     @Resource
     private ScooterRideStatDetailMapper scooterRideStatDetailMapper;
-    @Resource
+    @DubboReference
     private IdAppService idAppService;
     @Resource
     private TransactionTemplate transactionTemplate;
@@ -79,7 +80,7 @@ public class RideStatBServiceImpl implements RideStatBService {
                             new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(rideStatData.getMileage().longValue())))
                     );
                     BigDecimal svg = (driverRideStat.getTotalMileage().add(rideStatData.getMileage())).divide(
-                            new BigDecimal(driverRideStat.getTotalDuration() + rideStatData.getDuration()),BigDecimal.ROUND_HALF_UP);
+                            new BigDecimal(driverRideStat.getTotalDuration() + rideStatData.getDuration()), BigDecimal.ROUND_HALF_UP);
                     driverRideStatNew.setSvgSpeed(svg);
                     driverRideStatMapper.updateDriverRideStat(driverRideStatNew);
 
@@ -93,7 +94,7 @@ public class RideStatBServiceImpl implements RideStatBService {
                     driverRideStatNew.setCo2Total(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())));
                     driverRideStatNew.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())));
                     driverRideStatNew.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(rideStatData.getMileage().longValue())));
-                    driverRideStatNew.setSvgSpeed(rideStatData.getMileage().divide(new BigDecimal(rideStatData.getDuration()),BigDecimal.ROUND_HALF_UP));
+                    driverRideStatNew.setSvgSpeed(rideStatData.getMileage().divide(new BigDecimal(rideStatData.getDuration()), BigDecimal.ROUND_HALF_UP));
                     driverRideStatNew.setTotalMileage(rideStatData.getMileage());
                     driverRideStatNew.setFirstRideTime(new Date());
                     driverRideStatNew.setCreateBy(rideStatData.getUserId());
@@ -114,7 +115,7 @@ public class RideStatBServiceImpl implements RideStatBService {
                 driverRideStatDetail.setDriverId(rideStatData.getUserId());
                 driverRideStatDetail.setDuration(rideStatData.getDuration());
                 driverRideStatDetail.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())));
-                driverRideStatDetail.setSvgSpeed(rideStatData.getMileage().divide(new BigDecimal(rideStatData.getDuration()),BigDecimal.ROUND_HALF_UP));
+                driverRideStatDetail.setSvgSpeed(rideStatData.getMileage().divide(new BigDecimal(rideStatData.getDuration()), BigDecimal.ROUND_HALF_UP));
                 driverRideStatDetail.setMileage(rideStatData.getMileage());
                 driverRideStatDetail.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(rideStatData.getMileage().longValue())));
                 driverRideStatDetail.setCreateBy(rideStatData.getUserId());
@@ -140,6 +141,7 @@ public class RideStatBServiceImpl implements RideStatBService {
 
     /**
      * 保存车辆骑行数据(本来想直接把司机的骑行数据直接copy过来的,但是怕导致最后数据不一致就不copy了)
+     *
      * @param rideStatData
      */
     private void insertScooterRideStatAndDetail(InsertRideStatDataDTO rideStatData) {
@@ -167,7 +169,7 @@ public class RideStatBServiceImpl implements RideStatBService {
                     new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(rideStatData.getMileage().longValue())))
             );
             BigDecimal svg = (scooterRideStatNew.getTotalMileage().add(rideStatData.getMileage())).divide(
-                    new BigDecimal(scooterRideStat.getTotalDuration() + rideStatData.getDuration()),BigDecimal.ROUND_HALF_UP);
+                    new BigDecimal(scooterRideStat.getTotalDuration() + rideStatData.getDuration()), BigDecimal.ROUND_HALF_UP);
             scooterRideStatNew.setSvgSpeed(svg);
             scooterRideStatMapper.updateScooterRideStat(scooterRideStatNew);
 
@@ -181,7 +183,7 @@ public class RideStatBServiceImpl implements RideStatBService {
             scooterRideStatNew.setCo2Total(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())));
             scooterRideStatNew.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())));
             scooterRideStatNew.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(rideStatData.getMileage().longValue())));
-            scooterRideStatNew.setSvgSpeed(rideStatData.getMileage().divide(new BigDecimal(rideStatData.getDuration()),BigDecimal.ROUND_HALF_UP));
+            scooterRideStatNew.setSvgSpeed(rideStatData.getMileage().divide(new BigDecimal(rideStatData.getDuration()), BigDecimal.ROUND_HALF_UP));
             scooterRideStatNew.setTotalMileage(rideStatData.getMileage());
             scooterRideStatNew.setFirstRideTime(new Date());
             scooterRideStatNew.setCreateBy(rideStatData.getUserId());
@@ -202,7 +204,7 @@ public class RideStatBServiceImpl implements RideStatBService {
         scooterRideStatDetail.setScooterId(rideStatData.getBizId());
         scooterRideStatDetail.setDuration(rideStatData.getDuration());
         scooterRideStatDetail.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())));
-        scooterRideStatDetail.setSvgSpeed(rideStatData.getMileage().divide(new BigDecimal(rideStatData.getDuration()),BigDecimal.ROUND_HALF_UP));
+        scooterRideStatDetail.setSvgSpeed(rideStatData.getMileage().divide(new BigDecimal(rideStatData.getDuration()), BigDecimal.ROUND_HALF_UP));
         scooterRideStatDetail.setMileage(rideStatData.getMileage());
         scooterRideStatDetail.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(rideStatData.getMileage().longValue())));
         scooterRideStatDetail.setCreateBy(rideStatData.getUserId());

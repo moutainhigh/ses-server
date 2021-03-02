@@ -15,8 +15,9 @@ import com.redescooter.ses.api.scooter.vo.emqx.ScooterEcuDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.SyncOrderQuantityPublishDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
@@ -26,28 +27,29 @@ import javax.annotation.Resource;
  * @date 2020/11/23 14:57
  */
 @Slf4j
-@Service
+@DubboService
 public class ScooterAllReportedServiceImpl implements ScooterAllReportedService {
 
-    @Reference
+    @DubboReference
     private ScooterEcuService scooterEcuService;
-    @Reference
+    @DubboReference
     private ScooterBbiService scooterBbiService;
-    @Reference
+    @DubboReference
     private ScooterMcuService scooterMcuService;
-    @Reference
+    @DubboReference
     private ScooterService scooterService;
-    @Reference
+    @DubboReference
     private MeterService meterService;
-    @Reference
+    @DubboReference
     private ScooterEmqXService scooterEmqXService;
-    @Reference
+    @DubboReference
     private UserBaseService userBaseService;
     @Resource
     private TransactionTemplate transactionTemplate;
 
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertScooterAllInfo(ScooterAllReportedDTO scooterAll) {
         try {
             transactionTemplate.execute(scooterAllStatus -> {

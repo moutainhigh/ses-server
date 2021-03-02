@@ -26,6 +26,7 @@ import com.redescooter.ses.mobile.rps.dm.OpeWhse;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
+import com.redescooter.ses.mobile.rps.service.base.OpeProductionPartsService;
 import com.redescooter.ses.mobile.rps.service.base.OpePurchasBQcItemService;
 import com.redescooter.ses.mobile.rps.service.base.OpePurchasBQcService;
 import com.redescooter.ses.mobile.rps.service.base.OpePurchasBService;
@@ -34,7 +35,6 @@ import com.redescooter.ses.mobile.rps.service.base.OpeStockBillService;
 import com.redescooter.ses.mobile.rps.service.base.OpeStockPurchasService;
 import com.redescooter.ses.mobile.rps.service.base.OpeStockService;
 import com.redescooter.ses.mobile.rps.service.base.OpeWhseService;
-import com.redescooter.ses.mobile.rps.service.base.OpeProductionPartsService;
 import com.redescooter.ses.mobile.rps.service.purchasinwh.PurchasPutStroageService;
 import com.redescooter.ses.mobile.rps.vo.purchasinwh.HaveIdEnter;
 import com.redescooter.ses.mobile.rps.vo.purchasinwh.HaveIdPartsResult;
@@ -46,10 +46,9 @@ import com.redescooter.ses.mobile.rps.vo.purchasinwh.PurchasDetailsEnter;
 import com.redescooter.ses.mobile.rps.vo.purchasinwh.PurchasDetailsListResult;
 import com.redescooter.ses.mobile.rps.vo.purchasinwh.PutStorageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.SesStringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,16 +57,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 
-
 @Slf4j
 @Service
 public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
+
     @Autowired
     private PurchasPutStorageMapper purchasPutStorageMapper;
+
     @Autowired
     private OpePurchasService opePurchasService;
+
     @Autowired
     private OpeStockService opeStockService;
+
     @Autowired
     private OpeStockBillService opeStockBillService;
 
@@ -80,7 +82,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
     @Autowired
     private OpeWhseService opeWhseService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired
@@ -91,6 +93,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
 
     @Autowired
     private OpePurchasBQcService opePurchasBQcService;
+
     @Autowired
     private ReceiptTraceService receiptTraceService;
 
@@ -100,7 +103,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
      * @param
      * @return
      */
-    @Transactional
     @Override
     public PageResult<PutStorageResult> purchasPutStroageList(PageEnter enter) {
         int count = purchasPutStorageMapper.purchasListCount(enter);
@@ -116,7 +118,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
      * @param
      * @return
      */
-    @Transactional
     @Override
     public PageResult<PurchasDetailsListResult> storageDetailsList(PurchasDetailsEnter enter) {
         int count = purchasPutStorageMapper.purchasDetailListCount(enter);
@@ -130,7 +131,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         return PageResult.create(enter, count, purchasDetailsListResults);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public HaveIdPartsResult haveIdPartsResult(HaveIdEnter enter) {
 
@@ -229,7 +230,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public NotIdPartsSucceedResult notIdInWh(NotIdEnter enter) {
 
@@ -319,7 +320,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
     }
 
     private OpeStockPurchas buildOpeStockPurchas(Long userId, int inwhCount, OpeProductionParts partsData,
-        OpeStockBill opeStockBill, String bathcNo, String serialNum) {
+                                                 OpeStockBill opeStockBill, String bathcNo, String serialNum) {
         OpeStockPurchas opeStockPurchas = OpeStockPurchas.builder()
                 .id(idAppService.getId(SequenceName.OPE_STOCK_PURCHAS))
                 .dr(0)
@@ -327,10 +328,10 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .stockId(opeStockBill.getStockId())
                 .partId(partsData.getId())
                 .lot(bathcNo)
-            .partNumber(partsData.getPartsNo())
+                .partNumber(partsData.getPartsNo())
                 .principalId(userId)
                 .inStockTime(new Date())
-            .serialNumber(partsData.getIdCalss() == 1 ? serialNum : null)
+                .serialNumber(partsData.getIdCalss() == 1 ? serialNum : null)
                 .revision(0)
                 .createdBy(userId)
                 .createdTime(new Date())
@@ -353,7 +354,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
      * @return
      */
 
-    @Transactional
     @Override
     public NotIdPartsResult notIdPartsResult(NotIdDetailsEnter enter) {
         NotIdPartsResult notIdPartsResult = purchasPutStorageMapper.notIdpartslistresult(enter);
@@ -394,9 +394,9 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
             if (opePurchasB.getPartId().equals(opeStock.getMaterielProductId())) {
                 //有库存 库存累计
                 opeStock.setAvailableTotal(parts.getIdCalss() == 1 ? opeStock.getAvailableTotal() + 1
-                    : opeStock.getAvailableTotal() + opePurchasB.getTotalCount());
+                        : opeStock.getAvailableTotal() + opePurchasB.getTotalCount());
                 opeStock.setIntTotal(parts.getIdCalss() == 1 ? opeStock.getIntTotal() + 1
-                    : opeStock.getIntTotal() + opePurchasB.getTotalCount());
+                        : opeStock.getIntTotal() + opePurchasB.getTotalCount());
                 opeStock.setUpdatedBy(userId);
                 opeStock.setUpdatedTime(new Date());
             }
@@ -410,8 +410,8 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                     .userId(0L)
                     .tenantId(0L)
                     .whseId(opeWhse.getId())
-                .intTotal(parts.getIdCalss() == 1 ? 1 : opePurchasB.getTotalCount())
-                .availableTotal(parts.getIdCalss() == 1 ? 1 : opePurchasB.getTotalCount())
+                    .intTotal(parts.getIdCalss() == 1 ? 1 : opePurchasB.getTotalCount())
+                    .availableTotal(parts.getIdCalss() == 1 ? 1 : opePurchasB.getTotalCount())
                     .outTotal(0)
                     .wornTotal(0)
                     .lockTotal(0)
@@ -419,7 +419,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                     .waitStoredTotal(0)
                     .materielProductId(opePurchasB.getPartId())
                     .materielProductName(parts.getCnName())
-                .materielProductType(String.valueOf(parts.getPartsType()))
+                    .materielProductType(String.valueOf(parts.getPartsType()))
                     .revision(0)
                     .updatedBy(userId)
                     .updatedTime(new Date())
@@ -443,7 +443,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
                 .direction(InOutWhEnums.IN.getValue())
                 .status(StockBillStatusEnums.NORMAL.getValue())
                 .sourceId(item.getPurchasId())
-            .total(parts.getIdCalss() == 1 ? 1 : item.getTotalCount())
+                .total(parts.getIdCalss() == 1 ? 1 : item.getTotalCount())
                 .sourceType(SourceTypeEnums.PURCHAS.getValue())
                 .principalId(userId)
                 .operatineTime(new Date())

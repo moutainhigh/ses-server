@@ -4,7 +4,6 @@ import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
 import com.redescooter.ses.api.common.constant.CacheConstants;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
@@ -33,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,19 +47,23 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class TokenRpsServiceImpl implements TokenRpsService {
+
     @Autowired
     private JedisCluster jedisCluster;
+
     @Autowired
     private OpeSysUserMapper sysUserMapper;
+
     @Autowired
     private OpeSysUserProfileMapper sysUserProfileMapper;
+
     @Autowired
     private OpeSysUserRoleService sysUserRoleService;
 
     @Autowired
     private OpeSysRpsUserService opeSysRpsUserService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -69,11 +72,9 @@ public class TokenRpsServiceImpl implements TokenRpsService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public TokenResult login(LoginEnter enter) {
-
-
         //用户名密码去除空格
         enter.setLoginName(SesStringUtils.stringTrim(enter.getLoginName()));
         enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
@@ -226,7 +227,7 @@ public class TokenRpsServiceImpl implements TokenRpsService {
         userToken.setTimestamp(enter.getTimestamp());
         userToken.setTimeZone(enter.getTimeZone());
         userToken.setVersion(enter.getVersion());
-        userToken.setDeptId(user.getDeptId()==null?0L:user.getDeptId());
+        userToken.setDeptId(user.getDeptId() == null ? 0L : user.getDeptId());
         try {
             Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);
             map.remove("requestId");
@@ -243,16 +244,12 @@ public class TokenRpsServiceImpl implements TokenRpsService {
     }
 
     private void setAuth(long roleId) {
-
         String key = new StringBuilder().append(roleId).append(":::").append(CacheConstants.MENU_DETAILS).toString();
-
         Boolean aBoolean = jedisCluster.exists(key);
-
     }
 
-
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public TokenResult rpsLogin(LoginEnter enter) {
         //用户名密码去除空格
         enter.setLoginName(SesStringUtils.stringTrim(enter.getLoginName()));
@@ -288,7 +285,7 @@ public class TokenRpsServiceImpl implements TokenRpsService {
         }
         //将token及用户相关信息 放到Redis中
         OpeSysUser user = new OpeSysUser();
-        org.springframework.beans.BeanUtils.copyProperties(sysUser,user);
+        org.springframework.beans.BeanUtils.copyProperties(sysUser, user);
         UserToken userToken = setToken(enter, user);
         //获取用户角色,更新至缓存
         //  setAuth(userRole.getRoleId());

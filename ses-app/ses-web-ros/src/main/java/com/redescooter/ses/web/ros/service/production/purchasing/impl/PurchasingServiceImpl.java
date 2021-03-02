@@ -27,14 +27,47 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.production.PurchasingServiceMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeFactory;
+import com.redescooter.ses.web.ros.dm.OpeProductionParts;
+import com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation;
+import com.redescooter.ses.web.ros.dm.OpeProductionQualityTempate;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
+import com.redescooter.ses.web.ros.dm.OpePurchas;
+import com.redescooter.ses.web.ros.dm.OpePurchasB;
+import com.redescooter.ses.web.ros.dm.OpePurchasBQc;
+import com.redescooter.ses.web.ros.dm.OpePurchasPayment;
+import com.redescooter.ses.web.ros.dm.OpePurchasProduct;
+import com.redescooter.ses.web.ros.dm.OpePurchasTrace;
+import com.redescooter.ses.web.ros.dm.OpeStock;
+import com.redescooter.ses.web.ros.dm.OpeSupplier;
+import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
+import com.redescooter.ses.web.ros.dm.OpeWhse;
+import com.redescooter.ses.web.ros.dm.OpeWmsPartsStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsQualifiedPartsStock;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.OpeFactoryService;
+import com.redescooter.ses.web.ros.service.base.OpePartsService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsRelationService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionQualityTempateService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
+import com.redescooter.ses.web.ros.service.base.OpePurchasBService;
+import com.redescooter.ses.web.ros.service.base.OpePurchasPaymentService;
+import com.redescooter.ses.web.ros.service.base.OpePurchasProductService;
+import com.redescooter.ses.web.ros.service.base.OpePurchasService;
+import com.redescooter.ses.web.ros.service.base.OpePurchasTraceService;
+import com.redescooter.ses.web.ros.service.base.OpeStockBillService;
+import com.redescooter.ses.web.ros.service.base.OpeStockService;
+import com.redescooter.ses.web.ros.service.base.OpeSupplierService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
+import com.redescooter.ses.web.ros.service.base.OpeWhseService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsPartsStockService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsQualifiedPartsStockService;
 import com.redescooter.ses.web.ros.service.production.purchasing.PurchasingService;
 import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
@@ -61,16 +94,23 @@ import com.redescooter.ses.web.ros.vo.production.purchasing.SavePurchasingEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -125,7 +165,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Autowired
     private OpeProductionQualityTempateService opeProductionQualityTempateService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
     @Autowired
@@ -142,7 +182,6 @@ public class PurchasingServiceImpl implements PurchasingService {
 
     @Autowired
     private OpeWmsQualifiedPartsStockService opeWmsQualifiedPartsStockService;
-
 
 
     /**
@@ -251,7 +290,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      * @param savePurchasingEnter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SavePurchasingEnter savePurchasingEnter) {
         // savePurchasingEnter参数值去空格
@@ -506,7 +545,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult pay(PayEnter enter) {
         OpePurchasPayment opePurchasPayment = opePurchasPaymentService.getById(enter.getId());
@@ -593,6 +632,9 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public List<PruchasingItemResult> queryPurchasProductList(PruchasingItemListEnter enter) {
+        if (null == enter.getSource()) {
+            enter.setSource(3);
+        }
         List<PruchasingItemResult> resultList = new ArrayList<>();
 
         List<String> productTypeList = new ArrayList<>();
@@ -803,7 +845,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveFactoryAnnex(SaveFactoryAnnexEnter enter) {
         List<SaveSupplierAnnexEnter> saveSupplierAnnexList = null;
@@ -876,7 +918,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startQc(IdEnter enter) {
         OpePurchas opePurchas = checkPurchasRepeatedly(enter.getId(), PurchasingStatusEnums.PENDING);
@@ -1023,7 +1065,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult savePurchasingNode(SaveNodeEnter enter) {
         opePurchasTraceService.save(OpePurchasTrace.builder().id(idAppService.getId(SequenceName.OPE_PURCHAS_TRACE))
@@ -1040,7 +1082,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult cancel(IdEnter enter) {
         OpePurchas opePurchas = checkPurchasRepeatedly(enter.getId(), PurchasingStatusEnums.PENDING);

@@ -25,10 +25,8 @@ import java.util.List;
 @RequestMapping(value = "/sale/combin")
 public class SaleCombinController {
 
-
     @Autowired
     private SaleCombinService saleCombinService;
-
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "新增销售组装件", response = GeneralResult.class)
@@ -37,13 +35,11 @@ public class SaleCombinController {
         return new Response<>(saleCombinService.saveSaleCombin(enter));
     }
 
-
     @PostMapping(value = "/list")
     @ApiOperation(value = "销售组装件列表", response = SaleScooterListResult.class)
     public Response<PageResult<SaleCombinListResult>> list(@ModelAttribute @ApiParam("请求参数") SaleListEnter enter) {
         return new Response(saleCombinService.saleCombinList(enter));
     }
-
 
     @PostMapping(value = "/edit")
     @ApiOperation(value = "编辑销售组装件", response = GeneralResult.class)
@@ -51,13 +47,11 @@ public class SaleCombinController {
         return new Response<>(saleCombinService.editSaleCombin(enter));
     }
 
-
     @PostMapping(value = "/delete")
     @ApiOperation(value = "删除销售组装件", response = GeneralResult.class)
     public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(saleCombinService.deleteSaleCombin(enter));
     }
-
 
     @PostMapping(value = "/editSaleStatus")
     @ApiOperation(value = "销售状态的编辑", response = GeneralResult.class)
@@ -65,13 +59,11 @@ public class SaleCombinController {
         return new Response<>(saleCombinService.editSaleCombinStatus(enter));
     }
 
-
     @PostMapping(value = "/combinNameData")
     @ApiOperation(value = "销售组装件名称下拉接口", response = CombinNameData.class)
     public Response<List<CombinNameData>> combinNameData(@ModelAttribute @ApiParam("请求参数") CombinNameEnter enter) {
         return new Response<>(saleCombinService.combinNameData(enter));
     }
-
 
     @PostMapping(value = "/bomNoData")
     @ApiOperation(value = "销售组装件编号下拉接口", response = BomNameData.class)

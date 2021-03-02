@@ -8,8 +8,9 @@ import com.redescooter.ses.web.ros.dm.OpeSysDeptRelation;
 import com.redescooter.ses.web.ros.service.base.OpeSysDeptRelationService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptRelationService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +29,7 @@ public class SysDeptRelationServiceImpl implements SysDeptRelationService {
     private OpeSysDeptRelationService sysDeptRelationService;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void insertDeptRelation(OpeSysDept sysDept) {
         //增加部门关系表
         OpeSysDeptRelation condition = new OpeSysDeptRelation();
@@ -51,6 +53,7 @@ public class SysDeptRelationServiceImpl implements SysDeptRelationService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteAllDeptRealtion(IdEnter enter) {
         sysDeptRelationService.removeById(enter.getId());
     }

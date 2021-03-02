@@ -4,14 +4,17 @@ import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.salearea.SaleAreaService;
-import com.redescooter.ses.web.ros.vo.salearea.RoleAreaEnter;
 import com.redescooter.ses.web.ros.vo.salearea.SaleAreaOpEnter;
 import com.redescooter.ses.web.ros.vo.salearea.SaleAreaSaveEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @ClassNameSysSaleAreaController
@@ -26,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/sys/sale/area")
 public class SysSaleAreaController {
 
-     @Autowired
+    @Autowired
     private SaleAreaService saleAreaService;
 
     @PostMapping(value = "/save")
@@ -36,12 +39,10 @@ public class SysSaleAreaController {
         return new Response(saleAreaService.saleAreaSave(enter));
     }
 
-
     @PostMapping(value = "/delete")
     @ApiOperation(value = "删除销售区域", response = GeneralResult.class)
     public Response<GeneralResult> saleAreaDetele(@ModelAttribute @ApiParam("请求参数") SaleAreaOpEnter enter) {
         return new Response(saleAreaService.saleAreaDetele(enter));
     }
-
 
 }

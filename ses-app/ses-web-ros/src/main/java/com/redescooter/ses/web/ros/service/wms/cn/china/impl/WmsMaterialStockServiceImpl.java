@@ -53,7 +53,7 @@ import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockRecordResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -100,9 +100,6 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
     private OpeWmsCombinStockService opeWmsCombinStockService;
 
     @Autowired
-    private OpeProductionCombinBomService opeProductionCombinBomservice;
-
-    @Autowired
     private OpeProductionPartsService opeProductionPartsService;
 
     @Autowired
@@ -129,7 +126,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
     @Autowired
     private OpeEntrustPartsBService opeEntrustPartsBService;
 
-    @Reference
+    @DubboReference
     private IdAppService idAppService;
 
 
@@ -189,10 +186,11 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
 
     /**
      * 待入库数量增加（入库单变成待入库状态的时候调用）
+     *
      * @param productionType 1:scooter 2:combin 3:parts
      * @param id
-     * @param stockType 1:中国仓库 2：法国仓库
-     * @param userId 操作人ID
+     * @param stockType      1:中国仓库 2：法国仓库
+     * @param userId         操作人ID
      */
     @Override
     @Async
@@ -266,7 +264,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             combinStock.setStockType(stockType);
                             combinStock.setCombinNo(combinB.getCombinNo());
                             // 找到组装件的中文/英文/法文
-                            OpeProductionCombinBom combinBom = opeProductionCombinBomservice.getById(combinB.getProductionCombinBomId());
+                            OpeProductionCombinBom combinBom = opeProductionCombinBomService.getById(combinB.getProductionCombinBomId());
                             if (combinBom != null) {
                                 combinStock.setEnName(combinBom.getEnName());
                                 combinStock.setFrName(combinBom.getFrName());
@@ -341,11 +339,12 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
 
     /**
      * 待入库数量减少 可用数量增加(入库单入库时候调用)
+     *
      * @param productionType 1:scooter 2:combin 3:parts
      * @param id
-     * @param stockType 1:中国仓库 2：法国仓库
-     * @param userId 操作人ID
-     * @param inWhType 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
+     * @param stockType      1:中国仓库 2：法国仓库
+     * @param userId         操作人ID
+     * @param inWhType       入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
      */
     @Override
     @Async
@@ -747,11 +746,12 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
 
     /**
      * 待出库的库存增加 （用于产生出库单的时候）
+     *
      * @param productionType
      * @param id
      * @param stockType
      * @param userId
-     * @param inWhType 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
+     * @param inWhType       入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
      */
     @Async
     @Override
@@ -825,7 +825,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             combinStock.setId(idAppService.getId(SequenceName.OPE_WMS_COMBIN_STOCK));
                             combinStock.setStockType(stockType);
                             // 找到组装件的中文/英文/法文
-                            OpeProductionCombinBom combinBom = opeProductionCombinBomservice.getById(combinB.getProductionCombinBomId());
+                            OpeProductionCombinBom combinBom = opeProductionCombinBomService.getById(combinB.getProductionCombinBomId());
                             if (combinBom != null) {
                                 combinStock.setEnName(combinBom.getEnName());
                                 combinStock.setFrName(combinBom.getFrName());
@@ -901,11 +901,12 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
 
     /**
      * 待出库数量减少 可用库存减少  已用库存增加 （用于出库单出库）
+     *
      * @param productionType
      * @param id
      * @param stockType
      * @param userId
-     * @param inWhType 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
+     * @param inWhType       入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
      */
     @Override
     @Async
@@ -931,8 +932,8 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             // 说明已经存在这样的数据了
                             dbScooter.setWaitOutStockQty(dbScooter.getWaitOutStockQty() - scooterB.getQty());
                             Integer ableNum = dbScooter.getAbleStockQty() - scooterB.getQty();
-                            if (ableNum < 0){
-                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(),ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                            if (ableNum < 0) {
+                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                             }
                             dbScooter.setAbleStockQty(ableNum);
                             dbScooter.setUsedStockQty(dbScooter.getUsedStockQty() + scooterB.getQty());
@@ -974,8 +975,8 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             dbCombine.setUpdatedBy(userId);
                             dbCombine.setUpdatedTime(new Date());
                             Integer ableNum = dbCombine.getAbleStockQty() - combinB.getQty();
-                            if (ableNum < 0){
-                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(),ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                            if (ableNum < 0) {
+                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                             }
                             dbCombine.setWaitOutStockQty(ableNum);
                             dbCombine.setAbleStockQty(dbCombine.getAbleStockQty() - combinB.getQty());
@@ -1014,8 +1015,8 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             // 说明已经有了  编辑就行
                             wmsPartsStock.setWaitOutStockQty(wmsPartsStock.getWaitOutStockQty() - partsB.getQty());
                             Integer ableNum = wmsPartsStock.getAbleStockQty() - partsB.getQty();
-                            if (ableNum < 0){
-                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(),ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+                            if (ableNum < 0) {
+                                throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                             }
                             wmsPartsStock.setAbleStockQty(ableNum);
                             wmsPartsStock.setUsedStockQty(wmsPartsStock.getUsedStockQty() + partsB.getQty());
@@ -1045,10 +1046,11 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
 
     /**
      * 法国仓库待入库数量增加（委托单发货的时候调用）
+     *
      * @param productionType 1:scooter 2:combin 3:parts
      * @param entrustId
-     * @param stockType 1:中国仓库 2：法国仓库
-     * @param userId 操作人ID
+     * @param stockType      1:中国仓库 2：法国仓库
+     * @param userId         操作人ID
      */
     @Override
     @Async
@@ -1121,7 +1123,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             combinStock.setId(idAppService.getId(SequenceName.OPE_WMS_COMBIN_STOCK));
                             combinStock.setStockType(stockType);
                             // 找到组装件的中文/英文/法文
-                            OpeProductionCombinBom combinBom = opeProductionCombinBomservice.getById(combinB.getProductionCombinBomId());
+                            OpeProductionCombinBom combinBom = opeProductionCombinBomService.getById(combinB.getProductionCombinBomId());
                             if (combinBom != null) {
                                 combinStock.setEnName(combinBom.getEnName());
                                 combinStock.setFrName(combinBom.getFrName());
@@ -1197,11 +1199,12 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
 
     /**
      * 法国仓库已入库数量增加 待入库数量减少 (委托单签收的时候调用)
+     *
      * @param productionType 1:scooter 2:combin 3:parts
      * @param entrustId
-     * @param stockType 1:中国仓库 2：法国仓库
-     * @param userId 操作人ID
-     * @param inWhType 入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
+     * @param stockType      1:中国仓库 2：法国仓库
+     * @param userId         操作人ID
+     * @param inWhType       入库类型，1：生产入库，2：返修入库，3：采购入库，5：退料入库，6：其他
      */
     @Override
     @Async
@@ -1231,6 +1234,20 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             dbScooter.setWaitInStockQty(dbScooter.getWaitInStockQty() - scooterB.getQty());
                             dbScooter.setUpdatedBy(userId);
                             dbScooter.setUpdatedTime(new Date());
+                            scooterStockList.add(dbScooter);
+                        } else {
+                            // 新增库存
+                            dbScooter.setId(idAppService.getId(SequenceName.OPE_WMS_SCOOTER_STOCK));
+                            dbScooter.setDr(DelStatusEnum.VALID.getCode());
+                            dbScooter.setStockType(stockType);
+                            dbScooter.setGroupId(scooterB.getGroupId());
+                            dbScooter.setColorId(scooterB.getColorId());
+                            dbScooter.setAbleStockQty(scooterB.getQty());
+                            dbScooter.setUsedStockQty(0);
+                            dbScooter.setWaitInStockQty(scooterB.getQty());
+                            dbScooter.setWaitOutStockQty(0);
+                            dbScooter.setCreatedBy(userId);
+                            dbScooter.setCreatedTime(new Date());
                             scooterStockList.add(dbScooter);
                         }
                         // 构建入库记录对象
@@ -1268,6 +1285,27 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             dbCombine.setAbleStockQty((dbCombine.getAbleStockQty() == null ? 0 : dbCombine.getAbleStockQty()) + combinB.getQty());
                             dbCombine.setWaitInStockQty(dbCombine.getWaitInStockQty() - combinB.getQty());
                             combinStockList.add(dbCombine);
+                        } else {
+                            // 新增库存
+                            OpeProductionCombinBom combinBom = opeProductionCombinBomService.getById(combinB.getProductionCombinBomId());
+                            if (null != combinBom) {
+                                // 新增库存
+                                dbCombine.setId(idAppService.getId(SequenceName.OPE_WMS_COMBIN_STOCK));
+                                dbCombine.setDr(DelStatusEnum.VALID.getCode());
+                                dbCombine.setStockType(stockType);
+                                dbCombine.setProductionCombinBomId(combinB.getProductionCombinBomId());
+                                dbCombine.setCombinNo(combinBom.getBomNo());
+                                dbCombine.setCnName(combinBom.getCnName());
+                                dbCombine.setEnName(combinBom.getEnName());
+                                dbCombine.setFrName(combinBom.getFrName());
+                                dbCombine.setAbleStockQty(combinB.getQty());
+                                dbCombine.setUsedStockQty(0);
+                                dbCombine.setWaitInStockQty(combinB.getQty());
+                                dbCombine.setWaitOutStockQty(0);
+                                dbCombine.setCreatedBy(userId);
+                                dbCombine.setCreatedTime(new Date());
+                                combinStockList.add(dbCombine);
+                            }
                         }
                         // 构建入库记录对象
                         WmsInStockRecordEnter combinRecord = new WmsInStockRecordEnter();
@@ -1304,6 +1342,27 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             wmsPartsStock.setUpdatedBy(userId);
                             wmsPartsStock.setUpdatedTime(new Date());
                             partsList.add(wmsPartsStock);
+                        } else {
+                            // 新增库存
+                            OpeProductionParts part = opeProductionPartsService.getById(partsB.getPartsId());
+                            if (null != part) {
+                                wmsPartsStock.setId(idAppService.getId(SequenceName.OPE_WMS_PARTS_STOCK));
+                                wmsPartsStock.setDr(DelStatusEnum.VALID.getCode());
+                                wmsPartsStock.setStockType(stockType);
+                                wmsPartsStock.setPartsId(partsB.getPartsId());
+                                wmsPartsStock.setPartsNo(partsB.getPartsNo());
+                                wmsPartsStock.setPartsType(partsB.getPartsType());
+                                wmsPartsStock.setCnName(part.getCnName());
+                                wmsPartsStock.setEnName(part.getEnName());
+                                wmsPartsStock.setFrName(part.getFrName());
+                                wmsPartsStock.setAbleStockQty(partsB.getQty());
+                                wmsPartsStock.setUsedStockQty(0);
+                                wmsPartsStock.setWaitInStockQty(partsB.getQty());
+                                wmsPartsStock.setWaitOutStockQty(0);
+                                wmsPartsStock.setCreatedBy(userId);
+                                wmsPartsStock.setCreatedTime(new Date());
+                                partsList.add(wmsPartsStock);
+                            }
                         }
                         // 构建入库记录对象
                         WmsInStockRecordEnter partsRecord = new WmsInStockRecordEnter();
@@ -1322,4 +1381,5 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
         // 保存入库记录
         createInStockRecord(scooterRecordList, userId);
     }
+
 }

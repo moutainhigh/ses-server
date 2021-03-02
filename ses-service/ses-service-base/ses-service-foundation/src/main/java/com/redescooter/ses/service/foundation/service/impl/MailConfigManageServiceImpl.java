@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailConfigStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.service.MailConfigManageService;
@@ -13,9 +14,11 @@ import com.redescooter.ses.service.foundation.dm.base.PlaMailConfig;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Service;
+import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,16 +32,17 @@ import java.util.List;
  * @Function: TODO
  */
 @Slf4j
-@Service
+@DubboService
 public class MailConfigManageServiceImpl implements MailConfigManageService {
 
     @Autowired
     private PlaMailConfigMapper mailConfigMapper;
 
-    @Autowired
+    @DubboReference
     private IdAppService idSerService;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public GeneralResult save(SaveMailConfigEnter enter) {
 
         PlaMailConfig mailConfig = new PlaMailConfig();
@@ -49,7 +53,7 @@ public class MailConfigManageServiceImpl implements MailConfigManageService {
         }
         mailConfig.setStatus(MailConfigStatusEnums.NORMAL.getCode());
         mailConfig.setAppId(enter.getMailAppId());
-        mailConfig.setSystemId(enter.getMailSystemId());
+        mailConfig.setSystemId(AppIDEnums.getSystemId(enter.getMailAppId()));
         mailConfig.setCreatedBy(enter.getUserId());
         mailConfig.setCreatedTime(new Date());
         mailConfig.setUpdatedBy(enter.getUserId());

@@ -10,9 +10,13 @@ import com.redescooter.ses.web.ros.vo.sys.user.UserInfoResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.dubbo.config.annotation.Reference;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @ClassNameUserProfileController
@@ -26,12 +30,12 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/Info")
-public class UserProfileController{
+public class UserProfileController {
 
     @Autowired
     private SysUserProfileService sysUserProfileService;
 
-    @Reference
+    @DubboReference
     private WorkOrderService workOrderService;
 
     @ApiOperation(value = "获取用户个人信息", response = UserInfoResult.class)
@@ -39,7 +43,6 @@ public class UserProfileController{
     public Response<UserInfoResult> userInfo(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(sysUserProfileService.userInfo(enter));
     }
-
 
     @PostMapping(value = "/workOrderSave")
     @ApiOperation(value = "工单新增", response = GeneralResult.class)

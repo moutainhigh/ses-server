@@ -32,9 +32,9 @@ import com.redescooter.ses.web.ros.vo.restproduct.*;
 import com.redescooter.ses.web.ros.vo.restproduct.production.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.dubbo.config.annotation.Service;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -259,7 +259,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         return new BooleanResult(Boolean.TRUE);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public ImportProductionProductResult importProductionProduct(ImportPartsEnter enter) {
         ImportProductionProductResult importProductionProductResult = new ImportProductionProductResult();
@@ -423,7 +423,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult rosSaveProductionProduct(RosSaveProductionProductEnter enter) {
         List<ProductionProductEnter> partList = null;
@@ -718,7 +718,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult takeEffect(RosProuductionTypeEnter enter) {
         String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
@@ -809,7 +809,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult productionProductDisable(RosProuductionTypeEnter enter) {
         String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
@@ -923,7 +923,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      * @param enter
      * @return
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult delete(RosProuductionTypeEnter enter) {
         if (enter.getProductionProductType().equals(Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()))) {
