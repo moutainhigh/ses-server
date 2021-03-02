@@ -14,6 +14,7 @@ import com.redescooter.ses.api.common.vo.base.StringResult;
 import com.redescooter.ses.api.foundation.service.setting.ParameterSettingService;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterGroupResultList;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterListEnter;
+import com.redescooter.ses.api.foundation.vo.setting.ParameterListResult;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
 import com.redescooter.ses.api.foundation.vo.setting.SaveParamentEnter;
 import com.redescooter.ses.api.foundation.vo.setting.SaveParameterBatchEnter;
@@ -44,6 +45,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -266,6 +268,22 @@ public class RosRosParameterServiceImpl implements RosParameterService {
 
         parameterSettingService.saveParameterBatchByImport(saveParameterBatchEnterList, SystemTypeEnums.REDE_ROS.getValue());
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 根据分组名称获得此分组下的所有参数
+     */
+    @Override
+    public List<ParameterListResult> getAllParamByGroup(IdEnter enter) {
+        return parameterSettingService.getAllParamByGroup(enter);
+    }
+
+    /**
+     * 根据分组名称获得此分组下的所有参数并分组
+     */
+    @Override
+    public List<Map<String, List<ParameterListResult>>> getAllParamByGrouping(IdEnter enter) {
+        return parameterSettingService.getAllParamByGrouping(enter);
     }
 
     /**
