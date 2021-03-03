@@ -53,6 +53,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -348,13 +349,32 @@ public class ControllerAspect {
             permsSet.addAll(differentList);
             // 得到该用户在db拥有的权限path
             List<String> permsList = opeSysUserService.findPerms(enter.getUserId());
+            // db已拥有的path
+            List<String> alreadyOwnList = Lists.newArrayList();
             if (CollectionUtils.isNotEmpty(permsList)) {
                 for (String path : permsList) {
                     if (path.contains(",")) {
                         String[] split = path.split(",");
                         permsSet.addAll(Arrays.asList(split));
+                        alreadyOwnList.addAll(Arrays.asList(split));
                     } else {
                         permsSet.add(path);
+                        alreadyOwnList.add(path);
+                    }
+                }
+            }
+
+            // db所有path-db已拥有的path=未拥有的path
+            List<String> notOwnList = ListUtils.getDifferent(dbPathList, alreadyOwnList);
+            if (CollectionUtils.isNotEmpty(notOwnList)) {
+                // 循环未拥有的path,如果有一个path在permsSet中,就从中移除
+                for (String non : notOwnList) {
+                    Iterator<String> iterator = permsSet.iterator();
+                    while (iterator.hasNext()) {
+                        String str = iterator.next();
+                        if (str.contains(non)) {
+                            iterator.remove();
+                        }
                     }
                 }
             }
