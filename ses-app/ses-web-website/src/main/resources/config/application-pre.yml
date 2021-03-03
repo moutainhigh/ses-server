@@ -1,4 +1,3 @@
-#日志路径
 log:
   file:
     path: ${log.path}@profile-active@
@@ -10,7 +9,7 @@ dubbo:
   metadata-report:
     address: zookeeper://172.31.6.101:2181
 spring:
-  http:                                                                                                                 #上传配置
+  http:
   servlet:
     multipart:
       max-request-size: 1000MB

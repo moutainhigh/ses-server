@@ -1,4 +1,3 @@
-
 log:                                                                                                                    #日志路径
   file:
     path: ${log.path}@profile-active@
