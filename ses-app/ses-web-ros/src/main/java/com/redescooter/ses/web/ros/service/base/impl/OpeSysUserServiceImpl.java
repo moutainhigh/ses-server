@@ -32,4 +32,10 @@ public class OpeSysUserServiceImpl extends ServiceImpl<OpeSysUserMapper, OpeSysU
     public List<String> findPerms(Long userId) {
         return this.baseMapper.findPerms(userId);
     }
+
+    @Override
+    public List<String> findAllPerms() {
+        return this.baseMapper.findAllPerms();
+    }
+
 }

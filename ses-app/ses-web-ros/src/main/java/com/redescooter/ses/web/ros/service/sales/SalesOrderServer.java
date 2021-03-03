@@ -59,7 +59,7 @@ public interface SalesOrderServer {
      * @param id
      * @return
      */
-    SalesOrderDetailsResult details(IdEnter enter, Long id);
+    SalesOrderDetailsResult details(IdEnter enter);
 
     /**
      * 销售订单添加或者删除标签
@@ -68,7 +68,7 @@ public interface SalesOrderServer {
      * @param id
      * @return
      */
-    GeneralResult labels(IdEnter enter, Long id);
+    GeneralResult labels(IdEnter enter);
 
     /**
      * 取消销售订单提醒
@@ -77,6 +77,6 @@ public interface SalesOrderServer {
      * @param id
      * @return
      */
-    GeneralResult cancelWarn(IdEnter enter, Long id);
+    GeneralResult cancelWarn(IdEnter enter);
 
 }

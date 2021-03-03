@@ -60,22 +60,22 @@ public class SalesOrderController {
         return new Response<>(salesOrderServer.list(enter));
     }
 
-    @PostMapping(value = "/details/{id}")
+    @PostMapping(value = "/details")
     @ApiOperation(value = "订单详情", response = SalesOrderDetailsResult.class)
-    public Response<SalesOrderDetailsResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter, @PathVariable("id") Long id) {
-        return new Response<>(salesOrderServer.details(enter, id));
+    public Response<SalesOrderDetailsResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(salesOrderServer.details(enter));
     }
 
-    @PostMapping(value = "/labels/{id}")
+    @PostMapping(value = "/labels")
     @ApiOperation(value = "标签添加与取消", response = GeneralResult.class)
-    public Response<GeneralResult> labels(@ModelAttribute @ApiParam("请求参数") IdEnter enter, @PathVariable("id") Long id) {
-        return new Response<>(salesOrderServer.labels(enter, id));
+    public Response<GeneralResult> labels(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(salesOrderServer.labels(enter));
     }
 
-    @PostMapping(value = "/cancelWarn/{id}")
+    @PostMapping(value = "/cancelWarn")
     @ApiOperation(value = "取消新订单提醒", response = GeneralResult.class)
-    public Response<GeneralResult> cancelWarn(@ModelAttribute @ApiParam("请求参数") IdEnter enter, @PathVariable("id") Long id) {
-        return new Response<>(salesOrderServer.cancelWarn(enter, id));
+    public Response<GeneralResult> cancelWarn(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(salesOrderServer.cancelWarn(enter));
     }
 
     @PostMapping(value = "/lastParagraphEmail")

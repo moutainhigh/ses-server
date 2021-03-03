@@ -77,7 +77,7 @@ spring: #spring config
         group-name: DeliveryOpion API
         title: DeliveryOpion Service Support
         description: DeliveryOpion service support
-        base-package: com.redescooter.ses.web.ros.controller.website.DeliveryOpionController
+        base-package: com.redescooter.ses.web.ros.controller.other.website.DeliveryOpionController
         path-regex: /deliveryopion/.*
         path-mapping: /
         version: v1.2.1
@@ -92,7 +92,7 @@ spring: #spring config
         group-name: WthdrawalSite API
         title: WthdrawalSite Service Support
         description: WthdrawalSite service support
-        base-package: com.redescooter.ses.web.ros.controller.website.WthdrawalSiteController
+        base-package: com.redescooter.ses.web.ros.controller.other.website.WthdrawalSiteController
         path-regex: /wthdrawalsite/.*
         path-mapping: /
         version: v1.2.1

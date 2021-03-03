@@ -549,6 +549,13 @@ public class RoleServiceImpl implements RoleService {
             set.add(1008301L);
             rolePermissionService.insertRoleMenuPermissions(enter.getRoleId(), set);
         }
+
+        // 删除redis中此用户的权限
+        String key = JedisConstant.PERMISSION + enter.getUserId();
+        Boolean flag = jedisCluster.exists(key);
+        if (flag) {
+            jedisCluster.del(key);
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
