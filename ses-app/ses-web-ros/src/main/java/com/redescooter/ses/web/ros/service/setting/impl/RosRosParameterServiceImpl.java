@@ -279,11 +279,11 @@ public class RosRosParameterServiceImpl implements RosParameterService {
     }
 
     /**
-     * 根据分组名称获得此分组下的所有参数并分组
+     * 获得所有分组的所有参数
      */
     @Override
-    public List<Map<String, List<ParameterListResult>>> getAllParamByGrouping(IdEnter enter) {
-        return parameterSettingService.getAllParamByGrouping(enter);
+    public Map<String, Map<String, String>> getAllGroupParam(GeneralEnter enter) {
+        return parameterSettingService.getAllGroupParam(enter);
     }
 
     /**
