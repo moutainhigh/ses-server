@@ -9,7 +9,12 @@ import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.mobile.b.service.meter.MeterService;
 import com.redescooter.ses.api.mobile.b.vo.meter.MeterDeliveryOrderReuslt;
 import com.redescooter.ses.api.mobile.b.vo.meter.MeterOrderEnter;
-import com.redescooter.ses.api.scooter.service.*;
+import com.redescooter.ses.api.scooter.service.ScooterAllReportedService;
+import com.redescooter.ses.api.scooter.service.ScooterBbiService;
+import com.redescooter.ses.api.scooter.service.ScooterEcuService;
+import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
+import com.redescooter.ses.api.scooter.service.ScooterMcuService;
+import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterAllReportedDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterEcuDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.SyncOrderQuantityPublishDTO;
@@ -17,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
@@ -32,24 +36,30 @@ public class ScooterAllReportedServiceImpl implements ScooterAllReportedService 
 
     @DubboReference
     private ScooterEcuService scooterEcuService;
+
     @DubboReference
     private ScooterBbiService scooterBbiService;
+
     @DubboReference
     private ScooterMcuService scooterMcuService;
+
     @DubboReference
     private ScooterService scooterService;
+
     @DubboReference
     private MeterService meterService;
+
     @DubboReference
     private ScooterEmqXService scooterEmqXService;
+
     @DubboReference
     private UserBaseService userBaseService;
+
     @Resource
     private TransactionTemplate transactionTemplate;
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public int insertScooterAllInfo(ScooterAllReportedDTO scooterAll) {
         try {
             transactionTemplate.execute(scooterAllStatus -> {

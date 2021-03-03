@@ -2,8 +2,9 @@ package com.redescooter.ses.web.ros.dao.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysUser;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface OpeSysUserMapper extends BaseMapper<OpeSysUser> {
     int updateBatch(List<OpeSysUser> list);
@@ -15,4 +16,6 @@ public interface OpeSysUserMapper extends BaseMapper<OpeSysUser> {
     int insertOrUpdateSelective(OpeSysUser record);
 
     List<String> findPerms(@Param("userId") Long userId);
+
+    List<String> findAllPerms();
 }
