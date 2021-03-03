@@ -4,42 +4,40 @@ log:
     path: ${log.path}@profile-active@
     max-size: 128MB
     max-history: 180
-# DUBBO 配置
-dubbo:                                                                                                                  ##DUBBO配置
-  registry:                                                                                                             #注册中心
+dubbo:
+  registry:
     address: zookeeper://172.31.6.101:2181
-
+  metadata-report:
+    address: zookeeper://172.31.6.101:2181
 spring:
   datasource:
     dynamic:
-      # 配置默认数据源
       primary: corporate
       datasource:
         corporate:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://172.31.6.136:2116/corporate?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-          username: rede
-          password: 1qaz2wsx
+          url: jdbc:mysql://172.31.6.136:2116/corporate_pre?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          username: redpre
+          password: pre.1qaz2wsx
         operation:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://172.31.6.136:2116/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-          username: rede
-          password: 1qaz2wsx
+          url: jdbc:mysql://172.31.6.136:2116/operation_pre?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          username: redpre
+          password: pre.1qaz2wsx
         consumer:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://172.31.6.136:2116/consumer?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-          username: rede
-          password: 1qaz2wsx
-  #REDIS集群配置
+          url: jdbc:mysql://172.31.6.136:2116/consumer_pre?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          username: redpre
+          password: pre.1qaz2wsx
   redis:
     cluster:
       nodes:
-        - 172.31.8.126:7000
-        - 172.31.8.126:7001
-        - 172.31.8.126:7002
-        - 172.31.8.126:7003
-        - 172.31.8.126:7004
-        - 172.31.8.126:7005
+        - 172.31.6.136:7000
+        - 172.31.6.136:7001
+        - 172.31.6.136:7002
+        - 172.31.6.136:7003
+        - 172.31.6.136:7004
+        - 172.31.6.136:7005
 
 
 

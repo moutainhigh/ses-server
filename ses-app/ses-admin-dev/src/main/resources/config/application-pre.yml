@@ -13,10 +13,10 @@ spring:
   servlet:
     multipart:
       max-request-size: 1000MB
-      max-file-size: 20MB
+      max-file-size: 100MB
       enabled: true
   datasource:
-    url: jdbc:mysql://172.31.6.136:2116/corporate_pre?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://172.31.6.136:2116/admin_dev_pre?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: redpre
     password: pre.1qaz2wsx
     druid:
@@ -38,15 +38,26 @@ spring:
         - 172.31.6.136:7003
         - 172.31.6.136:7004
         - 172.31.6.136:7005
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    default-requeue-rejected: false
+    publisher-confirms: true
+    listener:
+      simple:
+        acknowledge-mode: MANUAL
   swagger:
     enabled: true
     group:
       sign-api:
-        group-name: 1.Sign-API
-        title: Mobile Sign接口
-        description: 用户登录注销创建操作
+        group-name: 1.Login-API
+        title: OMS Login相关接口
+        description: 登陆相关接口
         base-package: com.redescooter.ses
-        path-regex: /sign/token/.*
+        path-regex: /admin/dev.*
         path-mapping: /
         version: v1.2.1
         license: RedE 公司内部传阅
@@ -56,5 +67,8 @@ spring:
           name: 李加廷
           email: jerry@redescooter.com
           url: https://github.com/mrjerryli
-oss:
-  protocol: HTTPS
+
+#应用更新包文件上传下载路径
+fileUpload:
+  path: /opt/nginx/soft/download/
+  download: https://pre.redelectric.fr/download/
