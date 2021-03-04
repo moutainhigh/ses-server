@@ -41,8 +41,11 @@
     <select id="listCount" resultType="int">
         select count(opi.id)
         from ope_customer_inquiry opi
-                     left join ope_customer oc on opi.customer_id = oc.id and oc.dr = 0
-                     left join ope_parts_product opp on opi.product_id = opp.id and opp.dr = 0
+                    left join ope_customer oc on opi.customer_id = oc.id and oc.dr = 0
+                    left join ope_sale_scooter  scooter.id = opi.product_id
+        left join
+<!--                     left join ope_parts_product opp on opi.product_id = opp.id and opp.dr = 0-->
+
         <include refid="where_list"/>
     </select>
 
