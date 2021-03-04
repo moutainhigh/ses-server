@@ -30,7 +30,7 @@
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update operation.ope_out_wh_scooter_b
+    updateope_out_wh_scooter_b
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -120,7 +120,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into operation.ope_out_wh_scooter_b
+    insert intoope_out_wh_scooter_b
     (id, dr, out_wh_id, group_id, color_id, qty, already_out_wh_qty, remark, created_by,
       created_time, updated_by, updated_time, def1, def2, def3, def4, def5)
     values
@@ -135,7 +135,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeOutWhScooterB">
     <!--@mbg.generated-->
-    insert into operation.ope_out_wh_scooter_b
+    insert intoope_out_wh_scooter_b
     (id, dr, out_wh_id, group_id, color_id, qty, already_out_wh_qty, remark, created_by,
       created_time, updated_by, updated_time, def1, def2, def3, def4, def5)
     values
@@ -166,7 +166,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeOutWhScooterB">
     <!--@mbg.generated-->
-    insert into operation.ope_out_wh_scooter_b
+    insert intoope_out_wh_scooter_b
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

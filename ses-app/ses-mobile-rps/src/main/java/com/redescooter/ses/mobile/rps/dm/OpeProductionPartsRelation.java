@@ -17,7 +17,7 @@ import lombok.Data;
  */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeProductionPartsRelation")
 @Data
-@TableName(value = "operation.ope_production_parts_relation")
+@TableName(value = "ope_production_parts_relation")
 public class OpeProductionPartsRelation implements Serializable {
     /**
      * 主键id

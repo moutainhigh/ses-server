@@ -16,7 +16,7 @@ import java.util.Date;
     */
 @ApiModel(value="com-redescooter-ses-web-ros-dm-OpeSpecificatGroup")
 @Data
-@TableName(value = "operation.ope_specificat_group")
+@TableName(value = "ope_specificat_group")
 public class OpeSpecificatGroup {
     /**
      * 主键
