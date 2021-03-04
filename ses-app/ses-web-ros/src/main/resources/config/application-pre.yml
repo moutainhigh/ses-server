@@ -9,7 +9,7 @@ dubbo:
   metadata-report:
     address: zookeeper://172.31.6.101:2181
 spring:
-  http:                                                                                                                 #上传配置
+  http:
   servlet:
     multipart:
       max-request-size: 1000MB
@@ -40,8 +40,6 @@ spring:
         - 172.31.6.136:7005
   swagger:
     enabled: true
-
-## stripe pay
 stripe:
   currency: eur
   payment_method_types: card
@@ -49,15 +47,12 @@ stripe:
   publishable_key: pk_test_IsulbIcuGZ9e0z7K0EDECS5D00niQEDqL6
   secret_key: sk_test_8BOq2D5p1eS4pKyBbdjoWwgS00plcIG6cI
   receipt_email: etienne@redescooter.fr
-
 oss:
   protocol: HTTPS
-
 excel:
   folder: ${log.path}@profile-active@/projectExcel
 sendinblue:
   listIds: 119
-
 monday:
   url: https://api.monday.com/v2
   authorization: eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjI5MjE5MzMxLCJ1aWQiOjUwODM2NTksImlhZCI6IjIwMTktMTItMzBUMTA6NTU6MTEuMDAwWiIsInBlciI6Im1lOndyaXRlIn0.Z_dXLUCgiEUoHQXzeFlOqeG2jfSeiyKIdBNdwaAOKrA
@@ -82,7 +77,6 @@ monday:
   #模板Id
   templeteId: 581923336
   load-template: false
-
 constant-us-email:
   sale-principal:
     - etienne@redescooter.fr

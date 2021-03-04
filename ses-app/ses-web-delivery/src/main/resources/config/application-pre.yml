@@ -1,23 +1,21 @@
-#日志路径
 log:
   file:
     path: ${log.path}@profile-active@
     max-size: 128MB
     max-history: 180
-
-# DUBBO 配置
-dubbo:                                                                                                                  ##DUBBO配置
-  registry:                                                                                                             #注册中心
+dubbo:
+  registry:
     address: zookeeper://172.31.6.101:2181
-
-spring:                                                                                                                 #spring config
-  http:                                                                                                                 #上传配置
+  metadata-report:
+    address: zookeeper://172.31.6.101:2181
+spring:
+  http:
   servlet:
     multipart:
       max-request-size: 1000MB
       max-file-size: 20MB
       enabled: true
-  datasource:                                                                                                           #数据库连接
+  datasource:
     url: jdbc:mysql://172.31.6.136:2116/corporate?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: rede
     password: 1qaz2wsx
@@ -26,12 +24,11 @@ spring:                                                                         
       min-idle: 1
       max-active: 20
       max-wait: 60000
-      stat-view-servlet:                                                                                                #监控页面的用户名和密码 以及页面地址
+      stat-view-servlet:
         login-username: rede
         login-password: admin
         enabled: true
         url-pattern: /druid/*
-  #REDIS集群配置
   redis:
     cluster:
       nodes:
@@ -41,74 +38,23 @@ spring:                                                                         
         - 172.31.6.136:7003
         - 172.31.6.136:7004
         - 172.31.6.136:7005
-
-  swagger:                                                                                                              #swagger在线文档配置
-    enabled: true                                                                                                       #是否启用swagger
+  swagger:
+    enabled: true
     group:
-      sign-api:                                                                                                         #用户组api，可以配置多个组
-        group-name: 鉴权管理API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
-        title: ROS Sign API                                                                                          #api组的标题，会在swagger-ui的标题处显示
-        description: 用户登录注销创建操作                                                                                  #api组的描述，会在swagger-ui的描述中显示
+      sign-api:
+        group-name: 鉴权管理API
+        title: ROS Sign API
+        description: 用户登录注销创建操作
         base-package: com.redescooter.ses.web.delivery
-        path-regex: /sign/token/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
-        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.1                                                                                                 #Api版本
-        license: RedE 公司内部传阅                                                                                        #授权协议
-        license-url: '#'                                                                                                #授权协议地址
-        terms-of-service-url:                                                                                           #服务条款地址
-        contact:                                                                                                        #文档联系人
-          name: 李加廷                                                                                                   #联系人名字
-          email: jerry@redescooter.com                                                                                  #联系人邮箱
-          url: https://github.com/mrjerryli                                                                             #联系地址
-
-      Setting-api:                                                                                                         #用户组api，可以配置多个组
-        group-name: Setting管理API                                                                                      #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
-        title: Setting API                                                                                            #api组的标题，会在swagger-ui的标题处显示
-        description: Setting管理API                                                                                  #api组的描述，会在swagger-ui的描述中显示
-        base-package: com.redescooter.ses.web.delivery
-        path-regex: /common/setting/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
-        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.1                                                                                                 #Api版本
-        license: RedE 公司内部传阅                                                                                        #授权协议
-        license-url: '#'                                                                                                #授权协议地址
-        terms-of-service-url:                                                                                           #服务条款地址
-        contact:                                                                                                        #文档联系人
-          name: 李加廷                                                                                                   #联系人名字
-          email: jerry@redescooter.com                                                                                  #联系人邮箱
+        path-regex: /sign/token/.*
+        path-mapping: /
+        version: v1.2.1
+        license: RedE 公司内部传阅
+        license-url: '#'
+        terms-of-service-url:
+        contact:
+          name: 李加廷
+          email: jerry@redescooter.com
           url: https://github.com/mrjerryli
-
-      Message-api:                                                                                                       #用户组api，可以配置多个组
-        group-name: Message管理API                                                                                   #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
-        title: QueueMessage API                                                                                            #api组的标题，会在swagger-ui的标题处显示
-        description: Message管理API                                                                                  #api组的描述，会在swagger-ui的描述中显示
-        base-package: com.redescooter.ses.web.delivery
-        path-regex: /common/message/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
-        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.1                                                                                                 #Api版本
-        license: RedE 公司内部传阅                                                                                        #授权协议
-        license-url: '#'                                                                                                #授权协议地址
-        terms-of-service-url:                                                                                           #服务条款地址
-        contact:                                                                                                        #文档联系人
-          name: 李加廷                                                                                                   #联系人名字
-          email: jerry@redescooter.com                                                                                  #联系人邮箱
-          url: https://github.com/mrjerryli
-
-      EDAddress-api:                                                                                                       #用户组api，可以配置多个组
-        group-name: EDAddress管理API                                                                                   #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
-        title: EDAddress API                                                                                            #api组的标题，会在swagger-ui的标题处显示
-        description: EDAddress管理API                                                                                  #api组的描述，会在swagger-ui的描述中显示
-        base-package: com.redescooter.ses.web.delivery
-        path-regex: /ed/address/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
-        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.1                                                                                                 #Api版本
-        license: RedE 公司内部传阅                                                                                        #授权协议
-        license-url: '#'                                                                                                #授权协议地址
-        terms-of-service-url:                                                                                           #服务条款地址
-        contact:                                                                                                        #文档联系人
-          name: 李加廷                                                                                                   #联系人名字
-          email: jerry@redescooter.com                                                                                  #联系人邮箱
-          url: https://github.com/mrjerryli
-
-oss:                                                                                                                    #阿里oss上传
-  #oss 使用http、https请求方式
+oss:
   protocol: HTTPS
