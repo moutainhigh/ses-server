@@ -16,7 +16,7 @@ spring:
       max-file-size: 20MB
       enabled: true
   datasource:
-    url: jdbc:mysql://10.1.2.53:2021/admin-dev?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://10.1.2.53:2021/admin_dev_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: redprd
     password: prd.1qaz2wsx
     druid:

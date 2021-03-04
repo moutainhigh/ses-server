@@ -5,9 +5,9 @@ log:
     max-history: 180
 dubbo:
   registry:
-    address: zookeeper://192.168.2.200:52181
+    address: zookeeper://192.168.2.102:52181
  metadata-report:
-    address: zookeeper://192.168.2.200:52181
+    address: zookeeper://192.168.2.102:52181
 spring:
   http:
   servlet:
@@ -16,7 +16,7 @@ spring:
       max-file-size: 20MB
       enabled: true
   datasource:
-    url: jdbc:mysql://192.168.2.200:3306/admin-dev?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.2.102:3306/admin_dev?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 1qaz2wsx
     druid:
@@ -32,12 +32,12 @@ spring:
   redis:
     cluster:
       nodes:
-        - 192.168.2.200:7000
-        - 192.168.2.200:7001
-        - 192.168.2.200:7002
-        - 192.168.2.200:7003
-        - 192.168.2.200:7004
-        - 192.168.2.200:7005
+        - 192.168.2.102:7000
+        - 192.168.2.102:7001
+        - 192.168.2.102:7002
+        - 192.168.2.102:7003
+        - 192.168.2.102:7004
+        - 192.168.2.102:7005
   rabbitmq:
     host: 127.0.0.1
     port: 5672
@@ -116,4 +116,4 @@ spring:
 # 应用更新包文件上传下载路径
 fileUpload:
   path: /usr/local/nginx/soft/download/
-  download: http://192.168.2.200/download/
+  download: http://192.168.2.102/download/
