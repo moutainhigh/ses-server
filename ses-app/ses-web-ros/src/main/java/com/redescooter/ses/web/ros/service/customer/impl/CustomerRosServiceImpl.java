@@ -4,7 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.customer.*;
+import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
+import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
+import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
+import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
@@ -33,10 +37,11 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.CustomerServiceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserProfileMapper;
-import com.redescooter.ses.web.ros.dm.OpeCustomer;
-import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
 import com.redescooter.ses.web.ros.vo.account.*;
@@ -52,6 +57,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import redis.clients.jedis.JedisCluster;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -101,6 +107,12 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
     @Autowired
     private OpeSysUserService opeSysUserService;
+
+    @Autowired
+    private OpeCustomerInquiryService opeCustomerInquiryService;
+
+    @Autowired
+    private OpeCustomerInquiryBService opeCustomerInquiryBService;
 
     /**
      * 邮箱验证
@@ -183,9 +195,78 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         saveVo.setDef2(enter.getCityName());
         saveVo.setDef3(enter.getDistrustName());
         opeCustomerMapper.insert(saveVo);
+        // 新增潜在客户的时候 给客户生成一个询价单
+        creatInquiry(saveVo);
         return new GeneralResult(enter.getRequestId());
     }
 
+
+
+    // 给客户生成一个询价单(低配的询价单)
+    public void creatInquiry(OpeCustomer customer){
+        OpeCustomerInquiry inquiry = new OpeCustomerInquiry();
+        inquiry.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
+        inquiry.setOrderNo(UUID.randomUUID().toString().replaceAll("-",""));
+        inquiry.setCustomerId(customer.getId());
+//        inquiry.setCountry(customer.getCountry());
+        inquiry.setCity(customer.getDef2());
+        inquiry.setDistrict(customer.getDef3());
+        inquiry.setPostCode(customer.getDef3());
+        inquiry.setCustomerSource(CustomerSourceEnum.SYSTEM.getValue());
+        inquiry.setSalesId(customer.getCreatedBy());
+        inquiry.setStatus(InquiryStatusEnums.UNPAY_DEPOSIT.getValue());
+//        inquiry.setCustomerType();
+        inquiry.setFirstName(customer.getCustomerFirstName());
+        inquiry.setLastName(customer.getCustomerLastName());
+        inquiry.setFullName(customer.getCustomerFullName());
+        inquiry.setCountryCode(customer.getCountryCode());
+        inquiry.setTelephone(customer.getTelephone());
+        inquiry.setEmail(customer.getEmail());
+        inquiry.setAddress(customer.getAddress());
+        inquiry.setContactFirst(customer.getContactFirstName());
+        inquiry.setContactLast(customer.getContactLastName());
+        inquiry.setContantFullName(customer.getContactFullName());
+        inquiry.setPayStatus(InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue());
+        inquiry.setScooterQuantity(1);
+//        inquiry.setRemarks();
+        inquiry.setSource(InquirySourceEnums.SYS_FORM.getValue());
+        inquiry.setBankCardName(null);
+        inquiry.setCvv(null);
+        inquiry.setCardNum(null);
+        inquiry.setCreatedBy(customer.getCreatedBy());
+        inquiry.setUpdatedBy(customer.getUpdatedBy());
+        inquiry.setCreatedTime(new Date());
+        inquiry.setUpdatedTime(new Date());
+        inquiry.setDef1(customer.getDef1());
+        inquiry.setDef2(customer.getDef2());
+        inquiry.setDef3(customer.getDef3());
+
+        // 找到E50的产品ID
+        Long productId = customerServiceMapper.getProductId();
+        inquiry.setProductId(productId);
+        inquiry.setProductModel(ProductModelEnums.SCOOTER_50_CC.getValue());
+        inquiry.setProductPrice(new BigDecimal(3990.00));
+        inquiry.setTotalPrice(new BigDecimal(3990.00));
+        inquiry.setAmountPaid(new BigDecimal(0));
+        inquiry.setAmountObligation(new BigDecimal(3990.00));
+        inquiry.setAmountDiscount(new BigDecimal(500));
+        inquiry.setPrepaidDeposit(new BigDecimal(0));
+        opeCustomerInquiryService.saveOrUpdate(inquiry);
+
+        // 询价单的子表
+        OpeCustomerInquiryB inquiryB = new OpeCustomerInquiryB();
+        inquiryB.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY_B));
+        inquiryB.setInquiryId(inquiry.getId());
+        inquiryB.setProductQty(1);
+        inquiryB.setProductType("1");
+        inquiryB.setCreatedTime(new Date());
+        inquiryB.setUpdatedTime(new Date());
+        inquiryB.setCreatedBy(customer.getCreatedBy());
+        inquiryB.setUpdatedBy(customer.getUpdatedBy());
+        inquiryB.setProductId(inquiry.getProductId());
+        inquiryB.setProductPrice(inquiry.getProductPrice());
+        opeCustomerInquiryBService.saveOrUpdate(inquiryB);
+    }
 
     /**
      * 编辑更新客户
@@ -548,8 +629,30 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         customer.setUpdatedBy(enter.getUserId());
         customer.setUpdatedTime(new Date());
         opeCustomerMapper.updateById(customer);
+        // 2021 3 3 潜在客户转为正式客户的时候 把客户的询价单变为已支付状态
+        changeInquiryStatus(customer.getId(),enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
+
+
+    // 把客户的询价单变为已支付状态
+    public void changeInquiryStatus(Long customerId,Long userId){
+        QueryWrapper<OpeCustomerInquiry> inquiryQueryWrapper = new QueryWrapper<OpeCustomerInquiry>();
+        inquiryQueryWrapper.eq(OpeCustomerInquiry.COL_CUSTOMER_ID,customerId);
+        inquiryQueryWrapper.eq(OpeCustomerInquiry.COL_PAY_STATUS,InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue());
+        List<OpeCustomerInquiry> inquiryList = opeCustomerInquiryService.list(inquiryQueryWrapper);
+        if (!CollectionUtils.isEmpty(inquiryList)){
+            for (OpeCustomerInquiry inquiry : inquiryList) {
+                inquiry.setPayStatus(InquiryPayStatusEnums.PAY_LAST_PARAGRAPH.getValue());
+                inquiry.setAmountPaid(inquiry.getTotalPrice());
+                inquiry.setAmountObligation(new BigDecimal(0));
+                inquiry.setUpdatedTime(new Date());
+                inquiry.setUpdatedBy(userId);
+            }
+            opeCustomerInquiryService.saveOrUpdateBatch(inquiryList);
+        }
+    }
+
 
     /**
      * @param enter

@@ -106,12 +106,12 @@ public class ParameterSettingController {
     }
 
     /**
-     * 根据分组名称获得此分组下的所有参数并分组
+     * 获得所有分组的所有参数
      */
-    @ApiOperation(value = "根据分组名称获得此分组下的所有参数并分组", tags = "根据分组名称获得此分组下的所有参数并分组")
-    @PostMapping("/grouping")
-    public Response<List<Map<String, List<ParameterListResult>>>> getAllParamByGrouping(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response<>(rosParameterService.getAllParamByGrouping(enter));
+    @ApiOperation(value = "获得所有分组的所有参数", tags = "获得所有分组的所有参数")
+    @PostMapping("/all")
+    public Response<Map<String, Map<String, String>>> getAllGroupParam(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(rosParameterService.getAllGroupParam(enter));
     }
 
 }

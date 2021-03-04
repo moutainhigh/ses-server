@@ -90,8 +90,8 @@ public interface RosParameterService {
     List<ParameterListResult> getAllParamByGroup(IdEnter enter);
 
     /**
-     * 根据分组名称获得此分组下的所有参数并分组
+     * 获得所有分组的所有参数
      */
-    List<Map<String, List<ParameterListResult>>> getAllParamByGrouping(IdEnter enter);
+    Map<String, Map<String, String>> getAllGroupParam(GeneralEnter enter);
 
 }

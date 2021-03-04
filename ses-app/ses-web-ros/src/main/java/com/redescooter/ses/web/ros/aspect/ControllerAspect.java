@@ -53,6 +53,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -341,23 +342,43 @@ public class ControllerAspect {
         } else {
             // 获得所有接口url
             List<String> urlList = getAllUrl();
-            // 获得db所有path
+            // 获得menu表所有path
             List<String> dbPathList = opeSysUserService.findAllPerms();
             // 获得两个list的差集
             List<String> differentList = ListUtils.getDifferent(urlList, dbPathList);
+            // 先给用户拥有除了menu表所有path之外的所有其他接口权限
             permsSet.addAll(differentList);
-            // 得到该用户在db拥有的权限path
+
+            // 多表关联,得到该用户在db拥有的权限path,可能有逗号
             List<String> permsList = opeSysUserService.findPerms(enter.getUserId());
+            // db已拥有的path,没有逗号
+            List<String> alreadyOwnList = Lists.newArrayList();
             if (CollectionUtils.isNotEmpty(permsList)) {
                 for (String path : permsList) {
                     if (path.contains(",")) {
                         String[] split = path.split(",");
-                        permsSet.addAll(Arrays.asList(split));
+                        alreadyOwnList.addAll(Arrays.asList(split));
                     } else {
-                        permsSet.add(path);
+                        alreadyOwnList.add(path);
                     }
                 }
             }
+
+            // menu表所有path - db已拥有的path = 未拥有的path
+            List<String> notOwnList = ListUtils.getDifferent(dbPathList, alreadyOwnList);
+            if (CollectionUtils.isNotEmpty(notOwnList)) {
+                // 循环未拥有的path,如果有任何一个path在db已拥有的path存在,就从已拥有的path中移除
+                for (String non : notOwnList) {
+                    Iterator<String> iterator = alreadyOwnList.iterator();
+                    while (iterator.hasNext()) {
+                        String own = iterator.next();
+                        if (own.contains(non)) {
+                            iterator.remove();
+                        }
+                    }
+                }
+            }
+            permsSet.addAll(alreadyOwnList);
 
             // todo 接口的权限控制，等数据库的数据完善了  再将下面注释的两行（154、164）放开
             if (CollectionUtils.isEmpty(permsSet)) {

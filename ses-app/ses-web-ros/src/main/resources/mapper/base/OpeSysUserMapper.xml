@@ -460,6 +460,6 @@
         where m.dr = 0 and  ur.user_id = #{userId}
     </select>
     <select id="findAllPerms" resultType="java.lang.String">
-        select DISTINCT path from ope_sys_menu where dr = 0
+        select path from ope_sys_menu where dr = 0
     </select>
 </mapper>

@@ -33,4 +33,6 @@ public interface CustomerServiceMapper {
 
     int scooterCustomerCount(PageEnter enter);
 
+    // 获取E50产品的ID
+    Long getProductId();
 }

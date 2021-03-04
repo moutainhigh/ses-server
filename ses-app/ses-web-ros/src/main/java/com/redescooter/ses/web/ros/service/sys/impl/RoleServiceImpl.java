@@ -550,11 +550,18 @@ public class RoleServiceImpl implements RoleService {
             rolePermissionService.insertRoleMenuPermissions(enter.getRoleId(), set);
         }
 
-        // 删除redis中此用户的权限
-        String key = JedisConstant.PERMISSION + enter.getUserId();
-        Boolean flag = jedisCluster.exists(key);
-        if (flag) {
-            jedisCluster.del(key);
+        // 根据角色id得到此角色的所有用户,如果用户在redis中存在接口权限,就清空
+        LambdaQueryWrapper<OpeSysUserRole> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeSysUserRole::getRoleId, enter.getRoleId());
+        List<OpeSysUserRole> list = sysUserRoleService.list(qw);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (OpeSysUserRole model : list) {
+                String key = JedisConstant.PERMISSION + model.getUserId();
+                Boolean flag = jedisCluster.exists(key);
+                if (flag) {
+                    jedisCluster.del(key);
+                }
+            }
         }
         return new GeneralResult(enter.getRequestId());
     }
