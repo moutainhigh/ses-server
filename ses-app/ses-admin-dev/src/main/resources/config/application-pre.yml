@@ -16,7 +16,7 @@ spring:
       max-file-size: 100MB
       enabled: true
   datasource:
-    url: jdbc:mysql://172.31.6.136:2021/admin_dev_pre?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://172.31.6.136:2116/admin_dev_pre?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: redpre
     password: pre.1qaz2wsx
     druid:
