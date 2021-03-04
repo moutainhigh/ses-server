@@ -45,17 +45,17 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, tenant_id, dept_id, invoice_id, invoice_no, entrust_no, entrust_status, entrust_type, 
-    consignor_qty, already_consignor_qty, delivery_date, trans_type, consignee_user, 
-    consignee_country_code, consignee_user_telephone, consignee_user_mail, consignee_address, 
-    consignee_post_code, consignor_user, consignor_country_code, consignor_telephone, 
-    consignor_mail, notify_user, notify_user_name, notify_country_code, notify_user_telephone, 
-    notify_user_mail, remark, created_by, created_time, updated_by, updated_time, def1, 
+    id, dr, tenant_id, dept_id, invoice_id, invoice_no, entrust_no, entrust_status, entrust_type,
+    consignor_qty, already_consignor_qty, delivery_date, trans_type, consignee_user,
+    consignee_country_code, consignee_user_telephone, consignee_user_mail, consignee_address,
+    consignee_post_code, consignor_user, consignor_country_code, consignor_telephone,
+    consignor_mail, notify_user, notify_user_name, notify_country_code, notify_user_telephone,
+    notify_user_mail, remark, created_by, created_time, updated_by, updated_time, def1,
     def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update operation.ope_entrust_order
+    updateope_entrust_order
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -250,100 +250,100 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into operation.ope_entrust_order
-    (id, dr, tenant_id, dept_id, invoice_id, invoice_no, entrust_no, entrust_status, 
-      entrust_type, consignor_qty, already_consignor_qty, delivery_date, trans_type, 
-      consignee_user, consignee_country_code, consignee_user_telephone, consignee_user_mail, 
-      consignee_address, consignee_post_code, consignor_user, consignor_country_code, 
-      consignor_telephone, consignor_mail, notify_user, notify_user_name, notify_country_code, 
-      notify_user_telephone, notify_user_mail, remark, created_by, created_time, updated_by, 
+    insert intoope_entrust_order
+    (id, dr, tenant_id, dept_id, invoice_id, invoice_no, entrust_no, entrust_status,
+      entrust_type, consignor_qty, already_consignor_qty, delivery_date, trans_type,
+      consignee_user, consignee_country_code, consignee_user_telephone, consignee_user_mail,
+      consignee_address, consignee_post_code, consignor_user, consignor_country_code,
+      consignor_telephone, consignor_mail, notify_user, notify_user_name, notify_country_code,
+      notify_user_telephone, notify_user_mail, remark, created_by, created_time, updated_by,
       updated_time, def1, def2, def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
-        #{item.deptId,jdbcType=BIGINT}, #{item.invoiceId,jdbcType=BIGINT}, #{item.invoiceNo,jdbcType=VARCHAR}, 
-        #{item.entrustNo,jdbcType=VARCHAR}, #{item.entrustStatus,jdbcType=INTEGER}, #{item.entrustType,jdbcType=INTEGER}, 
-        #{item.consignorQty,jdbcType=INTEGER}, #{item.alreadyConsignorQty,jdbcType=INTEGER}, 
-        #{item.deliveryDate,jdbcType=TIMESTAMP}, #{item.transType,jdbcType=INTEGER}, #{item.consigneeUser,jdbcType=BIGINT}, 
-        #{item.consigneeCountryCode,jdbcType=VARCHAR}, #{item.consigneeUserTelephone,jdbcType=VARCHAR}, 
-        #{item.consigneeUserMail,jdbcType=VARCHAR}, #{item.consigneeAddress,jdbcType=VARCHAR}, 
-        #{item.consigneePostCode,jdbcType=VARCHAR}, #{item.consignorUser,jdbcType=BIGINT}, 
-        #{item.consignorCountryCode,jdbcType=VARCHAR}, #{item.consignorTelephone,jdbcType=VARCHAR}, 
-        #{item.consignorMail,jdbcType=VARCHAR}, #{item.notifyUser,jdbcType=BIGINT}, #{item.notifyUserName,jdbcType=VARCHAR}, 
-        #{item.notifyCountryCode,jdbcType=VARCHAR}, #{item.notifyUserTelephone,jdbcType=VARCHAR}, 
-        #{item.notifyUserMail,jdbcType=VARCHAR}, #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
+        #{item.deptId,jdbcType=BIGINT}, #{item.invoiceId,jdbcType=BIGINT}, #{item.invoiceNo,jdbcType=VARCHAR},
+        #{item.entrustNo,jdbcType=VARCHAR}, #{item.entrustStatus,jdbcType=INTEGER}, #{item.entrustType,jdbcType=INTEGER},
+        #{item.consignorQty,jdbcType=INTEGER}, #{item.alreadyConsignorQty,jdbcType=INTEGER},
+        #{item.deliveryDate,jdbcType=TIMESTAMP}, #{item.transType,jdbcType=INTEGER}, #{item.consigneeUser,jdbcType=BIGINT},
+        #{item.consigneeCountryCode,jdbcType=VARCHAR}, #{item.consigneeUserTelephone,jdbcType=VARCHAR},
+        #{item.consigneeUserMail,jdbcType=VARCHAR}, #{item.consigneeAddress,jdbcType=VARCHAR},
+        #{item.consigneePostCode,jdbcType=VARCHAR}, #{item.consignorUser,jdbcType=BIGINT},
+        #{item.consignorCountryCode,jdbcType=VARCHAR}, #{item.consignorTelephone,jdbcType=VARCHAR},
+        #{item.consignorMail,jdbcType=VARCHAR}, #{item.notifyUser,jdbcType=BIGINT}, #{item.notifyUserName,jdbcType=VARCHAR},
+        #{item.notifyCountryCode,jdbcType=VARCHAR}, #{item.notifyUserTelephone,jdbcType=VARCHAR},
+        #{item.notifyUserMail,jdbcType=VARCHAR}, #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT},
+        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP},
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
         #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeEntrustOrder">
     <!--@mbg.generated-->
-    insert into operation.ope_entrust_order
-    (id, dr, tenant_id, dept_id, invoice_id, invoice_no, entrust_no, entrust_status, 
-      entrust_type, consignor_qty, already_consignor_qty, delivery_date, trans_type, 
-      consignee_user, consignee_country_code, consignee_user_telephone, consignee_user_mail, 
-      consignee_address, consignee_post_code, consignor_user, consignor_country_code, 
-      consignor_telephone, consignor_mail, notify_user, notify_user_name, notify_country_code, 
-      notify_user_telephone, notify_user_mail, remark, created_by, created_time, updated_by, 
+    insert intoope_entrust_order
+    (id, dr, tenant_id, dept_id, invoice_id, invoice_no, entrust_no, entrust_status,
+      entrust_type, consignor_qty, already_consignor_qty, delivery_date, trans_type,
+      consignee_user, consignee_country_code, consignee_user_telephone, consignee_user_mail,
+      consignee_address, consignee_post_code, consignor_user, consignor_country_code,
+      consignor_telephone, consignor_mail, notify_user, notify_user_name, notify_country_code,
+      notify_user_telephone, notify_user_mail, remark, created_by, created_time, updated_by,
       updated_time, def1, def2, def3, def4, def5)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{deptId,jdbcType=BIGINT}, 
-      #{invoiceId,jdbcType=BIGINT}, #{invoiceNo,jdbcType=VARCHAR}, #{entrustNo,jdbcType=VARCHAR}, 
-      #{entrustStatus,jdbcType=INTEGER}, #{entrustType,jdbcType=INTEGER}, #{consignorQty,jdbcType=INTEGER}, 
-      #{alreadyConsignorQty,jdbcType=INTEGER}, #{deliveryDate,jdbcType=TIMESTAMP}, #{transType,jdbcType=INTEGER}, 
-      #{consigneeUser,jdbcType=BIGINT}, #{consigneeCountryCode,jdbcType=VARCHAR}, #{consigneeUserTelephone,jdbcType=VARCHAR}, 
-      #{consigneeUserMail,jdbcType=VARCHAR}, #{consigneeAddress,jdbcType=VARCHAR}, #{consigneePostCode,jdbcType=VARCHAR}, 
-      #{consignorUser,jdbcType=BIGINT}, #{consignorCountryCode,jdbcType=VARCHAR}, #{consignorTelephone,jdbcType=VARCHAR}, 
-      #{consignorMail,jdbcType=VARCHAR}, #{notifyUser,jdbcType=BIGINT}, #{notifyUserName,jdbcType=VARCHAR}, 
-      #{notifyCountryCode,jdbcType=VARCHAR}, #{notifyUserTelephone,jdbcType=VARCHAR}, 
-      #{notifyUserMail,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
-      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{deptId,jdbcType=BIGINT},
+      #{invoiceId,jdbcType=BIGINT}, #{invoiceNo,jdbcType=VARCHAR}, #{entrustNo,jdbcType=VARCHAR},
+      #{entrustStatus,jdbcType=INTEGER}, #{entrustType,jdbcType=INTEGER}, #{consignorQty,jdbcType=INTEGER},
+      #{alreadyConsignorQty,jdbcType=INTEGER}, #{deliveryDate,jdbcType=TIMESTAMP}, #{transType,jdbcType=INTEGER},
+      #{consigneeUser,jdbcType=BIGINT}, #{consigneeCountryCode,jdbcType=VARCHAR}, #{consigneeUserTelephone,jdbcType=VARCHAR},
+      #{consigneeUserMail,jdbcType=VARCHAR}, #{consigneeAddress,jdbcType=VARCHAR}, #{consigneePostCode,jdbcType=VARCHAR},
+      #{consignorUser,jdbcType=BIGINT}, #{consignorCountryCode,jdbcType=VARCHAR}, #{consignorTelephone,jdbcType=VARCHAR},
+      #{consignorMail,jdbcType=VARCHAR}, #{notifyUser,jdbcType=BIGINT}, #{notifyUserName,jdbcType=VARCHAR},
+      #{notifyCountryCode,jdbcType=VARCHAR}, #{notifyUserTelephone,jdbcType=VARCHAR},
+      #{notifyUserMail,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT},
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP},
+      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR},
       #{def5,jdbcType=DECIMAL})
-    on duplicate key update 
-    id = #{id,jdbcType=BIGINT}, 
-    dr = #{dr,jdbcType=INTEGER}, 
-    tenant_id = #{tenantId,jdbcType=BIGINT}, 
-    dept_id = #{deptId,jdbcType=BIGINT}, 
-    invoice_id = #{invoiceId,jdbcType=BIGINT}, 
-    invoice_no = #{invoiceNo,jdbcType=VARCHAR}, 
-    entrust_no = #{entrustNo,jdbcType=VARCHAR}, 
-    entrust_status = #{entrustStatus,jdbcType=INTEGER}, 
-    entrust_type = #{entrustType,jdbcType=INTEGER}, 
-    consignor_qty = #{consignorQty,jdbcType=INTEGER}, 
-    already_consignor_qty = #{alreadyConsignorQty,jdbcType=INTEGER}, 
-    delivery_date = #{deliveryDate,jdbcType=TIMESTAMP}, 
-    trans_type = #{transType,jdbcType=INTEGER}, 
-    consignee_user = #{consigneeUser,jdbcType=BIGINT}, 
-    consignee_country_code = #{consigneeCountryCode,jdbcType=VARCHAR}, 
-    consignee_user_telephone = #{consigneeUserTelephone,jdbcType=VARCHAR}, 
-    consignee_user_mail = #{consigneeUserMail,jdbcType=VARCHAR}, 
-    consignee_address = #{consigneeAddress,jdbcType=VARCHAR}, 
-    consignee_post_code = #{consigneePostCode,jdbcType=VARCHAR}, 
-    consignor_user = #{consignorUser,jdbcType=BIGINT}, 
-    consignor_country_code = #{consignorCountryCode,jdbcType=VARCHAR}, 
-    consignor_telephone = #{consignorTelephone,jdbcType=VARCHAR}, 
-    consignor_mail = #{consignorMail,jdbcType=VARCHAR}, 
-    notify_user = #{notifyUser,jdbcType=BIGINT}, 
-    notify_user_name = #{notifyUserName,jdbcType=VARCHAR}, 
-    notify_country_code = #{notifyCountryCode,jdbcType=VARCHAR}, 
-    notify_user_telephone = #{notifyUserTelephone,jdbcType=VARCHAR}, 
-    notify_user_mail = #{notifyUserMail,jdbcType=VARCHAR}, 
-    remark = #{remark,jdbcType=VARCHAR}, 
-    created_by = #{createdBy,jdbcType=BIGINT}, 
-    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
-    def1 = #{def1,jdbcType=VARCHAR}, 
-    def2 = #{def2,jdbcType=VARCHAR}, 
-    def3 = #{def3,jdbcType=VARCHAR}, 
-    def4 = #{def4,jdbcType=VARCHAR}, 
+    on duplicate key update
+    id = #{id,jdbcType=BIGINT},
+    dr = #{dr,jdbcType=INTEGER},
+    tenant_id = #{tenantId,jdbcType=BIGINT},
+    dept_id = #{deptId,jdbcType=BIGINT},
+    invoice_id = #{invoiceId,jdbcType=BIGINT},
+    invoice_no = #{invoiceNo,jdbcType=VARCHAR},
+    entrust_no = #{entrustNo,jdbcType=VARCHAR},
+    entrust_status = #{entrustStatus,jdbcType=INTEGER},
+    entrust_type = #{entrustType,jdbcType=INTEGER},
+    consignor_qty = #{consignorQty,jdbcType=INTEGER},
+    already_consignor_qty = #{alreadyConsignorQty,jdbcType=INTEGER},
+    delivery_date = #{deliveryDate,jdbcType=TIMESTAMP},
+    trans_type = #{transType,jdbcType=INTEGER},
+    consignee_user = #{consigneeUser,jdbcType=BIGINT},
+    consignee_country_code = #{consigneeCountryCode,jdbcType=VARCHAR},
+    consignee_user_telephone = #{consigneeUserTelephone,jdbcType=VARCHAR},
+    consignee_user_mail = #{consigneeUserMail,jdbcType=VARCHAR},
+    consignee_address = #{consigneeAddress,jdbcType=VARCHAR},
+    consignee_post_code = #{consigneePostCode,jdbcType=VARCHAR},
+    consignor_user = #{consignorUser,jdbcType=BIGINT},
+    consignor_country_code = #{consignorCountryCode,jdbcType=VARCHAR},
+    consignor_telephone = #{consignorTelephone,jdbcType=VARCHAR},
+    consignor_mail = #{consignorMail,jdbcType=VARCHAR},
+    notify_user = #{notifyUser,jdbcType=BIGINT},
+    notify_user_name = #{notifyUserName,jdbcType=VARCHAR},
+    notify_country_code = #{notifyCountryCode,jdbcType=VARCHAR},
+    notify_user_telephone = #{notifyUserTelephone,jdbcType=VARCHAR},
+    notify_user_mail = #{notifyUserMail,jdbcType=VARCHAR},
+    remark = #{remark,jdbcType=VARCHAR},
+    created_by = #{createdBy,jdbcType=BIGINT},
+    created_time = #{createdTime,jdbcType=TIMESTAMP},
+    updated_by = #{updatedBy,jdbcType=BIGINT},
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+    def1 = #{def1,jdbcType=VARCHAR},
+    def2 = #{def2,jdbcType=VARCHAR},
+    def3 = #{def3,jdbcType=VARCHAR},
+    def4 = #{def4,jdbcType=VARCHAR},
     def5 = #{def5,jdbcType=DECIMAL}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeEntrustOrder">
     <!--@mbg.generated-->
-    insert into operation.ope_entrust_order
+    insert intoope_entrust_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -577,7 +577,7 @@
         #{def5,jdbcType=DECIMAL},
       </if>
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},

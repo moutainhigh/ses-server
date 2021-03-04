@@ -16,7 +16,7 @@ import java.util.Date;
  */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSpecificatType")
 @Data
-@TableName(value = "operation.ope_specificat_type")
+@TableName(value = "ope_specificat_type")
 public class OpeSpecificatType {
     /**
      * 主键

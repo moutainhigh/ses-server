@@ -17,7 +17,7 @@ import lombok.Data;
  */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeQcOrder")
 @Data
-@TableName(value = "operation.ope_qc_order")
+@TableName(value = "ope_qc_order")
 public class OpeQcOrder implements Serializable {
     /**
      * 主键id

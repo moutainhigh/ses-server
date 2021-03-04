@@ -17,7 +17,7 @@ import lombok.Data;
  */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeCombinOrderScooterB")
 @Data
-@TableName(value = "operation.ope_combin_order_scooter_b")
+@TableName(value = "ope_combin_order_scooter_b")
 public class OpeCombinOrderScooterB implements Serializable {
     /**
      * 主键id

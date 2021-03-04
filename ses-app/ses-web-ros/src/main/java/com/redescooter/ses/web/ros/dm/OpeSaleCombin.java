@@ -16,7 +16,7 @@ import java.util.Date;
  */
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSaleCombin")
 @Data
-@TableName(value = "operation.ope_sale_combin")
+@TableName(value = "ope_sale_combin")
 public class OpeSaleCombin {
     public static final String COL_BOM_NO = "bom_no";
     /**

@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.mobile.rps.dao.base.OpeQcPartsBMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeQcPartsB">
     <!--@mbg.generated-->
-    <!--@Table operation.ope_qc_parts_b-->
+    <!--@Tableope_qc_parts_b-->
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="qc_id" jdbcType="BIGINT" property="qcId" />
@@ -27,13 +27,13 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, qc_id, parts_id, parts_name, parts_no, parts_type, qty, unqualified_qty, 
-    qualified_qty, remark, created_by, created_time, updated_by, updated_time, def1, 
+    id, dr, qc_id, parts_id, parts_name, parts_no, parts_type, qty, unqualified_qty,
+    qualified_qty, remark, created_by, created_time, updated_by, updated_time, def1,
     def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update operation.ope_qc_parts_b
+    updateope_qc_parts_b
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -138,7 +138,7 @@
   </update>
   <update id="updateBatchSelective" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update operation.ope_qc_parts_b
+    updateope_qc_parts_b
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -281,60 +281,60 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into operation.ope_qc_parts_b
-    (id, dr, qc_id, parts_id, parts_name, parts_no, parts_type, qty, unqualified_qty, 
-      qualified_qty, remark, created_by, created_time, updated_by, updated_time, def1, 
+    insert intoope_qc_parts_b
+    (id, dr, qc_id, parts_id, parts_name, parts_no, parts_type, qty, unqualified_qty,
+      qualified_qty, remark, created_by, created_time, updated_by, updated_time, def1,
       def2, def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=INTEGER}, #{item.dr,jdbcType=INTEGER}, #{item.qcId,jdbcType=BIGINT}, 
-        #{item.partsId,jdbcType=INTEGER}, #{item.partsName,jdbcType=VARCHAR}, #{item.partsNo,jdbcType=VARCHAR}, 
-        #{item.partsType,jdbcType=INTEGER}, #{item.qty,jdbcType=INTEGER}, #{item.unqualifiedQty,jdbcType=INTEGER}, 
-        #{item.qualifiedQty,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
+      (#{item.id,jdbcType=INTEGER}, #{item.dr,jdbcType=INTEGER}, #{item.qcId,jdbcType=BIGINT},
+        #{item.partsId,jdbcType=INTEGER}, #{item.partsName,jdbcType=VARCHAR}, #{item.partsNo,jdbcType=VARCHAR},
+        #{item.partsType,jdbcType=INTEGER}, #{item.qty,jdbcType=INTEGER}, #{item.unqualifiedQty,jdbcType=INTEGER},
+        #{item.qualifiedQty,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT},
+        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP},
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
         #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeQcPartsB">
     <!--@mbg.generated-->
-    insert into operation.ope_qc_parts_b
-    (id, dr, qc_id, parts_id, parts_name, parts_no, parts_type, qty, unqualified_qty, 
-      qualified_qty, remark, created_by, created_time, updated_by, updated_time, def1, 
+    insert intoope_qc_parts_b
+    (id, dr, qc_id, parts_id, parts_name, parts_no, parts_type, qty, unqualified_qty,
+      qualified_qty, remark, created_by, created_time, updated_by, updated_time, def1,
       def2, def3, def4, def5)
     values
-    (#{id,jdbcType=INTEGER}, #{dr,jdbcType=INTEGER}, #{qcId,jdbcType=BIGINT}, #{partsId,jdbcType=INTEGER}, 
-      #{partsName,jdbcType=VARCHAR}, #{partsNo,jdbcType=VARCHAR}, #{partsType,jdbcType=INTEGER}, 
-      #{qty,jdbcType=INTEGER}, #{unqualifiedQty,jdbcType=INTEGER}, #{qualifiedQty,jdbcType=INTEGER}, 
-      #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
-      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
+    (#{id,jdbcType=INTEGER}, #{dr,jdbcType=INTEGER}, #{qcId,jdbcType=BIGINT}, #{partsId,jdbcType=INTEGER},
+      #{partsName,jdbcType=VARCHAR}, #{partsNo,jdbcType=VARCHAR}, #{partsType,jdbcType=INTEGER},
+      #{qty,jdbcType=INTEGER}, #{unqualifiedQty,jdbcType=INTEGER}, #{qualifiedQty,jdbcType=INTEGER},
+      #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
+      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
       #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DECIMAL}
       )
-    on duplicate key update 
-    id = #{id,jdbcType=INTEGER}, 
-    dr = #{dr,jdbcType=INTEGER}, 
-    qc_id = #{qcId,jdbcType=BIGINT}, 
-    parts_id = #{partsId,jdbcType=INTEGER}, 
-    parts_name = #{partsName,jdbcType=VARCHAR}, 
-    parts_no = #{partsNo,jdbcType=VARCHAR}, 
-    parts_type = #{partsType,jdbcType=INTEGER}, 
-    qty = #{qty,jdbcType=INTEGER}, 
-    unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER}, 
-    qualified_qty = #{qualifiedQty,jdbcType=INTEGER}, 
-    remark = #{remark,jdbcType=VARCHAR}, 
-    created_by = #{createdBy,jdbcType=BIGINT}, 
-    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
-    def1 = #{def1,jdbcType=VARCHAR}, 
-    def2 = #{def2,jdbcType=VARCHAR}, 
-    def3 = #{def3,jdbcType=VARCHAR}, 
-    def4 = #{def4,jdbcType=VARCHAR}, 
+    on duplicate key update
+    id = #{id,jdbcType=INTEGER},
+    dr = #{dr,jdbcType=INTEGER},
+    qc_id = #{qcId,jdbcType=BIGINT},
+    parts_id = #{partsId,jdbcType=INTEGER},
+    parts_name = #{partsName,jdbcType=VARCHAR},
+    parts_no = #{partsNo,jdbcType=VARCHAR},
+    parts_type = #{partsType,jdbcType=INTEGER},
+    qty = #{qty,jdbcType=INTEGER},
+    unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER},
+    qualified_qty = #{qualifiedQty,jdbcType=INTEGER},
+    remark = #{remark,jdbcType=VARCHAR},
+    created_by = #{createdBy,jdbcType=BIGINT},
+    created_time = #{createdTime,jdbcType=TIMESTAMP},
+    updated_by = #{updatedBy,jdbcType=BIGINT},
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+    def1 = #{def1,jdbcType=VARCHAR},
+    def2 = #{def2,jdbcType=VARCHAR},
+    def3 = #{def3,jdbcType=VARCHAR},
+    def4 = #{def4,jdbcType=VARCHAR},
     def5 = #{def5,jdbcType=DECIMAL}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeQcPartsB">
     <!--@mbg.generated-->
-    insert into operation.ope_qc_parts_b
+    insert intoope_qc_parts_b
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -460,7 +460,7 @@
         #{def5,jdbcType=DECIMAL},
       </if>
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=INTEGER},

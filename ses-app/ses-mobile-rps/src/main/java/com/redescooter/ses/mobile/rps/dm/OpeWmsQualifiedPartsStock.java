@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "operation.ope_wms_qualified_parts_stock")
+@TableName(value = "ope_wms_qualified_parts_stock")
 public class OpeWmsQualifiedPartsStock implements Serializable {
     /**
      * 主键
