@@ -37,7 +37,8 @@
                us.city_name     AS cityName,
                us.district_name as districtName,
                us.address       as address,
-               us.frequency     as frequency
+               us.frequency     as frequency,
+               concat_ws(' ', us.city_name, us.district_name) as fullArea
         from ope_contact_us us
         <include refid="contactUsResult" />
         ORDER BY us.created_time desc

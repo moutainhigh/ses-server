@@ -105,7 +105,6 @@ public class ContactUsServiceImpl implements ContactUsService {
 
     @Override
     public PageResult<ContactUsListResult> list(ContactUsListEnter enter) {
-        ;
         if (enter.getKeyWord() != null && enter.getKeyWord().length() > 50) {
             return PageResult.createZeroRowResult(enter);
         }
