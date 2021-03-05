@@ -294,7 +294,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_in_whouse_combin_b
+    insert into ope_in_whouse_combin_b
     (id, dr, in_wh_id, combin_name, combin_no, production_combin_bom_id, combin_qty,
       able_in_wh_qty, in_wh_qty, act_in_wh_qty, unqualified_qty, remark, created_by,
       created_time, updated_by, updated_time, def1, def2, def3, def4, def5)
@@ -312,7 +312,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeInWhouseCombinB">
     <!--@mbg.generated-->
-    insert intoope_in_whouse_combin_b
+    insert into ope_in_whouse_combin_b
     (id, dr, in_wh_id, combin_name, combin_no, production_combin_bom_id, combin_qty,
       able_in_wh_qty, in_wh_qty, act_in_wh_qty, unqualified_qty, remark, created_by,
       created_time, updated_by, updated_time, def1, def2, def3, def4, def5)
@@ -349,7 +349,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeInWhouseCombinB">
     <!--@mbg.generated-->
-    insert intoope_in_whouse_combin_b
+    insert into ope_in_whouse_combin_b
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

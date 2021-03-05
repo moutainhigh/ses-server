@@ -254,7 +254,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_combin_list_scooter_b
+    insert into ope_combin_list_scooter_b
     (id, dr, combin_id, group_id, color_id, scooter_bom_id, combin_list_status, qty,
       remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4,
       def5)
@@ -271,7 +271,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeCombinListScooterB">
     <!--@mbg.generated-->
-    insert intoope_combin_list_scooter_b
+    insert into ope_combin_list_scooter_b
     (id, dr, combin_id, group_id, color_id, scooter_bom_id, combin_list_status, qty,
       remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4,
       def5)
@@ -304,7 +304,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeCombinListScooterB">
     <!--@mbg.generated-->
-    insert intoope_combin_list_scooter_b
+    insert into ope_combin_list_scooter_b
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

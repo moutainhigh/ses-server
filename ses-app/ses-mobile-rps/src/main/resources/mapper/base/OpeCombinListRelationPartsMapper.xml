@@ -307,7 +307,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_combin_list_relation_parts
+    insert into ope_combin_list_relation_parts
     (id, dr, relation_id, relation_type, parts_id, parts_no, parts_type, id_calss, qty,
       scan_code_qty, cn_name, en_name, fr_name, created_by, created_time, updated_by,
       updated_time, def1, def2, def3, def4, def5)
@@ -325,7 +325,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeCombinListRelationParts">
     <!--@mbg.generated-->
-    insert intoope_combin_list_relation_parts
+    insert into ope_combin_list_relation_parts
     (id, dr, relation_id, relation_type, parts_id, parts_no, parts_type, id_calss, qty,
       scan_code_qty, cn_name, en_name, fr_name, created_by, created_time, updated_by,
       updated_time, def1, def2, def3, def4, def5)
@@ -363,7 +363,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeCombinListRelationParts">
     <!--@mbg.generated-->
-    insert intoope_combin_list_relation_parts
+    insert into ope_combin_list_relation_parts
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

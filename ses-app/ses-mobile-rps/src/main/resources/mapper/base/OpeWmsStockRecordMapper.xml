@@ -255,7 +255,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_wms_stock_record
+    insert into ope_wms_stock_record
     (id, dr, relation_id, relation_type, in_wh_type, in_wh_qty, record_type, stock_type,
       remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4,
       def5)
@@ -272,7 +272,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsStockRecord">
     <!--@mbg.generated-->
-    insert intoope_wms_stock_record
+    insert into ope_wms_stock_record
     (id, dr, relation_id, relation_type, in_wh_type, in_wh_qty, record_type, stock_type,
       remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4,
       def5)
@@ -305,7 +305,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsStockRecord">
     <!--@mbg.generated-->
-    insert intoope_wms_stock_record
+    insert into ope_wms_stock_record
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
