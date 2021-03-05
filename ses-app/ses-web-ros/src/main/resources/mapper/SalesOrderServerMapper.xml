@@ -67,7 +67,7 @@
                 when (opp.color = 2) then '#4C7DB7'
                 when (opp.color = 3) then '#C4B792'
                 when (opp.color = 4) then '#A9AAAC'
-                when (opp.color = 5) then '#000000' end as colorValue,
+                when (opp.color = 5) then '#2D2926' end as colorValue,
         ifnull(opi.def5, 'false')                       as labelFlag,
         case
                 when ifnull(opi.def6, '0') = '0' then true
@@ -110,7 +110,7 @@
                 when (opp.color = 2) then '#4C7DB7'
                 when (opp.color = 3) then '#C4B792'
                 when (opp.color = 4) then '#A9AAAC'
-                when (opp.color = 5) then '#000000' end as colorValue,
+                when (opp.color = 5) then '#2D2926' end as colorValue,
         opi.scooter_quantity                            as qty,
         ocib.product_qty                                as batteryQty,
         opi.total_price                                 as amount,
