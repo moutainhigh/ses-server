@@ -255,7 +255,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_sys_staff
+    insert into ope_sys_staff
     (id, dr, tenant_id, `status`, dept_id, position_id, role_id, country_code, telephone,
       email, entry_date, country_name, address_1, address_2, birthday, certificate_type,
       certificat_picture_1, certificat_picture_2, open_account, remark, employee_picture,
@@ -282,7 +282,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysStaff">
     <!--@mbg.generated-->
-    insert intoope_sys_staff
+    insert into ope_sys_staff
     (id, dr, tenant_id, `status`, dept_id, position_id, role_id, country_code, telephone,
       email, entry_date, country_name, address_1, address_2, birthday, certificate_type,
       certificat_picture_1, certificat_picture_2, open_account, remark, employee_picture,
@@ -346,7 +346,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysStaff">
     <!--@mbg.generated-->
-    insert intoope_sys_staff
+    insert into ope_sys_staff
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

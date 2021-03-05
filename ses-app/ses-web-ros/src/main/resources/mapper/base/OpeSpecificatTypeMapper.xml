@@ -107,7 +107,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_specificat_type
+    insert into ope_specificat_type
     (id, dr, specificat_name, specificat_code, group_id, remark, created_by, created_time,
       updated_by, updated_time, def1, def2, def3, def4, def5)
     values
@@ -122,7 +122,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSpecificatType">
     <!--@mbg.generated-->
-    insert intoope_specificat_type
+    insert into ope_specificat_type
     (id, dr, specificat_name, specificat_code, group_id, remark, created_by, created_time,
       updated_by, updated_time, def1, def2, def3, def4, def5)
     values
@@ -150,7 +150,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSpecificatType">
     <!--@mbg.generated-->
-    insert intoope_specificat_type
+    insert into ope_specificat_type
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

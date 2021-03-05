@@ -333,7 +333,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_combin_order
+    insert into ope_combin_order
     (id, dr, tenant_id, dept_id, combin_type, combin_no, combin_status, combin_qty, combin_start_date,
       combin_end_date, principal_id, principal_name, country_code, telephone, remark,
       created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
@@ -353,7 +353,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeCombinOrder">
     <!--@mbg.generated-->
-    insert intoope_combin_order
+    insert into ope_combin_order
     (id, dr, tenant_id, dept_id, combin_type, combin_no, combin_status, combin_qty, combin_start_date,
       combin_end_date, principal_id, principal_name, country_code, telephone, remark,
       created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
@@ -395,7 +395,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeCombinOrder">
     <!--@mbg.generated-->
-    insert intoope_combin_order
+    insert into ope_combin_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

@@ -150,7 +150,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_in_whouse_parts_b
+    insert into ope_in_whouse_parts_b
     (id, dr, in_wh_id, parts_id, parts_name, parts_no, parts_type, purchase_qty, able_in_wh_qty,
       in_wh_qty, act_in_wh_qty, unqualified_qty, remark, created_by, created_time, updated_by,
       updated_time, def1, def2, def3, def4, def5)
@@ -168,7 +168,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeInWhousePartsB">
     <!--@mbg.generated-->
-    insert intoope_in_whouse_parts_b
+    insert into ope_in_whouse_parts_b
     (id, dr, in_wh_id, parts_id, parts_name, parts_no, parts_type, purchase_qty, able_in_wh_qty,
       in_wh_qty, act_in_wh_qty, unqualified_qty, remark, created_by, created_time, updated_by,
       updated_time, def1, def2, def3, def4, def5)
@@ -206,7 +206,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeInWhousePartsB">
     <!--@mbg.generated-->
-    insert intoope_in_whouse_parts_b
+    insert into ope_in_whouse_parts_b
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

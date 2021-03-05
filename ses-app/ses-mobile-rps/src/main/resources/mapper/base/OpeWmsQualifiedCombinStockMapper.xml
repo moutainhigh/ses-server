@@ -125,7 +125,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_wms_qualified_combin_stock
+    insert into ope_wms_qualified_combin_stock
     (id, dr, production_combin_bom_id, combin_no, cn_name, en_name, fr_name, qty, remark,
       created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
       )
@@ -142,7 +142,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsQualifiedCombinStock">
     <!--@mbg.generated-->
-    insert intoope_wms_qualified_combin_stock
+    insert into ope_wms_qualified_combin_stock
     (id, dr, production_combin_bom_id, combin_no, cn_name, en_name, fr_name, qty, remark,
       created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
       )
@@ -175,7 +175,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsQualifiedCombinStock">
     <!--@mbg.generated-->
-    insert intoope_wms_qualified_combin_stock
+    insert into ope_wms_qualified_combin_stock
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

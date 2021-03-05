@@ -202,7 +202,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_specificat_group
+    insert into ope_specificat_group
     (id, dr, group_name, production_type, remark, created_by, created_time, updated_by,
       updated_time, def1, def2, def3, def4, def5)
     values
@@ -216,7 +216,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSpecificatGroup">
     <!--@mbg.generated-->
-    insert intoope_specificat_group
+    insert into ope_specificat_group
     (id, dr, group_name, production_type, remark, created_by, created_time, updated_by,
       updated_time, def1, def2, def3, def4, def5)
     values
@@ -243,7 +243,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSpecificatGroup">
     <!--@mbg.generated-->
-    insert intoope_specificat_group
+    insert into ope_specificat_group
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

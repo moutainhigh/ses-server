@@ -101,7 +101,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_color
+    insert into ope_color
     (id, dr, color_name, color_value, remark, created_by, created_time, updated_by, updated_time,
       def1, def2, def3, def4, def5)
     values
@@ -115,7 +115,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeColor">
     <!--@mbg.generated-->
-    insert intoope_color
+    insert into ope_color
     (id, dr, color_name, color_value, remark, created_by, created_time, updated_by, updated_time,
       def1, def2, def3, def4, def5)
     values
@@ -142,7 +142,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeColor">
     <!--@mbg.generated-->
-    insert intoope_color
+    insert into ope_color
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

@@ -144,7 +144,7 @@
   </update>
   <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
     <!--@mbg.generated-->
-    insert intoope_sys_dept
+    insert into ope_sys_dept
     (dr, p_id, tenant_id, principal, `level`, `name`, code, dept_status, description,
       sort, system_root, created_by, created_time, updated_by, updated_time, def1, def2,
       def3, def4, def5)
@@ -161,7 +161,7 @@
   </insert>
   <insert id="insertOrUpdate" keyColumn="id" keyProperty="id" parameterType="com.redescooter.ses.web.ros.dm.OpeSysDept" useGeneratedKeys="true">
     <!--@mbg.generated-->
-    insert intoope_sys_dept
+    insert into ope_sys_dept
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -242,7 +242,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" keyColumn="id" keyProperty="id" parameterType="com.redescooter.ses.web.ros.dm.OpeSysDept" useGeneratedKeys="true">
     <!--@mbg.generated-->
-    insert intoope_sys_dept
+    insert into ope_sys_dept
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

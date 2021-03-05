@@ -307,7 +307,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_wms_stock_serial_number
+    insert into ope_wms_stock_serial_number
     (id, dr, tenant_id, dept_id, relation_type, relation_id, stock_type, rsn, stock_status,
       lot_num, sn, bluetooth_mac_address, remark, created_by, created_time, updated_by,
       updated_time, def1, def2, def3, def4, def5)
@@ -325,7 +325,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsStockSerialNumber">
     <!--@mbg.generated-->
-    insert intoope_wms_stock_serial_number
+    insert into ope_wms_stock_serial_number
     (id, dr, tenant_id, dept_id, relation_type, relation_id, stock_type, rsn, stock_status,
       lot_num, sn, bluetooth_mac_address, remark, created_by, created_time, updated_by,
       updated_time, def1, def2, def3, def4, def5)
@@ -363,7 +363,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsStockSerialNumber">
     <!--@mbg.generated-->
-    insert intoope_wms_stock_serial_number
+    insert into ope_wms_stock_serial_number
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

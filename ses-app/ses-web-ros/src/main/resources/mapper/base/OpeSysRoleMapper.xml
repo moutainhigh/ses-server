@@ -138,7 +138,7 @@
   </update>
   <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
     <!--@mbg.generated-->
-    insert intoope_sys_role
+    insert into ope_sys_role
     (dr, tenant_id, position_id, role_name, role_code, role_status, role_desc, sort,
       sale_area, system_root, created_by, create_time, updated_by, update_time, def1,
       def2, def3, def4, def5)
@@ -155,7 +155,7 @@
   </insert>
   <insert id="insertOrUpdate" keyColumn="id" keyProperty="id" parameterType="com.redescooter.ses.web.ros.dm.OpeSysRole" useGeneratedKeys="true">
     <!--@mbg.generated-->
-    insert intoope_sys_role
+    insert into ope_sys_role
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -233,7 +233,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" keyColumn="id" keyProperty="id" parameterType="com.redescooter.ses.web.ros.dm.OpeSysRole" useGeneratedKeys="true">
     <!--@mbg.generated-->
-    insert intoope_sys_role
+    insert into ope_sys_role
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
