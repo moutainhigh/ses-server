@@ -281,7 +281,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_order_serial_bind
+    insert into ope_order_serial_bind
     (id, dr, order_type, order_b_id, serial_num, lot, product_id, product_type, qty,
       remark, bluetooth_mac_address, created_by, created_time, updated_by, updated_time,
       def1, def2, def3, def4, def5)
@@ -299,7 +299,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOrderSerialBind">
     <!--@mbg.generated-->
-    insert intoope_order_serial_bind
+    insert into ope_order_serial_bind
     (id, dr, order_type, order_b_id, serial_num, lot, product_id, product_type, qty,
       remark, bluetooth_mac_address, created_by, created_time, updated_by, updated_time,
       def1, def2, def3, def4, def5)
@@ -335,7 +335,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOrderSerialBind">
     <!--@mbg.generated-->
-    insert intoope_order_serial_bind
+    insert into ope_order_serial_bind
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

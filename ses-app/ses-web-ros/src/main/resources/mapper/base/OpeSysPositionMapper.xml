@@ -132,7 +132,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_sys_position
+    insert into ope_sys_position
     (id, dr, tenant_id, position_name, position_code, dept_id, sort, position_status,
       remark, system_root, created_by, created_time, updated_by, updated_time, def1,
       def2, def3, def4, def5)
@@ -149,7 +149,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysPosition">
     <!--@mbg.generated-->
-    insert intoope_sys_position
+    insert into ope_sys_position
     (id, dr, tenant_id, position_name, position_code, dept_id, sort, position_status,
       remark, system_root, created_by, created_time, updated_by, updated_time, def1,
       def2, def3, def4, def5)
@@ -183,7 +183,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysPosition">
     <!--@mbg.generated-->
-    insert intoope_sys_position
+    insert into ope_sys_position
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

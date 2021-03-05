@@ -250,7 +250,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_entrust_order
+    insert into ope_entrust_order
     (id, dr, tenant_id, dept_id, invoice_id, invoice_no, entrust_no, entrust_status,
       entrust_type, consignor_qty, already_consignor_qty, delivery_date, trans_type,
       consignee_user, consignee_country_code, consignee_user_telephone, consignee_user_mail,
@@ -279,7 +279,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeEntrustOrder">
     <!--@mbg.generated-->
-    insert intoope_entrust_order
+    insert into ope_entrust_order
     (id, dr, tenant_id, dept_id, invoice_id, invoice_no, entrust_no, entrust_status,
       entrust_type, consignor_qty, already_consignor_qty, delivery_date, trans_type,
       consignee_user, consignee_country_code, consignee_user_telephone, consignee_user_mail,
@@ -343,7 +343,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeEntrustOrder">
     <!--@mbg.generated-->
-    insert intoope_entrust_order
+    insert into ope_entrust_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

@@ -557,7 +557,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_production_parts
+    insert into ope_production_parts
     (id, dr, tenant_id, dept_id, parts_no, parts_type, parts_sec, `disable`, sn_class,
       id_calss, parts_is_assembly, parts_is_for_assembly, parts_qty, supplier_id, procurement_cycle,
       dwg, qc_flag, remark, announ_user_id, op_announ_user_id, cn_name, en_name, fr_name,
@@ -584,7 +584,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeProductionParts">
     <!--@mbg.generated-->
-    insert intoope_production_parts
+    insert into ope_production_parts
     (id, dr, tenant_id, dept_id, parts_no, parts_type, parts_sec, `disable`, sn_class,
       id_calss, parts_is_assembly, parts_is_for_assembly, parts_qty, supplier_id, procurement_cycle,
       dwg, qc_flag, remark, announ_user_id, op_announ_user_id, cn_name, en_name, fr_name,
@@ -651,7 +651,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeProductionParts">
     <!--@mbg.generated-->
-    insert intoope_production_parts
+    insert into ope_production_parts
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

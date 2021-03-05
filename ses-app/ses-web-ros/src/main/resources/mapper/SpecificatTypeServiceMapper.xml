@@ -81,7 +81,7 @@
 
     <!--新增规格类型-->
     <insert id="insertSpecificatType" parameterType="com.redescooter.ses.web.ros.vo.specificat.dto.InsertSpecificTypeParamDTO">
-        insert intoope_specificat_type
+        insert into ope_specificat_type
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,

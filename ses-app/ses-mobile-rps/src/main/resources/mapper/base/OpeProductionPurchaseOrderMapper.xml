@@ -532,7 +532,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_production_purchase_order
+    insert into ope_production_purchase_order
     (id, dr, purchase_no, purchase_status, purchase_qty, purchase_amount, factory_id,
       factory_principal_id, factory_principal_name, principal_country_code, principal_telephone,
       delivery_date, docking_user, docking_user_name, docking_country_code, docking_user_telephone,
@@ -563,7 +563,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeProductionPurchaseOrder">
     <!--@mbg.generated-->
-    insert intoope_production_purchase_order
+    insert into ope_production_purchase_order
     (id, dr, purchase_no, purchase_status, purchase_qty, purchase_amount, factory_id,
       factory_principal_id, factory_principal_name, principal_country_code, principal_telephone,
       delivery_date, docking_user, docking_user_name, docking_country_code, docking_user_telephone,
@@ -629,7 +629,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeProductionPurchaseOrder">
     <!--@mbg.generated-->
-    insert intoope_production_purchase_order
+    insert into ope_production_purchase_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

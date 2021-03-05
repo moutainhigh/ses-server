@@ -294,7 +294,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_combin_list_parts_serial_bind
+    insert into ope_combin_list_parts_serial_bind
     (id, dr, order_b_id, order_type, serial_num, default_serial_num, lot, bluetooth_mac_address,
       product_id, product_type, qty, remark, created_by, created_time, updated_by, updated_time,
       def1, def2, def3, def4, def5)
@@ -312,7 +312,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeCombinListPartsSerialBind">
     <!--@mbg.generated-->
-    insert intoope_combin_list_parts_serial_bind
+    insert into ope_combin_list_parts_serial_bind
     (id, dr, order_b_id, order_type, serial_num, default_serial_num, lot, bluetooth_mac_address,
       product_id, product_type, qty, remark, created_by, created_time, updated_by, updated_time,
       def1, def2, def3, def4, def5)
@@ -349,7 +349,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeCombinListPartsSerialBind">
     <!--@mbg.generated-->
-    insert intoope_combin_list_parts_serial_bind
+    insert into ope_combin_list_parts_serial_bind
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

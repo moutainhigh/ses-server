@@ -125,7 +125,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_sale_parts
+    insert into ope_sale_parts
     (id, dr, dept_id, product_name, product_code, parts_name, parts_id, sale_stutas,
       remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4,
       def5)
@@ -142,7 +142,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSaleParts">
     <!--@mbg.generated-->
-    insert intoope_sale_parts
+    insert into ope_sale_parts
     (id, dr, dept_id, product_name, product_code, parts_name, parts_id, sale_stutas,
       remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4,
       def5)
@@ -175,7 +175,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSaleParts">
     <!--@mbg.generated-->
-    insert intoope_sale_parts
+    insert into ope_sale_parts
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

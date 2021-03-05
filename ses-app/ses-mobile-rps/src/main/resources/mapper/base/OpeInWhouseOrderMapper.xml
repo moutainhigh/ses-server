@@ -373,7 +373,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_in_whouse_order
+    insert into ope_in_whouse_order
     (id, dr, tenant_id, dept_id, country_type, in_wh_no, in_wh_status, wh_type, order_type,
       relation_order_id, relation_order_no, relation_order_type, in_wh_type, in_wh_qty,
       `source`, if_wh, remark, qc_completion_time, created_by, created_time, updated_by,
@@ -394,7 +394,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrder">
     <!--@mbg.generated-->
-    insert intoope_in_whouse_order
+    insert into ope_in_whouse_order
     (id, dr, tenant_id, dept_id, country_type, in_wh_no, in_wh_status, wh_type, order_type,
       relation_order_id, relation_order_no, relation_order_type, in_wh_type, in_wh_qty,
       `source`, if_wh, remark, qc_completion_time, created_by, created_time, updated_by,
@@ -440,7 +440,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrder">
     <!--@mbg.generated-->
-    insert intoope_in_whouse_order
+    insert into ope_in_whouse_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,

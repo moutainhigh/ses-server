@@ -330,7 +330,7 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert intoope_purchase_order
+    insert into ope_purchase_order
     (id, dr, tenant_id, dept_id, allocate_no, allocate_id, purchase_no, purchase_status,
       purchase_qty, purchase_type, purchase_origin_type, trans_type, purchase_amount,
       consignee_user, consignee_country_code, consignee_user_telephone, consignee_user_mail,
@@ -367,7 +367,7 @@
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpePurchaseOrder">
     <!--@mbg.generated-->
-    insert intoope_purchase_order
+    insert into ope_purchase_order
     (id, dr, tenant_id, dept_id, allocate_no, allocate_id, purchase_no, purchase_status,
       purchase_qty, purchase_type, purchase_origin_type, trans_type, purchase_amount,
       consignee_user, consignee_country_code, consignee_user_telephone, consignee_user_mail,
@@ -451,7 +451,7 @@
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpePurchaseOrder">
     <!--@mbg.generated-->
-    insert intoope_purchase_order
+    insert into ope_purchase_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
