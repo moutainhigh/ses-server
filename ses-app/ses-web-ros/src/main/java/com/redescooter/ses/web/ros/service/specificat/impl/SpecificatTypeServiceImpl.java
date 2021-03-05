@@ -271,7 +271,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
 //    }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+//    @Transactional(rollbackFor = Exception.class)
     public GeneralResult insertSpecificType(InsertSpecificTypeParamDTO paramDTO) {
         Long userId = paramDTO.getUserId();
 
