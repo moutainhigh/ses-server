@@ -17,9 +17,6 @@
             <if test="status == null or status == ''">
                 and opi.status in ('1','3','4','5')
             </if>
-            <if test="color != null and color != ''">
-                and opp.color = #{color}
-            </if>
             <if test="startCreatedTime != null and endCreatedTime != null">
                 and (opi.created_time between #{startCreatedTime} and #{endCreatedTime})
             </if>
@@ -31,9 +28,6 @@
                 or oc.customer_first_name like concat("%",#{keyword},"%")
                 or oc.customer_last_name like concat("%",#{keyword},"%")
                 or oc.email like concat("%",#{keyword},"%")
-                or opp.en_name like concat("%",#{keyword},"%")
-                or opp.fr_name like concat("%",#{keyword},"%")
-                or opp.cn_name like concat("%",#{keyword},"%")
                 )
             </if>
         </where>
@@ -41,33 +35,26 @@
     <select id="listCount" resultType="int">
         select count(opi.id)
         from ope_customer_inquiry opi
-                     left join ope_customer oc on opi.customer_id = oc.id and oc.dr = 0
-                     left join ope_parts_product opp on opi.product_id = opp.id and opp.dr = 0
+        left join ope_customer oc on opi.customer_id = oc.id and oc.dr = 0
+        left join ope_sale_scooter scooter on scooter.id = opi.product_id and scooter.dr = 0
+        left join ope_color opp on scooter.color_id = opp.id and opp.dr = 0
+        left join ope_specificat_type spe on scooter.specificat_id = spe.id and spe.dr = 0
+
         <include refid="where_list"/>
     </select>
 
     <sql id="list_column">
         opi.id,
-        opi.order_no                                    as orderNo,
+         opi.order_no                                    as orderNo,
         opi.status,
         IFNULL(OPI.pay_status, '1')                     as payStatus,
         oc.customer_full_name                           as customerFullName,
         oc.email,
         opi.product_model                               as productModel,
-        opp.en_name                                     as enName,
-        opp.color,
-        case
-                when (opp.color = 1) then 'RED'
-                when (opp.color = 2) then 'BLUE'
-                when (opp.color = 3) then 'CHAMPAGNE'
-                when (opp.color = 4) then 'CARBON'
-                when (opp.color = 5) then 'BLACK' end   as colorName,
-        case
-                when (opp.color = 1) then '#BB404A'
-                when (opp.color = 2) then '#4C7DB7'
-                when (opp.color = 3) then '#C4B792'
-                when (opp.color = 4) then '#A9AAAC'
-                when (opp.color = 5) then '#2D2926' end as colorValue,
+        spe.specificat_name                             as enName,
+        opp.color_name                                  as color,
+        opp.color_name                                  as colorName,
+        opp.color_value                                 as colorValue,
         ifnull(opi.def5, 'false')                       as labelFlag,
         case
                 when ifnull(opi.def6, '0') = '0' then true
@@ -83,8 +70,10 @@
         select
         <include refid="list_column"/>
         from ope_customer_inquiry opi
-                     left join ope_customer oc on opi.customer_id = oc.id and oc.dr = 0
-                     left join ope_parts_product opp on opi.product_id = opp.id and opp.dr = 0
+           left join ope_customer oc on opi.customer_id = oc.id and oc.dr = 0
+           left join ope_sale_scooter scooter on scooter.id = opi.product_id and scooter.dr = 0
+           left join ope_color opp on scooter.color_id = opp.id and opp.dr = 0
+           left join ope_specificat_type spe on scooter.specificat_id = spe.id and spe.dr = 0
         <include refid="where_list"/>
         order by opi.created_time desc
         limit #{startRow},#{pageSize}
@@ -97,20 +86,10 @@
         oc.customer_full_name                           as customerFullName,
         oc.email,
         opi.product_model                               as productModel,
-        opp.en_name                                     as enName,
-        opp.color,
-        case
-                when (opp.color = 1) then 'RED'
-                when (opp.color = 2) then 'BLUE'
-                when (opp.color = 3) then 'CHAMPAGNE'
-                when (opp.color = 4) then 'CARBON'
-                when (opp.color = 5) then 'BLACK' end   as colorName,
-        case
-                when (opp.color = 1) then '#BB404A'
-                when (opp.color = 2) then '#4C7DB7'
-                when (opp.color = 3) then '#C4B792'
-                when (opp.color = 4) then '#A9AAAC'
-                when (opp.color = 5) then '#2D2926' end as colorValue,
+        spe.specificat_name                             as enName,
+        opp.color_name                                  as color,
+        opp.color_name                                  as colorName,
+        opp.color_value                                 as colorValue,
         opi.scooter_quantity                            as qty,
         ocib.product_qty                                as batteryQty,
         opi.total_price                                 as amount,
@@ -131,7 +110,9 @@
         <include refid="details_column"/>
         from ope_customer_inquiry opi
                      left join ope_customer oc on opi.customer_id = oc.id and oc.dr = 0
-                     left join ope_parts_product opp on opi.product_id = opp.id and opp.dr = 0
+                     left join ope_sale_scooter scooter on scooter.id = opi.product_id and scooter.dr = 0
+                     left join ope_color opp on scooter.color_id = opp.id and opp.dr = 0
+                     left join ope_specificat_type spe on scooter.specificat_id = spe.id and spe.dr = 0
                      left join ope_customer_inquiry_b ocib on opi.id = ocib.inquiry_id and ocib.dr = 0
         where opi.dr = 0
           and opi.id = #{id}
