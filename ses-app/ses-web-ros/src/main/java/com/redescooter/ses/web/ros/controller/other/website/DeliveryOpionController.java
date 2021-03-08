@@ -29,27 +29,27 @@ public class DeliveryOpionController {
     private DeliveryOpionService deliveryOpionService;
 
     @PostMapping(value = "/save")
-    @ApiOperation(value = "Save Option", response = GeneralResult.class)
+    @ApiOperation(value = "新增操作", response = GeneralResult.class)
     public Response<GeneralResult> save(@ModelAttribute @ApiParam("Parameter") DeliveryOptionSaveEnter enter) {
         return new Response<>(deliveryOpionService.save(enter));
     }
 
     @PostMapping(value = "/edit")
-    @ApiOperation(value = "Option Edit", response = GeneralResult.class)
+    @ApiOperation(value = "编辑操作", response = GeneralResult.class)
     public Response<GeneralResult> edit(@ModelAttribute @ApiParam("Parameter") DeliveryOptionEditEnter enter) {
         return new Response<>(deliveryOpionService.edit(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/details")
-    @ApiOperation(value = "Option Details", response = DeliveryOptionSaveResult.class)
+    @ApiOperation(value = "详情", response = DeliveryOptionSaveResult.class)
     public Response<DeliveryOptionSaveResult> details(@ModelAttribute @ApiParam("Parameter") IdEnter enter) {
         return new Response<>(deliveryOpionService.details(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/list")
-    @ApiOperation(value = "Option List Table", response = DeliveryOptionSaveResult.class)
+    @ApiOperation(value = "列表", response = DeliveryOptionSaveResult.class)
     public Response<List<DeliveryOptionSaveResult>> list(@ModelAttribute @ApiParam("Parameter") GeneralEnter enter) {
         return new Response<>(deliveryOpionService.list(enter));
     }

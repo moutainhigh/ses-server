@@ -34,21 +34,21 @@ public class WebsiteHomeController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/saveAboutUs")
-    @ApiOperation(value = "contact us", response = GeneralResult.class)
+    @ApiOperation(value = "联系我们", response = GeneralResult.class)
     public Response<GeneralResult> saveAboutUs(@ModelAttribute @ApiParam("Parameter") SaveAboutUsEnter enter) {
         return new Response<>(inquiryService.saveAboutUs(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/email")
-    @ApiOperation(value = "Mail subscription", response = GeneralResult.class)
+    @ApiOperation(value = "邮件订阅", response = GeneralResult.class)
     public Response<GeneralResult> email(@ModelAttribute @ApiParam("Parameter") CheckEmailEnter enter) {
         return new Response<>(websiteOrderFormService.email(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/checkMail")
-    @ApiOperation(value = "Mailbox verification", response = GeneralResult.class)
+    @ApiOperation(value = "邮箱验证", response = GeneralResult.class)
     public Response<BooleanResult> checkMail(@ModelAttribute @ApiParam("Parameter") CheckEmailEnter enter) {
         return new Response<>(websiteOrderFormService.checkMail(enter));
     }

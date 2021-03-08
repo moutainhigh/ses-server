@@ -39,7 +39,7 @@ import java.util.List;
  * @create: 2020/05/12 15:51
  */
 @Log4j2
-@Api(tags = {"Official website order"})
+@Api(tags = {"官网订单"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/website")
@@ -50,77 +50,77 @@ public class WebsiteOrderController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/scooters")
-    @ApiOperation(value = "Vehicle list", response = ProductResult.class)
+    @ApiOperation(value = "车辆裂帛啊", response = ProductResult.class)
     public Response<List<ProductResult>> scooters(@ModelAttribute @ApiParam("Parameter") ScootersEnter enter) {
         return new Response<>(websiteOrderFormService.scooters(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/productModels")
-    @ApiOperation(value = "Vehicle model list", response = ProductModelResult.class)
+    @ApiOperation(value = "车型列表", response = ProductModelResult.class)
     public Response<List<ProductModelResult>> productModels(@ModelAttribute @ApiParam("Parameter") GeneralEnter enter) {
         return new Response<>(websiteOrderFormService.productModels(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/accessoryBatterys")
-    @ApiOperation(value = "List of vehicle battery accessories", response = AccessoryResult.class)
+    @ApiOperation(value = "车辆蓄电池附件列表", response = AccessoryResult.class)
     public Response<List<AccessoryResult>> accessoryBatteryList(@ModelAttribute @ApiParam("Parameter") GeneralEnter enter) {
         return new Response<>(websiteOrderFormService.accessoryBatteryList(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/accessoryTopCases")
-    @ApiOperation(value = "Spare parts list of vehicle trunk", response = AccessoryResult.class)
+    @ApiOperation(value = "后备箱备件列表", response = AccessoryResult.class)
     public Response<List<AccessoryResult>> accessoryTopCaseList(@ModelAttribute @ApiParam("Parameter") GeneralEnter enter) {
         return new Response<>(websiteOrderFormService.accessoryTopCaseList(enter));
     }
 
     @WebsiteSignIn
     @PostMapping(value = "/saveOrderForm")
-    @ApiOperation(value = "Reservation of advance order", response = SaveOrderFormResult.class)
+    @ApiOperation(value = "保存预订单", response = SaveOrderFormResult.class)
     public Response<SaveOrderFormResult> saveOrderForm(@ModelAttribute @ApiParam("Parameter") SaveSaleOrderEnter enter) {
         return new Response<>(websiteOrderFormService.saveOrderForm(enter));
     }
 
     @WebsiteSignIn
     @PostMapping(value = "/editOrderForm")
-    @ApiOperation(value = "Edit advance order", response = SaveOrderFormResult.class)
+    @ApiOperation(value = "修改预订单", response = SaveOrderFormResult.class)
     public Response<SaveOrderFormResult> editOrderForm(@ModelAttribute @ApiParam("Parameter") SaveSaleOrderEnter enter) {
         return new Response<>(websiteOrderFormService.editOrderForm(enter));
     }
 
     @WebsiteSignIn
     @PostMapping(value = "/payDeposit")
-    @ApiOperation(value = "Deposit payment", response = GeneralResult.class)
+    @ApiOperation(value = "支付定金", response = GeneralResult.class)
     public Response<GeneralResult> payDeposit(@ModelAttribute @ApiParam("Parameter") IdEnter enter) {
         return new Response<>(websiteOrderFormService.payDeposit(enter));
     }
 
     @WebsiteSignIn
     @PostMapping(value = "/orderForms")
-    @ApiOperation(value = "Pre order list", response = OrderFormsResult.class)
+    @ApiOperation(value = "预订单列表", response = OrderFormsResult.class)
     public Response<List<OrderFormsResult>> orderForms(@ModelAttribute @ApiParam("Parameter") OrderFormsEnter enter) {
         return new Response<>(websiteOrderFormService.orderForms(enter));
     }
 
     @WebsiteSignIn
     @PostMapping(value = "/orderFormInfo")
-    @ApiOperation(value = "Pre order details", response = OrderFormInfoResult.class)
+    @ApiOperation(value = "预订单详情", response = OrderFormInfoResult.class)
     public Response<OrderFormInfoResult> orderFormInfo(@ModelAttribute @ApiParam("Parameter") IdEnter enter) {
         return new Response<>(websiteOrderFormService.orderFormInfo(enter));
     }
 
     @WebsiteSignIn
     @PostMapping(value = "/payLastParagraph")
-    @ApiOperation(value = "Pay the balance", response = GeneralResult.class)
+    @ApiOperation(value = "支付尾款", response = GeneralResult.class)
     public Response<GeneralResult> payLastParagraph(@ModelAttribute @ApiParam("Parameter") IdEnter enter) {
         return new Response<>(websiteOrderFormService.payLastParagraph(enter));
     }
 
     @WebsiteSignIn
     @PostMapping(value = "/customerInfo")
-    @ApiOperation(value = "Customer information", response = CustomerInfoResult.class)
+    @ApiOperation(value = "客户信息", response = CustomerInfoResult.class)
     public Response<CustomerInfoResult> customerInfo(@ModelAttribute @ApiParam("Parameter") GeneralEnter enter) {
         return new Response<>(websiteOrderFormService.customerInfo(enter));
     }

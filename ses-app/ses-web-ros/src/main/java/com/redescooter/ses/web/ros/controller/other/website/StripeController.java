@@ -24,21 +24,21 @@ public class StripeController {
 
     @WebsiteSignIn
     @PostMapping(value = "/paymentIntent")
-    @ApiOperation(value = "Get [client_secret]", response = StringResult.class)
+    @ApiOperation(value = "获取密钥", response = StringResult.class)
     public Response<StringResult> paymentIntent(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(stripeService.paymentIntent(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/succeeHooks")
-    @ApiOperation(value = "Succee Hooks")
+    @ApiOperation(value = "成功钩子")
     public Response<GeneralResult> succeeHooks(@RequestBody  String enter) {
         return new Response<>(stripeService.succeeHooks(enter));
     }
 
     @IgnoreLoginCheck
     @PostMapping(value = "/failHooks")
-    @ApiOperation(value = "Fail Hooks")
+    @ApiOperation(value = "失败钩子")
     @ResponseBody
     public Response<GeneralResult> failHooks(@RequestBody String enter) {
         return new Response<>(stripeService.failHooks(enter));
@@ -46,7 +46,7 @@ public class StripeController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/canceledHooks")
-    @ApiOperation(value = "Canceled Hooks")
+    @ApiOperation(value = "取消钩子")
     @ResponseBody
     public Response<GeneralResult> canceledHooks(@RequestBody String enter) {
         return new Response<>(stripeService.cancelledPaymentIntent(enter));
@@ -54,7 +54,7 @@ public class StripeController {
 
     @WebsiteSignIn
     @PostMapping(value = "/publicSecret")
-    @ApiOperation(value = "Get public key", response = StringResult.class)
+    @ApiOperation(value = "获取公钥", response = StringResult.class)
     public Response<PublicSecretResult> publicSecret() {
         return new Response(stripeService.publicSecret());
     }
