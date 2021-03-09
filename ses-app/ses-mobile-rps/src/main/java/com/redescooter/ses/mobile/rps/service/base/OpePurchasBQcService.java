@@ -1,11 +1,10 @@
 package com.redescooter.ses.mobile.rps.service.base;
 
-import java.util.List;
-import com.redescooter.ses.mobile.rps.dm.OpePurchasBQc;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.transaction.annotation.Transactional;
+import com.redescooter.ses.mobile.rps.dm.OpePurchasBQc;
 
-@Transactional
+import java.util.List;
+
 public interface OpePurchasBQcService extends IService<OpePurchasBQc> {
 
 

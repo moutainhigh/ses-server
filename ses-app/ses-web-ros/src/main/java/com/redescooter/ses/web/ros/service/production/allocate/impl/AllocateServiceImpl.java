@@ -51,6 +51,7 @@ import com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderNodeResul
 import com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderPartResult;
 import com.redescooter.ses.web.ros.vo.production.allocate.AllocateOrderResult;
 import com.redescooter.ses.web.ros.vo.production.allocate.SaveAllocateEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
@@ -58,7 +59,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -232,7 +232,7 @@ public class AllocateServiceImpl implements AllocateService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startPrepare(IdEnter enter) {
         OpeAllocate opeAllocate = checkAllocate(enter.getId(), AllocateOrderStatusEnums.PENDING.getValue());
@@ -259,7 +259,7 @@ public class AllocateServiceImpl implements AllocateService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startAllocate(IdEnter enter) {
         OpeAllocate opeAllocate = checkAllocate(enter.getId(), AllocateOrderStatusEnums.PREPARE.getValue());
@@ -286,7 +286,7 @@ public class AllocateServiceImpl implements AllocateService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult cancelAllocate(IdEnter enter) {
         List<OpeStock> updateOpeStock = Lists.newArrayList();
@@ -392,7 +392,7 @@ public class AllocateServiceImpl implements AllocateService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult inWhAllocate(IdEnter enter) {
         //入库单
@@ -519,7 +519,7 @@ public class AllocateServiceImpl implements AllocateService {
      * @param saveAllocateEnter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveAllocate(SaveAllocateEnter saveAllocateEnter) {
         //SaveAllocateEnter参数值去空格

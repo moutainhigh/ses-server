@@ -90,6 +90,7 @@ import com.redescooter.ses.web.ros.vo.production.assembly.SaveAssemblyEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.SetPaymentAssemblyEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.StartPrepareEnter;
 import com.redescooter.ses.web.ros.vo.production.assembly.productItemResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -97,7 +98,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
@@ -442,7 +442,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveAssembly(SaveAssemblyEnter enter) {
         // 出库单信息保存
@@ -873,7 +873,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult setPaymentAssembly(SetPaymentAssemblyEnter enter) {
 
@@ -1022,7 +1022,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult cancle(IdEnter enter) {
         OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.PENDING.getValue());
@@ -1055,7 +1055,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startPrepare(StartPrepareEnter enter) {
         OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.PENDING.getValue());
@@ -1083,7 +1083,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startAssembly(IdEnter enter) {
         OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.PREPARE_MATERIAL.getValue());
@@ -1110,7 +1110,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startQc(IdEnter enter) {
         OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.ASSEMBLING.getValue());
@@ -1137,7 +1137,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult completeQc(IdEnter enter) {
         OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.QC.getValue());
@@ -1164,7 +1164,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult inWh(IdEnter enter) {
         OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), AssemblyStatusEnums.QC_PASSED.getValue());
@@ -1291,7 +1291,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveNode(SaveNodeEnter enter) {
         opeAssembiyOrderTraceService.save(OpeAssembiyOrderTrace.builder()
@@ -1353,7 +1353,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult pay(PayEnter enter) {
         OpeAssemblyOrderPayment opeAssemblyOrderPayment = opeAssemblyOrderPaymentService.getById(enter.getId());

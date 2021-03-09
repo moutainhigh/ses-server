@@ -10,12 +10,12 @@ import com.redescooter.ses.service.scooter.dao.ScooterBbiMapper;
 import com.redescooter.ses.service.scooter.dao.ScooterBmsMapper;
 import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
-import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -47,11 +47,9 @@ public class ScooterBbiServiceImpl implements ScooterBbiService {
     @Resource
     private ScooterServiceMapper scooterServiceMapper;
 
-    @Resource
-    private TransactionTemplate transactionTemplate;
-
 
     @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
     public int insertScooterBbiByEmqX(ScooterBbiReportedDTO scooterReportedBbi) {
         try {
             String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterReportedBbi.getTabletSn());
@@ -66,103 +64,99 @@ public class ScooterBbiServiceImpl implements ScooterBbiService {
             ScooterBbiReportedDTO scooterBbi = scooterBbiMapper.getScooterBbiByScooterNoAndBatchNo(scooterNo,
                     scooterReportedBbi.getBatchNo());
 
-            transactionTemplate.execute(status -> {
-                try {
+            try {
+                /**
+                 * BMS电池信息
+                 */
+                List<ScooterBmsReportedDTO> scooterBmsNew = new ArrayList<>();
+                scooterReportedBbi.getBatteryWares().forEach(battery -> {
+                    if (null != battery.getBms()) {
+                        scooterBmsNew.add(battery.getBms());
+                    }
+                });
+
+                if (null != scooterBbi) {
                     /**
-                     * BMS电池信息
+                     * 更新BBI(电池管理系统)数据
                      */
-                    List<ScooterBmsReportedDTO> scooterBmsNew = new ArrayList<>();
-                    scooterReportedBbi.getBatteryWares().forEach(battery -> {
-                        if (null != battery.getBms()) {
-                            scooterBmsNew.add(battery.getBms());
-                        }
-                    });
+                    scooterReportedBbi.setId(scooterBbi.getId());
+                    scooterReportedBbi.setUpdatedTime(new Date());
+                    scooterBbiMapper.updateScooterBbiById(scooterReportedBbi);
 
-                    if (null != scooterBbi) {
-                        /**
-                         * 更新BBI(电池管理系统)数据
-                         */
-                        scooterReportedBbi.setId(scooterBbi.getId());
-                        scooterReportedBbi.setUpdatedTime(new Date());
-                        scooterBbiMapper.updateScooterBbiById(scooterReportedBbi);
+                    /**
+                     * 更新电池仓位信息(电池卡槽,每辆车有四个)
+                     */
+                    bbiBatteryWareMapper.batchUpdateBatteryWare(buildBatteryWareData(scooterReportedBbi.getBatteryWares(),
+                            scooterNo, 2));
 
-                        /**
-                         * 更新电池仓位信息(电池卡槽,每辆车有四个)
-                         */
-                        bbiBatteryWareMapper.batchUpdateBatteryWare(buildBatteryWareData(scooterReportedBbi.getBatteryWares(),
-                                scooterNo, 2));
+                    /**
+                     * 更新电池信息 -- 根据scooterNo、wareNo和batchNo来确定电池
+                     * by-数据库中已存在的电池进行更新,未存在进行新增
+                     */
+                    if (!CollectionUtils.isEmpty(scooterBmsNew)) {
+                        List<Integer> bmsWareNos = scooterBmsMapper.getScooterBmsWareNoByScooterNo(scooterNo);
 
                         /**
-                         * 更新电池信息 -- 根据scooterNo、wareNo和batchNo来确定电池
-                         * by-数据库中已存在的电池进行更新,未存在进行新增
+                         * 使用stream.filter筛选出存在和未存在的电池信息
                          */
-                        if (!CollectionUtils.isEmpty(scooterBmsNew)) {
-                            List<Integer> bmsWareNos = scooterBmsMapper.getScooterBmsWareNoByScooterNo(scooterNo);
+                        List<ScooterBmsReportedDTO> updateScooterBmsList = scooterBmsNew.stream().filter(
+                                bms -> bmsWareNos.contains(bms.getWareNo())
+                        ).collect(Collectors.toList());
 
-                            /**
-                             * 使用stream.filter筛选出存在和未存在的电池信息
-                             */
-                            List<ScooterBmsReportedDTO> updateScooterBmsList = scooterBmsNew.stream().filter(
-                                    bms -> bmsWareNos.contains(bms.getWareNo())
-                            ).collect(Collectors.toList());
+                        List<ScooterBmsReportedDTO> insertScooterBmsList = scooterBmsNew.stream().filter(
+                                bms -> !bmsWareNos.contains(bms.getWareNo())
+                        ).collect(Collectors.toList());
 
-                            List<ScooterBmsReportedDTO> insertScooterBmsList = scooterBmsNew.stream().filter(
-                                    bms -> !bmsWareNos.contains(bms.getWareNo())
-                            ).collect(Collectors.toList());
-
-                            // 目前电池只会有四个,所以这里会做限制
-                            if (!CollectionUtils.isEmpty(insertScooterBmsList) && bmsWareNos.size() < 4) {
-                                insertScooterBmsList.forEach(bms -> {
-                                    bms.setId(idAppService.getId(SequenceName.SCO_SCOOTER_BMS));
-                                    bms.setScooterNo(scooterNo);
-                                    bms.setCreatedTime(new Date());
-                                    bms.setUpdatedTime(new Date());
-                                });
-
-                                int subLength = 4 - bmsWareNos.size();
-
-                                if (insertScooterBmsList.size() < subLength) {
-                                    scooterBmsMapper.batchInsertScooterBms(insertScooterBmsList);
-                                } else {
-                                    scooterBmsMapper.batchInsertScooterBms(insertScooterBmsList.subList(0, subLength));
-                                }
-                            }
-
-                            // set UpdatedTime or update
-                            if (!CollectionUtils.isEmpty(updateScooterBmsList)) {
-                                updateScooterBmsList.forEach(bms -> {
-                                    bms.setUpdatedTime(new Date());
-                                });
-                                scooterBmsMapper.batchUpdateScooterBms(updateScooterBmsList, scooterNo);
-                            }
-                        }
-                    } else {
-                        // bbi -> batteryWare -> bms
-                        scooterReportedBbi.setId(idAppService.getId(SequenceName.SCO_SCOOTER_BBI));
-                        scooterReportedBbi.setScooterNo(scooterNo);
-                        scooterReportedBbi.setCreatedTime(new Date());
-                        scooterReportedBbi.setUpdatedTime(new Date());
-                        scooterBbiMapper.insertScooterBbi(scooterReportedBbi);
-
-                        bbiBatteryWareMapper.batchInsertBatteryWare(buildBatteryWareData(scooterReportedBbi.getBatteryWares(),
-                                scooterNo, 1));
-
-                        if (!CollectionUtils.isEmpty(scooterBmsNew)) {
-                            scooterBmsNew.forEach(bms -> {
+                        // 目前电池只会有四个,所以这里会做限制
+                        if (!CollectionUtils.isEmpty(insertScooterBmsList) && bmsWareNos.size() < 4) {
+                            insertScooterBmsList.forEach(bms -> {
                                 bms.setId(idAppService.getId(SequenceName.SCO_SCOOTER_BMS));
                                 bms.setScooterNo(scooterNo);
                                 bms.setCreatedTime(new Date());
                                 bms.setUpdatedTime(new Date());
                             });
-                            scooterBmsMapper.batchInsertScooterBms(scooterBmsNew.size() > 4 ? scooterBmsNew.subList(0, 4) : scooterBmsNew);
+
+                            int subLength = 4 - bmsWareNos.size();
+
+                            if (insertScooterBmsList.size() < subLength) {
+                                scooterBmsMapper.batchInsertScooterBms(insertScooterBmsList);
+                            } else {
+                                scooterBmsMapper.batchInsertScooterBms(insertScooterBmsList.subList(0, subLength));
+                            }
+                        }
+
+                        // set UpdatedTime or update
+                        if (!CollectionUtils.isEmpty(updateScooterBmsList)) {
+                            updateScooterBmsList.forEach(bms -> {
+                                bms.setUpdatedTime(new Date());
+                            });
+                            scooterBmsMapper.batchUpdateScooterBms(updateScooterBmsList, scooterNo);
                         }
                     }
-                } catch (Exception e) {
-                    log.error("【车辆电池相关信息数据上报失败】----{}", ExceptionUtils.getStackTrace(e));
-                    status.setRollbackOnly();
+                } else {
+                    // bbi -> batteryWare -> bms
+                    scooterReportedBbi.setId(idAppService.getId(SequenceName.SCO_SCOOTER_BBI));
+                    scooterReportedBbi.setScooterNo(scooterNo);
+                    scooterReportedBbi.setCreatedTime(new Date());
+                    scooterReportedBbi.setUpdatedTime(new Date());
+                    scooterBbiMapper.insertScooterBbi(scooterReportedBbi);
+
+                    bbiBatteryWareMapper.batchInsertBatteryWare(buildBatteryWareData(scooterReportedBbi.getBatteryWares(),
+                            scooterNo, 1));
+
+                    if (!CollectionUtils.isEmpty(scooterBmsNew)) {
+                        scooterBmsNew.forEach(bms -> {
+                            bms.setId(idAppService.getId(SequenceName.SCO_SCOOTER_BMS));
+                            bms.setScooterNo(scooterNo);
+                            bms.setCreatedTime(new Date());
+                            bms.setUpdatedTime(new Date());
+                        });
+                        scooterBmsMapper.batchInsertScooterBms(scooterBmsNew.size() > 4 ? scooterBmsNew.subList(0, 4) : scooterBmsNew);
+                    }
                 }
-                return 1;
-            });
+            } catch (Exception e) {
+                log.error("【车辆电池相关信息数据上报失败】----{}", ExceptionUtils.getStackTrace(e));
+            }
         } catch (Exception e) {
             log.error("【车辆电池相关信息数据上报失败】----{}", ExceptionUtils.getStackTrace(e));
         }

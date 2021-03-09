@@ -12,34 +12,82 @@ import com.redescooter.ses.api.common.enums.ClassTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.ProductionBomStatusEnums;
 import com.redescooter.ses.api.common.enums.bom.ProductionPartsRelationTypeEnums;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseNameResult;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.app.common.service.excel.ImportExcelService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionProductServiceMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeColor;
+import com.redescooter.ses.web.ros.dm.OpePartsSec;
+import com.redescooter.ses.web.ros.dm.OpeProductionCombinBom;
+import com.redescooter.ses.web.ros.dm.OpeProductionCombinBomDraft;
+import com.redescooter.ses.web.ros.dm.OpeProductionParts;
+import com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation;
+import com.redescooter.ses.web.ros.dm.OpeProductionQualityTempate;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBomDraft;
+import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
+import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.OpeColorService;
+import com.redescooter.ses.web.ros.service.base.OpePartsSecService;
+import com.redescooter.ses.web.ros.service.base.OpeProductPriceService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomDraftService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsRelationService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionQualityTempateService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomDraftService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
+import com.redescooter.ses.web.ros.service.base.OpeSpecificatGroupService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.qctemplete.ProductionQcTmepleteService;
 import com.redescooter.ses.web.ros.service.restproduction.RosServProductionProductService;
 import com.redescooter.ses.web.ros.verifyhandler.ProductionProductExcelVerifyHandlerImpl;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.qctemplete.SaveByCopyIdEnter;
-import com.redescooter.ses.web.ros.vo.restproduct.*;
-import com.redescooter.ses.web.ros.vo.restproduct.production.*;
+import com.redescooter.ses.web.ros.vo.restproduct.CheckProductNEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.ProductionProductEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.RosParseExcelData;
+import com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.RosProductionProductPartListResult;
+import com.redescooter.ses.web.ros.vo.restproduct.RosProductionSecResult;
+import com.redescooter.ses.web.ros.vo.restproduct.RosProductionTimeParmEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.RosProuductionTypeEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.production.ImportProductionProductResult;
+import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionCombinationListEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionCombinationListResult;
+import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionExport;
+import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionProdductVersionResult;
+import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionProductDetailResult;
+import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionProductReleaseEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionScooterListEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.production.RosProductionScooterListResult;
+import com.redescooter.ses.web.ros.vo.restproduct.production.RosSaveProductionProductEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -259,7 +307,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
         return new BooleanResult(Boolean.TRUE);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public ImportProductionProductResult importProductionProduct(ImportPartsEnter enter) {
         ImportProductionProductResult importProductionProductResult = new ImportProductionProductResult();
@@ -423,7 +471,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult rosSaveProductionProduct(RosSaveProductionProductEnter enter) {
         List<ProductionProductEnter> partList = null;
@@ -718,7 +766,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult takeEffect(RosProuductionTypeEnter enter) {
         String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
@@ -809,7 +857,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult productionProductDisable(RosProuductionTypeEnter enter) {
         String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
@@ -923,7 +971,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult delete(RosProuductionTypeEnter enter) {
         if (enter.getProductionProductType().equals(Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()))) {

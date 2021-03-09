@@ -68,6 +68,7 @@ import com.redescooter.ses.web.delivery.vo.ListScooterResult;
 import com.redescooter.ses.web.delivery.vo.SaveDriverEnter;
 import com.redescooter.ses.web.delivery.vo.ScooterListEnter;
 import com.redescooter.ses.web.delivery.vo.ScooterModelListResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -75,7 +76,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
@@ -179,7 +179,7 @@ public class RtDriverServiceImpl implements RtDriverService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveDriverEnter enter) {
         //邮箱去空格
@@ -467,7 +467,7 @@ public class RtDriverServiceImpl implements RtDriverService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult leave(IdEnter enter) {
         CorDriver driver = driverService.getById(enter.getId());
@@ -570,7 +570,7 @@ public class RtDriverServiceImpl implements RtDriverService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult assignScooter(AssignScooterEnter enter) {
 
@@ -669,7 +669,7 @@ public class RtDriverServiceImpl implements RtDriverService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult removeScooter(IdEnter enter) {
         CorDriver driver = driverService.getById(enter.getId());

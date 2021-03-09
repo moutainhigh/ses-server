@@ -55,6 +55,7 @@ import com.redescooter.ses.web.delivery.vo.edorder.RefuseOrderDetailResult;
 import com.redescooter.ses.web.delivery.vo.excel.ExpressOrderExcleData;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderEnter;
 import com.redescooter.ses.web.delivery.vo.excel.ImportExcelOrderResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -62,7 +63,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
@@ -145,7 +145,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @param orderExcleDataList
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void saveOrders(List<ExpressOrderExcleData> orderExcleDataList, GeneralEnter enter) {
         //批量插入
         List<CorExpressOrder> saveOrdersList = new ArrayList<>();
@@ -367,7 +367,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @desc: 修改订单状态
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult chanageExpressOrder(ChanageExpressOrderEnter enter) {
         // 订单验证
         CorExpressOrder corExpressOrder = expressOrderService.getById(enter.getId());
@@ -408,7 +408,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult cancelOrder(IdEnter enter) {
         CorExpressOrder expressOrder = expressOrderService.getById(enter.getId());
         if (expressOrder == null) {

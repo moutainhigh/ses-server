@@ -20,12 +20,12 @@ import com.redescooter.ses.service.mobile.b.dao.ScooterMobileServiceMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDriverScooter;
 import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.mobile.b.service.base.CorDriverService;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -104,7 +104,7 @@ public class ScooterMobileServiceImpl implements ScooterMobileService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult lock(LockEnter enter) {
         CorDriverScooter corDriverScooter = null;

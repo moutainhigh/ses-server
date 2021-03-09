@@ -31,10 +31,10 @@ import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -82,7 +82,7 @@ public class SaveWmsStockDataComponent {
      * @param userId 用户id
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void saveWmsScooterStockData(Map<Long, List<InWhOrderProductDTO>> inWhOrderProductMap, List<OpeInWhouseOrderSerialBind> inWhouseOrderSerialBinds,
                                         Map<Long, List<OutWarehouseOrderProductDTO>> outWhOrderProductMap, String type, Long userId) {
         // 公共参数：新增车辆成品库集合、修改车辆成品库集合、出入库记录集合

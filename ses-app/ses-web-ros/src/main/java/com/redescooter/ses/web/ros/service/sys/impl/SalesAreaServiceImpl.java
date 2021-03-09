@@ -11,11 +11,11 @@ import com.redescooter.ses.web.ros.service.base.OpeSysRoleSalesCidyService;
 import com.redescooter.ses.web.ros.service.sys.SalesAreaService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +47,7 @@ public class SalesAreaServiceImpl implements SalesAreaService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void deleteRoleSalesAreaByRoleId(IdEnter enter) {
         LambdaQueryWrapper<OpeSysRoleSalesCidy> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeSysRoleSalesCidy::getRoleId, enter.getId());

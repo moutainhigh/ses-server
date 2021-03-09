@@ -60,11 +60,11 @@ import com.redescooter.ses.mobile.rps.vo.productwaitinwh.ProductWaitInWhIdItemEn
 import com.redescooter.ses.mobile.rps.vo.productwaitinwh.ProductWaitInWhInfoResult;
 import com.redescooter.ses.mobile.rps.vo.productwaitinwh.ProductWaitInWhItemResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -148,7 +148,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
      * @Date 2020/4/14 17:51
      * @Param [enter]
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public PageResult<AllocateAndProductResult> productWaitInWhList(PageEnter enter) {
         int count = productWaitInWhServiceMapper.proWaitInWHListCount();
@@ -195,7 +195,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
      * @Date 2020/4/26 13:41
      * @Param [enter]
      **/
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public List<AllocateAndProductResult> allocateWaitInWHList(PageEnter enter, List<AllocateAndProductResult> allocateAndProductResultList) {
         QueryWrapper<OpeAllocate> opeAllocateQueryWrapper = new QueryWrapper<>();
         opeAllocateQueryWrapper.eq(OpeAllocate.COL_STATUS, AllocateOrderStatusEnums.ALLOCATE.getValue());
@@ -233,7 +233,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
      * @Date 2020/4/14 17:49
      * @Param [enter]
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public PageResult<ProductWaitInWhItemResult> productWaitWhItemList(ProductDetailEnter enter) {
 
@@ -346,7 +346,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
      * @Date 2020/4/14 17:52
      * @Param [enter]
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public ProductWaitInWhInfoResult setProductWaitInWhInfo(ProductWaitInWhIdItemEnter enter) {
 

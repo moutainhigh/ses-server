@@ -43,6 +43,7 @@ import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
 import com.redescooter.ses.web.ros.vo.website.SaveAboutUsEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -52,7 +53,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import redis.clients.jedis.JedisCluster;
 
@@ -139,7 +139,7 @@ public class InquiryServiceImpl implements InquiryService {
      * @date: 2020/3/5 15:03
      * @Version: Ros 1.3
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveAboutUs(SaveAboutUsEnter saveAboutUsEnter) {
         //入参去空格
@@ -357,7 +357,7 @@ public class InquiryServiceImpl implements InquiryService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult acceptInquiry(IdEnter enter) {
         QueryWrapper<OpeCustomerInquiry> opeCustomerInquiryQueryWrapper = new QueryWrapper<>();
@@ -390,7 +390,7 @@ public class InquiryServiceImpl implements InquiryService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult declineInquiry(IdEnter enter) {
         QueryWrapper<OpeCustomerInquiry> opeCustomerInquiryQueryWrapper = new QueryWrapper<>();
@@ -417,7 +417,7 @@ public class InquiryServiceImpl implements InquiryService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult inquiryExport(InquiryListEnter enter) {
         String excelPath = "";

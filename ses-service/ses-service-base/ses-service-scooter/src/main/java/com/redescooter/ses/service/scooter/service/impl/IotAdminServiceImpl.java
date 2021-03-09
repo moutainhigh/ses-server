@@ -29,7 +29,7 @@ public class IotAdminServiceImpl implements IotAdminService {
      * @return
      *//*
 
-    @Transactional
+    @GlobalTransactional(rollbackFor = Exception.class) 
     @Override
     public InvokeResult masterLock(String sn, Lock lock) {
         return TerminalServiceFactory.getInstance().lock(sn, Lock.MASTER);
@@ -44,7 +44,7 @@ public class IotAdminServiceImpl implements IotAdminService {
      * @return
      *//*
 
-    @Transactional
+    @GlobalTransactional(rollbackFor = Exception.class) 
     @Override
     public InvokeResult boxLock(String sn, Lock lock) {
         return TerminalServiceFactory.getInstance().lock(sn, Lock.BOX);
@@ -59,7 +59,7 @@ public class IotAdminServiceImpl implements IotAdminService {
      * @return
      *//*
 
-    @Transactional
+    @GlobalTransactional(rollbackFor = Exception.class) 
     @Override
     public InvokeResult batteryLock(String sn, Lock lock) {
         return TerminalServiceFactory.getInstance().lock(sn, Lock.BATTERY);
@@ -74,7 +74,7 @@ public class IotAdminServiceImpl implements IotAdminService {
      * @return
      *//*
 
-    @Transactional
+    @GlobalTransactional(rollbackFor = Exception.class) 
     @Override
     public InvokeResult unMasterLocklock(String sn, Lock lock) {
         return TerminalServiceFactory.getInstance().unlock(sn, Lock.MASTER);
@@ -89,7 +89,7 @@ public class IotAdminServiceImpl implements IotAdminService {
      * @return
      *//*
 
-    @Transactional
+    @GlobalTransactional(rollbackFor = Exception.class) 
     @Override
     public InvokeResult unBoxLock(String sn, Lock lock) {
         return TerminalServiceFactory.getInstance().unlock(sn, Lock.BOX);
@@ -104,7 +104,7 @@ public class IotAdminServiceImpl implements IotAdminService {
      * @return
      *//*
 
-    @Transactional
+    @GlobalTransactional(rollbackFor = Exception.class) 
     @Override
     public InvokeResult unBatteryLock(String sn, Lock lock) {
         return TerminalServiceFactory.getInstance().unlock(sn, Lock.BATTERY);
@@ -120,7 +120,7 @@ public class IotAdminServiceImpl implements IotAdminService {
      * @return
      *//*
 
-    @Transactional
+    @GlobalTransactional(rollbackFor = Exception.class) 
     @Override
     public InvokeResult navigation(String sn, String longitude, String latitude) {
         return TerminalServiceFactory.getInstance().navigation(sn, longitude, latitude);
@@ -134,7 +134,7 @@ public class IotAdminServiceImpl implements IotAdminService {
      * @return
      *//*
 
-    @Transactional
+    @GlobalTransactional(rollbackFor = Exception.class) 
     @Override
     public InvokeResult finishNavigation(String sn) {
         return TerminalServiceFactory.getInstance().finishNavigation(sn);

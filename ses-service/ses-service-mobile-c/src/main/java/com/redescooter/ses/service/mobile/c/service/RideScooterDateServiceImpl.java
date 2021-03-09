@@ -15,10 +15,10 @@ import com.redescooter.ses.service.mobile.c.service.base.ConScooterRideStatDetai
 import com.redescooter.ses.service.mobile.c.service.base.ConScooterRideStatService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.co2.CO2MoneyConversionUtil;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -57,7 +57,7 @@ public class RideScooterDateServiceImpl implements RideScooterDateService {
      * @date: 2020/2/21 11:45
      * @Version: APP 1.2
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveDriverRideDate(SaveRideDateEnter enter) {
         // 查询司机之前是否存在有统计数据
@@ -136,7 +136,7 @@ public class RideScooterDateServiceImpl implements RideScooterDateService {
      * @date: 2020/2/21 11:45
      * @Version: APP 1.2
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveScooterRideDate(SaveRideDateEnter enter) {
         // 查询车辆骑行数据是否能存在

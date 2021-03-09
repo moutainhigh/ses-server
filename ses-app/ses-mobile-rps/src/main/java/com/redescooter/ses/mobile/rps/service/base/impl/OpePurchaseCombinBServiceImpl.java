@@ -5,13 +5,10 @@ import com.redescooter.ses.mobile.rps.dao.base.OpePurchaseCombinBMapper;
 import com.redescooter.ses.mobile.rps.dm.OpePurchaseCombinB;
 import com.redescooter.ses.mobile.rps.service.base.OpePurchaseCombinBService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
-
 public class OpePurchaseCombinBServiceImpl extends ServiceImpl<OpePurchaseCombinBMapper, OpePurchaseCombinB> implements OpePurchaseCombinBService {
 
     @Override

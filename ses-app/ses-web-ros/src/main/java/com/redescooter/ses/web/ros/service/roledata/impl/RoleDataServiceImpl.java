@@ -17,10 +17,10 @@ import com.redescooter.ses.web.ros.vo.roledata.RoleDataSaveEnter;
 import com.redescooter.ses.web.ros.vo.roledata.RoleDataShowResult;
 import com.redescooter.ses.web.ros.vo.roledata.RoleDataTree;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleOpEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +87,7 @@ public class RoleDataServiceImpl implements RoleDataService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult saveRoleData(RoleDataSaveEnter enter) {
         // 先把原来的数据权限删除
         QueryWrapper<OpeSysRoleData> qw = new QueryWrapper<>();

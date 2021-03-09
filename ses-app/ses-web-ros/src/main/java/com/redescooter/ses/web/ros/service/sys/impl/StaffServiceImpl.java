@@ -61,6 +61,7 @@ import com.redescooter.ses.web.ros.vo.sys.staff.StaffSaleAreaResult;
 import com.redescooter.ses.web.ros.vo.sys.staff.StaffSaveOrEditEnter;
 import com.redescooter.ses.web.ros.vo.sys.staff.UserMsgEditEnter;
 import com.redescooter.ses.web.ros.vo.sys.staff.UserPsdEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -72,7 +73,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.util.ArrayList;
@@ -150,7 +150,7 @@ public class StaffServiceImpl implements StaffService {
     private String publicKey;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult staffSave(StaffSaveOrEditEnter enter) {
         if (Strings.isNullOrEmpty(enter.getEmail())) {
             throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
@@ -257,7 +257,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult staffEdit(StaffSaveOrEditEnter enter) {
         OpeSysStaff staff = opeSysStaffService.getById(enter.getId());
@@ -349,7 +349,7 @@ public class StaffServiceImpl implements StaffService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult staffDelete(StaffDeleteEnter enter) {
         if (Strings.isNullOrEmpty(enter.getIds())) {
             throw new SesWebRosException(ExceptionCodeEnums.ID_IS_NOT_NULL.getCode(), ExceptionCodeEnums.ID_IS_NOT_NULL.getMessage());
@@ -438,7 +438,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult openAccount(StaffOpEnter enter) {
         OpeSysStaff staff = opeSysStaffService.getById(enter.getId());
         if (staff == null) {
@@ -520,7 +520,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult editSafeCode(UserPsdEnter enter) {
         // 安全码解密 进行长度校验
         String safeCode = "";
@@ -543,7 +543,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult editUserPsd(WebResetPasswordEnter enter) {
         // 前端传过来的密码 都是经过加密的 需要解密
         String newPassword = null;
@@ -591,7 +591,7 @@ public class StaffServiceImpl implements StaffService {
      * @return
      **/
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult firstLoginEditPsd(UserPsdEnter enter) {
         String psd = "";
         // 后端接受到的是加密之后的密码 需要解密
@@ -611,7 +611,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult userMsgEdit(UserMsgEditEnter enter) {
         OpeSysStaff staff = opeSysStaffService.getById(enter.getUserId());
         if (staff == null) {
@@ -760,7 +760,7 @@ public class StaffServiceImpl implements StaffService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void disAbleStaff(List<Long> deptIds) {
         QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
         qw.in(OpeSysStaff.COL_DEPT_ID, deptIds);

@@ -3,14 +3,29 @@ package com.redescooter.ses.web.ros.service.customer.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
-import com.redescooter.ses.api.common.enums.customer.*;
+import com.redescooter.ses.api.common.enums.customer.CustomerAccountFlagEnum;
+import com.redescooter.ses.api.common.enums.customer.CustomerCertificateTypeEnum;
+import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
+import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
+import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
+import com.redescooter.ses.api.common.vo.base.BaseUserResult;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IntResult;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
@@ -28,24 +43,38 @@ import com.redescooter.ses.api.hub.common.UserProfileService;
 import com.redescooter.ses.api.hub.vo.EditUserProfileEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
-import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
-import com.redescooter.ses.tool.utils.chart.StatisticalUtil;
 import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import com.redescooter.ses.tool.utils.accountType.AccountTypeUtils;
+import com.redescooter.ses.tool.utils.chart.StatisticalUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.CustomerServiceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserProfileMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeCustomer;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
+import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
-import com.redescooter.ses.web.ros.vo.account.*;
-import com.redescooter.ses.web.ros.vo.customer.*;
+import com.redescooter.ses.web.ros.vo.account.AccountDeatilResult;
+import com.redescooter.ses.web.ros.vo.account.AccountNodeResult;
+import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
+import com.redescooter.ses.web.ros.vo.account.RenewAccountEnter;
+import com.redescooter.ses.web.ros.vo.account.VerificationCodeResult;
+import com.redescooter.ses.web.ros.vo.customer.AccountListEnter;
+import com.redescooter.ses.web.ros.vo.customer.AccountListResult;
+import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
+import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
+import com.redescooter.ses.web.ros.vo.customer.EditCustomerEnter;
+import com.redescooter.ses.web.ros.vo.customer.ListCustomerEnter;
+import com.redescooter.ses.web.ros.vo.customer.TrashCustomerEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -53,12 +82,18 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -153,7 +188,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param createCustomerEnter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(CreateCustomerEnter createCustomerEnter) {
         //employeeListEnter参数值去空格
@@ -274,7 +309,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param editCustomerEnter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult edit(EditCustomerEnter editCustomerEnter) {
         //employeeListEnter参数值去空格
@@ -556,7 +591,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult delete(IdEnter enter) {
         //验证客户是否开通SaaS账户等信息
@@ -574,7 +609,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult trash(TrashCustomerEnter enter) {
 
@@ -609,7 +644,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult change(IdEnter enter) {
 
@@ -663,7 +698,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @date: 2019/12/18 17:39
      * @Version: ROS 1.0
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult openAccount(OpenAccountEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -857,7 +892,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult freezeAccount(IdEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -881,7 +916,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult unFreezeAccount(IdEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -904,7 +939,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult renewAccont(RenewAccountEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
@@ -929,7 +964,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public VerificationCodeResult verificationCode(GeneralEnter enter) {
         // 定义 图片大小
@@ -952,7 +987,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult customerSetPassword(SetPasswordEnter enter) {
 
@@ -990,7 +1025,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public BooleanResult sendEmailAgian(IdEnter enter) {
 

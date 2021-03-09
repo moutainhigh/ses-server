@@ -12,7 +12,16 @@ import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dao.OrderMapper;
-import com.redescooter.ses.web.website.dm.*;
+import com.redescooter.ses.web.website.dm.SiteCustomer;
+import com.redescooter.ses.web.website.dm.SiteOrder;
+import com.redescooter.ses.web.website.dm.SiteOrderB;
+import com.redescooter.ses.web.website.dm.SiteParts;
+import com.redescooter.ses.web.website.dm.SitePaymentType;
+import com.redescooter.ses.web.website.dm.SiteProduct;
+import com.redescooter.ses.web.website.dm.SiteProductColour;
+import com.redescooter.ses.web.website.dm.SiteProductParts;
+import com.redescooter.ses.web.website.dm.SiteProductPrice;
+import com.redescooter.ses.web.website.dm.SiteUser;
 import com.redescooter.ses.web.website.enums.DeliveryMethodEnums;
 import com.redescooter.ses.web.website.enums.SiteOrderPaymentStatusEnums;
 import com.redescooter.ses.web.website.enums.SiteOrderStatusEnums;
@@ -20,18 +29,27 @@ import com.redescooter.ses.web.website.enums.SiteOrderTypeEnums;
 import com.redescooter.ses.web.website.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.website.exception.SesWebsiteException;
 import com.redescooter.ses.web.website.service.OrderService;
-import com.redescooter.ses.web.website.service.base.*;
-import com.redescooter.ses.web.website.vo.order.AddUpdateOrderEnter;
+import com.redescooter.ses.web.website.service.base.SiteCustomerService;
+import com.redescooter.ses.web.website.service.base.SiteOrderBService;
+import com.redescooter.ses.web.website.service.base.SiteOrderService;
+import com.redescooter.ses.web.website.service.base.SitePartsService;
+import com.redescooter.ses.web.website.service.base.SitePaymentTypeService;
+import com.redescooter.ses.web.website.service.base.SiteProductColourService;
+import com.redescooter.ses.web.website.service.base.SiteProductPartsService;
+import com.redescooter.ses.web.website.service.base.SiteProductPriceService;
+import com.redescooter.ses.web.website.service.base.SiteProductService;
+import com.redescooter.ses.web.website.service.base.SiteUserService;
 import com.redescooter.ses.web.website.vo.order.AddOrderPartsEnter;
 import com.redescooter.ses.web.website.vo.order.AddPartListEnter;
+import com.redescooter.ses.web.website.vo.order.AddUpdateOrderEnter;
 import com.redescooter.ses.web.website.vo.order.OrderDetailsResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -94,7 +112,7 @@ public class OrderServiceImpl implements OrderService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public IdResult addOrder(AddUpdateOrderEnter enter) {
         SiteOrder addSiteOrderVO = null;
@@ -279,7 +297,7 @@ public class OrderServiceImpl implements OrderService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult AddOrderParts(AddOrderPartsEnter enter) {
 

@@ -79,13 +79,13 @@ import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockRecordResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockTypeEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishCombinDetailResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsfinishScooterDetailResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -493,7 +493,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
     }
 
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult inWhConfirm(OutOrInWhConfirmEnter enter) {
         // 不管怎么说 先找到入库单
@@ -697,7 +697,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult outWhConfirm(OutOrInWhConfirmEnter enter) {
         // 不管怎么说 先找到出库单
         OpeOutWhouseOrder outWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());

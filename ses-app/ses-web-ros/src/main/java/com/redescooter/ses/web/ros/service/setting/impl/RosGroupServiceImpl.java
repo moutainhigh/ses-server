@@ -22,13 +22,13 @@ import com.redescooter.ses.web.ros.service.setting.RosGroupService;
 import com.redescooter.ses.web.ros.vo.setting.RosGroupExportResult;
 import com.redescooter.ses.web.ros.vo.setting.RosGroupListEnter;
 import com.redescooter.ses.web.ros.vo.setting.RosSaveGroupEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -132,7 +132,7 @@ public class RosGroupServiceImpl implements RosGroupService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult save(RosSaveGroupEnter enter) {
         SaveGroupEnter saveGroupEnter = new SaveGroupEnter();
         BeanUtils.copyProperties(enter, saveGroupEnter);
@@ -147,7 +147,7 @@ public class RosGroupServiceImpl implements RosGroupService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult delete(IdEnter enter) {
         return groupSettingService.delete(enter);
     }

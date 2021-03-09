@@ -19,12 +19,12 @@ import com.redescooter.ses.web.website.service.base.SitePartsService;
 import com.redescooter.ses.web.website.vo.parts.AddPartsEnter;
 import com.redescooter.ses.web.website.vo.parts.ModityPartsEnter;
 import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,7 +51,7 @@ public class PartsServiceImpl implements PartsService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addParts(AddPartsEnter enter) {
         SiteParts addSitePartsVO = new SiteParts();
@@ -92,7 +92,7 @@ public class PartsServiceImpl implements PartsService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult modityParts(ModityPartsEnter enter) {
 
         SiteParts modityPartsClassVO = new SiteParts();
@@ -109,7 +109,7 @@ public class PartsServiceImpl implements PartsService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult removeParts(IdEnter enter) {
         sitePartsService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());

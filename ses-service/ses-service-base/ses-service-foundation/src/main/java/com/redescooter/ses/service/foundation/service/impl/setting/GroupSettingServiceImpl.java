@@ -17,12 +17,12 @@ import com.redescooter.ses.service.foundation.dm.base.PlaSysGroupSetting;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.foundation.service.base.PlaSysGroupSettingService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -95,7 +95,7 @@ public class GroupSettingServiceImpl implements GroupSettingService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveGroupEnter enter) {
         PlaSysGroupSetting plaSysGroupSetting = null;
@@ -134,7 +134,7 @@ public class GroupSettingServiceImpl implements GroupSettingService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult delete(IdEnter enter) {
         PlaSysGroupSetting plaSysGroupSetting = plaSysGroupSettingService.getById(enter.getId());
@@ -183,7 +183,7 @@ public class GroupSettingServiceImpl implements GroupSettingService {
      *
      * @param enter
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult importGroup(GeneralEnter enter) {
         return new GeneralResult(enter.getRequestId());

@@ -41,13 +41,13 @@ import com.redescooter.ses.mobile.rps.vo.entrustorder.EntrustOrderProductDTO;
 import com.redescooter.ses.mobile.rps.vo.entrustorder.QueryEntrustOrderParamDTO;
 import com.redescooter.ses.mobile.rps.vo.entrustorder.QueryEntrustOrderResultDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -157,7 +157,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         return entrustOrderDetail;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult entrustOrderDeliver(EntrustOrderDeliverParamDTO paramDTO) {
         /**
@@ -223,7 +223,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         return new GeneralResult(paramDTO.getRequestId());
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO) {
         // 无码产品不填写扫码数量时抛出异常

@@ -1,12 +1,10 @@
 package com.redescooter.ses.service.foundation.service.base;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.redescooter.ses.service.foundation.dm.base.PlaI18nConfig;
+
 import java.util.List;
 
-import com.redescooter.ses.service.foundation.dm.base.PlaI18nConfig;
-import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.transaction.annotation.Transactional;
-
-@Transactional
 public interface PlaI18nConfigService extends IService<PlaI18nConfig> {
 
 

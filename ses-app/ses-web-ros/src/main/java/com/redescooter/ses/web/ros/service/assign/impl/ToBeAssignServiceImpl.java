@@ -85,6 +85,7 @@ import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignListResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNodeResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNodeScooterInfoResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignNodeScooterInfoSubResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -92,7 +93,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -301,7 +301,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      * 填写完座位数点击下一步
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult getSeatNext(ToBeAssignSeatNextEnter enter) {
         logger.info("填写完座位数点击下一步的入参是:[{}]", enter);
         if (null == enter || StringUtils.isBlank(enter.getList())) {
@@ -358,7 +358,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      * 填写完车牌点击下一步
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult getLicensePlateNext(ToBeAssignLicensePlateNextEnter enter) {
         logger.info("填写完车牌点击下一步的入参是:[{}]", enter);
         if (null == enter || StringUtils.isBlank(enter.getList())) {
@@ -440,7 +440,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      * 填写完R.SN并点击提交
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult submit(ToBeAssignSubmitEnter enter) {
         logger.info("填写完R.SN并点击提交的入参是:[{}]", enter);
         if (null == enter || StringUtils.isBlank(enter.getList())) {

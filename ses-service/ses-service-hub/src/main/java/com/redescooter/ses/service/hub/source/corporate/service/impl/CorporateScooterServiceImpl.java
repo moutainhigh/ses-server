@@ -8,10 +8,10 @@ import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.source.corporate.dm.CorTenantScooter;
 import com.redescooter.ses.service.hub.source.corporate.service.base.CorTenantScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,7 +40,7 @@ public class CorporateScooterServiceImpl implements CorporateScooterService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult saveScooter(List<HubSaveScooterEnter> enter) {
 
         List<CorTenantScooter> saveConTenantScooterList = new ArrayList<>();

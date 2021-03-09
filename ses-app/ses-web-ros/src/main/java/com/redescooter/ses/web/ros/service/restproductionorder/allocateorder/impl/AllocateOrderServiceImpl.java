@@ -83,12 +83,12 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.WhDataRe
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.CancelOrderEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -196,7 +196,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult allocateSave(AllocateOrderOrUpdateSaveEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         // 先处理主表数据
@@ -349,7 +349,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult allocateEdit(AllocateOrderOrUpdateSaveEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(enter.getId());
@@ -442,7 +442,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult allocateConfirmOrder(IdEnter enter) {
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(enter.getId());
         if (allocateOrder == null) {
@@ -460,7 +460,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult allocateCancelOrder(CancelOrderEnter enter) {
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(enter.getId());
         if (allocateOrder == null) {
@@ -655,7 +655,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void allocatePurchaseing(Long allocateId, Long userId) {
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);
         if (allocateOrder == null) {
@@ -692,7 +692,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     }
 
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void allocateSign(Long allocateId, Long purchaseId, Long userId) {
         // 已签收
@@ -852,7 +852,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void allocateWaitSign(Long allocateId, Long userId) {
         // 调拨单状态变为待签收
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);
@@ -874,7 +874,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void allocateFinish(Long allocateId, Long purchaseId, Long userId) {
         // 已完成
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);

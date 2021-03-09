@@ -13,11 +13,11 @@ import com.redescooter.ses.service.mobile.b.dao.base.CorDeliveryTraceMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDeliveryTrace;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.map.MapUtil;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,7 +49,7 @@ public class DeliveryTraceServiceImpl implements DeliveryTraceService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult saveDeliveryTrace(List<SaveDeliveryTraceEnter<BaseDeliveryEnter>> enter) {
         if (CollectionUtils.isEmpty(enter)) {
             return null;

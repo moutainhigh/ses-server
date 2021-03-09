@@ -2,11 +2,9 @@ package com.redescooter.ses.service.foundation.service.base;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserPassword;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Transactional
 public interface PlaUserPasswordService extends IService<PlaUserPassword> {
 
 

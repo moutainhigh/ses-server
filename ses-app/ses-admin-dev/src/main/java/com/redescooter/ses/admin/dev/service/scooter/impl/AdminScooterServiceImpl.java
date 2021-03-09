@@ -10,14 +10,21 @@ import com.redescooter.ses.admin.dev.exception.ExceptionCodeEnums;
 import com.redescooter.ses.admin.dev.exception.SesAdminDevException;
 import com.redescooter.ses.admin.dev.service.base.AdmScooterService;
 import com.redescooter.ses.admin.dev.service.scooter.AdminScooterService;
-import com.redescooter.ses.admin.dev.vo.scooter.*;
+import com.redescooter.ses.admin.dev.vo.scooter.AdminScooterDTO;
+import com.redescooter.ses.admin.dev.vo.scooter.AdminScooterPartsDTO;
+import com.redescooter.ses.admin.dev.vo.scooter.InsertAdminScooterDTO;
+import com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterParamDTO;
+import com.redescooter.ses.admin.dev.vo.scooter.SetScooterModelParamDTO;
 import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.scooter.*;
+import com.redescooter.ses.api.common.vo.scooter.ColorDTO;
+import com.redescooter.ses.api.common.vo.scooter.SpecificGroupDTO;
+import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
+import com.redescooter.ses.api.common.vo.scooter.SyncScooterEcuDataDTO;
 import com.redescooter.ses.api.common.vo.specification.SpecificDefDTO;
 import com.redescooter.ses.api.hub.service.operation.ColorService;
 import com.redescooter.ses.api.hub.service.operation.SpecificService;
@@ -30,18 +37,22 @@ import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.api.scooter.vo.emqx.SetScooterModelPublishDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.SpecificDefGroupPublishDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -79,9 +90,6 @@ public class AdminScooterServiceImpl implements AdminScooterService {
     @DubboReference
     private ScooterEmqXService scooterEmqXService;
 
-    @Resource
-    private TransactionTemplate transactionTemplate;
-
     @Autowired
     private AdmScooterService admScooterService;
 
@@ -95,6 +103,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
     }
 
     @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
     public int insertAdminScooter(InsertAdminScooterDTO adminScooterDTO) {
         List<AdminScooterPartsDTO> scooterPartsList;
         Long userId = adminScooterDTO.getUserId();
@@ -158,34 +167,23 @@ public class AdminScooterServiceImpl implements AdminScooterService {
          * -这里的事务操作分成：1.自身(adm_scooter表新增数据) 2.scooter-service-scooter服务(sco_scooter、sco_scooter_ecu表新增数据)
          * -目前还没有集成分布式事务解决方案,所以这里可能会导致事务不一致的情况出现
          */
-        boolean result = transactionTemplate.execute(adminScooterStatus -> {
-            boolean flag = true;
-            try {
-                adminScooterMapper.insertAdminScooter(admScooter);
-                adminScooterPartsMapper.batchInsertAdminScooterParts(newList);
+        boolean flag = true;
+        try {
+            adminScooterMapper.insertAdminScooter(admScooter);
+            adminScooterPartsMapper.batchInsertAdminScooterParts(newList);
 
-                // 需要把车辆数据同步到scooter数据库中去,scooter库中需要同步的表：sco_scooter、sco_scooter_ecu
-                String scooterNo = generateScooterNo();
-                scooterService.syncScooterData(buildSyncScooterData(id, admScooter.getSn(), admScooter.getScooterController(),
-                        userId, scooterNo));
-                scooterEcuService.syncScooterEcuData(buildSyncScooterEcuData(admScooter.getMacAddress(), admScooter.getMacName(),
-                        userId, scooterNo));
-            } catch (Exception e) {
-                flag = false;
-                log.error("【创建车辆信息失败】----{}", ExceptionUtils.getStackTrace(e));
-                adminScooterStatus.setRollbackOnly();
-            }
-            return flag;
-        });
-
-        /**
-         * 手动抛出异常
-         */
-        if (!result) {
+            // 需要把车辆数据同步到scooter数据库中去,scooter库中需要同步的表：sco_scooter、sco_scooter_ecu
+            String scooterNo = generateScooterNo();
+            scooterService.syncScooterData(buildSyncScooterData(id, admScooter.getSn(), admScooter.getScooterController(),
+                    userId, scooterNo));
+            scooterEcuService.syncScooterEcuData(buildSyncScooterEcuData(admScooter.getMacAddress(), admScooter.getMacName(),
+                    userId, scooterNo));
+        } catch (Exception e) {
+            flag = false;
+            log.error("【创建车辆信息失败】----{}", ExceptionUtils.getStackTrace(e));
             throw new SesAdminDevException(ExceptionCodeEnums.CREATE_SCOOTER_ERROR.getCode(),
                     ExceptionCodeEnums.CREATE_SCOOTER_ERROR.getMessage());
         }
-
         return 0;
     }
 
@@ -203,7 +201,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         return adminScooter;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult setScooterModel(SetScooterModelParamDTO paramDTO) {
         /**
@@ -420,7 +418,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult deleteScooter(IdEnter enter) {
         AdminScooterDTO admScooter = adminScooterMapper.getAdminScooterById(enter.getId());
         if (admScooter != null) {

@@ -2,7 +2,9 @@ package com.redescooter.ses.mobile.rps.service.inwhorder.impl;
 
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
-import com.redescooter.ses.api.common.enums.restproductionorder.*;
+import com.redescooter.ses.api.common.enums.restproductionorder.InWhTypeEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.NewInWhouseOrderStatusEnum;
+import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -12,29 +14,41 @@ import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.config.component.SaveWmsStockDataComponent;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
-import com.redescooter.ses.mobile.rps.dao.inwhorder.*;
+import com.redescooter.ses.mobile.rps.dao.inwhorder.InWhOrderMapper;
+import com.redescooter.ses.mobile.rps.dao.inwhorder.InWhouseCombinBMapper;
+import com.redescooter.ses.mobile.rps.dao.inwhorder.InWhouseOrderSerialBindMapper;
+import com.redescooter.ses.mobile.rps.dao.inwhorder.InWhousePartsBMapper;
+import com.redescooter.ses.mobile.rps.dao.inwhorder.InWhouseScooterBMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionCombinBomMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionScooterBomMapper;
 import com.redescooter.ses.mobile.rps.dao.qcorder.QcOrderSerialBindMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper;
-import com.redescooter.ses.mobile.rps.dm.*;
+import com.redescooter.ses.mobile.rps.dm.OpeInWhouseCombinB;
+import com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrder;
+import com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrderSerialBind;
+import com.redescooter.ses.mobile.rps.dm.OpeInWhousePartsB;
+import com.redescooter.ses.mobile.rps.dm.OpeInWhouseScooterB;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
+import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.inwhorder.InWhOrderService;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
-import com.redescooter.ses.mobile.rps.vo.inwhorder.*;
+import com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderDetailDTO;
+import com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDTO;
+import com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDetailDTO;
+import com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderParamDTO;
+import com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderResultDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.QueryProductDetailParamDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Date;
 import java.util.List;
@@ -84,9 +98,6 @@ public class InWhOrderServiceImpl implements InWhOrderService {
 
     @Autowired
     private WmsStockSerialNumberMapper wmsStockSerialNumberMapper;
-
-    @Autowired
-    private TransactionTemplate transactionTemplate;
 
     @Autowired
     private SaveWmsStockDataComponent saveWmsStockDataComponent;
@@ -181,7 +192,7 @@ public class InWhOrderServiceImpl implements InWhOrderService {
         return inWhOrderProductDetail;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public SaveScanCodeResultDTO saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO) {
         SaveScanCodeResultDTO resultDTO = new SaveScanCodeResultDTO();
@@ -331,94 +342,88 @@ public class InWhOrderServiceImpl implements InWhOrderService {
                 ExceptionCodeEnums.IN_WH_ORDER_HAS_BEEN_STORED.getCode(), ExceptionCodeEnums.IN_WH_ORDER_HAS_BEEN_STORED.getMessage());
 
         // 编程式事务
-        boolean result = transactionTemplate.execute(confirmStorageStatus -> {
-            boolean flag = true;
-            try {
-                /**
-                 * 入库操作(仓库库存操作) 1车辆 2组装件 3部件
-                 */
-                List<InWhOrderProductDTO> inWhOrderProductList = null;
-                List<OpeInWhouseOrderSerialBind> inWhouseOrderSerialBinds = null;
-                switch (opeInWhouseOrder.getOrderType()) {
-                    case 1:
-                        inWhOrderProductList = inWhouseScooterBMapper.getInWhOrderScooterByInWhId(enter.getId());
-                        // 检查是否有实际入库数量
-                        checkHasActInWhQty(inWhOrderProductList);
+        boolean flag = true;
+        try {
+            /**
+             * 入库操作(仓库库存操作) 1车辆 2组装件 3部件
+             */
+            List<InWhOrderProductDTO> inWhOrderProductList = null;
+            List<OpeInWhouseOrderSerialBind> inWhouseOrderSerialBinds = null;
+            switch (opeInWhouseOrder.getOrderType()) {
+                case 1:
+                    inWhOrderProductList = inWhouseScooterBMapper.getInWhOrderScooterByInWhId(enter.getId());
+                    // 检查是否有实际入库数量
+                    checkHasActInWhQty(inWhOrderProductList);
 
-                        List<Long> inWhScooterIds = inWhOrderProductList.stream().map(InWhOrderProductDTO::getId).collect(Collectors.toList());
-                        inWhouseOrderSerialBinds = inWhouseOrderSerialBindMapper.batchGetInWhouseOrderSerialBindByOrderBIds(inWhScooterIds);
+                    List<Long> inWhScooterIds = inWhOrderProductList.stream().map(InWhOrderProductDTO::getId).collect(Collectors.toList());
+                    inWhouseOrderSerialBinds = inWhouseOrderSerialBindMapper.batchGetInWhouseOrderSerialBindByOrderBIds(inWhScooterIds);
 
-                        /**
-                         * {bomId, List<InWhOrderProductDTO>}
-                         */
-                        Map<Long, List<InWhOrderProductDTO>> scooterMap = inWhOrderProductList.stream().collect(
-                                Collectors.groupingBy(InWhOrderProductDTO::getBomId)
-                        );
+                    /**
+                     * {bomId, List<InWhOrderProductDTO>}
+                     */
+                    Map<Long, List<InWhOrderProductDTO>> scooterMap = inWhOrderProductList.stream().collect(
+                            Collectors.groupingBy(InWhOrderProductDTO::getBomId)
+                    );
 
-                        saveWmsStockDataComponent.saveWmsScooterStockData(scooterMap, inWhouseOrderSerialBinds,null,
-                                InOutWhEnums.IN.getValue(), enter.getUserId());
-                        break;
-                    case 2:
-                        inWhOrderProductList = inWhouseCombinBMapper.getInWhOrderCombinByInWhId(enter.getId());
-                        // 检查是否有实际入库数量
-                        checkHasActInWhQty(inWhOrderProductList);
+                    saveWmsStockDataComponent.saveWmsScooterStockData(scooterMap, inWhouseOrderSerialBinds,null,
+                            InOutWhEnums.IN.getValue(), enter.getUserId());
+                    break;
+                case 2:
+                    inWhOrderProductList = inWhouseCombinBMapper.getInWhOrderCombinByInWhId(enter.getId());
+                    // 检查是否有实际入库数量
+                    checkHasActInWhQty(inWhOrderProductList);
 
-                        List<Long> inWhCombinationIds = inWhOrderProductList.stream().map(InWhOrderProductDTO::getId).collect(Collectors.toList());
-                        inWhouseOrderSerialBinds = inWhouseOrderSerialBindMapper.batchGetInWhouseOrderSerialBindByOrderBIds(inWhCombinationIds);
+                    List<Long> inWhCombinationIds = inWhOrderProductList.stream().map(InWhOrderProductDTO::getId).collect(Collectors.toList());
+                    inWhouseOrderSerialBinds = inWhouseOrderSerialBindMapper.batchGetInWhouseOrderSerialBindByOrderBIds(inWhCombinationIds);
 
-                        /**
-                         * {bomId, List<InWhOrderProductDTO>}
-                         */
-                        Map<Long, List<InWhOrderProductDTO>> combinationMap = inWhOrderProductList.stream().collect(
-                                Collectors.groupingBy(InWhOrderProductDTO::getBomId)
-                        );
+                    /**
+                     * {bomId, List<InWhOrderProductDTO>}
+                     */
+                    Map<Long, List<InWhOrderProductDTO>> combinationMap = inWhOrderProductList.stream().collect(
+                            Collectors.groupingBy(InWhOrderProductDTO::getBomId)
+                    );
 
-                        saveWmsStockDataComponent.saveWmsCombinationStockData(combinationMap, inWhouseOrderSerialBinds,null,
-                                InOutWhEnums.IN.getValue(),enter.getUserId());
-                        break;
-                    default:
-                        inWhOrderProductList = inWhousePartsBMapper.getInWhOrderPartsByInWhId(enter.getId());
-                        // 检查是否有实际入库数量
-                        checkHasActInWhQty(inWhOrderProductList);
+                    saveWmsStockDataComponent.saveWmsCombinationStockData(combinationMap, inWhouseOrderSerialBinds,null,
+                            InOutWhEnums.IN.getValue(),enter.getUserId());
+                    break;
+                default:
+                    inWhOrderProductList = inWhousePartsBMapper.getInWhOrderPartsByInWhId(enter.getId());
+                    // 检查是否有实际入库数量
+                    checkHasActInWhQty(inWhOrderProductList);
 
-                        List<Long> inWhPartsIds = inWhOrderProductList.stream().map(InWhOrderProductDTO::getId).collect(Collectors.toList());
-                        inWhouseOrderSerialBinds = inWhouseOrderSerialBindMapper.batchGetInWhouseOrderSerialBindByOrderBIds(inWhPartsIds);
+                    List<Long> inWhPartsIds = inWhOrderProductList.stream().map(InWhOrderProductDTO::getId).collect(Collectors.toList());
+                    inWhouseOrderSerialBinds = inWhouseOrderSerialBindMapper.batchGetInWhouseOrderSerialBindByOrderBIds(inWhPartsIds);
 
-                        /**
-                         * {bomId, List<InWhOrderProductDTO>}
-                         */
-                        Map<Long, List<InWhOrderProductDTO>> partsMap = inWhOrderProductList.stream().collect(
-                                Collectors.groupingBy(InWhOrderProductDTO::getBomId)
-                        );
+                    /**
+                     * {bomId, List<InWhOrderProductDTO>}
+                     */
+                    Map<Long, List<InWhOrderProductDTO>> partsMap = inWhOrderProductList.stream().collect(
+                            Collectors.groupingBy(InWhOrderProductDTO::getBomId)
+                    );
 
-                        saveWmsStockDataComponent.saveWmsPartsStockData(partsMap, inWhouseOrderSerialBinds,null,
-                                InOutWhEnums.IN.getValue(), enter.getUserId());
-                        break;
-                }
+                    saveWmsStockDataComponent.saveWmsPartsStockData(partsMap, inWhouseOrderSerialBinds,null,
+                            InOutWhEnums.IN.getValue(), enter.getUserId());
+                    break;
+            }
 
-                /**
-                 * 将入库产品状态从库存产品序列号表中修改为【可用】
-                 */
+            /**
+             * 将入库产品状态从库存产品序列号表中修改为【可用】
+             */
 //                List<String> serialNumList = inWhouseOrderSerialBinds.stream().map(OpeInWhouseOrderSerialBind::getSerialNum).collect(Collectors.toList());
 //                wmsStockSerialNumberMapper.batchUpdateStockStatusByRsnList(serialNumList, enter.getUserId(), new Date());
 
-                // 修改入库单状态为 【已入库】
-                opeInWhouseOrder.setInWhStatus(NewInWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
-                opeInWhouseOrder.setUpdatedBy(enter.getUserId());
-                opeInWhouseOrder.setUpdatedTime(new Date());
-                inWhOrderMapper.updateInWhOrder(opeInWhouseOrder);
+            // 修改入库单状态为 【已入库】
+            opeInWhouseOrder.setInWhStatus(NewInWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
+            opeInWhouseOrder.setUpdatedBy(enter.getUserId());
+            opeInWhouseOrder.setUpdatedTime(new Date());
+            inWhOrderMapper.updateInWhOrder(opeInWhouseOrder);
 
-            } catch (Exception e) {
-                flag = false;
-                log.error("【确认入库失败】----{}", ExceptionUtils.getStackTrace(e));
-                confirmStorageStatus.setRollbackOnly();
-            }
-            return flag;
-        });
-
-        // 手动抛出异常
-        RpsAssert.isFalse(result, ExceptionCodeEnums.WAREHOUSING_FAILED.getCode(),
-                ExceptionCodeEnums.WAREHOUSING_FAILED.getMessage());
+        } catch (Exception e) {
+            flag = false;
+            log.error("【确认入库失败】----{}", ExceptionUtils.getStackTrace(e));
+            throw new SesMobileRpsException(ExceptionCodeEnums.WAREHOUSING_FAILED.getCode(),
+                    ExceptionCodeEnums.WAREHOUSING_FAILED.getMessage());
+        }
 
         return new GeneralResult(enter.getRequestId());
     }

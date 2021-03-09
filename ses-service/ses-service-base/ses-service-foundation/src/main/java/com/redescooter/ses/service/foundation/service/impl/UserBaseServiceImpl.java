@@ -23,13 +23,13 @@ import com.redescooter.ses.service.foundation.dm.base.PlaUserNode;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.foundation.service.base.PlaUserNodeService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -118,7 +118,7 @@ public class UserBaseServiceImpl implements UserBaseService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveAccountNode(SaveAccountNodeEnter enter) {
         PlaUserNode plaUserNode = new PlaUserNode();
@@ -144,7 +144,7 @@ public class UserBaseServiceImpl implements UserBaseService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult saveAccountNodeList(List<SaveAccountNodeEnter> enter) {
         List<PlaUserNode> saveList = new ArrayList<>();
         enter.forEach(item -> {

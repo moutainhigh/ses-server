@@ -10,12 +10,12 @@ import com.redescooter.ses.web.website.service.ProductColourService;
 import com.redescooter.ses.web.website.service.base.SiteProductColourService;
 import com.redescooter.ses.web.website.vo.product.AddProductColourEnter;
 import com.redescooter.ses.web.website.vo.product.ModityProductColourEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @Author jerry
@@ -38,7 +38,7 @@ public class ProductColourServiceImpl implements ProductColourService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addProductColour(AddProductColourEnter enter) {
 
@@ -60,7 +60,7 @@ public class ProductColourServiceImpl implements ProductColourService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult modityProductColour(ModityProductColourEnter enter) {
 
@@ -77,7 +77,7 @@ public class ProductColourServiceImpl implements ProductColourService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult removeProductColour(IdEnter enter) {
 

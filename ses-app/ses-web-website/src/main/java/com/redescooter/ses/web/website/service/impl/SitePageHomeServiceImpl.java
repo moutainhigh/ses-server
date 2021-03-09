@@ -9,11 +9,11 @@ import com.redescooter.ses.web.website.enums.CommonStatusEnums;
 import com.redescooter.ses.web.website.service.SitePageHomeService;
 import com.redescooter.ses.web.website.service.base.SiteContactUsService;
 import com.redescooter.ses.web.website.vo.aboutus.SiteSaveAboutUsEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -38,7 +38,7 @@ public class SitePageHomeServiceImpl implements SitePageHomeService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveAboutUs(SiteSaveAboutUsEnter enter) {
 

@@ -1,14 +1,13 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
-import org.springframework.stereotype.Service;
-import java.util.List;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.web.ros.dao.base.OpeProductionPurchaseOrderMapper;
 import com.redescooter.ses.web.ros.dm.OpeProductionPurchaseOrder;
 import com.redescooter.ses.web.ros.service.base.OpeProductionPurchaseOrderService;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
-@Transactional
+import java.util.List;
+
 @Service
 public class OpeProductionPurchaseOrderServiceImpl extends ServiceImpl<OpeProductionPurchaseOrderMapper, OpeProductionPurchaseOrder> implements OpeProductionPurchaseOrderService {
 

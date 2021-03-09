@@ -11,12 +11,12 @@ import com.redescooter.ses.api.hub.service.corporate.CorporateDriverService;
 import com.redescooter.ses.service.foundation.dao.base.PlaUserMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaUser;
 import com.redescooter.ses.service.foundation.service.base.PlaUserService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,7 +46,7 @@ public class RunDriverActivationStatusTaskExecutorServiceJobimpl implements RunD
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public JobResult DriverActivationStatusTask(GeneralEnter enter) {
 
         QueryWrapper<PlaUser> queryWrapper = new QueryWrapper<>();

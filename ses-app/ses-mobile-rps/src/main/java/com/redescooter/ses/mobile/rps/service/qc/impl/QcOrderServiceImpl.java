@@ -23,34 +23,80 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
-import com.redescooter.ses.mobile.rps.dao.base.*;
+import com.redescooter.ses.mobile.rps.dao.base.OpeOrderQcItemMapper;
+import com.redescooter.ses.mobile.rps.dao.base.OpeOrderQcTraceMapper;
+import com.redescooter.ses.mobile.rps.dao.base.OpeWmsStockRecordMapper;
 import com.redescooter.ses.mobile.rps.dao.combinorder.CombinationOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionCombinBomMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionQualityTemplateMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionScooterBomMapper;
-import com.redescooter.ses.mobile.rps.dao.qcorder.*;
-import com.redescooter.ses.mobile.rps.dao.wms.*;
-import com.redescooter.ses.mobile.rps.dm.*;
+import com.redescooter.ses.mobile.rps.dao.qcorder.QcCombinMapper;
+import com.redescooter.ses.mobile.rps.dao.qcorder.QcOrderMapper;
+import com.redescooter.ses.mobile.rps.dao.qcorder.QcOrderSerialBindMapper;
+import com.redescooter.ses.mobile.rps.dao.qcorder.QcPartsMapper;
+import com.redescooter.ses.mobile.rps.dao.qcorder.QcScooterMapper;
+import com.redescooter.ses.mobile.rps.dao.wms.WmsCombinStockMapper;
+import com.redescooter.ses.mobile.rps.dao.wms.WmsPartsStockMapper;
+import com.redescooter.ses.mobile.rps.dao.wms.WmsScooterStockMapper;
+import com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper;
+import com.redescooter.ses.mobile.rps.dm.OpeCombinOrder;
+import com.redescooter.ses.mobile.rps.dm.OpeOrderQcItem;
+import com.redescooter.ses.mobile.rps.dm.OpeOrderQcTrace;
+import com.redescooter.ses.mobile.rps.dm.OpeOutWhouseOrder;
+import com.redescooter.ses.mobile.rps.dm.OpeProductionCombinBom;
+import com.redescooter.ses.mobile.rps.dm.OpeProductionParts;
+import com.redescooter.ses.mobile.rps.dm.OpeProductionPurchaseOrder;
+import com.redescooter.ses.mobile.rps.dm.OpeProductionScooterBom;
+import com.redescooter.ses.mobile.rps.dm.OpeQcCombinB;
+import com.redescooter.ses.mobile.rps.dm.OpeQcOrder;
+import com.redescooter.ses.mobile.rps.dm.OpeQcOrderSerialBind;
+import com.redescooter.ses.mobile.rps.dm.OpeQcPartsB;
+import com.redescooter.ses.mobile.rps.dm.OpeQcScooterB;
+import com.redescooter.ses.mobile.rps.dm.OpeWmsCombinStock;
+import com.redescooter.ses.mobile.rps.dm.OpeWmsPartsStock;
+import com.redescooter.ses.mobile.rps.dm.OpeWmsQualifiedCombinStock;
+import com.redescooter.ses.mobile.rps.dm.OpeWmsQualifiedPartsStock;
+import com.redescooter.ses.mobile.rps.dm.OpeWmsQualifiedScooterStock;
+import com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock;
+import com.redescooter.ses.mobile.rps.dm.OpeWmsStockRecord;
+import com.redescooter.ses.mobile.rps.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
-import com.redescooter.ses.mobile.rps.service.base.*;
+import com.redescooter.ses.mobile.rps.service.base.OpeCombinOrderService;
+import com.redescooter.ses.mobile.rps.service.base.OpeOutWhouseOrderService;
+import com.redescooter.ses.mobile.rps.service.base.OpeProductionPurchaseOrderService;
+import com.redescooter.ses.mobile.rps.service.base.OpeWmsQualifiedCombinStockService;
+import com.redescooter.ses.mobile.rps.service.base.OpeWmsQualifiedPartsStockService;
+import com.redescooter.ses.mobile.rps.service.base.OpeWmsQualifiedScooterStockService;
 import com.redescooter.ses.mobile.rps.service.qc.QcOrderService;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.QcProductResultDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.QueryProductDetailParamDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.SaveQcResultParamDTO;
-import com.redescooter.ses.mobile.rps.vo.qc.*;
+import com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateDTO;
+import com.redescooter.ses.mobile.rps.vo.qc.ProductQcTemplateResultDTO;
+import com.redescooter.ses.mobile.rps.vo.qc.QcOrderDetailDTO;
+import com.redescooter.ses.mobile.rps.vo.qc.QcOrderProductDTO;
+import com.redescooter.ses.mobile.rps.vo.qc.QcOrderProductDetailDTO;
+import com.redescooter.ses.mobile.rps.vo.qc.QueryQcOrderParamDTO;
+import com.redescooter.ses.mobile.rps.vo.qc.QueryQcOrderResultDTO;
+import com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateParamDTO;
+import com.redescooter.ses.mobile.rps.vo.qc.QueryQcTemplateResultDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -179,7 +225,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         return PageResult.create(paramDTO, count, qcOrderMapper.getQcOrderList(paramDTO));
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startQc(IdEnter enter) {
         OpeQcOrder opeQcOrder = qcOrderMapper.getQcOrderById(enter.getId());
@@ -342,7 +388,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         return resultDTO;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public SaveScanCodeResultDTO saveQcResult(SaveQcResultParamDTO paramDTO) {
         SaveScanCodeResultDTO resultDTO = new SaveScanCodeResultDTO();
@@ -851,7 +897,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         return resultDTO;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult completeQc(IdEnter enter) {
         OpeQcOrder opeQcOrder = qcOrderMapper.getQcOrderById(enter.getId());

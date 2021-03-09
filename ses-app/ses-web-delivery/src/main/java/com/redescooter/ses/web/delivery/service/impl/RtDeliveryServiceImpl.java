@@ -60,6 +60,7 @@ import com.redescooter.ses.web.delivery.vo.ScooterLicensePlateResult;
 import com.redescooter.ses.web.delivery.vo.ScooterMapResult;
 import com.redescooter.ses.web.delivery.vo.SelectDriverResult;
 import com.redescooter.ses.web.delivery.vo.edorder.QueryDriverListEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -68,7 +69,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
@@ -131,7 +131,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveOrderDeliveryEnter enter) {
         //系统默认30分钟
@@ -324,7 +324,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult closed(ClosedEnter enter) {
         if (enter.getId() == null || enter.getId() == 0) {
@@ -530,7 +530,7 @@ public class RtDeliveryServiceImpl implements RtDeliveryService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult deliveryReset(DeliveryResetEnter enter) {
 

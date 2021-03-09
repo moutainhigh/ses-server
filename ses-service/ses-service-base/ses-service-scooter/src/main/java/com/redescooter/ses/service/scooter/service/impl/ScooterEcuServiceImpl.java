@@ -8,14 +8,13 @@ import com.redescooter.ses.service.scooter.constant.SequenceName;
 import com.redescooter.ses.service.scooter.dao.ScooterEcuMapper;
 import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -38,10 +37,8 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
     @Resource
     private ScooterServiceMapper scooterServiceMapper;
 
-    @Resource
-    private TransactionTemplate transactionTemplate;
-
     @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
     public int insertScooterEcuByEmqX(ScooterEcuDTO scooterEcu) {
         try {
             String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterEcu.getTabletSn());
@@ -53,40 +50,35 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
             /**
              * 检查数据是否存在,如果存在则更新,反之新增
              */
-            transactionTemplate.execute(ecuStatus -> {
-                try {
-                    ScooterEcuDTO scooterEcuDb = scooterEcuMapper.getScooterEcuBySerialNumber(scooterEcu.getTabletSn());
-                    if (null != scooterEcuDb) {
-                        scooterEcu.setId(scooterEcuDb.getId());
-                        scooterEcu.setUpdatedTime(new Date());
-                        scooterEcuMapper.updateScooterEcu(scooterEcu);
-                    } else {
-                        scooterEcu.setId(idAppService.getId(SequenceName.SCO_SCOOTER_ECU));
-                        scooterEcu.setScooterNo(scooterNo);
-                        scooterEcu.setCreatedTime(new Date());
-                        scooterEcu.setUpdatedTime(new Date());
-                        scooterEcuMapper.insertScooterEcu(scooterEcu);
-                    }
-
-                    // 同时更新scooter表车辆锁状态和车辆行驶总里程
-                    updateScooterStatusAndTotalMilesByEcu(scooterEcu.getTabletSn(), scooterEcu.getScooterLock(),
-                            scooterEcu.getTotalMiles());
-
-                } catch (Exception e) {
-                    log.error("【车辆ECU仪表信息数据上报失败】----{}", ExceptionUtils.getStackTrace(e));
-                    ecuStatus.setRollbackOnly();
+            try {
+                ScooterEcuDTO scooterEcuDb = scooterEcuMapper.getScooterEcuBySerialNumber(scooterEcu.getTabletSn());
+                if (null != scooterEcuDb) {
+                    scooterEcu.setId(scooterEcuDb.getId());
+                    scooterEcu.setUpdatedTime(new Date());
+                    scooterEcuMapper.updateScooterEcu(scooterEcu);
+                } else {
+                    scooterEcu.setId(idAppService.getId(SequenceName.SCO_SCOOTER_ECU));
+                    scooterEcu.setScooterNo(scooterNo);
+                    scooterEcu.setCreatedTime(new Date());
+                    scooterEcu.setUpdatedTime(new Date());
+                    scooterEcuMapper.insertScooterEcu(scooterEcu);
                 }
-                return 1;
-            });
+
+                // 同时更新scooter表车辆锁状态和车辆行驶总里程
+                updateScooterStatusAndTotalMilesByEcu(scooterEcu.getTabletSn(), scooterEcu.getScooterLock(),
+                        scooterEcu.getTotalMiles());
+
+            } catch (Exception e) {
+                log.error("【车辆ECU仪表信息数据上报失败】----{}", ExceptionUtils.getStackTrace(e));
+            }
         } catch (Exception e) {
             // 这里不要抛出异常,这里会往上抛到emq那边导致连接中断
             log.error("【车辆ECU仪表信息数据上报失败】----{}", ExceptionUtils.getStackTrace(e));
         }
-
         return 1;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public int syncScooterEcuData(SyncScooterEcuDataDTO syncScooterEcuData) {
         ScooterEcuDTO scooterEcu = new ScooterEcuDTO();

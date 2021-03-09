@@ -19,13 +19,13 @@ import com.redescooter.ses.web.ros.vo.salearea.SaleAreaOpEnter;
 import com.redescooter.ses.web.ros.vo.salearea.SaleAreaSaveEnter;
 import com.redescooter.ses.web.ros.vo.salearea.SaleCityTreeResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleOpEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,7 +56,7 @@ public class SaleAreaServiceImpl implements SaleAreaService {
     private OpeSysRoleSalesCidyService opeSysRoleSalesCidyService;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult saleAreaSave(SaleAreaSaveEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         OpeSaleArea saleArea = new OpeSaleArea();
@@ -70,7 +70,7 @@ public class SaleAreaServiceImpl implements SaleAreaService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult saleAreaDetele(SaleAreaOpEnter enter) {
         opeSaleAreaService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
@@ -106,7 +106,7 @@ public class SaleAreaServiceImpl implements SaleAreaService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult roleAreaAuth(RoleAreaEnter enter) {
         // 销售区域  先删除当前角色下面的已经有的区域
         QueryWrapper<OpeSysRoleSalesCidy> qw = new QueryWrapper<>();

@@ -14,12 +14,12 @@ import com.redescooter.ses.mobile.rps.service.restproductionorder.orderflow.Orde
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.orderflow.OrderStatusFlowResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -174,7 +174,7 @@ public class OrderStatusFlowServiceImpl implements OrderStatusFlowService {
      * @Return: GeneralResult
      * @desc: 保存节点
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(OrderStatusFlowEnter enter) {
         OpeOrderStatusFlow opeOrderStatusFlow = new OpeOrderStatusFlow();
@@ -190,7 +190,7 @@ public class OrderStatusFlowServiceImpl implements OrderStatusFlowService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public int insertOrderStatusFlow(Long orderId, Integer orderType, Integer orderStatus, String remark, Long userId) {
         OpeOrderStatusFlow orderStatusFlow = OpeOrderStatusFlow.builder()

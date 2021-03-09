@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.core.MybatisXMLLanguageDriver;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import io.seata.rm.datasource.DataSourceProxy;
-import io.seata.spring.annotation.GlobalTransactionScanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -98,9 +97,10 @@ public class SeataAutoConfig {
         return mybatisPlus;
     }
 
-    @Bean
-    public GlobalTransactionScanner globalTransactionScanner() {
-        return new GlobalTransactionScanner(this.appName, String.format("%s-group", this.appName));
-    }
+    //@Bean
+    //@DependsOn({BEAN_NAME_SPRING_APPLICATION_CONTEXT_PROVIDER, BEAN_NAME_FAILURE_HANDLER})
+    //public GlobalTransactionScanner globalTransactionScanner() {
+    //    return new GlobalTransactionScanner(this.appName, String.format("%s-group", this.appName));
+    //}
 
 }

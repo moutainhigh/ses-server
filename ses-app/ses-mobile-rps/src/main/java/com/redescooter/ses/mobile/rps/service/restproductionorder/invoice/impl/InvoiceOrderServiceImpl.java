@@ -12,10 +12,10 @@ import com.redescooter.ses.mobile.rps.service.restproductionorder.trace.Producti
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.invoice.InvoiceUpdateStatusEnter;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -48,7 +48,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
      * @Return: GeneralResult
      * @desc: 更新发货单状态
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult updateStatus(InvoiceUpdateStatusEnter enter) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(enter.getId());

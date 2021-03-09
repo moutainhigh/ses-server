@@ -45,6 +45,7 @@ import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.base.TokenRosService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.vo.account.AddSysUserEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -54,7 +55,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.lang.reflect.InvocationTargetException;
@@ -96,7 +96,7 @@ public class TokenRosServiceImpl implements TokenRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public TokenResult login(LoginEnter enter) {
 

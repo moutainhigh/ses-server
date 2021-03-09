@@ -7,11 +7,11 @@ import com.redescooter.ses.web.ros.dm.OpeSpecificatDef;
 import com.redescooter.ses.web.ros.service.base.OpeSpecificatDefService;
 import com.redescooter.ses.web.ros.service.specificat.SpecificatDefService;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatDefEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,7 +35,7 @@ public class SpecificatDefServiceImpl implements SpecificatDefService {
     private IdAppService idAppService;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void saveSpecificatDef(List<SpecificatDefEnter> defEnterList,Long userId) {
         List<OpeSpecificatDef> list = new ArrayList<>();
         for (SpecificatDefEnter defEnter : defEnterList) {
@@ -56,7 +56,7 @@ public class SpecificatDefServiceImpl implements SpecificatDefService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void deleSpecificatDef(Long specificatId) {
         QueryWrapper<OpeSpecificatDef> qw = new QueryWrapper<>();
         qw.eq(OpeSpecificatDef.COL_SPECIFICAT_ID,specificatId);

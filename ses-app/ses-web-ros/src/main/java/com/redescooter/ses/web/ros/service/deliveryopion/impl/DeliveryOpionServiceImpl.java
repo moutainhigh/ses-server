@@ -14,13 +14,13 @@ import com.redescooter.ses.web.ros.service.deliveryopion.DeliveryOpionService;
 import com.redescooter.ses.web.ros.vo.deliveryopion.DeliveryOptionEditEnter;
 import com.redescooter.ses.web.ros.vo.deliveryopion.DeliveryOptionSaveEnter;
 import com.redescooter.ses.web.ros.vo.deliveryopion.DeliveryOptionSaveResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,7 +42,7 @@ public class DeliveryOpionServiceImpl implements DeliveryOpionService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(DeliveryOptionSaveEnter enter) {
         OpeDeliveryOption saveVO = new OpeDeliveryOption();
@@ -105,7 +105,7 @@ public class DeliveryOpionServiceImpl implements DeliveryOpionService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult edit(DeliveryOptionEditEnter enter) {
         OpeDeliveryOption editVO = new OpeDeliveryOption();

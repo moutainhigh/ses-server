@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -41,8 +40,6 @@ public class RideStatBServiceImpl implements RideStatBService {
     private ScooterRideStatDetailMapper scooterRideStatDetailMapper;
     @DubboReference
     private IdAppService idAppService;
-    @Resource
-    private TransactionTemplate transactionTemplate;
 
 
     /**
@@ -54,88 +51,83 @@ public class RideStatBServiceImpl implements RideStatBService {
         rideStatData.setDuration(rideStatData.getDuration() == 0 ? 1 : rideStatData.getDuration());
         rideStatData.setMileage(rideStatData.getMileage().equals(BigDecimal.ZERO) ? BigDecimal.ONE : rideStatData.getMileage());
 
-        transactionTemplate.execute(rideStatStatus -> {
-            try {
-                CorDriverRideStat driverRideStatNew = new CorDriverRideStat();
-                driverRideStatNew.setUpdateBy(rideStatData.getUserId());
-                driverRideStatNew.setUpdateTime(new Date());
+        try {
+            CorDriverRideStat driverRideStatNew = new CorDriverRideStat();
+            driverRideStatNew.setUpdateBy(rideStatData.getUserId());
+            driverRideStatNew.setUpdateTime(new Date());
 
-                CorDriverRideStatDetail driverRideStatDetail = new CorDriverRideStatDetail();
+            CorDriverRideStatDetail driverRideStatDetail = new CorDriverRideStatDetail();
 
-                /**
-                 * 检查司机骑行统计数据是否存在,存在则更新反之新增
-                 */
-                CorDriverRideStat driverRideStat = driverRideStatMapper.getDriverRideStatByTenantIdAndDriverId(rideStatData.getTenantId(),
-                        rideStatData.getUserId());
-                if (null != driverRideStat) {
-                    driverRideStatNew.setId(driverRideStat.getId());
-                    driverRideStatNew.setTotalDuration(rideStatData.getDuration() + driverRideStat.getTotalDuration());
-                    driverRideStatNew.setCo2Total(driverRideStat.getCo2Total().add(
-                            new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())))
-                    );
-                    driverRideStatNew.setCo2Increment(driverRideStat.getCo2Increment().add(
-                            new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())))
-                    );
-                    driverRideStatNew.setSavedMoney(driverRideStat.getSavedMoney().add(
-                            new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(rideStatData.getMileage().longValue())))
-                    );
-                    BigDecimal svg = (driverRideStat.getTotalMileage().add(rideStatData.getMileage())).divide(
-                            new BigDecimal(driverRideStat.getTotalDuration() + rideStatData.getDuration()), BigDecimal.ROUND_HALF_UP);
-                    driverRideStatNew.setSvgSpeed(svg);
-                    driverRideStatMapper.updateDriverRideStat(driverRideStatNew);
+            /**
+             * 检查司机骑行统计数据是否存在,存在则更新反之新增
+             */
+            CorDriverRideStat driverRideStat = driverRideStatMapper.getDriverRideStatByTenantIdAndDriverId(rideStatData.getTenantId(),
+                    rideStatData.getUserId());
+            if (null != driverRideStat) {
+                driverRideStatNew.setId(driverRideStat.getId());
+                driverRideStatNew.setTotalDuration(rideStatData.getDuration() + driverRideStat.getTotalDuration());
+                driverRideStatNew.setCo2Total(driverRideStat.getCo2Total().add(
+                        new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())))
+                );
+                driverRideStatNew.setCo2Increment(driverRideStat.getCo2Increment().add(
+                        new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())))
+                );
+                driverRideStatNew.setSavedMoney(driverRideStat.getSavedMoney().add(
+                        new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(rideStatData.getMileage().longValue())))
+                );
+                BigDecimal svg = (driverRideStat.getTotalMileage().add(rideStatData.getMileage())).divide(
+                        new BigDecimal(driverRideStat.getTotalDuration() + rideStatData.getDuration()), BigDecimal.ROUND_HALF_UP);
+                driverRideStatNew.setSvgSpeed(svg);
+                driverRideStatMapper.updateDriverRideStat(driverRideStatNew);
 
-                    // set detail Co2HistoryTotal
-                    driverRideStatDetail.setCo2HistoryTotal(driverRideStatNew.getCo2Total());
-                } else {
-                    driverRideStatNew.setId(idAppService.getId(SequenceName.COR_DRIVER_RIDE_STAT));
-                    driverRideStatNew.setTenantId(rideStatData.getTenantId());
-                    driverRideStatNew.setDriverId(rideStatData.getUserId());
-                    driverRideStatNew.setTotalDuration(rideStatData.getDuration());
-                    driverRideStatNew.setCo2Total(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())));
-                    driverRideStatNew.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())));
-                    driverRideStatNew.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(rideStatData.getMileage().longValue())));
-                    driverRideStatNew.setSvgSpeed(rideStatData.getMileage().divide(new BigDecimal(rideStatData.getDuration()), BigDecimal.ROUND_HALF_UP));
-                    driverRideStatNew.setTotalMileage(rideStatData.getMileage());
-                    driverRideStatNew.setFirstRideTime(new Date());
-                    driverRideStatNew.setCreateBy(rideStatData.getUserId());
-                    driverRideStatNew.setCreateTime(new Date());
-                    driverRideStatMapper.insertDriverRideStat(driverRideStatNew);
+                // set detail Co2HistoryTotal
+                driverRideStatDetail.setCo2HistoryTotal(driverRideStatNew.getCo2Total());
+            } else {
+                driverRideStatNew.setId(idAppService.getId(SequenceName.COR_DRIVER_RIDE_STAT));
+                driverRideStatNew.setTenantId(rideStatData.getTenantId());
+                driverRideStatNew.setDriverId(rideStatData.getUserId());
+                driverRideStatNew.setTotalDuration(rideStatData.getDuration());
+                driverRideStatNew.setCo2Total(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())));
+                driverRideStatNew.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())));
+                driverRideStatNew.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(rideStatData.getMileage().longValue())));
+                driverRideStatNew.setSvgSpeed(rideStatData.getMileage().divide(new BigDecimal(rideStatData.getDuration()), BigDecimal.ROUND_HALF_UP));
+                driverRideStatNew.setTotalMileage(rideStatData.getMileage());
+                driverRideStatNew.setFirstRideTime(new Date());
+                driverRideStatNew.setCreateBy(rideStatData.getUserId());
+                driverRideStatNew.setCreateTime(new Date());
+                driverRideStatMapper.insertDriverRideStat(driverRideStatNew);
 
-                    // set detail Co2HistoryTotal
-                    driverRideStatDetail.setCo2HistoryTotal(BigDecimal.ZERO);
-                }
-
-                /**
-                 * 新增司机骑行统计数据详情
-                 */
-                driverRideStatDetail.setId(idAppService.getId(SequenceName.COR_DRIVER_RIDE_STAT_DETAIL));
-                driverRideStatDetail.setTenantId(rideStatData.getTenantId());
-                driverRideStatDetail.setBizId(rideStatData.getBizId());
-                driverRideStatDetail.setBizType(rideStatData.getBizType());
-                driverRideStatDetail.setDriverId(rideStatData.getUserId());
-                driverRideStatDetail.setDuration(rideStatData.getDuration());
-                driverRideStatDetail.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())));
-                driverRideStatDetail.setSvgSpeed(rideStatData.getMileage().divide(new BigDecimal(rideStatData.getDuration()), BigDecimal.ROUND_HALF_UP));
-                driverRideStatDetail.setMileage(rideStatData.getMileage());
-                driverRideStatDetail.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(rideStatData.getMileage().longValue())));
-                driverRideStatDetail.setCreateBy(rideStatData.getUserId());
-                driverRideStatDetail.setCreateTime(new Date());
-                driverRideStatDetail.setUpdateBy(rideStatData.getUserId());
-                driverRideStatDetail.setUpdateTime(new Date());
-                driverRideStatDetailMapper.insertDriverRideStatDetail(driverRideStatDetail);
-
-                /**
-                 * 保存车辆骑行数据和详情
-                 */
-                insertScooterRideStatAndDetail(rideStatData);
-            } catch (Exception e) {
-                log.error("【保存司机/车辆骑行统计数据和详情失败】----{}", ExceptionUtils.getStackTrace(e));
-                rideStatStatus.setRollbackOnly();
+                // set detail Co2HistoryTotal
+                driverRideStatDetail.setCo2HistoryTotal(BigDecimal.ZERO);
             }
-            return 1;
-        });
 
-        return 0;
+            /**
+             * 新增司机骑行统计数据详情
+             */
+            driverRideStatDetail.setId(idAppService.getId(SequenceName.COR_DRIVER_RIDE_STAT_DETAIL));
+            driverRideStatDetail.setTenantId(rideStatData.getTenantId());
+            driverRideStatDetail.setBizId(rideStatData.getBizId());
+            driverRideStatDetail.setBizType(rideStatData.getBizType());
+            driverRideStatDetail.setDriverId(rideStatData.getUserId());
+            driverRideStatDetail.setDuration(rideStatData.getDuration());
+            driverRideStatDetail.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())));
+            driverRideStatDetail.setSvgSpeed(rideStatData.getMileage().divide(new BigDecimal(rideStatData.getDuration()), BigDecimal.ROUND_HALF_UP));
+            driverRideStatDetail.setMileage(rideStatData.getMileage());
+            driverRideStatDetail.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(rideStatData.getMileage().longValue())));
+            driverRideStatDetail.setCreateBy(rideStatData.getUserId());
+            driverRideStatDetail.setCreateTime(new Date());
+            driverRideStatDetail.setUpdateBy(rideStatData.getUserId());
+            driverRideStatDetail.setUpdateTime(new Date());
+            driverRideStatDetailMapper.insertDriverRideStatDetail(driverRideStatDetail);
+
+            /**
+             * 保存车辆骑行数据和详情
+             */
+            insertScooterRideStatAndDetail(rideStatData);
+        } catch (Exception e) {
+            log.error("【保存司机/车辆骑行统计数据和详情失败】----{}", ExceptionUtils.getStackTrace(e));
+        }
+        return 1;
     }
 
 

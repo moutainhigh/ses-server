@@ -46,13 +46,13 @@ import com.redescooter.ses.mobile.rps.vo.purchasinwh.PurchasDetailsEnter;
 import com.redescooter.ses.mobile.rps.vo.purchasinwh.PurchasDetailsListResult;
 import com.redescooter.ses.mobile.rps.vo.purchasinwh.PutStorageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -131,7 +131,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         return PageResult.create(enter, count, purchasDetailsListResults);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public HaveIdPartsResult haveIdPartsResult(HaveIdEnter enter) {
 
@@ -230,7 +230,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public NotIdPartsSucceedResult notIdInWh(NotIdEnter enter) {
 

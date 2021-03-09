@@ -14,12 +14,12 @@ import com.redescooter.ses.web.website.service.ProductPriceService;
 import com.redescooter.ses.web.website.service.base.SiteProductPriceService;
 import com.redescooter.ses.web.website.vo.product.AddProductPriceEnter;
 import com.redescooter.ses.web.website.vo.product.ProductPriceDetailsResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,7 +46,7 @@ public class ProductPriceServiceImpl implements ProductPriceService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addProductPrice(AddProductPriceEnter enter) {
         SiteProductPrice addProductPriceVO = new SiteProductPrice();
