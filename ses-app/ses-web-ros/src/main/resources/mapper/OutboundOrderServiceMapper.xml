@@ -90,7 +90,7 @@
                whorder.wh_type,
                whorder.remark
         from ope_out_whouse_order whorder
-        inner join ope_sys_staff staff on whorder.created_by = staff.id and staff.dr = 0
+        left join ope_sys_staff staff on whorder.created_by = staff.id and staff.dr = 0
         where whorder.dr=0
         and whorder.id=#{id}
     </select>
