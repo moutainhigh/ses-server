@@ -1,7 +1,11 @@
 package com.redescooter.ses.admin.dev.service;
 
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.vo.app.FileUploadResultDTO;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 文件上传业务层接口
@@ -18,5 +22,13 @@ public interface FileUploadService {
      * @date 2020/12/4
      */
     FileUploadResultDTO fileUpload(MultipartFile file);
+
+    /**
+     * 安装包的下载
+     * @param fileName
+     * @param response
+     * @return
+     */
+    GeneralResult downLoadFile(String fileName, HttpServletResponse response, HttpServletRequest request);
 
 }

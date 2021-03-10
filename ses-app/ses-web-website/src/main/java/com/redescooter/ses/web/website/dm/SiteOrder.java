@@ -1,6 +1,9 @@
 package com.redescooter.ses.web.website.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -27,8 +30,14 @@ public class SiteOrder implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
-    @TableLogic
     private Integer dr;
+
+    /**
+     * 1新建，2待支付，3进行中，4取消，5已完成，6关闭
+     */
+    @TableField(value = "`status`")
+    @ApiModelProperty(value = "1新建，2待支付，3进行中，4取消，5已完成，6关闭")
+    private Integer status;
 
     /**
      * 订单号
@@ -57,13 +66,6 @@ public class SiteOrder implements Serializable {
     @TableField(value = "sales_id")
     @ApiModelProperty(value = "销售员id")
     private Long salesId;
-
-    /**
-     * 1新建，2待支付，3进行中，4取消，5已完成，6关闭
-     */
-    @TableField(value = "`status`")
-    @ApiModelProperty(value = "1新建，2待支付，3进行中，4取消，5已完成，6关闭")
-    private Integer status;
 
     /**
      * 订单类型，1销售，2租赁
@@ -141,6 +143,13 @@ public class SiteOrder implements Serializable {
     @TableField(value = "delivery_type")
     @ApiModelProperty(value = "提货方式")
     private Integer deliveryType;
+
+    /**
+     * 取货门店，如果取货类型是到门店取货，那么id是门店ID
+     */
+    @TableField(value = "dealer_id")
+    @ApiModelProperty(value = "取货门店，如果取货类型是到门店取货，那么id是门店ID")
+    private Long dealerId;
 
     /**
      * 购买电池数
@@ -316,6 +325,8 @@ public class SiteOrder implements Serializable {
 
     public static final String COL_DR = "dr";
 
+    public static final String COL_STATUS = "status";
+
     public static final String COL_ORDER_NO = "order_no";
 
     public static final String COL_CUSTOMER_ID = "customer_id";
@@ -323,8 +334,6 @@ public class SiteOrder implements Serializable {
     public static final String COL_CUSTOMER_SOURCE = "customer_source";
 
     public static final String COL_SALES_ID = "sales_id";
-
-    public static final String COL_STATUS = "status";
 
     public static final String COL_ORDER_TYPE = "order_type";
 
@@ -347,6 +356,8 @@ public class SiteOrder implements Serializable {
     public static final String COL_ADDRESS = "address";
 
     public static final String COL_DELIVERY_TYPE = "delivery_type";
+
+    public static final String COL_DEALER_ID = "dealer_id";
 
     public static final String COL_BATTERY_QTY = "battery_qty";
 

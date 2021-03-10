@@ -44,7 +44,7 @@ spring:
         - 10.1.2.53:7005
   # swagger在线文档配置
   swagger:
-    enabled: false                                       # 是否启用swagger
+    enabled: false
 
 ## stripe pay
 stripe:
@@ -88,7 +88,7 @@ monday:
   workspaceBackId: 199275
   #模板Id
   templeteId: 581923336
-  load-template: true
+  load-template: false
 
 constant-us-email:
   sale-principal:
