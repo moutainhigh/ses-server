@@ -76,7 +76,7 @@ public class OpeProductionCombinBom {
     /**
     * 发布人id
     */
-    private Integer announUserId;
+    private Long announUserId;
 
     /**
     * 操作发布人id
@@ -116,7 +116,7 @@ public class OpeProductionCombinBom {
     /**
     * 创建人
     */
-    private Integer createdBy;
+    private Long createdBy;
 
     /**
     * 创建时间
