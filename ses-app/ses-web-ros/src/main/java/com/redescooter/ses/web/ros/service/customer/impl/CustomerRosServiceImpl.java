@@ -625,6 +625,18 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (!customer.getStatus().equals(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue())) {
             return new GeneralResult(enter.getRequestId());
         }
+        // 检验客户是不是来自官网
+        if (CustomerSourceEnum.SYSTEM.getValue().equals(customer.getCustomerSource())){
+            // 对于来源于官网的客户 需要支付尾款 才能转为正式客户(这里判断当前客户 是否有支付完尾款的订单 有就好)
+            QueryWrapper<OpeCustomerInquiry> query = new QueryWrapper<>();
+            query.eq(OpeCustomerInquiry.COL_CUSTOMER_ID,customer.getId());
+            query.eq(OpeCustomerInquiry.COL_PAY_STATUS,InquiryPayStatusEnums.PAY_LAST_PARAGRAPH.getValue());
+            int count = opeCustomerInquiryService.count(query);
+            if (count == 0){
+                // 说明当前客户没有支付完的订单
+                throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ORDER_NOT_PAY.getCode(), ExceptionCodeEnums.CUSTOMER_ORDER_NOT_PAY.getMessage());
+            }
+        }
         customer.setStatus(CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue());
         customer.setUpdatedBy(enter.getUserId());
         customer.setUpdatedTime(new Date());
