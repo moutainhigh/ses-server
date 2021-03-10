@@ -71,4 +71,4 @@ spring:
 #应用更新包文件上传下载路径
 fileUpload:
   path: /opt/nginx/soft/download/
-  download: https://pre.redelectric.fr/download/
+  download: https://pre.redelectric.fr/ses/t/admin/w/dev/api/app/version/downLoadFile/

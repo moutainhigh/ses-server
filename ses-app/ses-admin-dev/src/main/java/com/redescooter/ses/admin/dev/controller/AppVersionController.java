@@ -1,6 +1,7 @@
 package com.redescooter.ses.admin.dev.controller;
 
 import com.redescooter.ses.admin.dev.service.FileUploadService;
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -207,10 +208,11 @@ public class AppVersionController {
     }
 
 
+    @IgnoreLoginCheck
     @GetMapping(value = "/downLoadFile/{fileName}")
     @ApiOperation(value = "安装包的下载", response = GeneralResult.class)
-    public Response<GeneralResult> downLoadFile(@PathVariable("fileName") String fileName, HttpServletResponse response, HttpServletRequest request) {
-        return new Response(fileUploadService.downLoadFile(fileName,response,request));
+    public void downLoadFile(@PathVariable("fileName") String fileName, HttpServletResponse response, HttpServletRequest request) {
+        fileUploadService.downLoadFile(fileName,response,request);
     }
 
 

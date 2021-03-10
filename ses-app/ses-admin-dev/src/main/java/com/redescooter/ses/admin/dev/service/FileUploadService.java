@@ -29,6 +29,6 @@ public interface FileUploadService {
      * @param response
      * @return
      */
-    GeneralResult downLoadFile(String fileName, HttpServletResponse response, HttpServletRequest request);
+    void downLoadFile(String fileName, HttpServletResponse response, HttpServletRequest request);
 
 }
