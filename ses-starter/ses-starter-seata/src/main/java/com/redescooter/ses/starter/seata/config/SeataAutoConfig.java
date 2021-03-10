@@ -8,16 +8,21 @@ import com.baomidou.mybatisplus.core.MybatisXMLLanguageDriver;
 import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import io.seata.rm.datasource.DataSourceProxy;
+import io.seata.spring.annotation.GlobalTransactionScanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+
+import static io.seata.common.Constants.BEAN_NAME_FAILURE_HANDLER;
+import static io.seata.common.Constants.BEAN_NAME_SPRING_APPLICATION_CONTEXT_PROVIDER;
 
 /**
  * @program: ses-server
@@ -97,10 +102,10 @@ public class SeataAutoConfig {
         return mybatisPlus;
     }
 
-    //@Bean
-    //@DependsOn({BEAN_NAME_SPRING_APPLICATION_CONTEXT_PROVIDER, BEAN_NAME_FAILURE_HANDLER})
-    //public GlobalTransactionScanner globalTransactionScanner() {
-    //    return new GlobalTransactionScanner(this.appName, String.format("%s-group", this.appName));
-    //}
+    @Bean
+    @DependsOn({BEAN_NAME_SPRING_APPLICATION_CONTEXT_PROVIDER, BEAN_NAME_FAILURE_HANDLER})
+    public GlobalTransactionScanner globalTransactionScanner() {
+        return new GlobalTransactionScanner(this.appName, String.format("%s-group", this.appName));
+    }
 
 }
