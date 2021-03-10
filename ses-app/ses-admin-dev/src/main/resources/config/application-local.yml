@@ -6,7 +6,7 @@ log:
     max-history: 180
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:52181
+    address: zookeeper://192.168.2.211:2182
 #  metadata-report:
 #    address: zookeeper://192.168.2.200:52181
 spring:                                                                                                                 #spring config
@@ -126,4 +126,4 @@ spring:                                                                         
 # 应用更新包文件上传下载路径
 fileUpload:
   path: /usr/local/nginx/soft/download/
-  download: http://192.168.2.200/download/
+  download: http://localhost:8001/ses/t/admin/w/dev/api/app/version/downLoadFile/

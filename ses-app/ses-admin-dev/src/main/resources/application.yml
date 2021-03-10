@@ -1,5 +1,5 @@
 server:
-  port: 6666
+  port: 8001
   servlet:
     context-path: /ses/t/admin/w/dev/api
     encoding:
