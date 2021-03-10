@@ -37,6 +37,14 @@ public class ColorController {
         return new Response(colorService.colorSave(enter));
     }
 
+    @PostMapping(value = "/colorEdit")
+    @ApiOperation(value = "颜色编辑", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
+    public Response<GeneralResult> colorEdit(@ModelAttribute @ApiParam("请求参数") ColorSaveOrEditEnter enter) {
+        return new Response(colorService.colorEdit(enter));
+    }
+
+
     @PostMapping(value = "/colorList")
     @ApiOperation(value = "颜色列表", response = ColorListResult.class)
     public Response<PageResult<ColorListResult>> colorList(@ModelAttribute @ApiParam("请求参数") PageEnter enter) {

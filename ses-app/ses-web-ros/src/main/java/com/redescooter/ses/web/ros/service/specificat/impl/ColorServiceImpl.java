@@ -83,6 +83,18 @@ public class ColorServiceImpl implements ColorService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    @Override
+    public GeneralResult colorEdit(ColorSaveOrEditEnter enter) {
+        OpeColor color = opeColorService.getById(enter.getId());
+        if (color == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.COLOR_VALUE_EXIST.getCode(), ExceptionCodeEnums.COLOR_VALUE_EXIST.getMessage());
+        }
+        color.setColorName(enter.getColorName());
+        color.setColorValue(enter.getColorValue());
+        opeColorService.saveOrUpdate(color);
+        return new GeneralResult(enter.getRequestId());
+    }
+
 
     public void checkColorValue(ColorSaveOrEditEnter enter) {
         QueryWrapper<OpeColor> qw = new QueryWrapper<>();
