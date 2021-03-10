@@ -858,8 +858,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         wrapper.orderByDesc(OpeWmsScooterStock::getCreatedTime);
         List<OpeWmsScooterStock> list = opeWmsScooterStockMapper.selectList(wrapper);
         if (CollectionUtils.isEmpty(list)) {
-            //result.setSuccess(Boolean.FALSE); // 正确
-            result.setSuccess(Boolean.TRUE); //暂时
+            result.setSuccess(Boolean.FALSE); // 正确
+            //result.setSuccess(Boolean.TRUE); //暂时
             return result;
         }
         OpeWmsScooterStock scooterStock = list.get(0);
@@ -995,17 +995,23 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             // 得到自增编号,从倒数第6位开始截取
             for (OpeCarDistribute o : list) {
                 String vinCode = o.getVinCode();
-                String sub = vinCode.substring(vinCode.length() - 6);
-                codeList.add(Integer.valueOf(sub));
+                if (StringUtils.isNotBlank(vinCode)) {
+                    String sub = vinCode.substring(vinCode.length() - 6);
+                    codeList.add(Integer.valueOf(sub));
+                }
             }
-            // 倒序排列
-            codeList.sort(Comparator.reverseOrder());
-            NumberFormat nf = NumberFormat.getInstance();
-            nf.setGroupingUsed(false);
-            nf.setMaximumIntegerDigits(6);
-            nf.setMinimumIntegerDigits(6);
-            String code = nf.format(new Double(codeList.get(0) + 1));
-            result.append(code);
+            if (CollectionUtils.isNotEmpty(codeList)) {
+                // 倒序排列
+                codeList.sort(Comparator.reverseOrder());
+                NumberFormat nf = NumberFormat.getInstance();
+                nf.setGroupingUsed(false);
+                nf.setMaximumIntegerDigits(6);
+                nf.setMinimumIntegerDigits(6);
+                String code = nf.format(new Double(codeList.get(0) + 1));
+                result.append(code);
+            } else {
+                result.append("000001");
+            }
         } else {
             result.append("000001");
         }
