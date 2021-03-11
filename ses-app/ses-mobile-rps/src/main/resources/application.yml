@@ -153,7 +153,7 @@ sendinblue:
 seata:
   enabled: true
   enable-auto-data-source-proxy: true
-  tx-service-group: ses-mobile-rps
+  tx-service-group: ses-mobile-rps-group
   registry:
     type: zk
     zk:
@@ -165,7 +165,7 @@ seata:
   service:
     disable-global-transaction: false
     vgroup-mapping:
-      ses-mobile-rps: default
+      ses-mobile-rps-group: default
   client:
     rm:
       report-success-enable: false

@@ -151,7 +151,7 @@ mybatis-plus:
 seata:
   enabled: true
   enable-auto-data-source-proxy: true
-  tx-service-group: ses-service-mobile-c
+  tx-service-group: ses-service-mobile-c-group
   registry:
     type: zk
     zk:
@@ -163,7 +163,7 @@ seata:
   service:
     disable-global-transaction: false
     vgroup-mapping:
-      ses-service-mobile-c: default
+      ses-service-mobile-c-group: default
   client:
     rm:
       report-success-enable: false

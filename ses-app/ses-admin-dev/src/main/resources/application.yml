@@ -155,7 +155,7 @@ Request:
 seata:
   enabled: true
   enable-auto-data-source-proxy: true
-  tx-service-group: ses-admin-dev
+  tx-service-group: ses-admin-dev-group
   registry:
     type: zk
     zk:
@@ -167,7 +167,7 @@ seata:
   service:
     disable-global-transaction: false
     vgroup-mapping:
-      ses-admin-dev: default
+      ses-admin-dev-group: default
   client:
     rm:
       report-success-enable: false

@@ -154,7 +154,7 @@ sendinblue:
 seata:
   enabled: true
   enable-auto-data-source-proxy: true
-  tx-service-group: ses-web-delivery
+  tx-service-group: ses-web-delivery-group
   registry:
     type: zk
     zk:
@@ -166,7 +166,7 @@ seata:
   service:
     disable-global-transaction: false
     vgroup-mapping:
-      ses-web-delivery: default
+      ses-web-delivery-group: default
   client:
     rm:
       report-success-enable: false
