@@ -20,28 +20,6 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
-            <version>2.2.0.RELEASE</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>io.seata</groupId>
-                    <artifactId>seata-spring-boot-starter</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>io.seata</groupId>
-            <artifactId>seata-spring-boot-starter</artifactId>
-            <version>${seata.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>druid</groupId>
-                    <artifactId>com.alibaba</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <!--<dependency>
             <groupId>io.seata</groupId>
             <artifactId>seata-spring-boot-starter</artifactId>
             <version>${seata.version}</version>
@@ -54,10 +32,10 @@
                     <artifactId>druid</artifactId>
                     <groupId>com.alibaba</groupId>
                 </exclusion>
-                <exclusion>
+                <!--<exclusion>
                     <artifactId>asm</artifactId>
                     <groupId>org.ow2.asm</groupId>
-                </exclusion>
+                </exclusion>-->
                 <exclusion>
                     <artifactId>druid</artifactId>
                     <groupId>com.alibaba</groupId>
@@ -67,7 +45,12 @@
                     <groupId>org.checkerframework</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>-->
+        </dependency>
+        <dependency>
+            <groupId>com.101tec</groupId>
+            <artifactId>zkclient</artifactId>
+            <version>0.3</version>
+        </dependency>
     </dependencies>
 
 </project>
