@@ -18,7 +18,10 @@ public enum OrderNumberTypeEnums {
 
     IN_WHOUSE("IN_WHOUSE", "入库单", "EO"),
 
-    PRODUCTION_PURCHASE("PRODUCTION_PURCHASE", "生产采购单", "PO");
+    PRODUCTION_PURCHASE("PRODUCTION_PURCHASE", "生产采购单", "PO"),
+
+    INQUIRY_ORDER("INQUIRY_ORDER", "询价单", "XO");
+
 
     private String code;
 

@@ -1,5 +1,6 @@
 package com.redescooter.ses.tool.utils.file;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.entity.ContentType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,7 @@ import java.io.*;
  * @Date2020/6/17 20:52
  * @Version V1.0
  **/
+@Slf4j
 public class FileUtil {
 
     /**
@@ -21,6 +23,7 @@ public class FileUtil {
      * @param path  指定路径
      */
     public static String uploadFile(MultipartFile mFile, String path) {
+        log.info("----------" + path +"文件准备上传————————");
         try {
             InputStream in = mFile.getInputStream();
             byte[] buffer = new byte[1024];
@@ -36,8 +39,10 @@ public class FileUtil {
             }
             out.close();
             in.close();
+            log.info("----------" + path +"文件上传完成————————");
         } catch (Exception e) {
             System.out.println("----------" + path +"文件上传失败————————");
+            log.info("----------" + path +"文件上传失败————————");
             e.printStackTrace();
         }
         return path;

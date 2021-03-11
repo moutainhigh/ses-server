@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.OrderNumberTypeEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.*;
@@ -28,6 +29,7 @@ import com.redescooter.ses.api.hub.common.UserProfileService;
 import com.redescooter.ses.api.hub.vo.EditUserProfileEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
+import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.chart.StatisticalUtil;
@@ -206,7 +208,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     public void creatInquiry(OpeCustomer customer){
         OpeCustomerInquiry inquiry = new OpeCustomerInquiry();
         inquiry.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
-        inquiry.setOrderNo(UUID.randomUUID().toString().replaceAll("-",""));
+        inquiry.setOrderNo(createOrderNo(OrderNumberTypeEnums.INQUIRY_ORDER.getValue()));
         inquiry.setCustomerId(customer.getId());
 //        inquiry.setCountry(customer.getCountry());
         inquiry.setCity(customer.getDef2());
@@ -267,6 +269,27 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         inquiryB.setProductPrice(inquiry.getProductPrice());
         opeCustomerInquiryBService.saveOrUpdate(inquiryB);
     }
+
+
+    // 询价单号生成规则
+    public String createOrderNo(String orderNoEnum) {
+        String code = "";
+        // 先判断当前的日期有没有生成过单据号
+        QueryWrapper<OpeCustomerInquiry> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(OpeCustomerInquiry.COL_ORDER_NO, DateUtil.getSimpleDateStamp());
+        queryWrapper.orderByDesc(OpeCustomerInquiry.COL_ORDER_NO);
+        queryWrapper.last("limit 1");
+        OpeCustomerInquiry inquiry = opeCustomerInquiryService.getOne(queryWrapper);
+        if(inquiry != null){
+            // 说明今天已经有过单据了  只需要流水号递增
+            code = OrderNoGenerateUtil.orderNoGenerate(inquiry.getOrderNo(),orderNoEnum);
+        }else {
+            // 说明今天还没有产生过单据号，给今天的第一个就好
+            code = orderNoEnum + DateUtil.getSimpleDateStamp() + "001";
+        }
+        return code;
+    }
+
 
     /**
      * 编辑更新客户
@@ -656,6 +679,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (!CollectionUtils.isEmpty(inquiryList)){
             for (OpeCustomerInquiry inquiry : inquiryList) {
                 inquiry.setPayStatus(InquiryPayStatusEnums.PAY_LAST_PARAGRAPH.getValue());
+                inquiry.setStatus(InquiryStatusEnums.PAY_LAST_PARAGRAPH.getValue());
                 inquiry.setAmountPaid(inquiry.getTotalPrice());
                 inquiry.setAmountObligation(new BigDecimal(0));
                 inquiry.setUpdatedTime(new Date());

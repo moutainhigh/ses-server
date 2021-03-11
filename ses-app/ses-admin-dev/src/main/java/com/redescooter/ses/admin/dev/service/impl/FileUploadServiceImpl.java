@@ -76,7 +76,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             }else{
                 log.info("文件不存在！！！！！！！！！！");
                 response.setCharacterEncoding("utf-8");
-                response.getWriter().print("<script>alert(\"文件不存在!\");window.history.go(-1);</script>");
+                response.getWriter().print("<script>alert(\"Le fichier n'existe pas!\");window.history.go(-1);</script>");
             }
         } catch (Exception e) {
 
