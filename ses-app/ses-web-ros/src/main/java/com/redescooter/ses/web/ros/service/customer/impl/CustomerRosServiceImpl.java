@@ -626,7 +626,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             return new GeneralResult(enter.getRequestId());
         }
         // 检验客户是不是来自官网
-        if (CustomerSourceEnum.SYSTEM.getValue().equals(customer.getCustomerSource())){
+        if (CustomerSourceEnum.WEBSITE.getValue().equals(customer.getCustomerSource())){
             // 对于来源于官网的客户 需要支付尾款 才能转为正式客户(这里判断当前客户 是否有支付完尾款的订单 有就好)
             QueryWrapper<OpeCustomerInquiry> query = new QueryWrapper<>();
             query.eq(OpeCustomerInquiry.COL_CUSTOMER_ID,customer.getId());
