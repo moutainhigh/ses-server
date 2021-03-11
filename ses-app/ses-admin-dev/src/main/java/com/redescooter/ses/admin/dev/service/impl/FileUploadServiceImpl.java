@@ -38,13 +38,10 @@ public class FileUploadServiceImpl implements FileUploadService {
 
         String fileName = System.currentTimeMillis() + ".apk";
         String path = updatePackageUploadPath + fileName;
-
+        // 调方法 上传文件
+        FileUtil.uploadFile(file, path);
         result.setFileUrl(downloadPath + fileName);
         result.setFileSize(String.valueOf(file.getSize() / 1024 / 1024));
-
-        ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
-            FileUtil.uploadFile(file, path);
-        });
         return result;
     }
 

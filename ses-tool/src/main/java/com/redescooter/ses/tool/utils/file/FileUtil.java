@@ -42,8 +42,7 @@ public class FileUtil {
             in.close();
             log.info("----------" + path +"文件上传完成————————");
         } catch (Exception e) {
-            System.out.println("----------" + path +"文件上传失败————————");
-            log.info("----------" + path +"文件上传失败————————");
+            log.info("----------" + path +"文件上传失败*****原因："+e.getMessage());
             e.printStackTrace();
         }
         return path;
