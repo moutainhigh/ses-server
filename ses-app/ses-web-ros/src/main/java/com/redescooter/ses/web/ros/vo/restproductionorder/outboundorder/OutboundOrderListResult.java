@@ -66,4 +66,6 @@ public class OutboundOrderListResult extends GeneralResult {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date createDate;
 
+    @ApiModelProperty(value = "创建人名称")
+    private String createdByName = "--";
 }
