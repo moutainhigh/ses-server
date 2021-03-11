@@ -1,10 +1,8 @@
 package com.redescooter.ses.admin.dev.service.impl;
 
 import com.redescooter.ses.admin.dev.service.FileUploadService;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.vo.app.FileUploadResultDTO;
 import com.redescooter.ses.tool.utils.file.FileUtil;
-import com.redescooter.ses.tool.utils.thread.ThreadPoolExecutorUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,10 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * @author assert
