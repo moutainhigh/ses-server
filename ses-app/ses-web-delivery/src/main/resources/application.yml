@@ -151,4 +151,24 @@ sendinblue:
   url: https://api.sendinblue.com/v3/contacts
   mediaType: application/octet-stream
 
+seata:
+  enabled: true
+  enable-auto-data-source-proxy: true
+  tx-service-group: ses-web-delivery
+  registry:
+    type: zk
+    zk:
+      server-addr: 192.168.2.200:2181
+      cluster: default
+  config:
+    zk:
+      server-addr: 192.168.2.200:2181
+  service:
+    disable-global-transaction: false
+    vgroup-mapping:
+      ses-web-delivery: default
+  client:
+    rm:
+      report-success-enable: false
+
 

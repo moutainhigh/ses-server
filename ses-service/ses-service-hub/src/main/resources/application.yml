@@ -155,3 +155,23 @@ mybatis-plus:
     auto-mapping-unknown-column-behavior: warning
     local-cache-scope: session
     call-setters-on-nulls: false
+
+seata:
+  enabled: true
+  enable-auto-data-source-proxy: true
+  tx-service-group: ses-service-hub
+  registry:
+    type: zk
+    zk:
+      server-addr: 192.168.2.200:2181
+      cluster: default
+  config:
+    zk:
+      server-addr: 192.168.2.200:2181
+  service:
+    disable-global-transaction: false
+    vgroup-mapping:
+      ses-service-hub: default
+  client:
+    rm:
+      report-success-enable: false
