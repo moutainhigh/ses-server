@@ -52,35 +52,10 @@ public class FileUploadServiceImpl implements FileUploadService {
     @SneakyThrows
     @Override
     public void downLoadFile(String fileName, HttpServletResponse response, HttpServletRequest request) {
-        try {
             log.info("准备开始下载！！！！！！！！！！");
             String apkurl=updatePackageUploadPath + fileName;
             log.info("文件的路径！！！！！！！！！！="+apkurl);
-            File file = new File(apkurl);
-            if (file.exists()) {//文件存在
-                InputStream in = new FileInputStream(file);
-                OutputStream os = response.getOutputStream();
-                response.setCharacterEncoding("utf-8");
-                response.addHeader("Content-Disposition","attachment;filename=" + new String((file.getName()).getBytes("GB2312"),"iso8859-1")) ;//此行代码可避免中文文件名乱码问题
-                response.addHeader("Content-Length", file.length() + "");
-                response.setContentType("application/octet-stream");
-                int data = 0;
-                while ((data = in.read()) != -1) {
-                    os.write(data);
-                }
-                log.info("下载文件完成，准备关闭资源！！！！！！！！！！");
-                os.close();
-                in.close();
-                os.flush();
-                log.info("**********资源关闭完成*********************");
-            }else{
-                log.info("文件不存在！！！！！！！！！！");
-                response.setCharacterEncoding("utf-8");
-                response.getWriter().print("<script>alert(\"Le fichier n'existe pas!\");window.history.go(-1);</script>");
-            }
-        } catch (Exception e) {
-
-        }
+            FileUtil.downLoadFile(apkurl,response);
     }
 
 

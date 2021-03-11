@@ -30,7 +30,7 @@ public class SalesOrderListResult extends GeneralResult {
     private String payStatus;
 
     @ApiModelProperty(value = "客户全名")
-    private String customerFullName;
+    private String customerFullName = "--";
 
     @ApiModelProperty(value = "客户邮箱")
     private String email;
