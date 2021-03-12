@@ -32,6 +32,7 @@
     </sql>
     <select id="listCount" resultType="int">
         select count(opi.id)
+
         from ope_customer_inquiry opi
         left join ope_customer oc on opi.customer_id = oc.id and oc.dr = 0
         left join ope_sale_scooter scooter on scooter.id = opi.product_id and scooter.dr = 0
