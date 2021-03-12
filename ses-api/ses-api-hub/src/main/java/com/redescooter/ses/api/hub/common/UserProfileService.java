@@ -1,7 +1,11 @@
 package com.redescooter.ses.api.hub.common;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.hub.vo.*;
+import com.redescooter.ses.api.hub.vo.EditUserProfileEnter;
+import com.redescooter.ses.api.hub.vo.QueryUserProfileByEmailEnter;
+import com.redescooter.ses.api.hub.vo.QueryUserProfileByEmailResult;
+import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
 
 import java.util.List;
 
@@ -62,5 +66,10 @@ public interface UserProfileService {
      * @return
      */
     List<QueryUserProfileByEmailResult> getUserPicture(QueryUserProfileByEmailEnter enter);
+
+    /**
+     * 用户退出app时,通过emq给车发送一个关锁的指令
+     */
+    GeneralResult sendLockInstructionByEMQ(GeneralEnter enter);
 
 }

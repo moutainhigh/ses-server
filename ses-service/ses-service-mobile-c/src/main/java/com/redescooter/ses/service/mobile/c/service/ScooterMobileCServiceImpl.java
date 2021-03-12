@@ -18,6 +18,8 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.Map;
 
 /**
  * @author assert
@@ -67,6 +69,14 @@ public class ScooterMobileCServiceImpl implements ScooterMobileCService {
         if (null == scooter) {
             throw new MobileCException(ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getCode(),
                     ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getMessage());
+        }
+
+        if ("0".equals(scooterLockDTO.getLat()) && "0".equals(scooterLockDTO.getLng())) {
+            Map<String, BigDecimal> map = scooterService.getPositionByScooterId(scooter.getScooterId());
+            BigDecimal longitude = map.get("longitude");
+            BigDecimal latitude = map.get("latitude");
+            scooterLockDTO.setLng(String.valueOf(longitude));
+            scooterLockDTO.setLat(String.valueOf(latitude));
         }
 
         /**
