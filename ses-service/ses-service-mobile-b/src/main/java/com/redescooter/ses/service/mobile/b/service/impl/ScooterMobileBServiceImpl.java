@@ -84,10 +84,12 @@ public class ScooterMobileBServiceImpl implements ScooterMobileBService {
 
         if ("0".equals(scooterLockDTO.getLat()) && "0".equals(scooterLockDTO.getLng())) {
             Map<String, BigDecimal> map = scooterService.getPositionByScooterId(scooter.getScooterId());
-            BigDecimal longitude = map.get("longitude");
-            BigDecimal latitude = map.get("latitude");
-            scooterLockDTO.setLng(String.valueOf(longitude));
-            scooterLockDTO.setLat(String.valueOf(latitude));
+            if (null != map) {
+                BigDecimal longitude = map.get("longitude");
+                BigDecimal latitude = map.get("latitude");
+                scooterLockDTO.setLng(null == longitude ? String.valueOf(BigDecimal.ZERO) : String.valueOf(longitude));
+                scooterLockDTO.setLat(null == latitude ? String.valueOf(BigDecimal.ZERO) : String.valueOf(latitude));
+            }
         }
 
         /**
