@@ -20,7 +20,7 @@ public enum OrderNumberTypeEnums {
 
     PRODUCTION_PURCHASE("PRODUCTION_PURCHASE", "生产采购单", "PO"),
 
-    INQUIRY_ORDER("INQUIRY_ORDER", "询价单", "XO");
+    INQUIRY_ORDER("INQUIRY_ORDER", "询价单", "SO");
 
 
     private String code;
