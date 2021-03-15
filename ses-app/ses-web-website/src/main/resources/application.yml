@@ -168,26 +168,3 @@ sendinblue:
   apiKey: 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
   url: https://api.sendinblue.com/v3/contacts
   mediaType: application/json
-
-seata:
-  enabled: true
-  enable-auto-data-source-proxy: true
-  tx-service-group: ses-web-website-group
-  registry:
-    type: zk
-    zk:
-      server-addr: 192.168.2.200:2181
-      cluster: default
-      connect-timeout: 2000000
-  config:
-    type: zk
-    zk:
-      server-addr: 192.168.2.200:2181
-      connect-timeout: 2000000
-  service:
-    disable-global-transaction: false
-    vgroup-mapping:
-      ses-web-website-group: default
-  client:
-    rm:
-      report-success-enable: false
