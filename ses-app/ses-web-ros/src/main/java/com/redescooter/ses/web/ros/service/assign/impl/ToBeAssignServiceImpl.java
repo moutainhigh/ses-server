@@ -902,9 +902,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 得到型号id和颜色id
-        Long specificatId = opeSaleScooter.getSpecificatId();
+        Long groupId = opeSaleScooter.getGroupId();
         Long colorId = opeSaleScooter.getColorId();
-        result.put("specificatId", specificatId);
+        result.put("specificatId", groupId);
         result.put("colorId", colorId);
         return result;
     }
