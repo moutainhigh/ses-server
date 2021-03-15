@@ -3,8 +3,6 @@ package com.redescooter.ses.web.ros.verifyhandler;
 import cn.afterturn.easypoi.excel.entity.result.ExcelVerifyHandlerResult;
 import cn.afterturn.easypoi.handler.inter.IExcelVerifyHandler;
 import com.google.common.base.Strings;
-import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
-import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.vo.restproduct.RosParseExcelData;
 
 /**
@@ -24,7 +22,7 @@ public class RosExcelParse implements IExcelVerifyHandler<RosParseExcelData> {
         }
         if (Strings.isNullOrEmpty(rosParseExcelData.getPartsNo())) {
             builder.append("PARTS N°is empty;");
-            throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
+            return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (Strings.isNullOrEmpty(rosParseExcelData.getChineseName())) {
             builder.append("Chinese_Name is empty;");
