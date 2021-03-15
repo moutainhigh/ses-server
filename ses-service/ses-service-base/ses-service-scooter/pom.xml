@@ -4,11 +4,11 @@
     <parent>
         <groupId>com.redescooter.ses</groupId>
         <artifactId>ses-service-base</artifactId>
-        <version>1.2.1</version>
+        <version>1.2.2</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>ses-service-scooter</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <name>ses-service-scooter</name>
     <description>Base Scooter Application Service</description>
 

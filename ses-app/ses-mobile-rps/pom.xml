@@ -5,10 +5,10 @@
     <parent>
         <groupId>com.redescooter.ses</groupId>
         <artifactId>ses-app</artifactId>
-        <version>1.2.1</version>
+        <version>1.2.2</version>
     </parent>
     <artifactId>ses-mobile-rps</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <name>ses-mobile-rps</name>
     <description>Demo project for Spring Boot</description>
 

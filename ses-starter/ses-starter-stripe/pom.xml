@@ -5,11 +5,11 @@
     <parent>
         <groupId>com.redescooter.ses</groupId>
         <artifactId>ses-starter</artifactId>
-        <version>1.2.1</version>
+        <version>1.2.2</version>
     </parent>
 
     <artifactId>ses-starter-stripe</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <name>ses-starter-stripe</name>
     <description>stripe支付</description>
 

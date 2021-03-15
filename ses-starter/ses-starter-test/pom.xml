@@ -5,10 +5,10 @@
     <parent>
         <groupId>com.redescooter.ses</groupId>
         <artifactId>ses-starter</artifactId>
-        <version>1.2.1</version>
+        <version>1.2.2</version>
     </parent>
     <artifactId>ses-starter-test</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <name>ses-starter-test</name>
     <description>Demo project for Spring Boot</description>
 

@@ -4,12 +4,12 @@
     <parent>
         <groupId>com.redescooter.ses</groupId>
         <artifactId>ses-server</artifactId>
-        <version>1.2.1</version>
+        <version>1.2.2</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>ses-monitor-admin</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <name>ses-monitor-admin</name>
     <description>Monitoring Application Service</description>
 
