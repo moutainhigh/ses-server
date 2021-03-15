@@ -40,7 +40,7 @@ public class RosExcelParse implements IExcelVerifyHandler<RosParseExcelData> {
         }
         if (Strings.isNullOrEmpty(rosParseExcelData.getSec())) {
             builder.append("SEC is empty;");
-            throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
+            return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (Strings.isNullOrEmpty(rosParseExcelData.getSellClass())) {
             builder.append("Sell_Class is empty;");

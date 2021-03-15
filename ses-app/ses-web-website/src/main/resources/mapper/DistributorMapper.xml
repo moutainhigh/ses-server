@@ -29,6 +29,7 @@
             and sd.name like concat('%', #{keyword}, '%')
             and sd.address like concat('%', #{keyword}, '%')
         </if>
+        and sd.status = 1
         ORDER BY distance ASC
     </select>
 </mapper>
