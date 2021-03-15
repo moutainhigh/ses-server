@@ -165,9 +165,12 @@ seata:
     zk:
       server-addr: 192.168.2.200:2181
       cluster: default
+      connect-timeout: 2000000
   config:
+    type: zk
     zk:
       server-addr: 192.168.2.200:2181
+      connect-timeout: 2000000
   service:
     disable-global-transaction: false
     vgroup-mapping:
