@@ -1,13 +1,11 @@
 package com.redescooter.ses.mobile.client.controller;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
-import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
-import com.redescooter.ses.api.common.vo.scooter.ScooterLockDTO;
 import com.redescooter.ses.api.foundation.service.LoginJPushProService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.account.VerifyAccountEnter;
@@ -15,12 +13,12 @@ import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
 import com.redescooter.ses.api.foundation.vo.message.LoginPushEnter;
+import com.redescooter.ses.api.hub.common.UserProfileService;
 import com.redescooter.ses.mobile.client.service.TokenService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -52,8 +50,8 @@ public class UserTokenController {
     @DubboReference
     private LoginJPushProService loginJPushProService;
 
-    @Autowired
-    private ScooterController scooterController;
+    @DubboReference
+    private UserProfileService userProfileService;
 
     @IgnoreLoginCheck
     @ApiOperation(value = "登入接口", response = LoginResult.class)
@@ -67,12 +65,7 @@ public class UserTokenController {
     public Response<GeneralResult> logout(@ModelAttribute GeneralEnter enter) {
         userTokenService.logout(enter);
         // 用户退出app时,通过emq给车发送一个关锁的指令
-        ScooterLockDTO lockParam = new ScooterLockDTO();
-        BeanUtils.copyProperties(enter, lockParam);
-        lockParam.setEvent(CommonEvent.START.getValue());
-        lockParam.setLng("0");
-        lockParam.setLat("0");
-        scooterController.lock(lockParam);
+        userProfileService.sendLockInstructionByEMQ(enter);
         return new Response<>();
     }
 

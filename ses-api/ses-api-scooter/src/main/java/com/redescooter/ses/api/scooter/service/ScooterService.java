@@ -7,7 +7,9 @@ import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
 import com.redescooter.ses.api.scooter.vo.UpdateStatusEnter;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterLockReportedDTO;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:ScooterService
@@ -145,5 +147,10 @@ public interface ScooterService {
      * @date 2021/2/1
     */
     List<String> getToDayScooterNos();
+
+    /**
+     * 根据scooterId找到最后一次的经纬度
+     */
+    Map<String, BigDecimal> getPositionByScooterId(Long scooterId);
 
 }
