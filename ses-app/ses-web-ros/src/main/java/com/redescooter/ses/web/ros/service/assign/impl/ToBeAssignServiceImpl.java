@@ -10,6 +10,7 @@ import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
+import com.redescooter.ses.api.common.enums.wms.WmsStockStatusEnum;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -473,9 +474,6 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         // 客户和车辆产生绑定关系
         List<HubSaveScooterEnter> saveRelationList = Lists.newArrayList();
 
-        // 库存产品序列号表id集合
-        List<Long> idList = Lists.newArrayList();
-
         for (ToBeAssignSubmitDetailEnter o : list) {
             Long id = o.getId();
             String rsn = o.getRsn();
@@ -634,29 +632,24 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 logger.info("客户类型是个人,新增consumer库");
             }
 
-            // 根据rsn删除库存产品序列号表
+            // 根据rsn修改库存产品序列号表的库存状态为不可用
             LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
             qw.eq(OpeWmsStockSerialNumber::getDr, DelStatusEnum.VALID.getCode());
             qw.eq(OpeWmsStockSerialNumber::getRsn, rsn);
-            qw.in(OpeWmsStockSerialNumber::getStockStatus, 1,2);
+            qw.eq(OpeWmsStockSerialNumber::getStockStatus, WmsStockStatusEnum.AVAILABLE.getStatus());
             qw.orderByDesc(OpeWmsStockSerialNumber::getCreatedTime);
             List<OpeWmsStockSerialNumber> serialNumberList = opeWmsStockSerialNumberMapper.selectList(qw);
             if (CollectionUtils.isNotEmpty(serialNumberList)) {
                 OpeWmsStockSerialNumber serialNumber = serialNumberList.get(0);
                 if (null != serialNumber) {
-                    Long serialNumberId = serialNumber.getId();
-                    idList.add(serialNumberId);
+                    serialNumber.setStockStatus(WmsStockStatusEnum.UNAVAILABLE.getStatus());
+                    opeWmsStockSerialNumberService.updateById(serialNumber);
                 }
             }
         }
         // 将数据存储到scooter库
         scooterService.saveScooter(saveScooterList);
         logger.info("新增scooter库");
-
-        // 删除库存产品序列号表
-        if (CollectionUtils.isNotEmpty(idList)) {
-            opeWmsStockSerialNumberService.removeByIds(idList);
-        }
 
         // node表node字段+1,flag标识改为已分配完
         LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
