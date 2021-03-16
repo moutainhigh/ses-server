@@ -7,6 +7,8 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.hub.service.website.ProductionService;
+import com.redescooter.ses.api.hub.vo.website.SyncProductionDataEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -28,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,6 +70,9 @@ public class SaleScooterServiceImpl implements SaleScooterService {
 
     @Autowired
     private OpeSalePartsService opeSalePartsService;
+
+    @DubboReference
+    private ProductionService productionService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -147,7 +153,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         // 编辑这玩意之前有个安全码的校验  并把结果放在Redis中  这里再次验证一下安全码校验是否通过
         String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
         String checkResut = jedisService.get(key);
-        if (!Boolean.valueOf(checkResut)) {
+        if (!Boolean.parseBoolean(checkResut)) {
             throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(), ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
         }
         jedisService.delKey(key);
@@ -158,8 +164,39 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         Integer saleStutas = saleScooter.getSaleStutas();
         saleScooter.setSaleStutas(saleStutas == 0 ? 1 : 0);
         opeSaleScooterService.updateById(saleScooter);
+
+        // 销售产品状态改变时  需要把数据同步到官网那边的数据库中（那边没有数据就新建数据）
+        dataSyncToWebsite(saleScooter);
         return new GeneralResult(enter.getRequestId());
     }
+
+    // 这个方法要写成异步的
+    @Async
+    void dataSyncToWebsite(OpeSaleScooter saleScooter){
+        try {
+            // 这个要同步好几张表 先判断本次同步多少张表（1张或5张）
+            if(!productionService.syncByProductionCode(saleScooter.getProductCode(),saleScooter.getSaleStutas())){
+                // 进入到这里  说明是第一次同步这条数据  需要同步5张表
+                SyncProductionDataEnter syncProductionDataEnter = new SyncProductionDataEnter();
+                // 下面开始给这个对象找数据赋值
+                syncProductionDataEnter.setProductCode(saleScooter.getProductCode());
+                syncProductionDataEnter.setProductType(1);
+                syncProductionDataEnter.setStatus(1);
+//                syncProductionDataEnter.setOtherParameter();
+//                syncProductionDataEnter
+//                syncProductionDataEnter
+//                syncProductionDataEnter
+//                syncProductionDataEnter
+//                syncProductionDataEnter
+//                syncProductionDataEnter
+//                syncProductionDataEnter
+//                syncProductionDataEnter
+                productionService.syncProductionData(syncProductionDataEnter);
+            }
+
+        }catch (Exception ignored){}
+    }
+
 
 
 //    @SneakyThrows

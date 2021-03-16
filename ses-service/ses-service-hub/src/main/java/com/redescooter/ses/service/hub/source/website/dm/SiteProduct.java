@@ -1,9 +1,6 @@
 package com.redescooter.ses.service.hub.source.website.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
@@ -20,7 +17,7 @@ public class SiteProduct {
     /**
      * 主键 主键
      */
-    @TableId(value = "id", type = IdType.INPUT)
+    @TableId(value = "id")
     @ApiModelProperty(value="主键 主键")
     private Long id;
 
@@ -29,6 +26,7 @@ public class SiteProduct {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value="逻辑删除")
+    @TableLogic
     private Integer dr;
 
     /**
