@@ -414,10 +414,18 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         }
 
         /**
-         * 产品出库后将信息从库存产品序列号表中删除
+         * 产品出库后将信息从库存产品序列号表中删除(将库存状态改为不可用)
          */
         if (CollectionUtils.isNotEmpty(serialNumList)){
-            wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(serialNumList);
+            for (String obj : serialNumList) {
+                OpeWmsStockSerialNumber model = new OpeWmsStockSerialNumber();
+                model.setStockStatus(WmsStockStatusEnum.UNAVAILABLE.getStatus());
+                model.setRsn(obj);
+                model.setUpdatedBy(enter.getUserId());
+                model.setUpdatedTime(new Date());
+                wmsStockSerialNumberMapper.updateWmsStockSerialNumberByRSn(model);
+            }
+            //wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(serialNumList);
         }
 
         /**
