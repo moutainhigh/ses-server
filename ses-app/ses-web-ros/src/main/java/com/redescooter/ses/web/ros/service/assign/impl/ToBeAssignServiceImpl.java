@@ -637,13 +637,13 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             qw.eq(OpeWmsStockSerialNumber::getDr, DelStatusEnum.VALID.getCode());
             qw.eq(OpeWmsStockSerialNumber::getRsn, rsn);
             qw.eq(OpeWmsStockSerialNumber::getStockStatus, WmsStockStatusEnum.AVAILABLE.getStatus());
-            qw.orderByDesc(OpeWmsStockSerialNumber::getCreatedTime);
             List<OpeWmsStockSerialNumber> serialNumberList = opeWmsStockSerialNumberMapper.selectList(qw);
             if (CollectionUtils.isNotEmpty(serialNumberList)) {
-                OpeWmsStockSerialNumber serialNumber = serialNumberList.get(0);
-                if (null != serialNumber) {
-                    serialNumber.setStockStatus(WmsStockStatusEnum.UNAVAILABLE.getStatus());
-                    opeWmsStockSerialNumberService.updateById(serialNumber);
+                for (OpeWmsStockSerialNumber serialNumber : serialNumberList) {
+                    if (null != serialNumber) {
+                        serialNumber.setStockStatus(WmsStockStatusEnum.UNAVAILABLE.getStatus());
+                        opeWmsStockSerialNumberService.updateById(serialNumber);
+                    }
                 }
             }
         }
