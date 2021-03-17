@@ -1,15 +1,14 @@
 package com.redescooter.ses.web.ros.dm;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-
 import java.math.BigDecimal;
 import java.util.Date;
+import lombok.Data;
 
 /**
  * 销售车辆表
@@ -21,7 +20,7 @@ public class OpeSaleScooter {
     /**
      * 主键
      */
-    @TableId(value = "id")
+    @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value = "主键")
     private Long id;
 
@@ -30,7 +29,6 @@ public class OpeSaleScooter {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除")
-    @TableLogic
     private Integer dr;
 
     /**
@@ -81,6 +79,13 @@ public class OpeSaleScooter {
     @TableField(value = "sale_stutas")
     @ApiModelProperty(value = "销售状态，0：不可销售，1：可销售")
     private Integer saleStutas;
+
+    /**
+     * 最低电池数量
+     */
+    @TableField(value = "min_battery_num")
+    @ApiModelProperty(value = "最低电池数量")
+    private Integer minBatteryNum;
 
     /**
      * 备注
@@ -169,6 +174,8 @@ public class OpeSaleScooter {
     public static final String COL_COLOR_ID = "color_id";
 
     public static final String COL_SALE_STUTAS = "sale_stutas";
+
+    public static final String COL_MIN_BATTERY_NUM = "min_battery_num";
 
     public static final String COL_REMARK = "remark";
 

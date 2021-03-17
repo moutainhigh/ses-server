@@ -79,52 +79,86 @@ public class ProductionServiceImpl implements ProductionService {
         product.setUpdatedTime(new Date());
 
         // 再创建 site_product_class 信息
-        SiteProductClass productClass = new SiteProductClass();
-        productClass.setId(idAppService.getId(SequenceName.SITE_PRODUCT_CLASS));
-        productClass.setStatus(1);
-        productClass.setProductClassName(syncProductionDataEnter.getProductClassName());
-        productClass.setProductClassCode(syncProductionDataEnter.getProductClassCode());
-        productClass.setCreatedBy(0L);
-        productClass.setCreatedTime(new Date());
-        productClass.setUpdatedBy(0L);
-        productClass.setUpdatedTime(new Date());
-        siteProductClassService.saveOrUpdate(productClass);
+        // 先要通过大类的code 判断有没有同步过
+        SiteProductClass productClass;
+        QueryWrapper<SiteProductClass> productClassQw = new QueryWrapper<>();
+        productClassQw.eq(SiteProductClass.COL_PRODUCT_CLASS_CODE,syncProductionDataEnter.getProductClassCode());
+        productClassQw.last("limit 1");
+        productClass = siteProductClassService.getOne(productClassQw);
+        if (productClass == null) {
+            // 说明之前没有同步过
+            productClass = new SiteProductClass();
+            productClass.setId(idAppService.getId(SequenceName.SITE_PRODUCT_CLASS));
+            productClass.setStatus(1);
+            productClass.setProductClassName(syncProductionDataEnter.getProductClassName());
+            productClass.setProductClassCode(syncProductionDataEnter.getProductClassCode());
+            productClass.setCreatedBy(0L);
+            productClass.setCreatedTime(new Date());
+            productClass.setUpdatedBy(0L);
+            productClass.setUpdatedTime(new Date());
+            siteProductClassService.saveOrUpdate(productClass);
+        }
 
         // 然后创建 site_product_model 信息
-        SiteProductModel productModel = new SiteProductModel();
-        productModel.setId(idAppService.getId(SequenceName.SITE_PRODUCT_MODEL));
-        productModel.setProductClassId(productClass.getId());
-        productModel.setProductModelName(syncProductionDataEnter.getProductModelName());
-        productModel.setProductModelCode(syncProductionDataEnter.getProductModelCode());
-        productModel.setStatus(1);
-        productModel.setCreatedBy(0L);
-        productModel.setCreatedTime(new Date());
-        productModel.setUpdatedBy(0L);
-        productModel.setUpdatedTime(new Date());
-        siteProductModelService.saveOrUpdate(productModel);
+        // 先要根据code判断有没有同步过
+        SiteProductModel productModel;
+        QueryWrapper<SiteProductModel> productModelQw = new QueryWrapper<>();
+        productModelQw.eq(SiteProductModel.COL_PRODUCT_MODEL_CODE,syncProductionDataEnter.getProductModelCode());
+        productModelQw.last("limit 1");
+        productModel = siteProductModelService.getOne(productModelQw);
+        if (productModel == null) {
+            productModel = new SiteProductModel();
+            productModel.setId(idAppService.getId(SequenceName.SITE_PRODUCT_MODEL));
+            productModel.setProductClassId(productClass.getId());
+            productModel.setProductModelName(syncProductionDataEnter.getProductModelName());
+            productModel.setProductModelCode(syncProductionDataEnter.getProductModelCode());
+            productModel.setStatus(1);
+            productModel.setCreatedBy(0L);
+            productModel.setCreatedTime(new Date());
+            productModel.setUpdatedBy(0L);
+            productModel.setUpdatedTime(new Date());
+            siteProductModelService.saveOrUpdate(productModel);
+        }
         // model的ID要放到产品表中
         product.setProductModelId(productModel.getId());
 
         // 接着创建 site_colour 信息
-        SiteColour colour = new SiteColour();
-        colour.setId(idAppService.getId(SequenceName.SITE_COLOUR));
-        colour.setStatus(1);
-        colour.setColourName(syncProductionDataEnter.getColourName());
-        colour.setColourCode(syncProductionDataEnter.getColourCode());
-        colour.setStatus(1);
-        colour.setCreatedBy(0L);
-        colour.setCreatedTime(new Date());
-        colour.setUpdatedBy(0L);
-        colour.setUpdatedTime(new Date());
-        siteColourService.saveOrUpdate(colour);
+        // 先要根据色值判断这个颜色有没有创建过
+        SiteColour colour;
+        QueryWrapper<SiteColour> colourQw = new QueryWrapper<>();
+        colourQw.eq(SiteColour.COL_COLOUR_CODE,syncProductionDataEnter.getColourCode());
+        colourQw.last("limit 1");
+        colour = siteColourService.getOne(colourQw);
+        if (colour == null) {
+            // 说明颜色之前没有同步过
+            colour = new SiteColour();
+            colour.setId(idAppService.getId(SequenceName.SITE_COLOUR));
+            colour.setStatus(1);
+            colour.setColourName(syncProductionDataEnter.getColourName());
+            colour.setColourCode(syncProductionDataEnter.getColourCode());
+            colour.setStatus(1);
+            colour.setCreatedBy(0L);
+            colour.setCreatedTime(new Date());
+            colour.setUpdatedBy(0L);
+            colour.setUpdatedTime(new Date());
+            siteColourService.saveOrUpdate(colour);
+        }
 
         // 接着创建 site_product_colour 信息
-        SiteProductColour productColour = new SiteProductColour();
-        productColour.setId(idAppService.getId(SequenceName.SITE_PRODUCT_COLOUR));
-        productColour.setColourId(colour.getId());
-        productColour.setProductId(productModel.getId());
-        siteProductColourService.saveOrUpdate(productColour);
-
+        // 先根据颜色ID和model的ID判断是否有这样的数据
+        SiteProductColour productColour;
+        QueryWrapper<SiteProductColour> productColourQw = new QueryWrapper<>();
+        productColourQw.eq(SiteProductColour.COL_COLOUR_ID,colour.getId());
+        productColourQw.eq(SiteProductColour.COL_PRODUCT_ID, productModel.getId());
+        productColourQw.last("limit 1");
+        productColour = siteProductColourService.getOne(productColourQw);
+        if (productColour == null) {
+            productColour = new SiteProductColour();
+            productColour.setId(idAppService.getId(SequenceName.SITE_PRODUCT_COLOUR));
+            productColour.setColourId(colour.getId());
+            productColour.setProductId(productModel.getId());
+            siteProductColourService.saveOrUpdate(productColour);
+        }
         siteProductService.saveOrUpdate(product);
     }
 }

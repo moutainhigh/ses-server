@@ -14,14 +14,13 @@ import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproduction.SaleScooterMapper;
+import com.redescooter.ses.web.ros.dm.OpeColor;
 import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
+import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeSaleCombinService;
-import com.redescooter.ses.web.ros.service.base.OpeSalePartsService;
-import com.redescooter.ses.web.ros.service.base.OpeSaleScooterService;
-import com.redescooter.ses.web.ros.service.base.OpeSpecificatTypeService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproduction.SaleScooterService;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListResult;
@@ -73,6 +72,16 @@ public class SaleScooterServiceImpl implements SaleScooterService {
 
     @DubboReference
     private ProductionService productionService;
+
+    @Autowired
+    private OpeColorService opeColorService;
+
+    @Autowired
+    private OpeSpecificatTypeService opeSpecificatTypeService;
+
+    @Autowired
+    private OpeSpecificatGroupService opeSpecificatGroupService;
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -179,18 +188,35 @@ public class SaleScooterServiceImpl implements SaleScooterService {
                 // 进入到这里  说明是第一次同步这条数据  需要同步5张表
                 SyncProductionDataEnter syncProductionDataEnter = new SyncProductionDataEnter();
                 // 下面开始给这个对象找数据赋值
+                // 首先是产品数据
                 syncProductionDataEnter.setProductCode(saleScooter.getProductCode());
                 syncProductionDataEnter.setProductType(1);
                 syncProductionDataEnter.setStatus(1);
-//                syncProductionDataEnter.setOtherParameter();
-//                syncProductionDataEnter
-//                syncProductionDataEnter
-//                syncProductionDataEnter
-//                syncProductionDataEnter
-//                syncProductionDataEnter
-//                syncProductionDataEnter
-//                syncProductionDataEnter
-//                syncProductionDataEnter
+                syncProductionDataEnter.setOtherParameter(saleScooter.getDef1());
+                syncProductionDataEnter.setMinBatteryNum(saleScooter.getMinBatteryNum());
+                syncProductionDataEnter.setProductModelId(saleScooter.getSpecificatId());
+                syncProductionDataEnter.setRemark(saleScooter.getRemark());
+                // 然后是颜色数据
+                OpeColor color = opeColorService.getById(saleScooter.getColorId());
+                if (color == null) {
+                    throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+                }
+                syncProductionDataEnter.setColourCode(color.getColorValue());
+                syncProductionDataEnter.setColourName(color.getColorName());
+
+                // 接着是分组（高速、低速）数据
+                OpeSpecificatType specificatType = opeSpecificatTypeService.getById(saleScooter.getSpecificatId());
+                if (specificatType == null) {
+                    throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
+                }
+                OpeSpecificatGroup specificatGroup = opeSpecificatGroupService.getById(specificatType.getGroupId());
+                if (specificatGroup == null) {
+                    throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
+                }
+                syncProductionDataEnter.setProductClassName(specificatGroup.getGroupName());
+                // 因为在ros里面 对于高速/低速  没有所谓的code 所以这里先把名字的值赋给code
+                syncProductionDataEnter.setProductClassCode(specificatGroup.getGroupName());
+                // 参数对象封装好 下面直接调用api方法
                 productionService.syncProductionData(syncProductionDataEnter);
             }
 

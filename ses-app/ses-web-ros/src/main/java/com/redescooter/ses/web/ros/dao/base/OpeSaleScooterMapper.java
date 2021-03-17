@@ -9,11 +9,5 @@ import java.util.List;
 
 @Mapper
 public interface OpeSaleScooterMapper extends BaseMapper<OpeSaleScooter> {
-    int updateBatch(List<OpeSaleScooter> list);
 
-    int batchInsert(@Param("list") List<OpeSaleScooter> list);
-
-    int insertOrUpdate(OpeSaleScooter record);
-
-    int insertOrUpdateSelective(OpeSaleScooter record);
 }
