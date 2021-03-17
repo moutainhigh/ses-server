@@ -6,6 +6,8 @@ import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.hub.service.website.PartsService;
+import com.redescooter.ses.api.hub.vo.website.SyncSalePartsDataEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -28,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +62,9 @@ public class SaleCombinServiceImpl implements SaleCombinService {
 
     @DubboReference
     private IdAppService idAppService;
+
+    @DubboReference
+    private PartsService partsService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -149,7 +155,25 @@ public class SaleCombinServiceImpl implements SaleCombinService {
         Integer saleStatus = combin.getSaleStutas();
         combin.setSaleStutas(saleStatus == 0 ? 1 : 0);
         opeSaleCombinService.updateById(combin);
+
+        // 数据同步到官网的销售配件
+        OpeSaleCombin opeSaleCombin = opeSaleCombinService.getById(enter.getId());
+        syncData(opeSaleCombin, enter.getUserId());
         return new GeneralResult(enter.getRequestId());
+    }
+
+    @Async
+    void syncData(OpeSaleCombin combin, Long userId) {
+        SyncSalePartsDataEnter model = new SyncSalePartsDataEnter();
+        model.setStatus(combin.getSaleStutas() == 1 ? 1 : 2);
+        model.setPartsType(2);
+        model.setPartsNumber(combin.getProductCode());
+        model.setEnName(combin.getCombinName());
+        model.setEffectiveTime(new Date());
+        model.setRemark(combin.getRemark());
+        model.setCreatedBy(userId);
+        model.setCreatedTime(new Date());
+        partsService.syncSalePartsData(model);
     }
 
 

@@ -218,10 +218,8 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
         model.setStatus(enter.getStatus());
         model.setUpdatedBy(enter.getUserId());
         model.setUpdatedTime(new Date());
-        int i = opeDistributorMapper.updateById(model);
-        if (i > 0) {
-            return new Response<>();
-        }
+        opeDistributorMapper.updateById(model);
+
         // 数据同步到官网的经销商模块
         try {
             OpeDistributor distributor = opeDistributorMapper.selectById(enter.getId());
@@ -234,10 +232,10 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
             parameter.setTel(distributor.getTel());
             parameter.setEmail(distributor.getEmail());
             parameter.setAddress(distributor.getAddress());
-            if (StringUtils.isNotBlank(distributor.getLongitude())){
+            if (StringUtils.isNotBlank(distributor.getLongitude())) {
                 parameter.setLongitude(new BigDecimal(distributor.getLongitude()));
             }
-            if (StringUtils.isNotBlank(distributor.getLatitude())){
+            if (StringUtils.isNotBlank(distributor.getLatitude())) {
                 parameter.setLatitude(new BigDecimal(distributor.getLatitude()));
             }
             parameter.setCp(distributor.getCp());
@@ -245,7 +243,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
             parameter.setArea(distributor.getArea());
             parameter.setContractUrl(distributor.getContractUrl());
             parameter.setRemark(distributor.getNote());
-            if (StringUtils.isNotBlank(distributor.getType())){
+            if (StringUtils.isNotBlank(distributor.getType())) {
                 parameter.setType(Integer.parseInt(distributor.getType()));
             }
             parameter.setCreatedBy(distributor.getCreatedBy());
@@ -253,10 +251,10 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
             parameter.setUpdatedBy(distributor.getUpdatedBy());
             parameter.setUpdatedTime(distributor.getUpdatedTime());
             webDistributorService.saveOrUpdateDistribut(parameter);
-        }catch (Exception e) {
+        } catch (Exception e) {
 
         }
-        throw new SesWebRosException(ExceptionCodeEnums.UPDATE_FAIL.getCode(), ExceptionCodeEnums.UPDATE_FAIL.getMessage());
+        return new Response<>();
     }
 
     /**

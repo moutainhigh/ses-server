@@ -25,5 +25,10 @@ public interface SequenceName {
 
     String SITE_PRODUCT_MODEL = "SITE_PRODUCT_MODEL";
 
+    String SITE_PARTS = "SITE_PARTS";
+
+    String SITE_CUSTOMER = "SITE_CUSTOMER";
+
+    String SITE_USER = "SITE_USER";
 
 }

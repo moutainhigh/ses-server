@@ -7,6 +7,8 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.hub.service.website.PartsService;
+import com.redescooter.ses.api.hub.vo.website.SyncSalePartsDataEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -28,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +62,9 @@ public class SalePartsServiceImpl implements SalePartsService {
 
     @DubboReference
     private IdAppService idAppService;
+
+    @DubboReference
+    private PartsService partsService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -138,7 +144,25 @@ public class SalePartsServiceImpl implements SalePartsService {
         Integer saleStatus = saleParts.getSaleStutas();
         saleParts.setSaleStutas(saleStatus == 0 ? 1 : 0);
         opeSalePartsService.updateById(saleParts);
+
+        // 数据同步到官网的销售配件
+        OpeSaleParts opeSaleParts = opeSalePartsService.getById(enter.getId());
+        syncData(opeSaleParts, enter.getUserId());
         return new GeneralResult(enter.getRequestId());
+    }
+
+    @Async
+    void syncData(OpeSaleParts saleParts, Long userId) {
+        SyncSalePartsDataEnter model = new SyncSalePartsDataEnter();
+        model.setStatus(saleParts.getSaleStutas() == 1 ? 1 : 2);
+        model.setPartsType(1);
+        model.setPartsNumber(saleParts.getProductCode());
+        model.setEnName(saleParts.getPartsName());
+        model.setEffectiveTime(new Date());
+        model.setRemark(saleParts.getRemark());
+        model.setCreatedBy(userId);
+        model.setCreatedTime(new Date());
+        partsService.syncSalePartsData(model);
     }
 
     @Override
