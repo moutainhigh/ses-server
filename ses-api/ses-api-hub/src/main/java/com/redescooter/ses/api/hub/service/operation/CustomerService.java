@@ -1,6 +1,10 @@
 package com.redescooter.ses.api.hub.service.operation;
 
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
+import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.hub.vo.operation.SyncCustomerDataEnter;
 
 /**
  * @ClassName:CustomerService
@@ -33,6 +37,7 @@ public interface CustomerService {
      * @return
      */
     GeneralResult updateCustomerInfoByAnyProperty(BaseCustomerEnter enter);
+
     /**
     * @Description
     * @Author: alex
@@ -42,4 +47,10 @@ public interface CustomerService {
     * @desc: 更新客户个人信息
     */
     GeneralResult updateCustomerInfoByEmail(BaseCustomerEnter enter);
+
+    /**
+     * 官网创建客户时同步数据到ros
+     */
+    GeneralResult syncCustomerData(SyncCustomerDataEnter enter);
+
 }

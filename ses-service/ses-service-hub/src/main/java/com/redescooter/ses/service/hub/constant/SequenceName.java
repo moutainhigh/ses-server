@@ -31,4 +31,6 @@ public interface SequenceName {
 
     String SITE_USER = "SITE_USER";
 
+    String OPE_CUSTOMER = "OPE_CUSTOMER";
+
 }
