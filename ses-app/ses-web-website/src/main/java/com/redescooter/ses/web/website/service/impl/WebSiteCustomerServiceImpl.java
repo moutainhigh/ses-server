@@ -5,6 +5,8 @@ import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
+import com.redescooter.ses.api.hub.service.operation.CustomerService;
+import com.redescooter.ses.api.hub.vo.operation.SyncCustomerDataEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -31,6 +33,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +62,9 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
 
     @DubboReference
     private IdAppService idAppService;
+
+    @DubboReference
+    private CustomerService customerService;
 
     /**
      * 创建客户
@@ -111,11 +117,43 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         checkEmail(enter.getEmail());
         Long customerID = saveCustomer(enter);
 
+        // 官网创建客户数据同步到ros
+        syncData(enter);
+
         LoginEnter signUp = new LoginEnter();
         signUp.setLoginName(enter.getEmail());
         signUp.setPassword(enter.getCfmPassword().trim());
         signUp.setCustomerId(customerID);
         return tokenWebsiteService.signUp(signUp);
+    }
+
+    @Async
+    void syncData(AddCustomerEnter enter) {
+        SyncCustomerDataEnter model = new SyncCustomerDataEnter();
+        model.setDr(Constant.DR_FALSE);
+        model.setTimeZone("08:00");
+        model.setCountry(enter.getCountryName());
+        model.setCountryCode(enter.getCountryCode());
+        model.setStatus("1");
+        model.setCustomerFirstName(enter.getCustomerFirstName());
+        model.setCustomerLastName(enter.getCustomerLastName());
+        if (StringUtils.isNoneBlank(enter.getCustomerFirstName(), enter.getCustomerLastName())) {
+            model.setCustomerFullName(new StringBuffer().append(enter.getCustomerFirstName()).append(enter.getCustomerLastName()).toString());
+        }
+        model.setCustomerSource(String.valueOf(WebSiteCustomerSourceEnums.OFFICIAL.getValue()));
+        model.setCustomerType(String.valueOf(CustomerTypeEnums.PERSONAL.getValue()));
+        model.setAddress(enter.getAddress());
+        model.setPlaceId(enter.getPlaceId());
+        model.setLongitude(enter.getLongitude());
+        model.setLatitude(enter.getLatitude());
+        model.setTelephone(enter.getTelephone());
+        model.setEmail(enter.getEmail());
+        model.setScooterQuantity(1);
+        model.setAssignationScooterQty(0);
+        model.setAccountFlag(String.valueOf(AccountFlagEnums.INACTIVATED.getValue()));
+        model.setCreatedBy(enter.getUserId());
+        model.setCreatedTime(new Date());
+        customerService.syncCustomerData(model);
     }
 
     /**

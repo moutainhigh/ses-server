@@ -9,10 +9,13 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.service.operation.CustomerService;
+import com.redescooter.ses.api.hub.vo.operation.SyncCustomerDataEnter;
 import com.redescooter.ses.service.common.service.CityAppService;
+import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.hub.source.operation.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
+import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -35,6 +38,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @DubboReference
     private CityAppService cityAppService;
+
+    @DubboReference
+    private IdAppService idAppService;
 
     /**
      * id 为 租户Id
@@ -153,4 +159,18 @@ public class CustomerServiceImpl implements CustomerService {
         opeCustomerMapper.updateById(opeCustomer);
         return new GeneralResult(enter.getRequestId());
     }
+
+    /**
+     * 官网创建客户时同步数据到ros
+     */
+    @Override
+    @DS("operation")
+    public GeneralResult syncCustomerData(SyncCustomerDataEnter enter) {
+        OpeCustomer customer = new OpeCustomer();
+        BeanUtils.copyProperties(enter, customer);
+        customer.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
+        opeCustomerMapper.insert(customer);
+        return new GeneralResult();
+    }
+
 }

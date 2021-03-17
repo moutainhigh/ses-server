@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.hub.source.website.service.impl;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.hub.service.website.PartsService;
@@ -35,6 +36,7 @@ public class PartsServiceImpl implements PartsService {
      */
     @Override
     @Async
+    @DS("website")
     public GeneralResult syncSalePartsData(SyncSalePartsDataEnter enter) {
         // 通过部品号,看之前是否同步过
         LambdaQueryWrapper<SiteParts> wrapper = new LambdaQueryWrapper<>();
