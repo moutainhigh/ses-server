@@ -3,6 +3,7 @@ package com.redescooter.ses.service.hub.source.operation.service.impl;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -166,10 +167,17 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @DS("operation")
     public GeneralResult syncCustomerData(SyncCustomerDataEnter enter) {
-        OpeCustomer customer = new OpeCustomer();
-        BeanUtils.copyProperties(enter, customer);
-        customer.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
-        opeCustomerMapper.insert(customer);
+        LambdaQueryWrapper<OpeCustomer> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeCustomer::getDr, Constant.DR_FALSE);
+        qw.eq(OpeCustomer::getEmail, enter.getEmail());
+        qw.last("limit 1");
+        OpeCustomer customer = opeCustomerMapper.selectOne(qw);
+        if (null == customer) {
+            OpeCustomer model = new OpeCustomer();
+            BeanUtils.copyProperties(enter, model);
+            model.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
+            opeCustomerMapper.insert(model);
+        }
         return new GeneralResult();
     }
 
