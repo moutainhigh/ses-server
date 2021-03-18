@@ -534,6 +534,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 record.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_RECORD));
                 record.setDr(DelStatusEnum.VALID.getCode());
                 record.setRelationId(stock.getId());
+                record.setRelationType(7);
                 record.setInWhQty(1);
                 record.setRecordType(2);
                 record.setStockType(2);
