@@ -23,14 +23,19 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
-import com.redescooter.ses.mobile.rps.dao.base.*;
+import com.redescooter.ses.mobile.rps.dao.base.OpeOrderQcItemMapper;
+import com.redescooter.ses.mobile.rps.dao.base.OpeOrderQcTraceMapper;
+import com.redescooter.ses.mobile.rps.dao.base.OpeWmsStockRecordMapper;
 import com.redescooter.ses.mobile.rps.dao.combinorder.CombinationOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionCombinBomMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionQualityTemplateMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionScooterBomMapper;
 import com.redescooter.ses.mobile.rps.dao.qcorder.*;
-import com.redescooter.ses.mobile.rps.dao.wms.*;
+import com.redescooter.ses.mobile.rps.dao.wms.WmsCombinStockMapper;
+import com.redescooter.ses.mobile.rps.dao.wms.WmsPartsStockMapper;
+import com.redescooter.ses.mobile.rps.dao.wms.WmsScooterStockMapper;
+import com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
@@ -132,6 +137,11 @@ public class QcOrderServiceImpl implements QcOrderService {
 
     @Autowired
     private WmsPartsStockMapper wmsPartsStockMapper;
+
+    @Autowired
+    private OpeProductionPurchasePartsBService opeProductionPurchasePartsBService;
+
+
 
     @Override
     public Map<Integer, Integer> getQcOrderTypeCount(GeneralEnter enter) {
@@ -689,6 +699,8 @@ public class QcOrderServiceImpl implements QcOrderService {
                 if (qcResultFlag) {
                     qty = paramDTO.getIdClass() ? opeQcPartsB.getQualifiedQty() + 1 : qcQty;
                     opeQcPartsB.setQualifiedQty(qty);
+                    // 质检合格之后 需要将数量同步到质检单对应的生成采购单的部件表中(部件了类型的质检单 只可能是由生产采购单来的)
+                    changePurchaseParts(opeQcOrder.getRelationOrderId(),opeQcPartsB.getPartsId(),paramDTO.getIdClass()?1:qcQty);
                 } else {
                     qty = paramDTO.getIdClass() ? opeQcPartsB.getUnqualifiedQty() + 1 : qcQty;
                     opeQcPartsB.setUnqualifiedQty(qty);
@@ -850,6 +862,23 @@ public class QcOrderServiceImpl implements QcOrderService {
         resultDTO.setProductionDate(new Date());
         return resultDTO;
     }
+
+
+    // 质检通过之后 将数量同步到质检单对应的生成采购单的部件表中
+    public void changePurchaseParts(Long purchaseId,Long partsId,Integer qty){
+        // 找到生产采购的部件表
+        QueryWrapper<OpeProductionPurchasePartsB> qw = new QueryWrapper<>();
+        qw.eq(OpeProductionPurchasePartsB.COL_PARTS_ID,partsId);
+        qw.eq(OpeProductionPurchasePartsB.COL_PRODUCTION_PURCHASE_ID,purchaseId);
+        qw.last("limit 1");
+        OpeProductionPurchasePartsB purchasePartsB = opeProductionPurchasePartsBService.getOne(qw);
+        if (purchasePartsB != null) {
+            purchasePartsB.setQualifiedQty((purchasePartsB.getQualifiedQty()==null?0:purchasePartsB.getQualifiedQty()) + qty);
+            opeProductionPurchasePartsBService.saveOrUpdate(purchasePartsB);
+        }
+    }
+
+
 
     @Transactional(rollbackFor = Exception.class)
     @Override
