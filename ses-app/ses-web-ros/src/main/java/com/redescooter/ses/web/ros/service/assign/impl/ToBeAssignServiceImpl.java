@@ -95,7 +95,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -546,7 +545,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             // 获得规格名称
             String specificatName = getSpecificatNameById(opeCarDistribute.getSpecificatTypeId());
 
-            // 查询客户的账号信息
+            // 查询客户的账号信息(查pla_user表)
             QueryAccountResult accountInfo = accountBaseService.customerAccountDeatil(opeCustomer.getEmail());
 
             /**
@@ -569,8 +568,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             saveScooter.setInsurance(null);
             saveScooter.setRevision(0);
             saveScooter.setScooterEcuId(0L);
-            saveScooter.setLongitule(BigDecimal.ZERO);
-            saveScooter.setLatitude(BigDecimal.ZERO);
+            saveScooter.setLongitule(Constant.LONGITUDE);
+            saveScooter.setLatitude(Constant.LATITUDE);
             saveScooter.setBattery(100);
             saveScooter.setCreatedBy(enter.getUserId());
             saveScooter.setCreatedTime(new Date());
@@ -626,8 +625,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 item.setLicensePlate(licensePlate);
                 item.setLicensePlatePicture(null);
                 item.setStatus(ScooterStatusEnums.AVAILABLE.getValue());
-                item.setUserId(enter.getUserId());
-                item.setTenantId(enter.getTenantId());
+                item.setUserId(accountInfo.getId());
+                item.setTenantId(accountInfo.getTenantId());
                 saveRelationList.add(item);
                 cusotmerScooterService.saveScooter(saveRelationList);
                 logger.info("客户类型是个人,新增consumer库");
