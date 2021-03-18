@@ -554,9 +554,15 @@ public class QcOrderServiceImpl implements QcOrderService {
                         opeWmsScooterStock.setUpdatedTime(new Date());
                         wmsScooterStockMapper.updateWmsScooterStock(opeWmsScooterStock);
 
-                        // 把产品从仓库详情中删除(有码产品)
+                        // 把产品从仓库详情中删除(有码产品)(将库存状态改为不可用)
                         if (paramDTO.getIdClass()) {
-                            wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(Arrays.asList(paramDTO.getSerialNum()));
+                            OpeWmsStockSerialNumber model = new OpeWmsStockSerialNumber();
+                            model.setStockStatus(WmsStockStatusEnum.UNAVAILABLE.getStatus());
+                            model.setRsn(paramDTO.getSerialNum());
+                            model.setUpdatedBy(paramDTO.getUserId());
+                            model.setUpdatedTime(new Date());
+                            wmsStockSerialNumberMapper.updateWmsStockSerialNumberByRSn(model);
+                            //wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(Arrays.asList(paramDTO.getSerialNum()));
                         }
                     }
 
@@ -639,9 +645,15 @@ public class QcOrderServiceImpl implements QcOrderService {
                         opeWmsCombinStock.setUpdatedTime(new Date());
                         wmsCombinStockMapper.updateWmsCombinStock(opeWmsCombinStock);
 
-                        // 把产品从仓库详情中删除(有码产品)
+                        // 把产品从仓库详情中删除(有码产品)(将库存状态改为不可用)
                         if (paramDTO.getIdClass()) {
-                            wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(Arrays.asList(paramDTO.getSerialNum()));
+                            OpeWmsStockSerialNumber model = new OpeWmsStockSerialNumber();
+                            model.setStockStatus(WmsStockStatusEnum.UNAVAILABLE.getStatus());
+                            model.setRsn(paramDTO.getSerialNum());
+                            model.setUpdatedBy(paramDTO.getUserId());
+                            model.setUpdatedTime(new Date());
+                            wmsStockSerialNumberMapper.updateWmsStockSerialNumberByRSn(model);
+                            //wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(Arrays.asList(paramDTO.getSerialNum()));
                         }
                     }
                 }
@@ -758,9 +770,15 @@ public class QcOrderServiceImpl implements QcOrderService {
                         opeWmsPartsStock.setUpdatedTime(new Date());
                         wmsPartsStockMapper.updateWmsPartsStock(opeWmsPartsStock);
 
-                        // 把产品从仓库详情中删除(有码产品)
+                        // 把产品从仓库详情中删除(有码产品)(将库存状态改为不可用)
                         if (paramDTO.getIdClass()) {
-                            wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(Arrays.asList(paramDTO.getSerialNum()));
+                            OpeWmsStockSerialNumber model = new OpeWmsStockSerialNumber();
+                            model.setStockStatus(WmsStockStatusEnum.UNAVAILABLE.getStatus());
+                            model.setRsn(paramDTO.getSerialNum());
+                            model.setUpdatedBy(paramDTO.getUserId());
+                            model.setUpdatedTime(new Date());
+                            wmsStockSerialNumberMapper.updateWmsStockSerialNumberByRSn(model);
+                            //wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(Arrays.asList(paramDTO.getSerialNum()));
                         }
                     }
                 }
