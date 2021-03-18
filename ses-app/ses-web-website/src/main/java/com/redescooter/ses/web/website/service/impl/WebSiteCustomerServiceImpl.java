@@ -132,7 +132,9 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         SyncCustomerDataEnter model = new SyncCustomerDataEnter();
         model.setDr(Constant.DR_FALSE);
         model.setTimeZone("08:00");
-        model.setCountry(enter.getCountryName());
+        model.setDef1(enter.getCountryName());
+        model.setDef2(enter.getCityName());
+        model.setDef3(enter.getPostcode());
         model.setCountryCode(enter.getCountryCode());
         model.setStatus("1");
         model.setCustomerFirstName(enter.getCustomerFirstName());

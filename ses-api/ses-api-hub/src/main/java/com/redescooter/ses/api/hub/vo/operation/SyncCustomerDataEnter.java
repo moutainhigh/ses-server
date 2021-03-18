@@ -1,9 +1,7 @@
 package com.redescooter.ses.api.hub.vo.operation;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -13,9 +11,8 @@ import java.util.Date;
  * @Author Chris
  * @Date 2021/3/17 13:49
  */
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class SyncCustomerDataEnter extends GeneralEnter {
+public class SyncCustomerDataEnter {
 
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
@@ -24,16 +21,16 @@ public class SyncCustomerDataEnter extends GeneralEnter {
     private String timeZone;
 
     @ApiModelProperty(value = "国家")
-    private Long country;
+    private String def1;
 
     @ApiModelProperty(value = "国家编码，如手机号 中国 +86")
     private String countryCode;
 
     @ApiModelProperty(value = "城市")
-    private Long city;
+    private String def2;
 
     @ApiModelProperty(value = "区域")
-    private Long distrust;
+    private String def3;
 
     @ApiModelProperty(value = "状态")
     private String status;
