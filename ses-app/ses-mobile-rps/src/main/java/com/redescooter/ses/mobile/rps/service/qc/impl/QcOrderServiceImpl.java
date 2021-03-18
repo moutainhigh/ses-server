@@ -55,7 +55,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -140,6 +143,12 @@ public class QcOrderServiceImpl implements QcOrderService {
 
     @Autowired
     private OpeProductionPurchasePartsBService opeProductionPurchasePartsBService;
+
+    @Autowired
+    private OpeCombinOrderScooterBService opeCombinOrderScooterBService;
+
+    @Autowired
+    private OpeCombinOrderCombinBService opeCombinOrderCombinBService;
 
 
 
@@ -500,6 +509,8 @@ public class QcOrderServiceImpl implements QcOrderService {
                 // 质检成功合格数量+1,失败不合格数量+1
                 if (qcResultFlag) {
                     opeQcScooterB.setQualifiedQty(opeQcScooterB.getQualifiedQty() + 1);
+                    // 质检合格之后 需要将数量同步到质检单对应的生成采购单的部件表中(部件了类型的质检单 只可能是由生产采购单来的)
+                    changeCombinScooter(opeQcOrder.getRelationOrderId(),opeQcScooterB.getScooterBomId());
                 } else {
                     opeQcScooterB.setUnqualifiedQty(opeQcScooterB.getUnqualifiedQty() + 1);
                     OpeProductionScooterBom scooterBom = scooterBomMapper.getScooterBomById(paramDTO.getBomId());
@@ -589,6 +600,8 @@ public class QcOrderServiceImpl implements QcOrderService {
                 // 更新组装件质检合格/不合格数量
                 if (qcResultFlag) {
                     opeQcCombinB.setQualifiedQty(opeQcCombinB.getQualifiedQty() + 1);
+                    // 质检合格之后 需要将数量同步到质检单对应的生成采购单的部件表中(部件了类型的质检单 只可能是由生产采购单来的)
+                    changeCombinScooter(opeQcOrder.getRelationOrderId(),opeQcCombinB.getProductionCombinBomId());
                 } else {
                     opeQcCombinB.setUnqualifiedQty(opeQcCombinB.getUnqualifiedQty() + 1);
 
@@ -893,6 +906,36 @@ public class QcOrderServiceImpl implements QcOrderService {
         if (purchasePartsB != null) {
             purchasePartsB.setQualifiedQty((purchasePartsB.getQualifiedQty()==null?0:purchasePartsB.getQualifiedQty()) + qty);
             opeProductionPurchasePartsBService.saveOrUpdate(purchasePartsB);
+        }
+    }
+
+
+    // 质检通过之后 将数量同步到质检单对应的组装单的车辆表中
+    public void changeCombinScooter(Long combinId,Long scooterBomId) {
+        // 找到组装单的车辆表
+        QueryWrapper<OpeCombinOrderScooterB> qw = new QueryWrapper<>();
+        qw.eq(OpeCombinOrderScooterB.COL_COMBIN_ID, combinId);
+        qw.eq(OpeCombinOrderScooterB.COL_SCOOTER_BOM_ID, scooterBomId);
+        qw.last("limit 1");
+        OpeCombinOrderScooterB orderScooterB = opeCombinOrderScooterBService.getOne(qw);
+        if (orderScooterB != null) {
+            orderScooterB.setWaitInWhQty((orderScooterB.getWaitInWhQty()==null?0:orderScooterB.getWaitInWhQty())+1);
+            opeCombinOrderScooterBService.saveOrUpdate(orderScooterB);
+        }
+    }
+
+
+    // 质检通过之后 将数量同步到质检单对应的组装单的组装件中
+    public void changeCombinCombin(Long combinId,Long productionCombinBomId) {
+        // 找到组装单的车辆表
+        QueryWrapper<OpeCombinOrderCombinB> qw = new QueryWrapper<>();
+        qw.eq(OpeCombinOrderCombinB.COL_COMBIN_ID, combinId);
+        qw.eq(OpeCombinOrderCombinB.COL_PRODUCTION_COMBIN_BOM_ID, productionCombinBomId);
+        qw.last("limit 1");
+        OpeCombinOrderCombinB orderCombinB = opeCombinOrderCombinBService.getOne(qw);
+        if (orderCombinB != null) {
+            orderCombinB.setWaitInWhQty((orderCombinB.getWaitInWhQty()==null?0:orderCombinB.getWaitInWhQty())+1);
+            opeCombinOrderCombinBService.saveOrUpdate(orderCombinB);
         }
     }
 
