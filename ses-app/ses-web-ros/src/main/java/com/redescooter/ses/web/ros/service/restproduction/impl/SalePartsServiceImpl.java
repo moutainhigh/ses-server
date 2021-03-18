@@ -123,7 +123,13 @@ public class SalePartsServiceImpl implements SalePartsService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public GeneralResult deleteSaleParts(IdEnter enter) {
+        OpeSaleParts parts = opeSalePartsService.getById(enter.getId());
+        if (null == parts) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        }
         opeSalePartsService.removeById(enter.getId());
+        // ros删除配件后,需将官网已同步的配件同样删除
+        syncDeleteData(parts.getProductCode());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -163,6 +169,11 @@ public class SalePartsServiceImpl implements SalePartsService {
         model.setCreatedBy(userId);
         model.setCreatedTime(new Date());
         partsService.syncSalePartsData(model);
+    }
+
+    @Async
+    void syncDeleteData(String productCode) {
+        partsService.syncDeleteData(productCode);
     }
 
     @Override

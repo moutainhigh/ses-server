@@ -135,7 +135,13 @@ public class SaleCombinServiceImpl implements SaleCombinService {
 
     @Override
     public GeneralResult deleteSaleCombin(IdEnter enter) {
+        OpeSaleCombin combin = opeSaleCombinService.getById(enter.getId());
+        if (null == combin) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        }
         opeSaleCombinService.removeById(enter.getId());
+        // ros删除配件后,需将官网已同步的配件同样删除
+        syncDeleteData(combin.getProductCode());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -174,6 +180,11 @@ public class SaleCombinServiceImpl implements SaleCombinService {
         model.setCreatedBy(userId);
         model.setCreatedTime(new Date());
         partsService.syncSalePartsData(model);
+    }
+
+    @Async
+    void syncDeleteData(String productCode) {
+        partsService.syncDeleteData(productCode);
     }
 
 
