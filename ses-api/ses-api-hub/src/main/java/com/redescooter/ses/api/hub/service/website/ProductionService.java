@@ -15,4 +15,7 @@ public interface ProductionService {
     //同步数据（5张表）
     void syncProductionData(SyncProductionDataEnter syncProductionDataEnter);
 
+    // ros那边删除数据的时候 官网对应的数据也要删除
+    void syncDeleteData(String productionCode);
+
 }

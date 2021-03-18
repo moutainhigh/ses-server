@@ -138,7 +138,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         model.setCustomerFirstName(enter.getCustomerFirstName());
         model.setCustomerLastName(enter.getCustomerLastName());
         if (StringUtils.isNoneBlank(enter.getCustomerFirstName(), enter.getCustomerLastName())) {
-            model.setCustomerFullName(new StringBuffer().append(enter.getCustomerFirstName()).append(enter.getCustomerLastName()).toString());
+            model.setCustomerFullName(new StringBuffer().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
         }
         model.setCustomerSource(String.valueOf(WebSiteCustomerSourceEnums.OFFICIAL.getValue()));
         model.setCustomerType(String.valueOf(CustomerTypeEnums.PERSONAL.getValue()));
@@ -151,8 +151,10 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         model.setScooterQuantity(1);
         model.setAssignationScooterQty(0);
         model.setAccountFlag(String.valueOf(AccountFlagEnums.INACTIVATED.getValue()));
-        model.setCreatedBy(enter.getUserId());
+        model.setCreatedBy(0L);
         model.setCreatedTime(new Date());
+        model.setUpdatedTime(new Date());
+        model.setUpdatedBy(0L);
         customerService.syncCustomerData(model);
     }
 

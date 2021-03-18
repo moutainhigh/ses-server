@@ -161,4 +161,16 @@ public class ProductionServiceImpl implements ProductionService {
         }
         siteProductService.saveOrUpdate(product);
     }
+
+
+    @Override
+    public void syncDeleteData(String productionCode) {
+        QueryWrapper<SiteProduct> qw = new QueryWrapper<>();
+        qw.eq(SiteProduct.COL_PRODUCT_CODE,productionCode);
+        qw.last("limit 1");
+        SiteProduct product = siteProductService.getOne(qw);
+        if (product != null) {
+            siteProductService.removeById(product.getId());
+        }
+    }
 }

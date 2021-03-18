@@ -151,8 +151,20 @@ public class SaleScooterServiceImpl implements SaleScooterService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public GeneralResult deleteSaleScooter(IdEnter enter) {
+        OpeSaleScooter saleScooter = opeSaleScooterService.getById(enter.getId());
+        if (saleScooter == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        }
         opeSaleScooterService.removeById(enter.getId());
+        // 删除销售车辆的时候  需要把官网的数据也删除掉
+        syncDeleteData(saleScooter.getProductCode());
         return new GeneralResult(enter.getRequestId());
+    }
+
+
+    @Async
+    void syncDeleteData(String productionCode){
+        productionService.syncDeleteData(productionCode);
     }
 
 

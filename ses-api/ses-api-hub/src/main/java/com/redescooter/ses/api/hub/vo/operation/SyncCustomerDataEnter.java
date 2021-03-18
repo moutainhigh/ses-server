@@ -1,13 +1,9 @@
 package com.redescooter.ses.api.hub.vo.operation;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -17,12 +13,8 @@ import java.util.Date;
  * @Author Chris
  * @Date 2021/3/17 13:49
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
-@Accessors(chain = true)
-@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class SyncCustomerDataEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
