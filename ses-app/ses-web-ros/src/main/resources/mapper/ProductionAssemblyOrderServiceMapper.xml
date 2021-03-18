@@ -165,7 +165,7 @@
         select
             scooter.group_id,
             scooter.color_id,
-            scooter.qty as combinQty,
+            scooter.wait_in_wh_qty as combinQty,
             scooter.wait_in_wh_qty as ableInWhQty,
             group1.group_name AS groupName,
             color.color_value AS colorValue,
