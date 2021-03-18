@@ -19,46 +19,13 @@ import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.productwaitinwh.ProductWaitInWhServiceMapper;
-import com.redescooter.ses.mobile.rps.dm.OpeAllocate;
-import com.redescooter.ses.mobile.rps.dm.OpeAllocateB;
-import com.redescooter.ses.mobile.rps.dm.OpeAllocateBTrace;
-import com.redescooter.ses.mobile.rps.dm.OpeAssemblyBOrder;
-import com.redescooter.ses.mobile.rps.dm.OpeAssemblyOrder;
-import com.redescooter.ses.mobile.rps.dm.OpeAssemblyQcItem;
-import com.redescooter.ses.mobile.rps.dm.OpeParts;
-import com.redescooter.ses.mobile.rps.dm.OpePartsProduct;
-import com.redescooter.ses.mobile.rps.dm.OpeProductAssembly;
-import com.redescooter.ses.mobile.rps.dm.OpeStock;
-import com.redescooter.ses.mobile.rps.dm.OpeStockBill;
-import com.redescooter.ses.mobile.rps.dm.OpeStockProdPart;
-import com.redescooter.ses.mobile.rps.dm.OpeStockProdProduct;
-import com.redescooter.ses.mobile.rps.dm.OpeStockPurchas;
-import com.redescooter.ses.mobile.rps.dm.OpeWhse;
+import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
-import com.redescooter.ses.mobile.rps.service.base.OpeAllocateBService;
-import com.redescooter.ses.mobile.rps.service.base.OpeAllocateBTraceService;
-import com.redescooter.ses.mobile.rps.service.base.OpeAllocateService;
-import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyBOrderService;
-import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyBQcService;
-import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyOrderService;
-import com.redescooter.ses.mobile.rps.service.base.OpeAssemblyQcItemService;
-import com.redescooter.ses.mobile.rps.service.base.OpePartsProductService;
-import com.redescooter.ses.mobile.rps.service.base.OpePartsService;
-import com.redescooter.ses.mobile.rps.service.base.OpeProductAssemblyService;
-import com.redescooter.ses.mobile.rps.service.base.OpeStockBillService;
-import com.redescooter.ses.mobile.rps.service.base.OpeStockProdPartService;
-import com.redescooter.ses.mobile.rps.service.base.OpeStockProdProductService;
-import com.redescooter.ses.mobile.rps.service.base.OpeStockPurchasService;
-import com.redescooter.ses.mobile.rps.service.base.OpeStockService;
-import com.redescooter.ses.mobile.rps.service.base.OpeWhseService;
+import com.redescooter.ses.mobile.rps.service.base.*;
 import com.redescooter.ses.mobile.rps.service.productwaitinwh.ProductWaitInWhService;
-import com.redescooter.ses.mobile.rps.vo.productwaitinwh.AllocateAndProductResult;
-import com.redescooter.ses.mobile.rps.vo.productwaitinwh.ProductDetailEnter;
-import com.redescooter.ses.mobile.rps.vo.productwaitinwh.ProductWaitInWhIdItemEnter;
-import com.redescooter.ses.mobile.rps.vo.productwaitinwh.ProductWaitInWhInfoResult;
-import com.redescooter.ses.mobile.rps.vo.productwaitinwh.ProductWaitInWhItemResult;
+import com.redescooter.ses.mobile.rps.vo.productwaitinwh.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
@@ -94,9 +61,6 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
 
     @Autowired
     private OpeAssemblyQcItemService opeAssemblyQcItemService;
-
-    @Autowired
-    private OpeAssemblyBQcService opeAssemblyBQcService;
 
     @Autowired
     private OpeStockBillService opeStockBillService;
@@ -541,7 +505,7 @@ public class ProductWaitInWhServiceImpl implements ProductWaitInWhService {
                 .stockId(opeStock.getId())
                 .partId(opeParts.getId())
                 .lot(opeAllocateBTrace.getBatchNo())
-                .serialNumber(opeParts.getIdClass() == true ? opeStockPurchas.getSerialNumber() : null) //序列号
+                .serialNumber(opeParts.getIdClass() ? opeStockPurchas.getSerialNumber() : null) //序列号
                 .partsNumber(opeParts.getPartsNumber())
                 .inStockBillId(opeStockBill.getId())
                 .availableQty(opeParts.getIdClass() ? 1 : enter.getInWhNum())
