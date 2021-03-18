@@ -1,6 +1,5 @@
 package com.redescooter.ses.service.hub.source.website.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -34,7 +33,7 @@ public class SiteParts {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "主键")
-    @TableId(value = "id", type = IdType.UUID)
+    @TableId(value = "id")
     private Long id;
 
     @ApiModelProperty(value = "逻辑删除")
