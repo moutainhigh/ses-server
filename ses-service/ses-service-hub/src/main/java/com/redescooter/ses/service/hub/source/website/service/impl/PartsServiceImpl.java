@@ -49,9 +49,11 @@ public class PartsServiceImpl implements PartsService {
             siteParts.setDr(0);
             sitePartsService.save(siteParts);
         } else {
-            // 同步过,只修改状态即可
-            siteParts.setStatus(enter.getStatus());
-            sitePartsService.updateById(siteParts);
+            // 同步过,修改其他属性
+            SiteParts model = new SiteParts();
+            BeanUtils.copyProperties(enter, model);
+            model.setId(siteParts.getId());
+            sitePartsService.updateById(model);
         }
         return new GeneralResult();
     }
