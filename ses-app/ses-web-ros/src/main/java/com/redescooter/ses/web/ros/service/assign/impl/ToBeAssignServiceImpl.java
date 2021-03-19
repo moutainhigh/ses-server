@@ -604,6 +604,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 driver.setId(driverId);
                 driver.setTenantId(accountInfo.getTenantId());
                 driver.setUserId(accountInfo.getId());
+                driver.setStatus("1");
                 driver.setCreatedBy(enter.getUserId());
                 driver.setCreatedTime(new Date());
                 scooterMobileBService.addCorDriver(driver);
