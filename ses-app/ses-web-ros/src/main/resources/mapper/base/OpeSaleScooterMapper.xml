@@ -14,6 +14,8 @@
     <result column="color_id" jdbcType="BIGINT" property="colorId" />
     <result column="sale_stutas" jdbcType="INTEGER" property="saleStutas" />
     <result column="min_battery_num" jdbcType="INTEGER" property="minBatteryNum" />
+    <result column="production_param" jdbcType="VARCHAR" property="productionParam" />
+    <result column="other_param" jdbcType="VARCHAR" property="otherParam" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
@@ -28,7 +30,7 @@
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
     id, dr, dept_id, product_name, product_code, specificat_id, group_id, color_id, sale_stutas, 
-    min_battery_num, remark, created_by, created_time, updated_by, updated_time, def1, 
-    def2, def3, def4, def5
+    min_battery_num, production_param, other_param, remark, created_by, created_time, 
+    updated_by, updated_time, def1, def2, def3, def4, def5
   </sql>
 </mapper>

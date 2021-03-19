@@ -90,6 +90,20 @@ public class OpeSaleScooter {
     private Integer minBatteryNum;
 
     /**
+     * 产品参数
+     */
+    @TableField(value = "production_param")
+    @ApiModelProperty(value = "产品参数")
+    private String productionParam;
+
+    /**
+     * 其他参数
+     */
+    @TableField(value = "other_param")
+    @ApiModelProperty(value = "其他参数")
+    private String otherParam;
+
+    /**
      * 备注
      */
     @TableField(value = "remark")
@@ -178,6 +192,10 @@ public class OpeSaleScooter {
     public static final String COL_SALE_STUTAS = "sale_stutas";
 
     public static final String COL_MIN_BATTERY_NUM = "min_battery_num";
+
+    public static final String COL_PRODUCTION_PARAM = "production_param";
+
+    public static final String COL_OTHER_PARAM = "other_param";
 
     public static final String COL_REMARK = "remark";
 
