@@ -26,6 +26,14 @@ public interface ColorService {
    GeneralResult colorSave(ColorSaveOrEditEnter enter);
 
 
+    /**
+     * 颜色的编辑
+     * @param enter
+     * @return
+     */
+   GeneralResult colorEdit(ColorSaveOrEditEnter enter);
+
+
    /**
     * @Author Aleks
     * @Description  颜色列表

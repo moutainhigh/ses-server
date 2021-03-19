@@ -868,14 +868,15 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         } else {
             baseMailTaskEnter.setName(user.getLoginName());
         }
-        if (StringUtils.equalsAnyIgnoreCase(String.valueOf(user.getUserType()),
+        /*if (StringUtils.equalsAnyIgnoreCase(String.valueOf(user.getUserType()),
                 String.valueOf(AccountTypeEnums.APP_EXPRESS.getAccountType()),
                 String.valueOf(AccountTypeEnums.APP_EXPRESS.getAccountType()),
                 String.valueOf(AccountTypeEnums.APP_RESTAURANT.getAccountType()))) {
             baseMailTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_ACTIVATE.getEvent());
         } else {
             baseMailTaskEnter.setEvent(MailTemplateEventEnums.WEB_ACTIVATE.getEvent());
-        }
+        }*/
+        baseMailTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_ACTIVATE.getEvent());
         baseMailTaskEnter.setToMail(user.getLoginName());
         baseMailTaskEnter.setToUserId(enter.getUserId());
         baseMailTaskEnter.setUserRequestId(enter.getRequestId());

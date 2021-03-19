@@ -125,8 +125,8 @@ public class InquiryServiceImpl implements InquiryService {
                 map.put(item.getValue(), 0);
             }
         }
-        map.remove(InquiryStatusEnums.PROCESSED.getValue());
-        map.remove(InquiryStatusEnums.PAY_LAST_PARAGRAPH.getValue());
+//        map.remove(InquiryStatusEnums.PROCESSED.getValue());
+//        map.remove(InquiryStatusEnums.PAY_LAST_PARAGRAPH.getValue());
         return map;
     }
 

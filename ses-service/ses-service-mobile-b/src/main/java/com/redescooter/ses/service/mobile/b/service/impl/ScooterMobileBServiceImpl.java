@@ -23,6 +23,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.util.Map;
 
 /**
  * @author assert
@@ -78,6 +80,16 @@ public class ScooterMobileBServiceImpl implements ScooterMobileBService {
         if (null == scooter) {
             throw new MobileBException(ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getCode(),
                     ExceptionCodeEnums.DRIVER_NOT_ASSIGNED_VEHICLE.getMessage());
+        }
+
+        if ("0".equals(scooterLockDTO.getLat()) && "0".equals(scooterLockDTO.getLng())) {
+            Map<String, BigDecimal> map = scooterService.getPositionByScooterId(scooter.getScooterId());
+            if (null != map) {
+                BigDecimal longitude = map.get("longitude");
+                BigDecimal latitude = map.get("latitude");
+                scooterLockDTO.setLng(null == longitude ? String.valueOf(BigDecimal.ZERO) : String.valueOf(longitude));
+                scooterLockDTO.setLat(null == latitude ? String.valueOf(BigDecimal.ZERO) : String.valueOf(latitude));
+            }
         }
 
         /**

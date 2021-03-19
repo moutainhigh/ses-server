@@ -121,7 +121,7 @@ public class OpeProductionParts implements Serializable {
      */
     @TableField(value = "supplier_id")
     @ApiModelProperty(value = "供应商id")
-    private Integer supplierId;
+    private Long supplierId;
 
     /**
      * 采购周期

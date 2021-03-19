@@ -351,10 +351,10 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         RpsAssert.isNull(opeOutWhouseOrder, ExceptionCodeEnums.OUT_WH_ORDER_IS_NOT_EXISTS.getCode(),
                 ExceptionCodeEnums.OUT_WH_ORDER_IS_NOT_EXISTS.getMessage());
 
-        if (!OutWhOrderTypeEnum.COMBINATION_OUT_OF_STOCK.getType().equals(opeOutWhouseOrder.getOutType())) {
+        /*if (!OutWhOrderTypeEnum.COMBINATION_OUT_OF_STOCK.getType().equals(opeOutWhouseOrder.getOutType())) {
             RpsAssert.isFalse(NewOutBoundOrderStatusEnums.BE_OUTBOUND.getValue().equals(opeOutWhouseOrder.getOutWhStatus()),
                     ExceptionCodeEnums.NOT_COMPLETED_QC.getCode(), ExceptionCodeEnums.NOT_COMPLETED_QC.getMessage());
-        }
+        }*/
 
         /**
          * 出库操作(仓库库存操作) 1车辆 2组装件 3部件
@@ -430,10 +430,18 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         }
 
         /**
-         * 产品出库后将信息从库存产品序列号表中删除
+         * 产品出库后将信息从库存产品序列号表中删除(将库存状态改为不可用)
          */
         if (CollectionUtils.isNotEmpty(serialNumList)){
-            wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(serialNumList);
+            for (String obj : serialNumList) {
+                OpeWmsStockSerialNumber model = new OpeWmsStockSerialNumber();
+                model.setStockStatus(WmsStockStatusEnum.UNAVAILABLE.getStatus());
+                model.setRsn(obj);
+                model.setUpdatedBy(enter.getUserId());
+                model.setUpdatedTime(new Date());
+                wmsStockSerialNumberMapper.updateWmsStockSerialNumberByRSn(model);
+            }
+            //wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(serialNumList);
         }
 
         /**

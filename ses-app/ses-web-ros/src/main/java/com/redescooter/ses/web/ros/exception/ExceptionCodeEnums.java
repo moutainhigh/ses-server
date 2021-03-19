@@ -516,7 +516,9 @@ public enum ExceptionCodeEnums {
 
     PART_STOCK_IS_EMPTY(10249, "该部件库存为空"),
 
-    NUMBER_NOT_EMPTY(10250, "数量不能为空")
+    NUMBER_NOT_EMPTY(10250, "数量不能为空"),
+
+    CUSTOMER_ORDER_NOT_PAY(10251, "订单未支付尾款，不能转为正式客户")
 
 
 

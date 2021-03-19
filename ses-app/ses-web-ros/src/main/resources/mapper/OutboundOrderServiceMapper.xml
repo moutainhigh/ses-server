@@ -63,7 +63,8 @@
                whorder.created_by    as createById,
                whorder.created_time  as createDate,
                staff.first_name      as createByFirstName,
-               staff.last_name       as createByLastName
+               staff.last_name       as createByLastName,
+               CONCAT(staff.first_name ,' ',  staff.last_name) as createdByName
         from ope_out_whouse_order whorder
         left join ope_sys_staff staff on whorder.created_by = staff.id and staff.dr = 0
         <include refid="WHERE_ORDERLIST"/>
@@ -90,7 +91,7 @@
                whorder.wh_type,
                whorder.remark
         from ope_out_whouse_order whorder
-        inner join ope_sys_staff staff on whorder.created_by = staff.id and staff.dr = 0
+        left join ope_sys_staff staff on whorder.created_by = staff.id and staff.dr = 0
         where whorder.dr=0
         and whorder.id=#{id}
     </select>

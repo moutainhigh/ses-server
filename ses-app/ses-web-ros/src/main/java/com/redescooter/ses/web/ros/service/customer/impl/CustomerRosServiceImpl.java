@@ -12,6 +12,7 @@ import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.OrderNumberTypeEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
@@ -43,6 +44,8 @@ import com.redescooter.ses.api.hub.common.UserProfileService;
 import com.redescooter.ses.api.hub.vo.EditUserProfileEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
+import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import com.redescooter.ses.tool.utils.accountType.AccountTypeUtils;
@@ -241,7 +244,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     public void creatInquiry(OpeCustomer customer){
         OpeCustomerInquiry inquiry = new OpeCustomerInquiry();
         inquiry.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
-        inquiry.setOrderNo(UUID.randomUUID().toString().replaceAll("-",""));
+        inquiry.setOrderNo(createOrderNo(OrderNumberTypeEnums.INQUIRY_ORDER.getValue()));
         inquiry.setCustomerId(customer.getId());
 //        inquiry.setCountry(customer.getCountry());
         inquiry.setCity(customer.getDef2());
@@ -302,6 +305,27 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         inquiryB.setProductPrice(inquiry.getProductPrice());
         opeCustomerInquiryBService.saveOrUpdate(inquiryB);
     }
+
+
+    // 询价单号生成规则
+    public String createOrderNo(String orderNoEnum) {
+        String code = "";
+        // 先判断当前的日期有没有生成过单据号
+        QueryWrapper<OpeCustomerInquiry> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(OpeCustomerInquiry.COL_ORDER_NO, DateUtil.getSimpleDateStamp());
+        queryWrapper.orderByDesc(OpeCustomerInquiry.COL_ORDER_NO);
+        queryWrapper.last("limit 1");
+        OpeCustomerInquiry inquiry = opeCustomerInquiryService.getOne(queryWrapper);
+        if(inquiry != null){
+            // 说明今天已经有过单据了  只需要流水号递增
+            code = OrderNoGenerateUtil.orderNoGenerate(inquiry.getOrderNo(),orderNoEnum);
+        }else {
+            // 说明今天还没有产生过单据号，给今天的第一个就好
+            code = orderNoEnum + DateUtil.getSimpleDateStamp() + "001";
+        }
+        return code;
+    }
+
 
     /**
      * 编辑更新客户
@@ -660,6 +684,18 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (!customer.getStatus().equals(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue())) {
             return new GeneralResult(enter.getRequestId());
         }
+        // 检验客户是不是来自官网
+        if (CustomerSourceEnum.WEBSITE.getValue().equals(customer.getCustomerSource())){
+            // 对于来源于官网的客户 需要支付尾款 才能转为正式客户(这里判断当前客户 是否有支付完尾款的订单 有就好)
+            QueryWrapper<OpeCustomerInquiry> query = new QueryWrapper<>();
+            query.eq(OpeCustomerInquiry.COL_CUSTOMER_ID,customer.getId());
+            query.eq(OpeCustomerInquiry.COL_PAY_STATUS,InquiryPayStatusEnums.PAY_LAST_PARAGRAPH.getValue());
+            int count = opeCustomerInquiryService.count(query);
+            if (count == 0){
+                // 说明当前客户没有支付完的订单
+                throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ORDER_NOT_PAY.getCode(), ExceptionCodeEnums.CUSTOMER_ORDER_NOT_PAY.getMessage());
+            }
+        }
         customer.setStatus(CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue());
         customer.setUpdatedBy(enter.getUserId());
         customer.setUpdatedTime(new Date());
@@ -679,6 +715,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (!CollectionUtils.isEmpty(inquiryList)){
             for (OpeCustomerInquiry inquiry : inquiryList) {
                 inquiry.setPayStatus(InquiryPayStatusEnums.PAY_LAST_PARAGRAPH.getValue());
+                inquiry.setStatus(InquiryStatusEnums.PAY_LAST_PARAGRAPH.getValue());
                 inquiry.setAmountPaid(inquiry.getTotalPrice());
                 inquiry.setAmountObligation(new BigDecimal(0));
                 inquiry.setUpdatedTime(new Date());

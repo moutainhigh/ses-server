@@ -1,6 +1,5 @@
 package com.redescooter.ses.mobile.rps.service.entrustorder.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.enums.entrustorder.EntrustOrderStatusEnum;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.service.RosEntrustOrderService;
@@ -28,10 +27,6 @@ import com.redescooter.ses.mobile.rps.dm.OpeEntrustPartsB;
 import com.redescooter.ses.mobile.rps.dm.OpeEntrustProductSerialNum;
 import com.redescooter.ses.mobile.rps.dm.OpeEntrustScooterB;
 import com.redescooter.ses.mobile.rps.dm.OpeLogisticsOrder;
-import com.redescooter.ses.mobile.rps.dm.OpeWmsCombinStock;
-import com.redescooter.ses.mobile.rps.dm.OpeWmsPartsStock;
-import com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock;
-import com.redescooter.ses.mobile.rps.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.service.entrustorder.EntrustOrderService;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
@@ -43,7 +38,6 @@ import com.redescooter.ses.mobile.rps.vo.entrustorder.QueryEntrustOrderResultDTO
 import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -271,7 +265,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 entrustScooterBMapper.updateEntrustScooter(opeEntrustScooterB);
 
                 // 得到库存表id
-                Long groupId = opeEntrustScooterB.getGroupId();
+                /*Long groupId = opeEntrustScooterB.getGroupId();
                 Long colorId = opeEntrustScooterB.getColorId();
                 LambdaQueryWrapper<OpeWmsScooterStock> wrapper = new LambdaQueryWrapper<>();
                 wrapper.eq(OpeWmsScooterStock::getDr, 0);
@@ -282,7 +276,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 if (CollectionUtils.isNotEmpty(list)) {
                     OpeWmsScooterStock scooterStock = list.get(0);
                     relationId = scooterStock.getId();
-                }
+                }*/
                 break;
             case 2:
                 // 车辆和组装件一定是有码的,如果传的参数是无码,说明参数传递有误
@@ -306,7 +300,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 entrustCombinBMapper.updateEntrustCombin(opeEntrustCombinB);
 
                 // 得到库存表id
-                Long bomId = opeEntrustCombinB.getProductionCombinBomId();
+                /*Long bomId = opeEntrustCombinB.getProductionCombinBomId();
                 LambdaQueryWrapper<OpeWmsCombinStock> qw = new LambdaQueryWrapper<>();
                 qw.eq(OpeWmsCombinStock::getDr, 0);
                 qw.eq(OpeWmsCombinStock::getProductionCombinBomId, bomId);
@@ -315,7 +309,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 if (CollectionUtils.isNotEmpty(combinStockList)) {
                     OpeWmsCombinStock combinStock = combinStockList.get(0);
                     relationId = combinStock.getId();
-                }
+                }*/
                 break;
             default:
                 RpsAssert.isBlank(paramDTO.getPartsNo(), ExceptionCodeEnums.PARTS_NO_IS_EMPTY.getCode(),
@@ -357,7 +351,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 entrustPartsBMapper.updateEntrustPartsB(opeEntrustPartsB);
 
                 // 得到库存表id
-                Long partsId = opeEntrustPartsB.getPartsId();
+                /*Long partsId = opeEntrustPartsB.getPartsId();
                 LambdaQueryWrapper<OpeWmsPartsStock> lqw = new LambdaQueryWrapper<>();
                 lqw.eq(OpeWmsPartsStock::getDr, 0);
                 lqw.eq(OpeWmsPartsStock::getPartsId, partsId);
@@ -366,7 +360,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 if (CollectionUtils.isNotEmpty(partsStockList)) {
                     OpeWmsPartsStock partsStock = partsStockList.get(0);
                     relationId = partsStock.getId();
-                }
+                }*/
                 break;
         }
 
@@ -392,7 +386,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
         }
 
         // 新增ope_wms_parts_stock表
-        if (null != relationId) {
+        /*if (null != relationId) {
             OpeWmsStockSerialNumber number = new OpeWmsStockSerialNumber();
             number.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_SERIAL_NUMBER));
             number.setDr(0);
@@ -408,7 +402,7 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
             number.setCreatedBy(paramDTO.getUserId());
             number.setCreatedTime(new Date());
             opeWmsStockSerialNumberMapper.insert(number);
-        }
+        }*/
         return new GeneralResult(paramDTO.getRequestId());
     }
 

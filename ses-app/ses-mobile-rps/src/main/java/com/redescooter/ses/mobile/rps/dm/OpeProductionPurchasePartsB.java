@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.dm;
+package com.redescooter.ses.mobile.rps.dm;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;

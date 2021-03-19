@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.website.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerCertificateTypeEnum;
@@ -12,6 +13,7 @@ import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
+import com.redescooter.ses.api.common.enums.restproductionorder.OrderNumberTypeEnums;
 import com.redescooter.ses.api.common.enums.website.AccessoryTypeEnums;
 import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
@@ -26,6 +28,9 @@ import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.config.SendinBlueConfig;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.date.DateUtil;
@@ -412,7 +417,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         OpeCustomerInquiry opeCustomerInquiry = new OpeCustomerInquiry();
         opeCustomerInquiry.setId(id);
         opeCustomerInquiry.setDr(0);
-        opeCustomerInquiry.setOrderNo(RandomStringUtils.randomAlphabetic(8));
+        opeCustomerInquiry.setOrderNo(createOrderNo(OrderNumberTypeEnums.INQUIRY_ORDER.getValue()));
         opeCustomerInquiry.setCustomerId(opeCustomer.getId());
         opeCustomerInquiry.setFirstName(SesStringUtils.upperCaseString(opeCustomer.getCustomerFirstName()));
         opeCustomerInquiry.setLastName(SesStringUtils.upperCaseString(opeCustomer.getCustomerLastName()));
@@ -476,6 +481,26 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiry.setUpdatedTime(new Date());
         return opeCustomerInquiry;
     }
+
+    // 询价单号生成规则
+    public String createOrderNo(String orderNoEnum) {
+        String code = "";
+        // 先判断当前的日期有没有生成过单据号
+        QueryWrapper<OpeCustomerInquiry> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(OpeCustomerInquiry.COL_ORDER_NO, DateUtil.getSimpleDateStamp());
+        queryWrapper.orderByDesc(OpeCustomerInquiry.COL_ORDER_NO);
+        queryWrapper.last("limit 1");
+        OpeCustomerInquiry inquiry = opeCustomerInquiryService.getOne(queryWrapper);
+        if(inquiry != null){
+            // 说明今天已经有过单据了  只需要流水号递增
+            code = OrderNoGenerateUtil.orderNoGenerate(inquiry.getOrderNo(),orderNoEnum);
+        }else {
+            // 说明今天还没有产生过单据号，给今天的第一个就好
+            code = orderNoEnum + DateUtil.getSimpleDateStamp() + "001";
+        }
+        return code;
+    }
+
 
     /**
      * 定金支付

@@ -1,6 +1,8 @@
 package com.redescooter.ses.admin.dev.controller;
 
 import com.redescooter.ses.admin.dev.service.FileUploadService;
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO;
@@ -12,6 +14,7 @@ import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionParamDTO;
 import com.redescooter.ses.api.foundation.vo.app.QueryAppVersionResultDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -26,6 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -201,5 +206,14 @@ public class AppVersionController {
     public Response<List<String>> getAppVersionLabelByLabel(@PathVariable("label") String label) {
         return new Response<>(appVersionService.getAppVersionLabelByLabel(label));
     }
+
+
+    @IgnoreLoginCheck
+    @GetMapping(value = "/downLoadFile/{fileName}")
+    @ApiOperation(value = "安装包的下载", response = GeneralResult.class)
+    public void downLoadFile(@PathVariable("fileName") String fileName, HttpServletResponse response, HttpServletRequest request) {
+        fileUploadService.downLoadFile(fileName,response,request);
+    }
+
 
 }

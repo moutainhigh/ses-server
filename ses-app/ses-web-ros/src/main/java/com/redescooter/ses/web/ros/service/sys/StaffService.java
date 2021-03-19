@@ -116,4 +116,10 @@ public interface StaffService {
      * @return
      **/
     List<UserDataResult> userData(UserDataEnter enter);
+
+
+    GeneralResult testFrTranslate(StringEnter enter);
+
+
+
 }

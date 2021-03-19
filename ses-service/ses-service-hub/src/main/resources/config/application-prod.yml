@@ -11,21 +11,24 @@ dubbo:
     address: zookeeper://10.1.1.142:2181?backup=10.1.1.142:2182,10.1.1.142:2183
 spring:
   datasource:
-    corporate:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://10.1.2.53:2021/corporate_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-      username: rede
-      password: rede1qaz2wsx
-    operation:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://10.1.2.53:2021/operation_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-      username: rede
-      password: rede1qaz2wsx
-    consumer:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://10.1.2.53:2021/consumer_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-      username: rede
-      password: rede1qaz2wsx
+    dynamic:
+      primary: corporate
+      datasource:
+        corporate:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://10.1.2.53:2021/corporate_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          username: rede
+          password: rede1qaz2wsx
+        operation:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://10.1.2.53:2021/operation_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          username: rede
+          password: rede1qaz2wsx
+        consumer:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://10.1.2.53:2021/consumer_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          username: rede
+          password: rede1qaz2wsx
   #REDIS集群配置
   redis:
     cluster:

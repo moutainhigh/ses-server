@@ -7,14 +7,20 @@ import com.redescooter.ses.api.scooter.vo.emqx.ScooterEcuDTO;
 import com.redescooter.ses.service.scooter.constant.SequenceName;
 import com.redescooter.ses.service.scooter.dao.ScooterEcuMapper;
 import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
+import com.redescooter.ses.service.scooter.dm.base.ScoScooterStatus;
+import com.redescooter.ses.service.scooter.service.base.ScoScooterStatusService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.spring.annotation.GlobalTransactional;
+import com.redescooter.ses.tool.utils.map.MapUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -36,6 +42,12 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
 
     @Resource
     private ScooterServiceMapper scooterServiceMapper;
+
+    @Resource
+    private TransactionTemplate transactionTemplate;
+
+    @Autowired
+    private ScoScooterStatusService scoScooterStatusService;
 
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
@@ -68,6 +80,23 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
                 updateScooterStatusAndTotalMilesByEcu(scooterEcu.getTabletSn(), scooterEcu.getScooterLock(),
                         scooterEcu.getTotalMiles());
 
+                // 新增scooter实时信息
+                ScoScooterStatus model = new ScoScooterStatus();
+                model.setId(idAppService.getId(SequenceName.SCO_SCOOTER));
+                model.setDr(0);
+                model.setScooterEcuId(0L);
+                model.setScooterId(scooterEcu.getId());
+                model.setLockStatus(ScooterLockStatusEnums.LOCK.getValue());
+                model.setTopBoxStatus(ScooterLockStatusEnums.LOCK.getValue());
+                model.setLongitule(scooterEcu.getLongitude());
+                model.setLatitude(scooterEcu.getLatitude());
+                model.setGeohash(MapUtil.geoHash(scooterEcu.getLongitude().toString(), scooterEcu.getLatitude().toString()));
+                model.setBattery(scooterEcu.getBattery());
+                model.setCumulativeMileage("0");
+                model.setRevision(0);
+                model.setCreatedBy(scooterEcu.getCreatedBy());
+                model.setCreatedTime(new Date());
+                scoScooterStatusService.save(model);
             } catch (Exception e) {
                 log.error("【车辆ECU仪表信息数据上报失败】----{}", ExceptionUtils.getStackTrace(e));
             }

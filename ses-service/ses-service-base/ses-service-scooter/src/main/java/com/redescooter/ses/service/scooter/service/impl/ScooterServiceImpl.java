@@ -3,6 +3,7 @@ package com.redescooter.ses.service.scooter.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
@@ -40,6 +41,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -302,6 +304,25 @@ public class ScooterServiceImpl implements ScooterService {
     @Override
     public List<String> getToDayScooterNos() {
         return scooterServiceMapper.getToDayScooterNos();
+    }
+
+    /**
+     * 根据scooterId找到最后一次的经纬度
+     */
+    @Override
+    public Map<String, BigDecimal> getPositionByScooterId(Long scooterId) {
+        Map<String, BigDecimal> result = Maps.newHashMap();
+        LambdaQueryWrapper<ScoScooterStatus> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ScoScooterStatus::getDr, 0);
+        wrapper.eq(ScoScooterStatus::getScooterId, scooterId);
+        wrapper.orderByDesc(ScoScooterStatus::getCreatedTime);
+        wrapper.last("limit 1");
+        ScoScooterStatus model = scoScooterStatusService.getOne(wrapper);
+        if (null != model) {
+            result.put("longitude", model.getLongitule());
+            result.put("latitude", model.getLatitude());
+        }
+        return result;
     }
 
 }

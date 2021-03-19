@@ -411,7 +411,10 @@ public class RtDriverServiceImpl implements RtDriverService {
         result.setEmail(profile.getEmail1());
         result.setNickName(profile.getNickname());
         result.setAddress(profile.getPlaceBirth());
-        result.setBirthday(DateUtil.getDateTime(profile.getBirthday(), null));
+        if (null != profile.getBirthday()) {
+            result.setBirthday(DateUtil.getDateTime(profile.getBirthday(), null));
+            result.setAge(DateUtil.dateCompare(profile.getBirthday(), new Date(), 1));
+        }
         result.setPlateNumber(null);
         result.setUserType(userResult.getUserType());
         result.setCertificateType(profile.getCertificateType());
@@ -419,7 +422,6 @@ public class RtDriverServiceImpl implements RtDriverService {
         result.setDriverLicenseUpAnnex(profile.getCertificateNegativeAnnex());
         result.setRequestId(enter.getRequestId());
         result.setJoinDate(profile.getJoinDate());
-        result.setAge(DateUtil.dateCompare(profile.getBirthday(), new Date(), 1));
         result.setDriverLicenseLevel(driver.getDriverLicenseLevel());
         result.setStatus(driver.getStatus());
         return result;

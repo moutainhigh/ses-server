@@ -35,7 +35,7 @@ public class InWhouseListResult extends GeneralResult {
     private Integer inWhType;
 
     @ApiModelProperty(value = "创建人名称")
-    private String createdByName;
+    private String createdByName = "--";
 
     @ApiModelProperty(value = "创建时间")
     private Date createdTime;
