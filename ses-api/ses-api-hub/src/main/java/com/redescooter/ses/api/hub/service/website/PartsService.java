@@ -15,4 +15,9 @@ public interface PartsService {
      */
     GeneralResult syncSalePartsData(SyncSalePartsDataEnter enter);
 
+    /**
+     * ros删除销售配件数据,官网已同步的配件同样删除
+     */
+    GeneralResult syncDeleteData(String productCode);
+
 }

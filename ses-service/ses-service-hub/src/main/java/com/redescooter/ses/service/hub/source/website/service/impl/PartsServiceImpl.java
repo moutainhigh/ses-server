@@ -13,7 +13,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 
 /**
  * @Description 销售配件数据同步到官网的实现类
@@ -35,7 +34,6 @@ public class PartsServiceImpl implements PartsService {
      * @param enter
      */
     @Override
-    @Async
     @DS("website")
     public GeneralResult syncSalePartsData(SyncSalePartsDataEnter enter) {
         // 通过部品号,看之前是否同步过
@@ -51,9 +49,27 @@ public class PartsServiceImpl implements PartsService {
             siteParts.setDr(0);
             sitePartsService.save(siteParts);
         } else {
-            // 同步过,只修改状态即可
-            siteParts.setStatus(enter.getStatus());
-            sitePartsService.updateById(siteParts);
+            // 同步过,修改其他属性
+            SiteParts model = new SiteParts();
+            BeanUtils.copyProperties(enter, model);
+            model.setId(siteParts.getId());
+            sitePartsService.updateById(model);
+        }
+        return new GeneralResult();
+    }
+
+    /**
+     * ros删除销售配件数据,官网已同步的配件同样删除
+     */
+    @Override
+    @DS("website")
+    public GeneralResult syncDeleteData(String productCode) {
+        LambdaQueryWrapper<SiteParts> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SiteParts::getPartsNumber, productCode);
+        wrapper.last("limit 1");
+        SiteParts siteParts = sitePartsService.getOne(wrapper);
+        if (null != siteParts) {
+            sitePartsService.removeById(siteParts.getId());
         }
         return new GeneralResult();
     }
