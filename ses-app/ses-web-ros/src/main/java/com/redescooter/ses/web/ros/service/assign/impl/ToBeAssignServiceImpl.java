@@ -547,6 +547,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
             // 查询客户的账号信息(查pla_user表)
             QueryAccountResult accountInfo = accountBaseService.customerAccountDeatil(opeCustomer.getEmail());
+            if (null == accountInfo) {
+                throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+            }
 
             /**
              * 数据同步
@@ -580,6 +583,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             // 将数据存储到corporate库
             logger.info("客户类型是:[{}]", opeCustomer.getCustomerType());
             if (StringUtils.equals(opeCustomer.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
+                // 新增cor_tenant_scooter表
                 HubSaveScooterEnter item = new HubSaveScooterEnter();
                 item.setScooterId(scooterId);
                 item.setModel(ScooterModelEnums.showValueByCode(specificatName));
@@ -588,8 +592,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 item.setLicensePlate(licensePlate);
                 item.setLicensePlatePicture(null);
                 item.setStatus(ScooterStatusEnums.AVAILABLE.getValue());
-                item.setUserId(enter.getUserId());
-                item.setTenantId(enter.getTenantId());
+                item.setUserId(accountInfo.getId());
+                item.setTenantId(accountInfo.getTenantId());
                 saveRelationList.add(item);
                 corporateScooterService.saveScooter(saveRelationList);
                 logger.info("客户类型是公司,新增corporate库");
@@ -598,8 +602,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 long driverId = idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE);
                 CorDriver driver = new CorDriver();
                 driver.setId(driverId);
-                driver.setTenantId(enter.getTenantId());
-                driver.setUserId(enter.getUserId());
+                driver.setTenantId(accountInfo.getTenantId());
+                driver.setUserId(accountInfo.getId());
                 driver.setCreatedBy(enter.getUserId());
                 driver.setCreatedTime(new Date());
                 scooterMobileBService.addCorDriver(driver);
@@ -607,7 +611,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 // 新增cor_driver_scooter表
                 CorDriverScooter scooter = new CorDriverScooter();
                 scooter.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE));
-                scooter.setTenantId(enter.getTenantId());
+                scooter.setTenantId(accountInfo.getTenantId());
                 scooter.setDriverId(driverId);
                 scooter.setScooterId(scooterId);
                 scooter.setBeginTime(new Date());
