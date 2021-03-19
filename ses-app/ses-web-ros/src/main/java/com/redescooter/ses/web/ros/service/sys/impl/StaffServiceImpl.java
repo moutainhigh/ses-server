@@ -10,11 +10,7 @@ import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.dept.DeptStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
-import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.WebResetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.crypt.RsaUtils;
@@ -882,5 +878,27 @@ public class StaffServiceImpl implements StaffService {
             id.append(s);
         }
         return id.toString();
+    }
+
+
+
+    @Override
+    public GeneralResult testFrTranslate(StringEnter enter) {
+
+        if (true){
+            throw new SesWebRosException(Integer.parseInt(enter.getKeyword()), getByCode(Integer.parseInt(enter.getKeyword()),ExceptionCodeEnums.class));
+        }
+
+        return null;
+    }
+
+
+    public static <T extends ExceptionCodeEnums> String getByCode(Integer code, Class<T> t){
+        for(T item: t.getEnumConstants()){
+            if(item.getCode() == code){
+                return item.getMessage();
+            }
+        }
+        return "";
     }
 }
