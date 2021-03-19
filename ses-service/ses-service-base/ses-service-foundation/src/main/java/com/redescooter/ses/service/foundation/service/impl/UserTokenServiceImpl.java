@@ -803,10 +803,11 @@ public class UserTokenServiceImpl implements UserTokenService {
             getUser.setSystemId(StringUtils.isBlank(hash.get("systemId")) ? null : hash.get("systemId"));
         }
 
+        log.info("getUserLimitOne的入参是:[{}]", getUser);
         PlaUser emailUser = userTokenMapper.getUserLimitOne(getUser);
         if (emailUser == null) {
-            throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
-                    ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
 
         QueryWrapper<PlaUserPassword> wrapper = new QueryWrapper<>();
