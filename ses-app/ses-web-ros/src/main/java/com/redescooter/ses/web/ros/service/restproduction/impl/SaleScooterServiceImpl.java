@@ -117,6 +117,9 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         saleScooter.setSpecificatId(enter.getSpecificatId());
         saleScooter.setGroupId(findGroupId(enter.getSpecificatId()));
         saleScooter.setColorId(enter.getColorId());
+        saleScooter.setMinBatteryNum(enter.getMinBatteryNum());
+        saleScooter.setOtherParam(enter.getOtherParam());
+        saleScooter.setProductionParam(enter.getProductionParam());
         opeSaleScooterService.saveOrUpdate(saleScooter);
         return new GeneralResult(enter.getRequestId());
     }

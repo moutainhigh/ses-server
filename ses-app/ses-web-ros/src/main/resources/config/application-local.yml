@@ -6,9 +6,9 @@ log:
     max-history: 180
 dubbo: ##DUBBO配置
   registry: #注册中心
-    address: zookeeper://192.168.2.211:2183
+    address: zookeeper://192.168.2.200:2181
   metadata-report:
-    address: zookeeper://192.168.2.211:2183
+    address: zookeeper://192.168.2.200:2181
 spring: #spring config
   http:                                                                                                                 #上传配置
   servlet:
@@ -34,12 +34,12 @@ spring: #spring config
   redis:
     cluster:
       nodes:
-        - 192.168.2.211:7000
-        - 192.168.2.211:7001
-        - 192.168.2.211:7002
-        - 192.168.2.211:7003
-        - 192.168.2.211:7004
-        - 192.168.2.211:7005
+        - 192.168.2.200:7000
+        - 192.168.2.200:7001
+        - 192.168.2.200:7002
+        - 192.168.2.200:7003
+        - 192.168.2.200:7004
+        - 192.168.2.200:7005
   #rabbitmq配置
   rabbitmq:
     host: 127.0.0.1
