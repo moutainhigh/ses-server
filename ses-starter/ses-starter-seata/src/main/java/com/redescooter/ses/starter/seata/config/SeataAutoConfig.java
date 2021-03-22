@@ -1,12 +1,6 @@
 package com.redescooter.ses.starter.seata.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.autoconfigure.SpringBootVFS;
-import com.baomidou.mybatisplus.core.MybatisConfiguration;
-import com.baomidou.mybatisplus.core.MybatisXMLLanguageDriver;
-import com.baomidou.mybatisplus.core.config.GlobalConfig;
-import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import io.seata.rm.datasource.DataSourceProxy;
 import io.seata.spring.annotation.GlobalTransactionScanner;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -81,26 +74,26 @@ public class SeataAutoConfig {
      * @return
      * @throws IOException
      */
-    @Bean
-    public MybatisSqlSessionFactoryBean mybatisSqlSessionFactoryBean(DataSourceProxy proxy) throws IOException {
-        MybatisSqlSessionFactoryBean mybatisPlus = new MybatisSqlSessionFactoryBean();
-        mybatisPlus.setDataSource(proxy);
-        mybatisPlus.setVfs(SpringBootVFS.class);
-        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        mybatisPlus.setMapperLocations(resolver.getResources("classpath*:mapper/**/*Mapper.xml,classpath*:mapper/*Mapper.xml"));
-        GlobalConfig globalConfig = new GlobalConfig();
-        GlobalConfig.DbConfig dbConfig = new GlobalConfig.DbConfig();
-        // ID 策略 AUTO->`0`("数据库ID自增") INPUT->`1`(用户输入ID") ID_WORKER->`2`("全局唯一ID") UUID->`3`("全局唯一ID")
-        dbConfig.setIdType(IdType.UUID);
-        globalConfig.setDbConfig(dbConfig);
-        mybatisPlus.setGlobalConfig(globalConfig);
-        MybatisConfiguration mc = new MybatisConfiguration();
-        // 对于完全自定义的mapper需要加此项配置，才能实现下划线转驼峰
-        mc.setMapUnderscoreToCamelCase(true);
-        mc.setDefaultScriptingLanguage(MybatisXMLLanguageDriver.class);
-        mybatisPlus.setConfiguration(mc);
-        return mybatisPlus;
-    }
+    //@Bean
+    //public MybatisSqlSessionFactoryBean mybatisSqlSessionFactoryBean(DataSourceProxy proxy) throws IOException {
+    //    MybatisSqlSessionFactoryBean mybatisPlus = new MybatisSqlSessionFactoryBean();
+    //    mybatisPlus.setDataSource(proxy);
+    //    mybatisPlus.setVfs(SpringBootVFS.class);
+    //    PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+    //    mybatisPlus.setMapperLocations(resolver.getResources("classpath*:mapper/**/*Mapper.xml,classpath*:mapper/*Mapper.xml"));
+    //    GlobalConfig globalConfig = new GlobalConfig();
+    //    GlobalConfig.DbConfig dbConfig = new GlobalConfig.DbConfig();
+    //    // ID 策略 AUTO->`0`("数据库ID自增") INPUT->`1`(用户输入ID") ID_WORKER->`2`("全局唯一ID") UUID->`3`("全局唯一ID")
+    //    dbConfig.setIdType(IdType.UUID);
+    //    globalConfig.setDbConfig(dbConfig);
+    //    mybatisPlus.setGlobalConfig(globalConfig);
+    //    MybatisConfiguration mc = new MybatisConfiguration();
+    //    // 对于完全自定义的mapper需要加此项配置，才能实现下划线转驼峰
+    //    mc.setMapUnderscoreToCamelCase(true);
+    //    mc.setDefaultScriptingLanguage(MybatisXMLLanguageDriver.class);
+    //    mybatisPlus.setConfiguration(mc);
+    //    return mybatisPlus;
+    //}
 
     @Bean
     @DependsOn({BEAN_NAME_SPRING_APPLICATION_CONTEXT_PROVIDER, BEAN_NAME_FAILURE_HANDLER})
