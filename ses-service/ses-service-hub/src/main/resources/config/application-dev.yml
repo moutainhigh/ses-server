@@ -15,6 +15,7 @@ spring:
     dynamic:
       # 配置默认数据源
       primary: corporate
+      seata: true
       datasource:
         corporate:
           driver-class-name: com.mysql.cj.jdbc.Driver
@@ -59,7 +60,7 @@ spring:
 
 seata:
   enabled: true
-  enable-auto-data-source-proxy: true
+  enable-auto-data-source-proxy: false
   tx-service-group: ses-service-hub-group
   registry:
     type: zk

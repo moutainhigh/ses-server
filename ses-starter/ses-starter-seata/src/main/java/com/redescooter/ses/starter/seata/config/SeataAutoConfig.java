@@ -1,7 +1,6 @@
 package com.redescooter.ses.starter.seata.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import io.seata.rm.datasource.DataSourceProxy;
 import io.seata.spring.annotation.GlobalTransactionScanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +39,7 @@ public class SeataAutoConfig {
      */
     @Bean
     @Primary
-    public DruidDataSource druidDataSource() {
+    public DataSource dataSource() {
         DruidDataSource druidDataSource = new DruidDataSource();
         druidDataSource.setUrl(dataSourceProperties.getUrl());
         druidDataSource.setUsername(dataSourceProperties.getUsername());
@@ -62,10 +61,10 @@ public class SeataAutoConfig {
         return druidDataSource;
     }
 
-    @Bean
+    /*@Bean
     public DataSourceProxy dataSourceProxy(DataSource dataSource) {
         return new DataSourceProxy(dataSource);
-    }
+    }*/
 
     /**
      * 因为我使用的是MybatisPlus，所以需要注入此部分
