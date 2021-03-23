@@ -13,6 +13,7 @@ import com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStat;
 import com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStatDetail;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.co2.CO2MoneyConversionUtil;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -47,6 +48,7 @@ public class RideStatBServiceImpl implements RideStatBService {
      * 所以事务不一致的情况还是会有的,看后面会不会集成分布式事务保证事务一致性
      */
     @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
     public int insertDriverAndScooterRideStat(InsertRideStatDataDTO rideStatData) {
         rideStatData.setDuration(rideStatData.getDuration() == 0 ? 1 : rideStatData.getDuration());
         rideStatData.setMileage(rideStatData.getMileage().equals(BigDecimal.ZERO) ? BigDecimal.ONE : rideStatData.getMileage());

@@ -333,6 +333,7 @@ public class InWhOrderServiceImpl implements InWhOrderService {
     }
 
     @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult confirmStorage(IdEnter enter) {
         OpeInWhouseOrder opeInWhouseOrder = inWhOrderMapper.getInWhOrderById(enter.getId());
 
