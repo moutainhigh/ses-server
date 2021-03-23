@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.restproduction.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.JedisConstant;
@@ -22,6 +23,7 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproduction.SaleScooterService;
+import com.redescooter.ses.web.ros.vo.restproduct.SaleProductionParaEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListResult;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterSaveOrUpdateEnter;
@@ -33,10 +35,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassNameSaleScooterServiceImpl
@@ -212,6 +211,27 @@ public class SaleScooterServiceImpl implements SaleScooterService {
                 syncProductionDataEnter.setMinBatteryNum(saleScooter.getMinBatteryNum());
                 syncProductionDataEnter.setProductModelId(saleScooter.getSpecificatId());
                 syncProductionDataEnter.setRemark(saleScooter.getRemark());
+                if (!Strings.isNullOrEmpty(saleScooter.getProductionParam())){
+                    List<SaleProductionParaEnter> params;
+                    try {
+                        params = JSONArray.parseArray(saleScooter.getProductionParam(), SaleProductionParaEnter.class);
+                    }catch (Exception e) {
+                        throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                    }
+                    // 1:speed，2：power，3：mileage，4：charge_cycle
+                    for (SaleProductionParaEnter param : params) {
+                        if (Objects.equals(param.getDefName(), "1")){
+                            syncProductionDataEnter.setSpeed(param.getDefValue());
+                        }else if (Objects.equals(param.getDefName(), "2")){
+                            syncProductionDataEnter.setPower(param.getDefValue());
+                        }else if (Objects.equals(param.getDefName(), "3")){
+                            syncProductionDataEnter.setMileage(param.getDefValue());
+                        }else if (Objects.equals(param.getDefName(), "4")){
+                            syncProductionDataEnter.setChargeCycle(param.getDefValue());
+                        }
+                    }
+                }
+
                 // 然后是颜色数据
                 OpeColor color = opeColorService.getById(saleScooter.getColorId());
                 if (color == null) {
