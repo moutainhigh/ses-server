@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.hub.source.operation.dao;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.redescooter.ses.api.common.vo.specification.SpecificDefGroupDTO;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
  * @author assert
  * @date 2020/12/15 17:20
  */
+@DS("operation")
 public interface SpecificDefGroupMapper {
 
     /**

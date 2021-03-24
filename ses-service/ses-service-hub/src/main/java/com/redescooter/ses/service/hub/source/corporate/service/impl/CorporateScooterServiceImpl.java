@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.hub.source.corporate.service.impl;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.hub.service.corporate.CorporateScooterService;
@@ -24,6 +25,7 @@ import java.util.List;
  * @create: 2020/04/26 11:55
  */
 @DubboService
+@DS("corporate")
 public class CorporateScooterServiceImpl implements CorporateScooterService {
 
     @Autowired
