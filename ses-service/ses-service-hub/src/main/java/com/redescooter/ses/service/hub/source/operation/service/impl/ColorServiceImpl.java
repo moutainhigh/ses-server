@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.hub.source.operation.service.impl;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO;
 import com.redescooter.ses.api.common.vo.scooter.ColorDTO;
 import com.redescooter.ses.api.hub.service.operation.ColorService;
@@ -14,6 +15,7 @@ import java.util.List;
  * @date 2020/12/9 11:00
  */
 @DubboService
+@DS("operation")
 public class ColorServiceImpl implements ColorService {
 
     @Resource

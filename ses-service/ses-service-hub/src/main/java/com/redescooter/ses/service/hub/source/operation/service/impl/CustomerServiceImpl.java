@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @create: 2020/01/10 13:28
  */
 @DubboService
+@DS("operation")
 public class CustomerServiceImpl implements CustomerService {
 
     @Autowired

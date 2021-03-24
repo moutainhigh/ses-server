@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.hub.source.operation.service.impl;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO;
 import com.redescooter.ses.api.common.vo.scooter.SpecificGroupDTO;
 import com.redescooter.ses.api.common.vo.specification.SpecificDefDTO;
@@ -20,6 +21,7 @@ import java.util.List;
  * @date 2020/12/10 17:14
  */
 @DubboService
+@DS("operation")
 public class SpecificServiceImpl implements SpecificService {
 
     @Resource
