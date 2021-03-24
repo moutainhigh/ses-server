@@ -123,7 +123,6 @@ public class UserTokenServiceImpl implements UserTokenService {
      * @return
      */
     @Override
-    @GlobalTransactional(rollbackFor = Exception.class)
     public LoginResult login(LoginEnter enter) {
 
         //用户名密码去除空格
@@ -388,7 +387,6 @@ public class UserTokenServiceImpl implements UserTokenService {
      * @return
      */
     @Override
-    @GlobalTransactional(rollbackFor = Exception.class)
     public LoginResult signIn(AccountsDto user, LoginEnter enter) {
 
         if (StringUtils.isNotBlank(user.getLastLoginToken())) {
