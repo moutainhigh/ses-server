@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 
 import static io.seata.common.Constants.BEAN_NAME_FAILURE_HANDLER;
@@ -38,7 +39,7 @@ public class SeataAutoConfig {
      */
     @Bean
     @Primary
-    public DruidDataSource dataSource() {
+    public DataSource dataSource() {
         DruidDataSource druidDataSource = new DruidDataSource();
         druidDataSource.setUrl(dataSourceProperties.getUrl());
         druidDataSource.setUsername(dataSourceProperties.getUsername());

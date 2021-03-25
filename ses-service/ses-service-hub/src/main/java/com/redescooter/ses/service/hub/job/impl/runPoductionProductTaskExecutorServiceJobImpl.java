@@ -78,7 +78,6 @@ public class runPoductionProductTaskExecutorServiceJobImpl implements RunPoducti
         }
         if (CollectionUtils.isNotEmpty(activeList)) {
             opeProductionCombinBomService.updateBatchById(activeList);
-
         }
         return JobResult.success();
     }
