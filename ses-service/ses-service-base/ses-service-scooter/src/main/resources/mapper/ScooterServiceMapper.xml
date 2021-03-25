@@ -120,7 +120,7 @@
         from sco_scooter s
         left join sco_scooter_ecu ecu
         on s.tablet_sn = ecu.sn
-        where s.id = #{id}
+        where s.id = #{id}  and s.dr = 0 and ecu.dr = 0
     </select>
 
     <!--根据scooterNo查询车辆锁状态-->
