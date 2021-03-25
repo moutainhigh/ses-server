@@ -50,8 +50,8 @@ public class ControllerAspect {
                 if (obj instanceof GeneralEnter) {
                     //TODO 多个参数处理优化
                     GeneralEnter enter = (GeneralEnter) obj;
-                    checkEnterParameter(enter);
-                    checkToken(point, enter);
+                    //checkEnterParameter(enter);
+                    //checkToken(point, enter);
                 }
                 ValidationUtil.validation(obj);
             }

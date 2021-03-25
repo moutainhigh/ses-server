@@ -11,7 +11,6 @@ import com.redescooter.ses.service.hub.source.operation.service.base.OpeProducti
 import com.redescooter.ses.service.hub.source.operation.service.base.OpeProductionScooterBomService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.date.DateUtil;
-import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -41,7 +40,7 @@ public class runPoductionProductTaskExecutorServiceJobImpl implements RunPoducti
      * @param enter
      * @return
      */
-    @GlobalTransactional(rollbackFor = Exception.class)
+    //@GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public JobResult poductionCombinationTask(GeneralEnter enter) {
         List<OpeProductionCombinBom> opeProductionCombinBomList =
@@ -77,7 +76,7 @@ public class runPoductionProductTaskExecutorServiceJobImpl implements RunPoducti
         if (CollectionUtils.isNotEmpty(expiredList)) {
             opeProductionCombinBomService.updateBatchById(expiredList);
         }
-        if (CollectionUtils.isNotEmpty(expiredList)) {
+        if (CollectionUtils.isNotEmpty(activeList)) {
             opeProductionCombinBomService.updateBatchById(activeList);
 
         }
@@ -90,7 +89,7 @@ public class runPoductionProductTaskExecutorServiceJobImpl implements RunPoducti
      * @param enter
      * @return
      */
-    @GlobalTransactional(rollbackFor = Exception.class)
+    //@GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public JobResult productionScooterTask(GeneralEnter enter) {
         List<OpeProductionScooterBom> productionScooterBomList =

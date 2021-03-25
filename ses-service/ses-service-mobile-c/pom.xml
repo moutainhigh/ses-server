@@ -21,6 +21,11 @@
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-service-common</artifactId>
         </dependency>
+        <!-- seata分布式事务 -->
+        <dependency>
+            <groupId>com.redescooter.ses</groupId>
+            <artifactId>ses-starter-seata</artifactId>
+        </dependency>
     </dependencies>
 
     <!--环境配置-->

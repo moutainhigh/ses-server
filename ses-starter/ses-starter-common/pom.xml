@@ -103,11 +103,6 @@
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
         </dependency>
-        <!-- seata分布式事务 -->
-        <dependency>
-            <groupId>com.redescooter.ses</groupId>
-            <artifactId>ses-starter-seata</artifactId>
-        </dependency>
     </dependencies>
 
 </project>
