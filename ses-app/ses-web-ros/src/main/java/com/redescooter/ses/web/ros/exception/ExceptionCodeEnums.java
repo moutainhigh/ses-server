@@ -518,7 +518,9 @@ public enum ExceptionCodeEnums {
 
     NUMBER_NOT_EMPTY(10250, "数量不能为空"),
 
-    CUSTOMER_ORDER_NOT_PAY(10251, "订单未支付尾款，不能转为正式客户")
+    CUSTOMER_ORDER_NOT_PAY(10251, "订单未支付尾款，不能转为正式客户"),
+
+    COUNTRY_NAME_TOO_LONG(10252, "国籍超长")
 
 
 

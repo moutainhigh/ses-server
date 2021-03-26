@@ -22,41 +22,16 @@ import com.redescooter.ses.web.ros.dao.base.OpeSysPositionMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserRoleMapper;
 import com.redescooter.ses.web.ros.dao.sys.DeptServiceMapper;
 import com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeSaleArea;
-import com.redescooter.ses.web.ros.dm.OpeSysDept;
-import com.redescooter.ses.web.ros.dm.OpeSysPosition;
-import com.redescooter.ses.web.ros.dm.OpeSysRoleData;
-import com.redescooter.ses.web.ros.dm.OpeSysRoleSalesCidy;
-import com.redescooter.ses.web.ros.dm.OpeSysStaff;
-import com.redescooter.ses.web.ros.dm.OpeSysUser;
-import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
-import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeSaleAreaService;
-import com.redescooter.ses.web.ros.service.base.OpeSysRoleSalesCidyService;
-import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
-import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.sys.EmployeeService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.UserDataEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.UserDataResult;
-import com.redescooter.ses.web.ros.vo.sys.staff.InitUserMsgResult;
-import com.redescooter.ses.web.ros.vo.sys.staff.SafeCodeResult;
-import com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult;
-import com.redescooter.ses.web.ros.vo.sys.staff.StaffDeleteEnter;
-import com.redescooter.ses.web.ros.vo.sys.staff.StaffListEnter;
-import com.redescooter.ses.web.ros.vo.sys.staff.StaffListResult;
-import com.redescooter.ses.web.ros.vo.sys.staff.StaffOpEnter;
-import com.redescooter.ses.web.ros.vo.sys.staff.StaffResult;
-import com.redescooter.ses.web.ros.vo.sys.staff.StaffRoleResult;
-import com.redescooter.ses.web.ros.vo.sys.staff.StaffSaleAreaResult;
-import com.redescooter.ses.web.ros.vo.sys.staff.StaffSaveOrEditEnter;
-import com.redescooter.ses.web.ros.vo.sys.staff.UserMsgEditEnter;
-import com.redescooter.ses.web.ros.vo.sys.staff.UserPsdEnter;
+import com.redescooter.ses.web.ros.vo.sys.staff.*;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -71,16 +46,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.JedisCluster;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -322,6 +288,16 @@ public class StaffServiceImpl implements StaffService {
         deptIds.add(opUser.getDeptId());
         if (!deptIds.contains(enter.getDeptId())) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_ERROR.getCode(), ExceptionCodeEnums.DEPT_IS_ERROR.getMessage());
+        }
+        // 校验地址和国籍的长度
+        if (!Strings.isNullOrEmpty(enter.getAddress1()) && enter.getAddress1().length() > 500){
+            throw new SesWebRosException(ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getMessage());
+        }
+        if (!Strings.isNullOrEmpty(enter.getAddress2()) && enter.getAddress2().length() > 500){
+            throw new SesWebRosException(ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getMessage());
+        }
+        if (!Strings.isNullOrEmpty(enter.getCountryName()) && enter.getCountryName().length() > 30){
+            throw new SesWebRosException(ExceptionCodeEnums.COUNTRY_NAME_TOO_LONG.getCode(), ExceptionCodeEnums.COUNTRY_NAME_TOO_LONG.getMessage());
         }
     }
 
@@ -624,6 +600,16 @@ public class StaffServiceImpl implements StaffService {
             if (enter.getLastName().length() < 2 || enter.getLastName().length() > 20) {
                 throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
             }
+        }
+        // 校验地址和国籍的长度
+        if (!Strings.isNullOrEmpty(enter.getAddress1()) && enter.getAddress1().length() > 500){
+            throw new SesWebRosException(ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getMessage());
+        }
+        if (!Strings.isNullOrEmpty(enter.getAddress2()) && enter.getAddress2().length() > 500){
+            throw new SesWebRosException(ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getMessage());
+        }
+        if (!Strings.isNullOrEmpty(enter.getCountryName()) && enter.getCountryName().length() > 30){
+            throw new SesWebRosException(ExceptionCodeEnums.COUNTRY_NAME_TOO_LONG.getCode(), ExceptionCodeEnums.COUNTRY_NAME_TOO_LONG.getMessage());
         }
         checkDeptPos(enter.getDeptId(), enter.getPositionId());
         checkEmail(enter.getEmail(), enter.getUserId());
