@@ -75,6 +75,7 @@ import com.redescooter.ses.web.ros.vo.restproduct.production.RosSaveProductionPr
 import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -144,7 +145,7 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     @Autowired
     private OpeProductPriceService opeProductPriceService;
 
-    @Autowired
+    @DubboReference
     private IdAppService idAppService;
 
     /**
@@ -770,83 +771,86 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
     @Override
     public GeneralResult takeEffect(RosProuductionTypeEnter enter) {
         String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
-        String checkResut = jedisService.get(key);
-        if (!Boolean.valueOf(checkResut)) {
-            throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(),
-                    ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
+        String checkResult = jedisService.get(key);
+        if (!Boolean.valueOf(checkResult)) {
+            throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(), ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
         }
         jedisService.delKey(key);
 
-        if (StringUtils.equals(String.valueOf(enter.getProductionProductType()),
-                BomCommonTypeEnums.SCOOTER.getValue())) {
-            OpeProductionScooterBom opeProductionScooterBom = opeProductionScooterBomService.getById(enter.getId());
-            if (opeProductionScooterBom == null) {
-                throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
-                        ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
+        // 如果入参产品类型是整车
+        if (StringUtils.equals(String.valueOf(enter.getProductionProductType()), BomCommonTypeEnums.SCOOTER.getValue())) {
+            OpeProductionScooterBom scooter = opeProductionScooterBomService.getById(enter.getId());
+            if (scooter == null) {
+                throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
             }
-            if (!opeProductionScooterBom.getBomStatus().equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
-                throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
-                        ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+            if (!scooter.getBomStatus().equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
+                throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
             }
-            if (!opeProductionScooterBom.getEffectiveDate().before(new Date())) {
-                throw new SesWebRosException(ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getCode(),
-                        ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getMessage());
-            }
-            // 校验当前的车的颜色和分组是否存在已生效中，有的话  不能生效
-            QueryWrapper<OpeProductionScooterBom> qw = new QueryWrapper<>();
-            qw.eq(OpeProductionScooterBom.COL_GROUP_ID,opeProductionScooterBom.getGroupId());
-            qw.eq(OpeProductionScooterBom.COL_COLOR_ID,opeProductionScooterBom.getColorId());
-            qw.eq(OpeProductionScooterBom.COL_BOM_STATUS,ProductionBomStatusEnums.ACTIVE.getValue());
-            int count = opeProductionScooterBomService.count(qw);
-            if (count > 0){
-                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_DOES_ALRADY_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_DOES_ALRADY_EXIST.getMessage());
-            }
-            // 查询当前是否有生效中的Bomn 有的话 更新状态
-            OpeProductionScooterBom avticeScooterBom =
-                    opeProductionScooterBomService.getOne(new LambdaQueryWrapper<OpeProductionScooterBom>()
-                            .eq(OpeProductionScooterBom::getBomNo, opeProductionScooterBom.getBomNo())
-                            .eq(OpeProductionScooterBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue()));
-            if (avticeScooterBom != null) {
-                avticeScooterBom.setBomStatus(ProductionBomStatusEnums.EXPIRED.getValue());
-                avticeScooterBom.setUpdatedBy(enter.getId());
-                avticeScooterBom.setUpdatedTime(new Date());
-                opeProductionScooterBomService.updateById(avticeScooterBom);
-            }
-            opeProductionScooterBom.setBomStatus(ProductionBomStatusEnums.ACTIVE.getValue());
-            opeProductionScooterBom.setUpdatedBy(enter.getId());
-            opeProductionScooterBom.setUpdatedTime(new Date());
-            opeProductionScooterBomService.updateById(opeProductionScooterBom);
-        }
-        if (StringUtils.equals(String.valueOf(enter.getProductionProductType()),
-                BomCommonTypeEnums.COMBINATION.getValue())) {
-            OpeProductionCombinBom opeProductionCombinBom = opeProductionCombinBomService.getById(enter.getId());
-            if (opeProductionCombinBom == null) {
-                throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(),
-                        ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
-            }
-            if (!opeProductionCombinBom.getBomStatus().equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
-                throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
-                        ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
-            }
-            if(DateUtil.diffDays(opeProductionCombinBom.getEffectiveDate(),new Date())>0){
-                throw new SesWebRosException(ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getCode(),
-                        ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getMessage());
+            if (!scooter.getEffectiveDate().before(new Date())) {
+                throw new SesWebRosException(ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getCode(), ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getMessage());
             }
 
-            OpeProductionCombinBom avticeCombinBom =
-                    opeProductionCombinBomService.getOne(new LambdaQueryWrapper<OpeProductionCombinBom>()
-                            .eq(OpeProductionCombinBom::getBomNo, opeProductionCombinBom.getBomNo())
-                            .eq(OpeProductionCombinBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue()));
-            if (avticeCombinBom != null) {
-                avticeCombinBom.setBomStatus(ProductionBomStatusEnums.EXPIRED.getValue());
-                avticeCombinBom.setUpdatedBy(enter.getId());
-                avticeCombinBom.setUpdatedTime(new Date());
-                opeProductionCombinBomService.updateById(avticeCombinBom);
+            // 校验当前的车的颜色和分组是否存在已生效中，有的话  不能生效
+            /*QueryWrapper<OpeProductionScooterBom> qw = new QueryWrapper<>();
+            qw.eq(OpeProductionScooterBom.COL_GROUP_ID, scooter.getGroupId());
+            qw.eq(OpeProductionScooterBom.COL_COLOR_ID, scooter.getColorId());
+            qw.eq(OpeProductionScooterBom.COL_BOM_STATUS, ProductionBomStatusEnums.ACTIVE.getValue());
+            int count = opeProductionScooterBomService.count(qw);
+            if (count > 0) {
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_DOES_ALRADY_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_DOES_ALRADY_EXIST.getMessage());
+            }*/
+
+            // 查询当前是否有生效中的Bom 有的话 更新状态为已过期
+            LambdaQueryWrapper<OpeProductionScooterBom> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(OpeProductionScooterBom::getBomNo, scooter.getBomNo());
+            wrapper.eq(OpeProductionScooterBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue());
+            wrapper.last("limit 1");
+            OpeProductionScooterBom activeScooterBom = opeProductionScooterBomService.getOne(wrapper);
+            if (activeScooterBom != null) {
+                activeScooterBom.setBomStatus(ProductionBomStatusEnums.EXPIRED.getValue());
+                activeScooterBom.setUpdatedBy(enter.getUserId());
+                activeScooterBom.setUpdatedTime(new Date());
+                opeProductionScooterBomService.updateById(activeScooterBom);
             }
-            opeProductionCombinBom.setBomStatus(ProductionBomStatusEnums.ACTIVE.getValue());
-            opeProductionCombinBom.setUpdatedBy(enter.getId());
-            opeProductionCombinBom.setUpdatedTime(new Date());
-            opeProductionCombinBomService.updateById(opeProductionCombinBom);
+
+            // 修改当前车为已生效
+            scooter.setBomStatus(ProductionBomStatusEnums.ACTIVE.getValue());
+            scooter.setUpdatedBy(enter.getUserId());
+            scooter.setUpdatedTime(new Date());
+            opeProductionScooterBomService.updateById(scooter);
+        }
+
+        // 如果入参产品类型是组装件
+        if (StringUtils.equals(String.valueOf(enter.getProductionProductType()), BomCommonTypeEnums.COMBINATION.getValue())) {
+            OpeProductionCombinBom combin = opeProductionCombinBomService.getById(enter.getId());
+            if (combin == null) {
+                throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
+            }
+            if (!combin.getBomStatus().equals(ProductionBomStatusEnums.TO_BE_ACTIVE.getValue())) {
+                throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
+            }
+            if (DateUtil.diffDays(combin.getEffectiveDate(), new Date()) > 0) {
+                throw new SesWebRosException(ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getCode(), ExceptionCodeEnums.BOM_HAS_REACHED_EFFECTIVE_TIME.getMessage());
+            }
+
+            // 根据bom编号查询是否有生效中的bom,如果有,更新状态为已过期
+            LambdaQueryWrapper<OpeProductionCombinBom> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(OpeProductionCombinBom::getBomNo, combin.getBomNo());
+            wrapper.eq(OpeProductionCombinBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue());
+            wrapper.last("limit 1");
+            OpeProductionCombinBom activeCombinBom = opeProductionCombinBomService.getOne(wrapper);
+            if (activeCombinBom != null) {
+                activeCombinBom.setBomStatus(ProductionBomStatusEnums.EXPIRED.getValue());
+                activeCombinBom.setUpdatedBy(enter.getUserId());
+                activeCombinBom.setUpdatedTime(new Date());
+                opeProductionCombinBomService.updateById(activeCombinBom);
+            }
+
+            // 修改当前组装件状态为已生效
+            combin.setBomStatus(ProductionBomStatusEnums.ACTIVE.getValue());
+            combin.setUpdatedBy(enter.getUserId());
+            combin.setUpdatedTime(new Date());
+            opeProductionCombinBomService.updateById(combin);
         }
         return new GeneralResult(enter.getRequestId());
     }
