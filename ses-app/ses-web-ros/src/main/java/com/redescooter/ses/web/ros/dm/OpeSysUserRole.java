@@ -19,7 +19,7 @@ public class OpeSysUserRole {
     /**
      * 用户ID
      */
-    @TableField(value = "role_id")
+    @TableField(value = "user_id")
     @ApiModelProperty(value="用户ID")
     private Long userId;
 
