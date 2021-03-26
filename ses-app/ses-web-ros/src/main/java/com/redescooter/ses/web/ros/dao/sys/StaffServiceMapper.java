@@ -44,4 +44,10 @@ public interface StaffServiceMapper {
 
 
     List<UserDataResult> userData(@Param("enter") UserDataEnter enter);
+
+    /**
+     *
+     * @param staffId
+     */
+    void deleUserRoleByStaffId(@Param("staffId") Long staffId);
 }

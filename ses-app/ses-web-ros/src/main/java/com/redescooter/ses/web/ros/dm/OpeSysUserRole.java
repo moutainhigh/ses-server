@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -21,7 +20,7 @@ public class OpeSysUserRole {
     /**
      * 用户ID
      */
-    @TableId(value = "user_id", type = IdType.INPUT)
+    @TableId(value = "user_id")
     @ApiModelProperty(value="用户ID")
     private Long userId;
 

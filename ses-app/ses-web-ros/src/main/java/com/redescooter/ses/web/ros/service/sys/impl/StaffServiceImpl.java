@@ -725,7 +725,8 @@ public class StaffServiceImpl implements StaffService {
         qw.eq(OpeSysUserRole.COL_USER_ID, staffId);
         List<OpeSysUserRole> list = opeSysUserRoleService.list(qw);
         if (CollectionUtils.isNotEmpty(list)) {
-            opeSysUserRoleMapper.delete(qw);
+//            opeSysUserRoleMapper.delete(qw);
+            staffServiceMapper.deleUserRoleByStaffId(staffId);
         }
         if (!Strings.isNullOrEmpty(roleIds)) {
             List<OpeSysUserRole> insertList = new ArrayList<>();
