@@ -18,6 +18,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
+import com.redescooter.ses.api.foundation.service.scooter.AssignScooterService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
 import com.redescooter.ses.api.hub.service.corporate.CorporateScooterService;
 import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
@@ -172,6 +173,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @DubboReference
     private ScooterMobileBService scooterMobileBService;
 
+    @DubboReference
+    private AssignScooterService assignScooterService;
+
     /**
      * 待分配列表
      */
@@ -180,12 +184,25 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         logger.info("待分配列表的入参是:[{}]", enter);
         SesStringUtils.objStringTrim(enter);
 
+        List<ToBeAssignListResult> resultList = Lists.newArrayList();
         int count = opeCarDistributeExMapper.getToBeAssignListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
         List<ToBeAssignListResult> list = opeCarDistributeExMapper.getToBeAssignList(enter);
-        return PageResult.create(enter, count, list);
+
+        // 正式客户且点击了创建账号的才能流转到待分配列表
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (ToBeAssignListResult item : list) {
+                String email = item.getEmail();
+                // 拿着email去pla_user表查询,如果存在,说明已创建账号
+                Boolean flag = assignScooterService.getPlaUserIsExistByEmail(email);
+                if (flag) {
+                    resultList.add(item);
+                }
+            }
+        }
+        return PageResult.create(enter, resultList.size(), resultList);
     }
 
     /**
