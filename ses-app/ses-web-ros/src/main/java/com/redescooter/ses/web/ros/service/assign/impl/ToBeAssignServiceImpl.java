@@ -833,9 +833,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @Override
     public Map<String, Object> getTabCount(GeneralEnter enter) {
         Map<String, Object> result = Maps.newHashMapWithExpectedSize(2);
-        int toBeAssignCount = opeCarDistributeExMapper.getToBeAssignListCount(new ToBeAssignListEnter());
+        PageResult<ToBeAssignListResult> pageResult = getToBeAssignList(new ToBeAssignListEnter());
         int assignedCount = opeCarDistributeExMapper.getAssignedListCount(new AssignedListEnter());
-        result.put("toBeAssignCount", toBeAssignCount);
+        result.put("toBeAssignCount", pageResult.getRowTotal());
         result.put("assignedCount", assignedCount);
         return result;
     }
