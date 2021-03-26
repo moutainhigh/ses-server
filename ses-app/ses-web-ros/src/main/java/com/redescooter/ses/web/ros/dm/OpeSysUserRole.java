@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.ros.dm;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,7 +19,7 @@ public class OpeSysUserRole {
     /**
      * 用户ID
      */
-    @TableId(value = "user_id")
+    @TableField(value = "user_id")
     @ApiModelProperty(value="用户ID")
     private Long userId;
 
