@@ -4,12 +4,13 @@
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeSysUserRole">
     <!--@mbg.generated-->
     <!--@Table ope_sys_user_role-->
-    <id column="user_id" jdbcType="BIGINT" property="userId" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    user_id, role_id
+    user_id, role_id, id
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->

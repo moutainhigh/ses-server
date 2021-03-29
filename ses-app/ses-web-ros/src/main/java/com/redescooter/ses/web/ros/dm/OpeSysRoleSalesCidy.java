@@ -11,28 +11,36 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@ApiModel(value="com-redescooter-ses-web-ros-dm-OpeSysRoleSalesCidy")
+@ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysRoleSalesCidy")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "ope_sys_role_sales_cidy")
 public class OpeSysRoleSalesCidy {
+
+    @TableId(value = "id", type = IdType.INPUT)
+    @ApiModelProperty(value = "ID")
+    private Long id;
+
     /**
      * 用户ID
      */
     @TableField(value = "role_id")
-    @ApiModelProperty(value="用户ID")
+    @ApiModelProperty(value = "用户ID")
     private Long roleId;
 
     /**
      * 城市ID
      */
     @TableField(value = "city_id")
-    @ApiModelProperty(value="城市ID")
+    @ApiModelProperty(value = "城市ID")
     private Long cityId;
 
     public static final String COL_ROLE_ID = "role_id";
 
     public static final String COL_CITY_ID = "city_id";
+
+    public static final String COL_ID = "id";
+
 }

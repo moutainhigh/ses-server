@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeSysRoleSalesCidy">
     <!--@mbg.generated-->
     <!--@Table ope_sys_role_sales_cidy-->
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="role_id" jdbcType="BIGINT" property="roleId" />
     <result column="city_id" jdbcType="BIGINT" property="cityId" />
   </resultMap>
