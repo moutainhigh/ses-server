@@ -153,12 +153,12 @@ public class SalePartsServiceImpl implements SalePartsService {
 
         // 数据同步到官网的销售配件
         OpeSaleParts opeSaleParts = opeSalePartsService.getById(enter.getId());
-        syncData(opeSaleParts, enter.getUserId());
+        syncData(opeSaleParts);
         return new GeneralResult(enter.getRequestId());
     }
 
     @Async
-    void syncData(OpeSaleParts saleParts, Long userId) {
+    void syncData(OpeSaleParts saleParts) {
         SyncSalePartsDataEnter model = new SyncSalePartsDataEnter();
         model.setStatus(saleParts.getSaleStutas() == 1 ? 1 : 2);
         model.setPartsType(1);
@@ -167,7 +167,7 @@ public class SalePartsServiceImpl implements SalePartsService {
         model.setEffectiveTime(new Date());
         model.setRemark(saleParts.getRemark());
         model.setRevision(0);
-        model.setCreatedBy(userId);
+        model.setCreatedBy(0L);
         model.setCreatedTime(new Date());
         partsService.syncSalePartsData(model);
     }

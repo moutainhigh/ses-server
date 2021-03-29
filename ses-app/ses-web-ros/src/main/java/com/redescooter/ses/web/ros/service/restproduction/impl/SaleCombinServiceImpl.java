@@ -178,7 +178,7 @@ public class SaleCombinServiceImpl implements SaleCombinService {
         model.setEffectiveTime(new Date());
         model.setRemark(combin.getRemark());
         model.setRevision(0);
-        model.setCreatedBy(userId);
+        model.setCreatedBy(0L);
         model.setCreatedTime(new Date());
         partsService.syncSalePartsData(model);
     }

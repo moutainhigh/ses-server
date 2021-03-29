@@ -54,7 +54,7 @@ public class PartsServiceImpl implements PartsService {
             SiteParts model = new SiteParts();
             BeanUtils.copyProperties(enter, model);
             model.setId(siteParts.getId());
-            model.setUpdatedBy(enter.getUserId());
+            model.setUpdatedBy(0L);
             model.setUpdatedTime(new Date());
             sitePartsService.updateById(model);
         }
