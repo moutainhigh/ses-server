@@ -151,6 +151,7 @@ public class UserProfileServiceImpl implements UserProfileService {
             corUserProfile.setFirstName(enter.getFirstName());
             corUserProfile.setLastName(enter.getLastName());
             corUserProfile.setFullName(new StringBuilder().append(enter.getFirstName()).append(" ").append(enter.getLastName()).toString());
+            corUserProfile.setTelNumber1(enter.getTelNumber1());
             userProfileService.updateById(corUserProfile);
         }
         return new GeneralResult(enter.getRequestId());

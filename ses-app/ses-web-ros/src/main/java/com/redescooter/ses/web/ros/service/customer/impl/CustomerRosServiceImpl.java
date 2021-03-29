@@ -45,7 +45,6 @@ import com.redescooter.ses.api.hub.vo.EditUserProfileEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
-import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import com.redescooter.ses.tool.utils.accountType.AccountTypeUtils;
@@ -96,7 +95,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -374,6 +372,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             editUserProfileEnter.setEmail(customer.getEmail());
             editUserProfileEnter.setFirstName(enter.getCustomerFirstName());
             editUserProfileEnter.setLastName(enter.getCustomerLastName());
+            editUserProfileEnter.setTelNumber1(enter.getTelephone());
             List<Integer> userTypeList = new ArrayList<>();
             // 已创建的是web 账户
             if (customer.getTenantId() != 0) {

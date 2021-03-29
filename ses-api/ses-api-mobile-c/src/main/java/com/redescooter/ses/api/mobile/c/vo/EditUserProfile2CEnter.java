@@ -40,4 +40,7 @@ public class EditUserProfile2CEnter extends GeneralEnter {
     @ApiModelProperty(value = "名字")
     private String lastName;
 
+    @ApiModelProperty(value = "电话号")
+    private String telNumber1;
+
 }

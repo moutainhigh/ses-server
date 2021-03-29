@@ -124,6 +124,9 @@ public class UserProfileProServiceImpl implements UserProfileProService {
                 conUserProfile.setLastName(enter.getLastName());
                 conUserProfile.setFullName(new StringBuilder().append(enter.getFirstName()).append(" ").append(enter.getLastName()).toString());
             }
+            if (StringUtils.isNotBlank(enter.getTelNumber1())) {
+                conUserProfile.setTelNumber1(enter.getTelNumber1());
+            }
             conUserProfileMapper.updateById(conUserProfile);
         }
         return new GeneralResult(enter.getRequestId());
