@@ -15,6 +15,8 @@ import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
+
 /**
  * @Description 销售配件数据同步到官网的实现类
  * @Author Chris
@@ -52,6 +54,8 @@ public class PartsServiceImpl implements PartsService {
             SiteParts model = new SiteParts();
             BeanUtils.copyProperties(enter, model);
             model.setId(siteParts.getId());
+            model.setUpdatedBy(enter.getUserId());
+            model.setUpdatedTime(new Date());
             sitePartsService.updateById(model);
         }
         return new GeneralResult();

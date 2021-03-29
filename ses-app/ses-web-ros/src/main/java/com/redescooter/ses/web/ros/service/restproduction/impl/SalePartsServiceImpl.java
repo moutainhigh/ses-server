@@ -166,6 +166,7 @@ public class SalePartsServiceImpl implements SalePartsService {
         model.setEnName(saleParts.getPartsName());
         model.setEffectiveTime(new Date());
         model.setRemark(saleParts.getRemark());
+        model.setRevision(0);
         model.setCreatedBy(userId);
         model.setCreatedTime(new Date());
         partsService.syncSalePartsData(model);
