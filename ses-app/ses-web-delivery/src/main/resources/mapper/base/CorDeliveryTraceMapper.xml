@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.web.delivery.dao.base.CorDeliveryTraceMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.delivery.dm.CorDeliveryTrace">
     <!--@mbg.generated-->
-    <result column="id" jdbcType="BIGINT" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="delivery_id" jdbcType="BIGINT" property="deliveryId" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
