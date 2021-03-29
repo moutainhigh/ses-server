@@ -6,16 +6,12 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysRoleMenu")
 @Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @TableName(value = "ope_sys_role_menu")
 public class OpeSysRoleMenu {
 
@@ -42,5 +38,14 @@ public class OpeSysRoleMenu {
     public static final String COL_MENU_ID = "menu_id";
 
     public static final String COL_ID = "id";
+
+    public OpeSysRoleMenu() {
+
+    }
+
+    public OpeSysRoleMenu(Long roleId, Long menuId) {
+        this.roleId = roleId;
+        this.menuId = menuId;
+    }
 
 }
