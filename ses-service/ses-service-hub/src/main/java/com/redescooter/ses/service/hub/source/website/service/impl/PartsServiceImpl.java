@@ -2,6 +2,7 @@ package com.redescooter.ses.service.hub.source.website.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.hub.service.website.PartsService;
 import com.redescooter.ses.api.hub.vo.website.SyncSalePartsDataEnter;
@@ -30,8 +31,6 @@ public class PartsServiceImpl implements PartsService {
 
     /**
      * 销售配件数据同步到官网
-     *
-     * @param enter
      */
     @Override
     @DS("website")
@@ -46,7 +45,7 @@ public class PartsServiceImpl implements PartsService {
             siteParts = new SiteParts();
             BeanUtils.copyProperties(enter, siteParts);
             siteParts.setId(idAppService.getId(SequenceName.SITE_PARTS));
-            siteParts.setDr(0);
+            siteParts.setDr(Constant.DR_FALSE);
             sitePartsService.save(siteParts);
         } else {
             // 同步过,修改其他属性
