@@ -6,12 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Builder;
-import lombok.Data;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeSysRoleSalesCidy")
-@Data
-@Builder
 @TableName(value = "ope_sys_role_sales_cidy")
 public class OpeSysRoleSalesCidy {
 
@@ -48,4 +44,27 @@ public class OpeSysRoleSalesCidy {
         this.cityId = cityId;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
+
+    public Long getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Long cityId) {
+        this.cityId = cityId;
+    }
 }
