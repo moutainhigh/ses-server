@@ -172,11 +172,17 @@ public class CustomerServiceImpl implements CustomerService {
         qw.eq(OpeCustomer::getEmail, enter.getEmail());
         qw.last("limit 1");
         OpeCustomer customer = opeCustomerMapper.selectOne(qw);
+        // 封装参数
+        OpeCustomer param = new OpeCustomer();
+        BeanUtils.copyProperties(enter, param);
         if (null == customer) {
-            OpeCustomer model = new OpeCustomer();
-            BeanUtils.copyProperties(enter, model);
-            model.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
-            opeCustomerMapper.insert(model);
+            // 创建时同步
+            param.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
+            opeCustomerMapper.insert(param);
+        } else {
+            // 编辑时同步
+            param.setId(customer.getId());
+            opeCustomerMapper.updateById(param);
         }
         return new GeneralResult();
     }

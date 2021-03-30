@@ -205,8 +205,43 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         BeanUtils.copyProperties(enter, edit);
         siteCustomerService.updateById(edit);
 
+        // 官网编辑客户数据同步到ros
+        syncEditData(edit);
+
         return new GeneralResult(enter.getRequestId());
     }
+
+    @Async
+    void syncEditData(SiteCustomer enter) {
+        SyncCustomerDataEnter model = new SyncCustomerDataEnter();
+        model.setDr(Constant.DR_FALSE);
+        model.setTimeZone("08:00");
+        model.setDef1(enter.getCountryName());
+        model.setDef2(enter.getCityName());
+        model.setDef3(enter.getPostcode());
+        model.setCountryCode(enter.getCountryCode());
+        model.setStatus("1");
+        model.setCustomerFirstName(enter.getCustomerFirstName());
+        model.setCustomerLastName(enter.getCustomerLastName());
+        if (StringUtils.isNoneBlank(enter.getCustomerFirstName(), enter.getCustomerLastName())) {
+            model.setCustomerFullName(new StringBuffer().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
+        }
+        model.setCustomerSource(String.valueOf(WebSiteCustomerSourceEnums.OFFICIAL.getValue()));
+        model.setCustomerType(String.valueOf(CustomerTypeEnums.PERSONAL.getValue()));
+        model.setAddress(enter.getAddress());
+        model.setPlaceId(enter.getPlaceId());
+        model.setLongitude(enter.getLongitude());
+        model.setLatitude(enter.getLatitude());
+        model.setTelephone(enter.getTelephone());
+        model.setEmail(enter.getEmail());
+        model.setScooterQuantity(1);
+        model.setAssignationScooterQty(0);
+        model.setAccountFlag(String.valueOf(AccountFlagEnums.INACTIVATED.getValue()));
+        model.setUpdatedBy(0L);
+        model.setUpdatedTime(new Date());
+        customerService.syncCustomerData(model);
+    }
+
 
     private void checkEmail(String email) {
         if (StringUtils.isBlank(email)) {
