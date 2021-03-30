@@ -13,6 +13,7 @@ import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
 import com.redescooter.ses.api.foundation.vo.message.LoginPushEnter;
+import com.redescooter.ses.api.hub.common.UserProfileService;
 import com.redescooter.ses.mobile.client.service.TokenService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -49,6 +50,9 @@ public class UserTokenController {
     @DubboReference
     private LoginJPushProService loginJPushProService;
 
+    @DubboReference
+    private UserProfileService userProfileService;
+
     @IgnoreLoginCheck
     @ApiOperation(value = "登入接口", response = LoginResult.class)
     @RequestMapping(value = "/login")
@@ -59,7 +63,10 @@ public class UserTokenController {
     @ApiOperation(value = "登出注销", response = GeneralResult.class)
     @RequestMapping(value = "/logout")
     public Response<GeneralResult> logout(@ModelAttribute GeneralEnter enter) {
-        return new Response<>(userTokenService.logout(enter));
+        userTokenService.logout(enter);
+        // 用户退出app时,通过emq给车发送一个关锁的指令
+        userProfileService.sendLockInstructionByEMQ(enter);
+        return new Response<>();
     }
 
     @IgnoreLoginCheck

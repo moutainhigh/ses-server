@@ -10,12 +10,12 @@ import com.redescooter.ses.api.foundation.service.JpushUserService;
 import com.redescooter.ses.api.foundation.service.LoginJPushProService;
 import com.redescooter.ses.api.foundation.vo.message.JpushUserEnter;
 import com.redescooter.ses.api.foundation.vo.message.LoginPushEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * description: LoginJPushServiceImpl
@@ -35,7 +35,7 @@ public class LoginJPushProProServiceImpl implements LoginJPushProService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult logInPush(LoginPushEnter enter) {
 
@@ -64,7 +64,7 @@ public class LoginJPushProProServiceImpl implements LoginJPushProService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult logOutPush(LoginPushEnter enter) {
 

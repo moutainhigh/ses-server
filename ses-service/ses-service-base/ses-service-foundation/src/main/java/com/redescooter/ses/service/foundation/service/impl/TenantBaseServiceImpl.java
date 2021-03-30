@@ -34,11 +34,11 @@ import com.redescooter.ses.service.foundation.dm.base.PlaTenantNode;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.date.DateUtil;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -83,7 +83,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public Long saveTenant(DateTimeParmEnter<BaseCustomerResult> enter) {
         // 保存租户
@@ -107,7 +107,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult saveTenantNode(DateTimeParmEnter<BaseCustomerResult> enter, String event) {
         PlaTenantNode plaTenantNode = buildPlaTenantNodeSingle(enter, event);
         plaTenantNodeMapper.insert(plaTenantNode);
@@ -149,7 +149,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveTenantConfig(SaveTenantConfigEnter enter) {
 

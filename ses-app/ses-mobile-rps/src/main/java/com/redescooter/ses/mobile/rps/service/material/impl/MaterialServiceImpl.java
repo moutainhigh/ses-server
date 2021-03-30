@@ -68,13 +68,13 @@ import com.redescooter.ses.mobile.rps.vo.materialqc.ReturnedCompletedEnter;
 import com.redescooter.ses.mobile.rps.vo.materialqc.SaveMaterialQcEnter;
 import com.redescooter.ses.mobile.rps.vo.materialqc.SaveMaterialQcResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -222,7 +222,7 @@ public class MaterialServiceImpl implements MaterialService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult returnedCompleted(ReturnedCompletedEnter enter) {
         //验证主订单
@@ -476,7 +476,7 @@ public class MaterialServiceImpl implements MaterialService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult againQc(ContinueQcEnter enter) {
         //入参校验
@@ -711,7 +711,7 @@ public class MaterialServiceImpl implements MaterialService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public SaveMaterialQcResult saveMaterialQc(SaveMaterialQcEnter enter) {
         List<PartTemplateEnter> partQcResultList = Lists.newArrayList();

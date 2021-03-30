@@ -25,12 +25,12 @@ import com.redescooter.ses.web.ros.vo.supplier.SupplierEditEnter;
 import com.redescooter.ses.web.ros.vo.supplier.SupplierPage;
 import com.redescooter.ses.web.ros.vo.supplier.SupplierResult;
 import com.redescooter.ses.web.ros.vo.supplier.SupplierSaveEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -84,7 +84,7 @@ public class SupplierRosServiceImpl implements SupplierRosService {
         return mailBoolean;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SupplierSaveEnter supplierSaveEnter) {
         //supplierSaveEnter参数值去空格
@@ -134,7 +134,7 @@ public class SupplierRosServiceImpl implements SupplierRosService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult edit(SupplierEditEnter supplierSaveEnter) {
       //supplierSaveEnter参数值去空格
@@ -190,7 +190,7 @@ public class SupplierRosServiceImpl implements SupplierRosService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult saveSupplierTrace(String event, OpeSupplier supplier) {
 
         OpeSupplierTrace trace = new OpeSupplierTrace();

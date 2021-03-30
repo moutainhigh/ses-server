@@ -54,6 +54,7 @@ import com.redescooter.ses.web.delivery.vo.task.TaskDriverLsitEnter;
 import com.redescooter.ses.web.delivery.vo.task.TaskListEnter;
 import com.redescooter.ses.web.delivery.vo.task.TaskResult;
 import com.redescooter.ses.web.delivery.vo.task.TaskTimeCountDto;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -62,7 +63,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -252,7 +252,7 @@ public class TaskServiceImpl implements TaskService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveTaskEnter enter) {
         List<DriverTaskEnter> driverTaskEnters = null;

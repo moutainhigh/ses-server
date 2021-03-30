@@ -8,7 +8,6 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
-import com.redescooter.ses.api.foundation.service.base.UserBaseService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.login.SendCodeMobileUserTaskEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
@@ -50,8 +49,8 @@ public class TokenServiceImpl implements TokenService {
     @DubboReference
     private AccountBaseService accountBaseService;
 
-    @DubboReference
-    private UserBaseService userBaseService;
+//    @DubboReference
+//    private UserBaseService userBaseService;
 
     @Override
     public UserToken checkAndGetSession(GeneralEnter enter) {
@@ -62,7 +61,7 @@ public class TokenServiceImpl implements TokenService {
     public GeneralResult sendCode(BaseSendMailEnter enter) {
         //1. 确定邮件是否存在
         Boolean aBoolean = accountBaseService.chectMail(enter.getMail());
-        if (!aBoolean) {
+        if (aBoolean) {
             throw new SesMobileClientException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         //2. 加入邮箱任务
@@ -73,7 +72,7 @@ public class TokenServiceImpl implements TokenService {
         baseMailTask.setCode(code);
         baseMailTask.setEvent(MailTemplateEventEnums.MOBILE_PASSWORD.getEvent());
 
-        if (enter.getMail().indexOf("@") == (-1)) {
+        if (!enter.getMail().contains("@")) {
             baseMailTask.setName(enter.getMail());
         } else {
             baseMailTask.setName(enter.getMail().split("@", 2)[0]);

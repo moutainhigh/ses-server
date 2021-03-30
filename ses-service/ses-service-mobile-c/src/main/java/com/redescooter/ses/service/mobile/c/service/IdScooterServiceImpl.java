@@ -14,11 +14,11 @@ import com.redescooter.ses.api.mobile.c.vo.ScooterNavigationEnter;
 import com.redescooter.ses.api.scooter.service.ScooterIotService;
 import com.redescooter.ses.service.mobile.c.exception.ExceptionCodeEnums;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
@@ -50,7 +50,7 @@ public class IdScooterServiceImpl implements IdScooterService {
      * @date: 2020/2/20 11:11
      * @Version: SAAS 1.2
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult scooterNavigation(ScooterNavigationEnter enter) {
         // 查询TOC 车辆分配信息

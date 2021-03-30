@@ -51,3 +51,26 @@ spring:
 #  flow-dataid: @project.artifactId@-flow
 #  degra-dedataid: @project.artifactId@-degra
 #  system-dataid: @project.artifactId@-sys
+
+seata:
+  enabled: true
+  enable-auto-data-source-proxy: true
+  tx-service-group: ses-service-mobile-c-group
+  registry:
+    type: zk
+    zk:
+      server-addr: 172.31.8.126:2181
+      cluster: default
+      connect-timeout: 2000000
+  config:
+    type: zk
+    zk:
+      server-addr: 172.31.8.126:2181
+      connect-timeout: 2000000
+  service:
+    disable-global-transaction: false
+    vgroup-mapping:
+      ses-service-mobile-c-group: default
+  client:
+    rm:
+      report-success-enable: false

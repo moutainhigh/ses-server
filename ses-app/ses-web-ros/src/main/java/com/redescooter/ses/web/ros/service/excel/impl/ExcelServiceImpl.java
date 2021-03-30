@@ -25,12 +25,12 @@ import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.setting.ImportParameterEnter;
 import com.redescooter.ses.web.ros.vo.setting.ImportParameterExcleData;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -170,7 +170,7 @@ public class ExcelServiceImpl implements ExcelService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public ImportExcelPartsResult readExcelDataByParameter(ImportParameterEnter enter) {
         ImportExcelPartsResult result = new ImportExcelPartsResult();
 

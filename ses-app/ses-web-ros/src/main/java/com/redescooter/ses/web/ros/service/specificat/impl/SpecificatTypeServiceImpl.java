@@ -39,6 +39,7 @@ import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeListResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeSaveOrEditEnter;
 import com.redescooter.ses.web.ros.vo.specificat.dto.InsertSpecificTypeParamDTO;
 import com.redescooter.ses.web.ros.vo.specificat.dto.SpecificGroupDTO;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -47,8 +48,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -84,13 +83,11 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
     @Autowired
     private SpecificatDefMapper specificatDefMapper;
     @Autowired
-    private TransactionTemplate transactionTemplate;
-    @Autowired
     private SpecificatGroupServiceMapper specificatGroupServiceMapper;
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult specificatTypeSave(SpecificatTypeSaveOrEditEnter enter) {
         if (Strings.isNullOrEmpty(enter.getSt())) {
             throw new SesWebRosException(ExceptionCodeEnums.DEF_NOT_NULL.getCode(), ExceptionCodeEnums.DEF_NOT_NULL.getMessage());
@@ -130,7 +127,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult specificatTypeDelete(IdEnter enter) {
         // todo 校验当前规格是否被使用
         // 2020 10 16 追加规格类型是否被销售车辆使用了，使用不能删除
@@ -152,7 +149,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult specificatTypeEdit(SpecificatTypeSaveOrEditEnter enter) {
         if (Strings.isNullOrEmpty(enter.getSt())) {
             throw new SesWebRosException(ExceptionCodeEnums.DEF_NOT_NULL.getCode(), ExceptionCodeEnums.DEF_NOT_NULL.getMessage());
@@ -271,7 +268,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
 //    }
 
     @Override
-//    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult insertSpecificType(InsertSpecificTypeParamDTO paramDTO) {
         Long userId = paramDTO.getUserId();
 
@@ -331,23 +328,19 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         /**
          * -新增规格类型相关数据
          */
-        transactionTemplate.execute(specificTypeStatus -> {
-            try {
-                specificatTypeServiceMapper.insertSpecificatType(paramDTO);
-                specificatDefGroupMapper.batchInsertSpecificatDefGroup(newSpecificDefGroupList);
-                specificatDefMapper.batchInsertSpecificatDef(specificDefList);
-            } catch (Exception e) {
-                specificTypeStatus.setRollbackOnly();
-                log.error("【新增规格类型失败】----{}", ExceptionUtils.getStackTrace(e));
-            }
-            return 1;
-        });
+        try {
+            specificatTypeServiceMapper.insertSpecificatType(paramDTO);
+            specificatDefGroupMapper.batchInsertSpecificatDefGroup(newSpecificDefGroupList);
+            specificatDefMapper.batchInsertSpecificatDef(specificDefList);
+        } catch (Exception e) {
+            log.error("【新增规格类型失败】----{}", ExceptionUtils.getStackTrace(e));
+        }
 
         return new GeneralResult(paramDTO.getRequestId());
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult updateSpecificType(InsertSpecificTypeParamDTO paramDTO) {
         Long userId = paramDTO.getUserId();
 
@@ -398,23 +391,18 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         /**
          * 修改规格类型相关数据
          */
-        transactionTemplate.execute(updateSpecificType -> {
-            try {
-                specificatTypeServiceMapper.updateSpecificatType(paramDTO);
+        try {
+            specificatTypeServiceMapper.updateSpecificatType(paramDTO);
 
-                // 直接物理删除数据, 先不去区分是修改还是新增
-                specificatDefGroupMapper.deleteSpecificDefGroupBySpecificId(paramDTO.getId());
-                specificatDefMapper.deleteSpecificatDefById(paramDTO.getId());
+            // 直接物理删除数据, 先不去区分是修改还是新增
+            specificatDefGroupMapper.deleteSpecificDefGroupBySpecificId(paramDTO.getId());
+            specificatDefMapper.deleteSpecificatDefById(paramDTO.getId());
 
-                specificatDefGroupMapper.batchInsertSpecificatDefGroup(specificDefGroupList);
-                specificatDefMapper.batchInsertSpecificatDef(specificDefList);
-            } catch (Exception e) {
-                log.error("【修改规格类型失败】----{}", ExceptionUtils.getStackTrace(e));
-                updateSpecificType.setRollbackOnly();
-            }
-            return 1;
-        });
-
+            specificatDefGroupMapper.batchInsertSpecificatDefGroup(specificDefGroupList);
+            specificatDefMapper.batchInsertSpecificatDef(specificDefList);
+        } catch (Exception e) {
+            log.error("【修改规格类型失败】----{}", ExceptionUtils.getStackTrace(e));
+        }
         return new GeneralResult(paramDTO.getRequestId());
     }
 

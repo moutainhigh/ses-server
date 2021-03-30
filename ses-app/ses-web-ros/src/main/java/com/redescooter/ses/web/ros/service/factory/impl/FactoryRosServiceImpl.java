@@ -28,6 +28,7 @@ import com.redescooter.ses.web.ros.vo.factory.FactoryEditEnter;
 import com.redescooter.ses.web.ros.vo.factory.FactoryPage;
 import com.redescooter.ses.web.ros.vo.factory.FactoryResult;
 import com.redescooter.ses.web.ros.vo.factory.FactorySaveEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -35,7 +36,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -80,7 +80,7 @@ public class FactoryRosServiceImpl implements FactoryRosService {
         return map;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(FactorySaveEnter factorySaveEnter) {
         //employeeListEnter参数值去空格
@@ -164,7 +164,7 @@ public class FactoryRosServiceImpl implements FactoryRosService {
         return mailBoolean;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult edit(FactoryEditEnter factorySaveEnter) {
         //employeeListEnter参数值去空格

@@ -156,7 +156,7 @@
            combin_name,
            combin_no,
            production_combin_bom_id,
-           qty as combinQty
+           wait_in_wh_qty as combinQty
         from ope_combin_order_combin_b
         where dr = 0 and combin_id = #{enter.id}
     </select>
@@ -165,8 +165,8 @@
         select
             scooter.group_id,
             scooter.color_id,
-            scooter.qty as combinQty,
-            scooter.qty as ableInWhQty,
+            scooter.wait_in_wh_qty as combinQty,
+            scooter.wait_in_wh_qty as ableInWhQty,
             group1.group_name AS groupName,
             color.color_value AS colorValue,
             color.color_name AS colorName

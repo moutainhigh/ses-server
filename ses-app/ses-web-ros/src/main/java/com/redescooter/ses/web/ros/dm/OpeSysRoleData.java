@@ -6,8 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 角色数据权限表
@@ -16,6 +17,11 @@ import lombok.Data;
 @Data
 @TableName(value = "ope_sys_role_data")
 public class OpeSysRoleData implements Serializable {
+
+    @TableId(value = "id", type = IdType.INPUT)
+    @ApiModelProperty(value = "ID")
+    private Long id;
+
     /**
      * 角色Id
      */
@@ -44,4 +50,6 @@ public class OpeSysRoleData implements Serializable {
     public static final String COL_DEPT_ID = "dept_id";
 
     public static final String COL_DATA_TYPE = "data_type";
+
+    public static final String COL_ID = "id";
 }

@@ -46,12 +46,12 @@ import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
 import com.redescooter.ses.tool.utils.chart.StatisticalUtil;
 import com.redescooter.ses.tool.utils.co2.CO2MoneyConversionUtil;
 import com.redescooter.ses.tool.utils.date.DateUtil;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
@@ -216,7 +216,7 @@ public class DeliveryServiceImpl implements DeliveryService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult start(StartEnter enter) {
         // 上锁
@@ -289,7 +289,7 @@ public class DeliveryServiceImpl implements DeliveryService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult refuse(RefuseEnter enter) {
 
@@ -366,7 +366,7 @@ public class DeliveryServiceImpl implements DeliveryService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public CompleteResult complete(CompleteEnter enter) {
         List<String> deliveryStatus = new ArrayList<>();

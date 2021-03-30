@@ -56,11 +56,11 @@ import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.ProductSnR
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.qctrace.SaveProductQcInfoEnter;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.qctrace.SaveProductQcTraceEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -401,7 +401,7 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
      * @Return: GeneralResult
      * @desc: 保存质检结果
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public BooleanResult saveQcResult(SaveQcResultEnter enter) {
         List<SaveQcTempleteResultEnter> templeteEnterList = new ArrayList<>();
@@ -610,7 +610,7 @@ public class OutBoundOrderServiceImpl implements OutBoundOrderService {
      * @Return: GeneralResult
      * @desc: 单据状态更新
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult updateStatus(OutboundUpdateStatusEnter enter) {
 //        OpeOutWhouseOrder opeOutWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());

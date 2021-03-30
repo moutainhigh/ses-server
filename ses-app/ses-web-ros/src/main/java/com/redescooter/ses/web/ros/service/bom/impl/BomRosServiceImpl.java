@@ -57,13 +57,13 @@ import com.redescooter.ses.web.ros.vo.bom.scooter.SaveScooterEnter;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListEnter;
 import com.redescooter.ses.web.ros.vo.bom.scooter.ScooterListResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -142,7 +142,7 @@ public class BomRosServiceImpl implements BomRosService {
      * @date: 2020/2/25 10:36
      * @Version: Ros 1.2
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveScooter(SaveScooterEnter saveScooterEnter) {
         //SaveScooterEnter参数值去空格
@@ -342,7 +342,7 @@ public class BomRosServiceImpl implements BomRosService {
      * @date: 2020/2/25 13:20
      * @Version: Ros 1.2
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult deleteScooterPart(DeletePartEnter enter) {
 
@@ -379,7 +379,7 @@ public class BomRosServiceImpl implements BomRosService {
      * @date: 2020/2/25 14:37
      * @Version: Ros 1.2
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult deleteScooter(IdEnter enter) {
         // 整车查询
@@ -486,7 +486,7 @@ public class BomRosServiceImpl implements BomRosService {
      * @Version: Ros 1.2
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult deleteCombinationPart(DeletePartEnter enter) {
         if (CollectionUtils.isEmpty(enter.getIds())) {
             return new GeneralResult(enter.getRequestId());
@@ -521,7 +521,7 @@ public class BomRosServiceImpl implements BomRosService {
      * @date: 2020/2/25 14:08
      * @Version: Ros 1.2
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult deleteCombination(IdEnter enter) {
         OpePartsProduct combination = opePartsProductService.getById(enter.getId());
@@ -555,7 +555,7 @@ public class BomRosServiceImpl implements BomRosService {
      * @date: 2020/2/25 14:29
      * @Version: Ros 1.2
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveCombination(SaveCombinationEnter enter) {
 
@@ -697,7 +697,7 @@ public class BomRosServiceImpl implements BomRosService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult savePartsDraftQcTemplate(SaveQcTemplateEnter enter) {
         //数据保存集合
@@ -823,7 +823,7 @@ public class BomRosServiceImpl implements BomRosService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveProductQcTemplate(SaveQcTemplateEnter enter) {
         //数据保存集合

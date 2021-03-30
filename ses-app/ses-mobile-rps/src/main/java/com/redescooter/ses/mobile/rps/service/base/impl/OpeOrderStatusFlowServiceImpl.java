@@ -5,13 +5,10 @@ import com.redescooter.ses.mobile.rps.dao.base.OpeOrderStatusFlowMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeOrderStatusFlow;
 import com.redescooter.ses.mobile.rps.service.base.OpeOrderStatusFlowService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
-
 public class OpeOrderStatusFlowServiceImpl extends ServiceImpl<OpeOrderStatusFlowMapper, OpeOrderStatusFlow> implements OpeOrderStatusFlowService {
 
     @Override

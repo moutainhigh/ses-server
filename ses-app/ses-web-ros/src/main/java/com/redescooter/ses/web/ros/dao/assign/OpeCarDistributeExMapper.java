@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.dao.assign;
 
+import com.redescooter.ses.web.ros.dm.OpeCombinListPartsSerialBind;
 import com.redescooter.ses.web.ros.vo.assign.done.enter.AssignedListEnter;
 import com.redescooter.ses.web.ros.vo.assign.done.result.AssignedListResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignListEnter;
@@ -42,4 +43,10 @@ public interface OpeCarDistributeExMapper {
      * 根据客户id查询客户信息
      */
     ToBeAssignDetailCustomerInfoResult getCustomerInfo(@Param("customerId") Long customerId);
+
+    /**
+     * 根据orderBId查询ECU仪表序列号信息
+     */
+    OpeCombinListPartsSerialBind getEcuPartsSerialBindByOrderBId(@Param("productId") Long productId);
+
 }

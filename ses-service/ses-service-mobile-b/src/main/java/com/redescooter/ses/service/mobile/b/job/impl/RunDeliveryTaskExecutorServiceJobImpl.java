@@ -11,11 +11,11 @@ import com.redescooter.ses.api.mobile.b.service.StatisticalDataService;
 import com.redescooter.ses.api.mobile.b.vo.SaveDeliveryStatEnter;
 import com.redescooter.ses.service.mobile.b.dao.base.CorDeliveryMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorDelivery;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,7 +44,7 @@ public class RunDeliveryTaskExecutorServiceJobImpl implements RunDeliveryTaskExe
      * @param enter
      * @return
      */
-    @Transactional
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public JobResult countDelivery(GeneralEnter enter) {
 

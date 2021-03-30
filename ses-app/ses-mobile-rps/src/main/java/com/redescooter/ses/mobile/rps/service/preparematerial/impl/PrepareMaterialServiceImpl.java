@@ -57,13 +57,13 @@ import com.redescooter.ses.mobile.rps.vo.preparematerial.SavePartBasicDateEnter;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.SavePrepareMaterialEnter;
 import com.redescooter.ses.mobile.rps.vo.preparematerial.SavePrepareMaterialPartListEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -162,7 +162,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult confirmPreparation(ConfirmPreparationEnter enter) {
         if (StringUtils.equals(enter.getSourceType(), SourceTypeEnums.ALLOCATE.getValue())) {
@@ -307,7 +307,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)  
     @Override
     public GeneralResult save(SavePrepareMaterialEnter enter) {
         //备料部件集合
@@ -360,7 +360,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)  
     public GeneralResult allocatePreparation(AllocatePreparationEnter enter) {
         //调拨单备料记录集合
         List<OpeAllocateBTrace> opeAllocateBTraceList = Lists.newArrayList();
@@ -592,7 +592,7 @@ public class PrepareMaterialServiceImpl implements PrepareMaterialService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)  
     public GeneralResult assemblyPreparation(AssemblyPreparationEnter enter) {
         //组装单备料集合
         List<OpeAssemblyPreparation> saveAssemblyPreparationList = Lists.newArrayList();

@@ -14,6 +14,7 @@ import com.redescooter.ses.service.foundation.dao.base.PlaUserMapper;
 import com.redescooter.ses.service.foundation.dm.JpushUserData;
 import com.redescooter.ses.service.foundation.dm.base.PlaJpushUser;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +22,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -64,7 +64,7 @@ public class JpushUserServiceImpl implements JpushUserService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(JpushUserEnter enter) {
 

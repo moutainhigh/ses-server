@@ -5,10 +5,10 @@ import com.redescooter.ses.mobile.rps.dao.order.OpTraceMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeOpTrace;
 import com.redescooter.ses.mobile.rps.service.order.OpTraceService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -27,7 +27,7 @@ public class OpTraceServiceImpl implements OpTraceService {
     @Resource
     private OpTraceMapper opTraceMapper;
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public int insertOpTrace(Long orderId, Integer orderType, Integer opType, String remark, Long userId) {
         OpeOpTrace opeOpTrace = OpeOpTrace.builder()

@@ -13,7 +13,12 @@ import com.redescooter.ses.api.common.enums.base.ValidateCodeEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
 import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
+import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.ValidateCodeEnter;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
@@ -33,12 +38,17 @@ import com.redescooter.ses.service.foundation.dao.UserTokenMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaTenantMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaUserMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaUserPasswordMapper;
-import com.redescooter.ses.service.foundation.dm.base.*;
+import com.redescooter.ses.service.foundation.dm.base.PlaAppVersion;
+import com.redescooter.ses.service.foundation.dm.base.PlaTenant;
+import com.redescooter.ses.service.foundation.dm.base.PlaUser;
+import com.redescooter.ses.service.foundation.dm.base.PlaUserPassword;
+import com.redescooter.ses.service.foundation.dm.base.PlaUserPermission;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.foundation.service.base.PlaUserService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -48,11 +58,15 @@ import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -109,7 +123,6 @@ public class UserTokenServiceImpl implements UserTokenService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public LoginResult login(LoginEnter enter) {
 
         //用户名密码去除空格
@@ -346,7 +359,7 @@ public class UserTokenServiceImpl implements UserTokenService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult accountDisabled(GeneralEnter enter) {
         // 判断当前账户是否存在
         PlaUser user = userMapper.selectById(enter.getUserId());
@@ -374,7 +387,6 @@ public class UserTokenServiceImpl implements UserTokenService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public LoginResult signIn(AccountsDto user, LoginEnter enter) {
 
         if (StringUtils.isNotBlank(user.getLastLoginToken())) {
@@ -789,10 +801,11 @@ public class UserTokenServiceImpl implements UserTokenService {
             getUser.setSystemId(StringUtils.isBlank(hash.get("systemId")) ? null : hash.get("systemId"));
         }
 
+        log.info("getUserLimitOne的入参是:[{}]", getUser);
         PlaUser emailUser = userTokenMapper.getUserLimitOne(getUser);
         if (emailUser == null) {
-            throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
-                    ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
 
         QueryWrapper<PlaUserPassword> wrapper = new QueryWrapper<>();
@@ -850,7 +863,7 @@ public class UserTokenServiceImpl implements UserTokenService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult chanagePassword(ChanagePasswordEnter enter) {
 

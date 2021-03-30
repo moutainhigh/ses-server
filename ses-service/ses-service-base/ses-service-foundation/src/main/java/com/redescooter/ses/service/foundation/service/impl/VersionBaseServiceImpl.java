@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.base.AppVersionStatusEnum;
 import com.redescooter.ses.api.common.enums.base.AppVersionTypeEnum;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.service.VersionBaseService;
 import com.redescooter.ses.api.foundation.vo.app.VersionTypeEnter;
 import com.redescooter.ses.api.foundation.vo.app.VersionTypeResult;
@@ -12,12 +14,14 @@ import com.redescooter.ses.service.foundation.dm.base.PlaAppVersion;
 import com.redescooter.ses.service.foundation.service.base.PlaAppVersionService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.file.FileUtil;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -33,6 +37,9 @@ public class VersionBaseServiceImpl implements VersionBaseService {
 
     @Autowired
     private PlaAppVersionService plaAppVersionService;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @DubboReference
     private IdAppService idAppService;
@@ -103,4 +110,16 @@ public class VersionBaseServiceImpl implements VersionBaseService {
         }
         return ersionTypeResult;
     }
+
+    /**
+     * 测试分布式事务
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult testGlobalTransactional(GeneralEnter enter) {
+        jdbcTemplate.update("update t_good set amount = amount - 1 where id = 1");
+        int i = 1 / 0;
+        return new GeneralResult();
+    }
+
 }

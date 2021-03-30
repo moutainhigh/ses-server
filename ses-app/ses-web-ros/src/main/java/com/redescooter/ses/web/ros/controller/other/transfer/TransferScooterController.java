@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author: Alex @Version：1.3
  * @create: 2020/04/24 16:30
  */
-@Api(tags = {"ROS-TransferScooter"})
+@Api(tags = {"ROS-分车"})
 @CrossOrigin
 @RestController
 @RequestMapping(value = "/transferscooter")

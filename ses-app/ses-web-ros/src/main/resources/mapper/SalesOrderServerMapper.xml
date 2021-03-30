@@ -14,9 +14,7 @@
             <if test="status != null and status != ''">
                 and opi.status = #{status}
             </if>
-            <if test="status == null or status == ''">
-                and opi.status in ('1','3','4','5')
-            </if>
+
             <if test="startCreatedTime != null and endCreatedTime != null">
                 and (opi.created_time between #{startCreatedTime} and #{endCreatedTime})
             </if>
@@ -34,6 +32,7 @@
     </sql>
     <select id="listCount" resultType="int">
         select count(opi.id)
+
         from ope_customer_inquiry opi
         left join ope_customer oc on opi.customer_id = oc.id and oc.dr = 0
         left join ope_sale_scooter scooter on scooter.id = opi.product_id and scooter.dr = 0

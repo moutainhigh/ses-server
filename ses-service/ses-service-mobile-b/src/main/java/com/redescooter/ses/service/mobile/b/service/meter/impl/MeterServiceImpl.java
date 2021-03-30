@@ -26,10 +26,10 @@ import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.mobile.b.service.base.CorDriverScooterService;
 import com.redescooter.ses.service.mobile.b.service.base.CorDriverService;
 import com.redescooter.ses.service.mobile.b.service.base.CorExpressOrderService;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @ClassName:MeterServiceImpl
@@ -161,7 +161,7 @@ public class MeterServiceImpl implements MeterService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult syncOrderQuantity(MeterOrderEnter enter) {
         MeterDeliveryOrderReuslt result = meterOrder(enter);
 

@@ -127,6 +127,8 @@
     <select id="getScooterStatusByTabletSn" parameterType="java.lang.String" resultType="java.lang.String">
         select `status` from sco_scooter
         where dr = 0 and tablet_sn = #{tabletSn}
+        order by created_time desc
+        limit 1
     </select>
 
     <!--根据tabletSn查询车辆编号-->
@@ -170,6 +172,13 @@
         update sco_scooter
 	    set model = #{scooterModel}, updated_time = #{updateTime}
 	    where tablet_sn = #{tabletSn}
+    </update>
+
+    <!-- 修改sco_scooter的scooter_no为整车rsn -->
+    <update id="updateScooterNo">
+        update sco_scooter
+        set scooter_no = #{scooterNo}, license_plate = #{licensePlate}
+        where id = #{id}
     </update>
 
     <!--根据tabletSn查询车辆信息-->

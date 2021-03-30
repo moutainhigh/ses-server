@@ -5,13 +5,10 @@ import com.redescooter.ses.mobile.rps.dao.base.OpeOutWhScooterBMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeOutWhScooterB;
 import com.redescooter.ses.mobile.rps.service.base.OpeOutWhScooterBService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
-
 public class OpeOutWhScooterBServiceImpl extends ServiceImpl<OpeOutWhScooterBMapper, OpeOutWhScooterB> implements OpeOutWhScooterBService {
 
     @Override

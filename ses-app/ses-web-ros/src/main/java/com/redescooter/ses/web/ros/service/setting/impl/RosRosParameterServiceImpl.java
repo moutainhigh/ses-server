@@ -32,6 +32,7 @@ import com.redescooter.ses.web.ros.vo.setting.ImportParameterExcleData;
 import com.redescooter.ses.web.ros.vo.setting.RosParameterExportResult;
 import com.redescooter.ses.web.ros.vo.setting.RosParameterListEnter;
 import com.redescooter.ses.web.ros.vo.setting.RosSaveParamentEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -39,7 +40,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -146,7 +146,7 @@ public class RosRosParameterServiceImpl implements RosParameterService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult delete(IdEnter enter) {
         return parameterSettingService.delete(enter);
     }
@@ -244,7 +244,7 @@ public class RosRosParameterServiceImpl implements RosParameterService {
         return parameterSettingService.groupList(enter);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveParameterBatch(ImportParameterEnter enter, List<ImportParameterExcleData> successList) {
         //分组校验

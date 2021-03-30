@@ -472,7 +472,4 @@ public class OpeCustomer implements Serializable {
 
     public static final String COL_DEF6 = "def6";
 
-    public static OpeCustomerBuilder builder() {
-        return new OpeCustomerBuilder();
-    }
 }

@@ -4,7 +4,7 @@
     <resultMap id="BaseResultMap" type="com.redescooter.ses.service.hub.source.corporate.dm.CorDeliveryTrace">
         <!--@mbg.generated-->
         <!--@Table cor_delivery_trace-->
-        <result column="id" jdbcType="BIGINT" property="id"/>
+        <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="dr" jdbcType="INTEGER" property="dr"/>
         <result column="delivery_id" jdbcType="BIGINT" property="deliveryId"/>
         <result column="tenant_id" jdbcType="BIGINT" property="tenantId"/>

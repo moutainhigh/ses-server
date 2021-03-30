@@ -12,10 +12,10 @@ import com.redescooter.ses.api.scooter.vo.emqx.ScooterTabletUpdatePublishDTO;
 import com.redescooter.ses.service.scooter.config.emqx.MqttClientUtil;
 import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
 import com.redescooter.ses.tool.utils.thread.ThreadPoolExecutorUtil;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -67,7 +67,7 @@ public class RunScooterTaskExecutorJobServiceImpl implements RunScooterTaskExecu
         return JobResult.success();
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public JobResult scooterUpdateStatusSync() {
         List<String> updateSuccessTabletSnList = new ArrayList<>();

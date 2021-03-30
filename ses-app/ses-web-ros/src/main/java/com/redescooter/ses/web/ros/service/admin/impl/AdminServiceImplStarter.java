@@ -37,13 +37,13 @@ import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.util.Date;
@@ -121,7 +121,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
      *
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveAdmin() {
         if (checkAdmin()) {
@@ -209,7 +209,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
      *
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     @PostConstruct
     public GeneralResult checkAdminDate() {

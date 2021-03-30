@@ -41,6 +41,7 @@ import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.website.SignUpEnter;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -51,7 +52,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.lang.reflect.InvocationTargetException;
@@ -106,7 +106,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public TokenResult login(LoginEnter enter) {
         //入参对象去空格
@@ -165,7 +165,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult logout(GeneralEnter enter) {
         String token = enter.getToken();
@@ -179,7 +179,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult signUp(SignUpEnter enter) {
 

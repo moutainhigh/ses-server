@@ -1,13 +1,22 @@
 package com.redescooter.ses.service.hub.common;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
+import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
+import com.redescooter.ses.api.common.enums.user.UserServiceTypeEnum;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.scooter.ScooterLockDTO;
+import com.redescooter.ses.api.foundation.service.base.UserBaseService;
+import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.hub.common.UserProfileService;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.vo.EditUserProfileEnter;
 import com.redescooter.ses.api.hub.vo.QueryUserProfileByEmailEnter;
 import com.redescooter.ses.api.hub.vo.QueryUserProfileByEmailResult;
 import com.redescooter.ses.api.hub.vo.SaveUserProfileHubEnter;
+import com.redescooter.ses.api.mobile.b.service.ScooterMobileBService;
+import com.redescooter.ses.api.mobile.c.service.ScooterMobileCService;
 import com.redescooter.ses.api.mobile.c.service.UserProfileProService;
 import com.redescooter.ses.api.mobile.c.vo.EditUserProfile2CEnter;
 import com.redescooter.ses.api.mobile.c.vo.SaveUserProfileEnter;
@@ -49,6 +58,15 @@ public class UserProfileServiceImpl implements UserProfileService {
 
     @Autowired
     private CorUserProfileService userProfileService;
+
+    @DubboReference
+    private UserBaseService userBaseService;
+
+    @DubboReference
+    private ScooterMobileBService scooterMobileBService;
+
+    @DubboReference
+    private ScooterMobileCService scooterMobileCService;
 
     /**
      * Toc 保存个人信息
@@ -133,6 +151,7 @@ public class UserProfileServiceImpl implements UserProfileService {
             corUserProfile.setFirstName(enter.getFirstName());
             corUserProfile.setLastName(enter.getLastName());
             corUserProfile.setFullName(new StringBuilder().append(enter.getFirstName()).append(" ").append(enter.getLastName()).toString());
+            corUserProfile.setTelNumber1(enter.getTelNumber1());
             userProfileService.updateById(corUserProfile);
         }
         return new GeneralResult(enter.getRequestId());
@@ -167,4 +186,46 @@ public class UserProfileServiceImpl implements UserProfileService {
         }
         return queryUserProfileByEmailResults;
     }
+
+    /**
+     * 用户退出app时,通过emq给车发送一个关锁的指令
+     */
+    @Override
+    public GeneralResult sendLockInstructionByEMQ(GeneralEnter enter) {
+        GeneralResult result = null;
+        // 根据用户类型判断是2C还是2B用户
+        int userServiceType;
+        QueryUserResult queryUserResult = userBaseService.queryUserById(enter);
+        if (null == queryUserResult) {
+            throw new SeSHubException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        if (AccountTypeEnums.APP_EXPRESS.getAccountType().equals(queryUserResult.getUserType())) {
+            //2B -- APP
+            userServiceType = 1;
+        } else if (AccountTypeEnums.APP_RESTAURANT.getAccountType().equals(queryUserResult.getUserType())) {
+            //2B -- APP
+            userServiceType = 1;
+        } else if (AccountTypeEnums.APP_PERSONAL.getAccountType().equals(queryUserResult.getUserType())) {
+            //2C --APP
+            userServiceType = 2;
+        } else {
+            //维修端
+            userServiceType = 3;
+        }
+
+        ScooterLockDTO lockParam = new ScooterLockDTO();
+        BeanUtils.copyProperties(enter, lockParam);
+        lockParam.setEvent(CommonEvent.START.getValue());
+        lockParam.setLat("0");
+        lockParam.setLng("0");
+
+        // 业务分发
+        if (UserServiceTypeEnum.B.getType().equals(userServiceType)) {
+            result = scooterMobileBService.lock(lockParam);
+        } else if (UserServiceTypeEnum.C.getType().equals(userServiceType)) {
+            result = scooterMobileCService.lock(lockParam);
+        }
+        return result;
+    }
+
 }

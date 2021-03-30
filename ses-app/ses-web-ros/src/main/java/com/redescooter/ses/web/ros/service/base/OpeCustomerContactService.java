@@ -1,11 +1,11 @@
 package com.redescooter.ses.web.ros.service.base;
 
-import java.util.List;
-import com.redescooter.ses.web.ros.dm.OpeCustomerContact;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.transaction.annotation.Transactional;
+import com.redescooter.ses.web.ros.dm.OpeCustomerContact;
+import io.seata.spring.annotation.GlobalTransactional;
 
-@Transactional
+import java.util.List;
+
 public interface OpeCustomerContactService extends IService<OpeCustomerContact>{
 
 

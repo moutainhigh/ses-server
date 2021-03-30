@@ -57,13 +57,13 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.Purchase
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseRelationOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseSaveOrUpdateEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchaseorder.PurchaseScooterEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -130,7 +130,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private IdAppService idAppService;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult purchaseSave(PurchaseSaveOrUpdateEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         OpePurchaseOrder purchaseOrder = new OpePurchaseOrder();
@@ -313,7 +313,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult purchaseEdit(PurchaseSaveOrUpdateEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
@@ -455,7 +455,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult confirmOrder(IdEnter enter) {
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
         if (purchaseOrder == null){
@@ -560,7 +560,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult cancelOrder(CancelOrderEnter enter) {
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
         if (purchaseOrder == null){
@@ -594,7 +594,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult closeOrder(IdEnter enter) {
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
         if (purchaseOrder == null){
@@ -707,7 +707,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
 
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void purchaseStocking(Long purchaseId, Long userId) {
         // 备货中
@@ -728,7 +728,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void purchaseWaitDeliver(Long purchaseId,Long userId) {
        // 待发货
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(purchaseId);
@@ -753,7 +753,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void purchaseSign(Long purchaseId,Long userId) {
         // 签收
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(purchaseId);
@@ -788,7 +788,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void purchaseWaitSign(Long purchaseId, Long userId) {
         // 采购单变为待签收状态
         OpePurchaseOrder opePurchaseOrder  = opePurchaseOrderService.getById(purchaseId);

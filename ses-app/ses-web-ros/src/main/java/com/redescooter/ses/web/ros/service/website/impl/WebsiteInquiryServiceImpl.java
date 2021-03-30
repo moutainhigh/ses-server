@@ -17,7 +17,14 @@ import com.redescooter.ses.api.common.enums.restproductionorder.OrderNumberTypeE
 import com.redescooter.ses.api.common.enums.website.AccessoryTypeEnums;
 import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.CheckEmailEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.IntResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.config.SendinBlueConfig;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -25,21 +32,46 @@ import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.crypt.RsaUtils;
+import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.website.WebsiteInquiryServiceMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeCustomer;
+import com.redescooter.ses.web.ros.dm.OpeCustomerAccessories;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
+import com.redescooter.ses.web.ros.dm.OpePartsProduct;
+import com.redescooter.ses.web.ros.dm.OpeSysUser;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerAccessoriesService;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
+import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
+import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayBookOrderEnter;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
-import com.redescooter.ses.web.ros.vo.website.*;
+import com.redescooter.ses.web.ros.vo.website.AccessoryResult;
+import com.redescooter.ses.web.ros.vo.website.CustomerInfoResult;
+import com.redescooter.ses.web.ros.vo.website.OrderFormInfoResult;
+import com.redescooter.ses.web.ros.vo.website.OrderFormsEnter;
+import com.redescooter.ses.web.ros.vo.website.OrderFormsResult;
+import com.redescooter.ses.web.ros.vo.website.ProductModelResult;
+import com.redescooter.ses.web.ros.vo.website.ProductResult;
+import com.redescooter.ses.web.ros.vo.website.SaveOrderFormResult;
+import com.redescooter.ses.web.ros.vo.website.SaveSaleOrderEnter;
+import com.redescooter.ses.web.ros.vo.website.ScootersEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -47,12 +79,15 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -168,7 +203,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public SaveOrderFormResult saveOrderForm(SaveSaleOrderEnter enter) {
         //入参对象去空格
@@ -284,7 +319,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public SaveOrderFormResult editOrderForm(SaveSaleOrderEnter enter) {
 
         //入参对象去空格

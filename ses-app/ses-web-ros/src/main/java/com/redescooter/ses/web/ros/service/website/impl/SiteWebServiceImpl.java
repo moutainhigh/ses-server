@@ -21,11 +21,11 @@ import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayBookOrderEnter;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
 import com.redescooter.ses.web.ros.vo.website.ProductResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Objects;
@@ -61,7 +61,7 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
      * 官网的订单数据同步到ROS中
      */
     @Override
-    @Transactional
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void siteWebOrderToRosInquiry(SiteWebInquiryEnter enter) {
         OpeCustomerInquiry inquiry = new OpeCustomerInquiry();
         BeanUtils.copyProperties(enter, inquiry);

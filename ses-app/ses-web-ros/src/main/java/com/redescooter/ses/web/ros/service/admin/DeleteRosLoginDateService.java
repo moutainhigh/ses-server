@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.service.admin;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 
 public interface DeleteRosLoginDateService {
@@ -9,4 +11,10 @@ public interface DeleteRosLoginDateService {
      * @param enter
      */
     void deleteRosLoginDate(StringEnter enter);
+
+    /**
+     * 测试分布式事务
+     */
+    GeneralResult testGlobalTransactional(GeneralEnter enter);
+
 }

@@ -40,6 +40,7 @@ import com.redescooter.ses.web.ros.vo.distributor.result.DistributorCityAndCPSel
 import com.redescooter.ses.web.ros.vo.distributor.result.DistributorDetailResult;
 import com.redescooter.ses.web.ros.vo.distributor.result.DistributorListResult;
 import com.redescooter.ses.web.ros.vo.distributor.result.DistributorSaleProductResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -48,7 +49,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
@@ -210,7 +210,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
      * 启用/停用门店
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public Response<GeneralResult> enableOrDisable(DistributorEnableOrDisableEnter enter) {
         logger.info("启用/停用门店的入参是:[{}]", enter);
         OpeDistributor model = new OpeDistributor();
@@ -263,7 +263,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
      * 新增门店
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)  
     public Response<GeneralResult> add(DistributorAddEnter enter) {
         logger.info("新增门店的入参是:[{}]", enter);
         if (enter.getEmail().indexOf("@") == -1) {
@@ -318,7 +318,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
      * 编辑门店
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)  
     public Response<GeneralResult> update(DistributorUpdateEnter enter) {
         logger.info("编辑门店的入参是:[{}]", enter);
         OpeDistributor model = new OpeDistributor();
@@ -336,7 +336,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
      * 删除门店
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)  
     public Response<GeneralResult> delete(IdEnter enter) {
         logger.info("删除门店的入参是:[{}]", enter);
         OpeDistributor distributor = opeDistributorMapper.selectById(enter.getId());
