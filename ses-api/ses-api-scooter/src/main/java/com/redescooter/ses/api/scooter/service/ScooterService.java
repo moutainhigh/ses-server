@@ -162,6 +162,6 @@ public interface ScooterService {
     /**
      * 修改sco_scooter的scooter_no为整车rsn
      */
-    GeneralResult updateScooterNo(Long id, String scooterNo);
+    GeneralResult updateScooterNo(Long id, String scooterNo, String licensePlate);
 
 }

@@ -520,7 +520,13 @@ public enum ExceptionCodeEnums {
 
     CUSTOMER_ORDER_NOT_PAY(10251, "订单未支付尾款，不能转为正式客户"),
 
-    COUNTRY_NAME_TOO_LONG(10252, "国籍超长")
+    COUNTRY_NAME_TOO_LONG(10252, "国籍超长"),
+
+    RSN_NOT_EXIST(10253, "RSN不存在"),
+
+    TABLE_SN_NOT_EXIST(10254, "tableSn不存在"),
+
+    SCOOTER_NOT_EXIST(10255, "车辆不存在")
 
 
 

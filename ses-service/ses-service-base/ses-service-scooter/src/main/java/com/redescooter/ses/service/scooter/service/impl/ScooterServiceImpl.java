@@ -347,8 +347,9 @@ public class ScooterServiceImpl implements ScooterService {
      * 修改sco_scooter的scooter_no为整车rsn
      */
     @Override
-    public GeneralResult updateScooterNo(Long id, String scooterNo) {
-        scooterServiceMapper.updateScooterNo(id, scooterNo);
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult updateScooterNo(Long id, String scooterNo, String licensePlate) {
+        scooterServiceMapper.updateScooterNo(id, scooterNo, licensePlate);
         return new GeneralResult();
     }
 

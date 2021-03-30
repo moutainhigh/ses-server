@@ -153,6 +153,6 @@ public interface ScooterServiceMapper {
     /**
      * 修改sco_scooter的scooter_no为整车rsn
      */
-    int updateScooterNo(@Param("id") Long id, @Param("scooterNo") String scooterNo);
+    int updateScooterNo(@Param("id") Long id, @Param("scooterNo") String scooterNo, @Param("licensePlate") String licensePlate);
 
 }

@@ -484,6 +484,12 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             throw new SesWebRosException(ExceptionCodeEnums.CONVERT_TO_FORMAL_CUSTOMER_FIRST.getCode(), ExceptionCodeEnums.CONVERT_TO_FORMAL_CUSTOMER_FIRST.getMessage());
         }
 
+        // 查询客户的账号信息(查pla_user表)
+        QueryAccountResult accountInfo = accountBaseService.customerAccountDeatil(opeCustomer.getEmail());
+        if (null == accountInfo) {
+            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        }
+
         // 客户和车辆产生绑定关系
         List<HubSaveScooterEnter> saveRelationList = Lists.newArrayList();
 
@@ -557,12 +563,6 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             // 获得规格名称
             String specificatName = getSpecificatNameById(opeCarDistribute.getSpecificatTypeId());
 
-            // 查询客户的账号信息(查pla_user表)
-            QueryAccountResult accountInfo = accountBaseService.customerAccountDeatil(opeCustomer.getEmail());
-            if (null == accountInfo) {
-                throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
-            }
-
             // 数据同步
             // 根据rsn得到productId
             LambdaQueryWrapper<OpeInWhouseOrderSerialBind> lqw = new LambdaQueryWrapper<>();
@@ -571,18 +571,30 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             lqw.orderByDesc(OpeInWhouseOrderSerialBind::getCreatedTime);
             lqw.last("limit 1");
             OpeInWhouseOrderSerialBind serialBind = opeInWhouseOrderSerialBindMapper.selectOne(lqw);
+            if (null == serialBind) {
+                throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EXIST.getCode(), ExceptionCodeEnums.RSN_NOT_EXIST.getMessage());
+            }
             Long productId = serialBind.getProductId();
+            if (null == productId) {
+                throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+            }
 
             // 根据productId获取tableSn(仪表盘序列号)
             OpeCombinListPartsSerialBind partsSerialBind = opeCarDistributeExMapper.getEcuPartsSerialBindByOrderBId(productId);
             String tableSn = partsSerialBind.getDefaultSerialNum();
+            if (StringUtils.isBlank(tableSn)) {
+                throw new SesWebRosException(ExceptionCodeEnums.TABLE_SN_NOT_EXIST.getCode(), ExceptionCodeEnums.TABLE_SN_NOT_EXIST.getMessage());
+            }
 
             // 根据tableSn查询sco_scooter表
             ScoScooterResult scoScooter = scooterService.getScoScooterByTableSn(tableSn);
+            if (null == scoScooter) {
+                throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
+            }
             Long scooterId = scoScooter.getId();
 
-            // 修改sco_scooter表的scooter_no为整车rsn
-            scooterService.updateScooterNo(scooterId, rsn);
+            // 修改sco_scooter表的scooter_no为整车rsn和牌照
+            scooterService.updateScooterNo(scooterId, rsn, licensePlate);
 
             // 将数据存储到corporate库
             logger.info("客户类型是:[{}]", opeCustomer.getCustomerType());
