@@ -7,7 +7,6 @@ import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
-import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
 import com.redescooter.ses.api.common.enums.wms.WmsStockStatusEnum;
@@ -16,7 +15,6 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
-import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.scooter.AssignScooterService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
@@ -27,6 +25,7 @@ import com.redescooter.ses.api.mobile.b.service.ScooterMobileBService;
 import com.redescooter.ses.api.mobile.b.vo.CorDriver;
 import com.redescooter.ses.api.mobile.b.vo.CorDriverScooter;
 import com.redescooter.ses.api.scooter.service.ScooterService;
+import com.redescooter.ses.api.scooter.vo.ScoScooterResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.map.MapUtil;
@@ -47,6 +46,7 @@ import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMappe
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
 import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
 import com.redescooter.ses.web.ros.dm.OpeColor;
+import com.redescooter.ses.web.ros.dm.OpeCombinListPartsSerialBind;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeInWhouseOrderSerialBind;
@@ -484,9 +484,6 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             throw new SesWebRosException(ExceptionCodeEnums.CONVERT_TO_FORMAL_CUSTOMER_FIRST.getCode(), ExceptionCodeEnums.CONVERT_TO_FORMAL_CUSTOMER_FIRST.getMessage());
         }
 
-        // 车辆信息保存scooter库
-        List<BaseScooterEnter> saveScooterList = Lists.newArrayList();
-
         // 客户和车辆产生绑定关系
         List<HubSaveScooterEnter> saveRelationList = Lists.newArrayList();
 
@@ -508,9 +505,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectById(id);
             String licensePlate = opeCarDistribute.getLicensePlate();
 
-            /**
-             * 修改成品库车辆库存
-             */
+            // 修改成品库车辆库存
             // 获得询价单型号id和颜色id
             CustomerIdEnter customerIdEnter = new CustomerIdEnter();
             customerIdEnter.setCustomerId(enter.getCustomerId());
@@ -568,34 +563,26 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
             }
 
-            /**
-             * 数据同步
-             */
-            // 车辆信息保存scooter库
-            BaseScooterEnter saveScooter = new BaseScooterEnter();
-            long scooterId = idAppService.getId(SequenceName.OPE_WMS_SCOOTER_STOCK);
-            saveScooter.setId(scooterId);
-            saveScooter.setScooterNo(o.getRsn());
-            saveScooter.setStatus(ScooterLockStatusEnums.LOCK.getValue());
-            saveScooter.setAvailableStatus(ScooterStatusEnums.AVAILABLE.getValue());
-            saveScooter.setBoxStatus(ScooterLockStatusEnums.LOCK.getValue());
-            saveScooter.setModel(ScooterModelEnums.showValueByCode(specificatName));
-            saveScooter.setLicensePlate(licensePlate);
-            saveScooter.setLicensePlatePicture(null);
-            saveScooter.setLicensePlateTime(new Date());
-            saveScooter.setScooterIdPicture(null);
-            saveScooter.setInsureTime(new Date());
-            saveScooter.setInsurance(null);
-            saveScooter.setRevision(0);
-            saveScooter.setScooterEcuId(0L);
-            saveScooter.setLongitule(Constant.LONGITUDE);
-            saveScooter.setLatitude(Constant.LATITUDE);
-            saveScooter.setBattery(100);
-            saveScooter.setCreatedBy(enter.getUserId());
-            saveScooter.setCreatedTime(new Date());
-            saveScooter.setUpdatedBy(enter.getUserId());
-            saveScooter.setUpdatedTime(new Date());
-            saveScooterList.add(saveScooter);
+            // 数据同步
+            // 根据rsn得到productId
+            LambdaQueryWrapper<OpeInWhouseOrderSerialBind> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeInWhouseOrderSerialBind::getDr, DelStatusEnum.VALID.getCode());
+            lqw.eq(OpeInWhouseOrderSerialBind::getSerialNum, rsn);
+            lqw.orderByDesc(OpeInWhouseOrderSerialBind::getCreatedTime);
+            lqw.last("limit 1");
+            OpeInWhouseOrderSerialBind serialBind = opeInWhouseOrderSerialBindMapper.selectOne(lqw);
+            Long productId = serialBind.getProductId();
+
+            // 根据productId获取tableSn(仪表盘序列号)
+            OpeCombinListPartsSerialBind partsSerialBind = opeCarDistributeExMapper.getEcuPartsSerialBindByOrderBId(productId);
+            String tableSn = partsSerialBind.getDefaultSerialNum();
+
+            // 根据tableSn查询sco_scooter表
+            ScoScooterResult scoScooter = scooterService.getScoScooterByTableSn(tableSn);
+            Long scooterId = scoScooter.getId();
+
+            // 修改sco_scooter表的scooter_no为整车rsn
+            scooterService.updateScooterNo(scooterId, rsn);
 
             // 将数据存储到corporate库
             logger.info("客户类型是:[{}]", opeCustomer.getCustomerType());
@@ -669,9 +656,6 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 }
             }
         }
-        // 将数据存储到scooter库
-        scooterService.saveScooter(saveScooterList);
-        logger.info("新增scooter库");
 
         // node表node字段+1,flag标识改为已分配完
         LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();

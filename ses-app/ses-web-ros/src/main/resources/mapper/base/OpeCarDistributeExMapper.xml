@@ -73,6 +73,17 @@
         where a.dr = 0 and b.dr = 0 and a.customer_id = #{customerId}
     </select>
 
+    <!--根据productId查询ECU仪表序列号信息-->
+    <select id="getEcuPartsSerialBindByOrderBId" parameterType="java.lang.Long" resultType="com.redescooter.ses.web.ros.dm.OpeCombinListPartsSerialBind">
+        select serial.*
+        from ope_combin_list_parts_serial_bind serial
+        inner join ope_production_parts bom on serial.product_id = bom.id
+        and bom.disable = 0 and bom.dr = 0 and bom.parts_type = 6
+        where serial.dr = 0 and serial.order_b_id = #{productId}
+        order by created_time desc
+        limit 1
+    </select>
+
     <!-- 待分配列表筛选条件 -->
     <sql id="toBeAssignList">
         <if test="param.generateDateStartTime != null">

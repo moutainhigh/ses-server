@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
+import com.redescooter.ses.api.scooter.vo.ScoScooterResult;
 import com.redescooter.ses.api.scooter.vo.UpdateStatusEnter;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterLockReportedDTO;
 
@@ -152,5 +153,15 @@ public interface ScooterService {
      * 根据scooterId找到最后一次的经纬度
      */
     Map<String, BigDecimal> getPositionByScooterId(Long scooterId);
+
+    /**
+     * 根据tabletSn查询sco_scooter
+     */
+    ScoScooterResult getScoScooterByTableSn(String tableSn);
+
+    /**
+     * 修改sco_scooter的scooter_no为整车rsn
+     */
+    GeneralResult updateScooterNo(Long id, String scooterNo);
 
 }

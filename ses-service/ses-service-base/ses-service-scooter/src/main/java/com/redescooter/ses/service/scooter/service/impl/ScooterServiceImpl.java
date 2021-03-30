@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
@@ -14,6 +15,7 @@ import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
 import com.redescooter.ses.api.scooter.exception.ScooterException;
 import com.redescooter.ses.api.scooter.service.ScooterService;
+import com.redescooter.ses.api.scooter.vo.ScoScooterResult;
 import com.redescooter.ses.api.scooter.vo.UpdateStatusEnter;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterEcuDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterLockReportedDTO;
@@ -323,6 +325,31 @@ public class ScooterServiceImpl implements ScooterService {
             result.put("latitude", model.getLatitude());
         }
         return result;
+    }
+
+    /**
+     * 根据tabletSn查询sco_scooter
+     */
+    @Override
+    public ScoScooterResult getScoScooterByTableSn(String tableSn) {
+        ScoScooterResult result = new ScoScooterResult();
+        LambdaQueryWrapper<ScoScooter> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ScoScooter::getDr, Constant.DR_FALSE);
+        wrapper.eq(ScoScooter::getTabletSn, tableSn);
+        wrapper.orderByDesc(ScoScooter::getCreatedTime);
+        wrapper.last("limit 1");
+        ScoScooter scooter = scoScooterService.getOne(wrapper);
+        BeanUtils.copyProperties(scooter, result);
+        return result;
+    }
+
+    /**
+     * 修改sco_scooter的scooter_no为整车rsn
+     */
+    @Override
+    public GeneralResult updateScooterNo(Long id, String scooterNo) {
+        scooterServiceMapper.updateScooterNo(id, scooterNo);
+        return new GeneralResult();
     }
 
 }
