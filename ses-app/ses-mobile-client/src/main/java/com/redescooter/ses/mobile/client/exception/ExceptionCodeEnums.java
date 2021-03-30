@@ -74,7 +74,10 @@ public enum ExceptionCodeEnums {
 
     EMAIL_IS_EMPTY(10031, "邮件为空"),
 
-    EVENT_ERROR(10032, "事件有误")
+    EVENT_ERROR(10032, "事件有误"),
+
+    PHONE_IS_WRONG(10034, "电话号不正确")
+
     ;
 
     private int code;
