@@ -898,8 +898,8 @@ public class QcOrderServiceImpl implements QcOrderService {
 
         RpsAssert.isNull(opeQcOrder, ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getCode(),
                 ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getMessage());
-        RpsAssert.isTrue(!QcStatusEnum.QUALITY_INSPECTION.getStatus().equals(opeQcOrder.getQcStatus()),
-                ExceptionCodeEnums.QC_ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.QC_ORDER_STATUS_ERROR.getMessage());
+        /*RpsAssert.isTrue(!QcStatusEnum.QUALITY_INSPECTION.getStatus().equals(opeQcOrder.getQcStatus()),
+                ExceptionCodeEnums.QC_ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.QC_ORDER_STATUS_ERROR.getMessage());*/
 
          // 完成质检时检查产品是否全部质检完 1车辆 2组装件 3部件
         List<QcOrderProductDTO> productList;
