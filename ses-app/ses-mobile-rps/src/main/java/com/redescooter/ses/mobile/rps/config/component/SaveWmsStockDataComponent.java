@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.config.component;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.InWhTypeEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
@@ -28,12 +29,14 @@ import com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock;
 import com.redescooter.ses.mobile.rps.dm.OpeWmsStockRecord;
 import com.redescooter.ses.mobile.rps.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
+import com.redescooter.ses.mobile.rps.service.base.OpeInWhouseOrderSerialBindService;
 import com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -71,6 +74,9 @@ public class SaveWmsStockDataComponent {
     private OpeWmsStockRecordMapper opeWmsStockRecordMapper;
     @Resource
     private WmsStockSerialNumberMapper wmsStockSerialNumberMapper;
+
+    @Autowired
+    private OpeInWhouseOrderSerialBindService opeInWhouseOrderSerialBindService;
 
 
     /**
@@ -134,6 +140,7 @@ public class SaveWmsStockDataComponent {
              */
             int count = scooterService.countByScooter();
             List<SyncScooterDataDTO> scooterDataDTOList = new ArrayList<>();
+            List<OpeInWhouseOrderSerialBind> serialBindList = new ArrayList<>();
             for (OpeInWhouseOrderSerialBind inWhSn : inWhouseOrderSerialBinds) {
                 count += 1;
                 SyncScooterDataDTO syncScooterData = new SyncScooterDataDTO();
@@ -144,9 +151,20 @@ public class SaveWmsStockDataComponent {
                 syncScooterData.setModel(String.valueOf(ScooterModelEnum.SCOOTER_E50.getType()));
                 syncScooterData.setUserId(userId);
                 scooterDataDTOList.add(syncScooterData);
+
+                // 入库之后 将ope_in_whouse_order_serial_bind 的序列号和平板序列号 同步  2021 3 31
+                QueryWrapper<OpeInWhouseOrderSerialBind> qw = new QueryWrapper<>();
+                qw.eq(OpeInWhouseOrderSerialBind.COL_SERIAL_NUM,inWhSn.getSerialNum());
+                qw.last("limit 1");
+                OpeInWhouseOrderSerialBind orderSerialBind = opeInWhouseOrderSerialBindService.getOne(qw);
+                if (orderSerialBind != null) {
+                    orderSerialBind.setSerialNum(inWhSn.getSerialNum() + count);
+                    orderSerialBind.setDefaultSerialNum(inWhSn.getTabletSn());
+                    serialBindList.add(orderSerialBind);
+                }
             }
             scooterService.syncScooterData(scooterDataDTOList);
-
+            opeInWhouseOrderSerialBindService.updateBatch(serialBindList);
             /**
              * 保存库存产品序列号信息
              */
