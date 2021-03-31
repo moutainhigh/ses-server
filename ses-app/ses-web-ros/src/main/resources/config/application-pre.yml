@@ -79,7 +79,6 @@ monday:
   load-template: false
 constant-us-email:
   sale-principal:
-    - etienne@redescooter.fr
     - jerry@redescooter.com
 
 seata:

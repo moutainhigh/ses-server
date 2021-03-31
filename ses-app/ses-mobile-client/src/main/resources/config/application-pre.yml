@@ -38,129 +38,24 @@ spring:
         - 172.31.6.136:7003
         - 172.31.6.136:7004
         - 172.31.6.136:7005
-  swagger: #swagger在线文档配置
-    enabled: true                                                                                                       #是否启用swagger
+  swagger:
+    enabled: true
     group:
-      sign-api: #用户组api，可以配置多个组
-        group-name: 1.Sign-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
-        title: Mobile Sign接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
-        description: 用户登录注销创建操作                                                                                  #api组的描述，会在swagger-ui的描述中显示
+      sign-api:
+        group-name: 1.Sign-API
+        title: Mobile Sign接口
+        description: 用户登录注销创建操作
         base-package: com.redescooter.ses
-        path-regex: /sign/token/.*                                                                                                 #匹配到本组的api接口，匹配uri，可以用用正则表达式
-        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
-        version: v1.2.1                                                                                                 #Api版本
-        license: RedE 公司内部传阅                                                                                        #授权协议
-        license-url: '#'                                                                                                #授权协议地址
-        terms-of-service-url:                                                                                           #服务条款地址
-        contact: #文档联系人
-          name: 李加廷                                                                                                   #联系人名字
-          email: jerry@redescooter.com                                                                                  #联系人邮箱
+        path-regex: /sign/token/.*
+        path-mapping: /
+        version: v1.2.1
+        license: RedE 公司内部传阅
+        license-url: '#'
+        terms-of-service-url:
+        contact:
+          name: 李加廷
+          email: jerry@redescooter.com
           url: https://github.com/mrjerryli
-
-      delivery-api:
-        group-name: 2.Delivery-API
-        title: 订单相关的操作
-        description: 订单相关的操作
-        base-package: com.redescooter.ses
-        path-regex: /delivery/.*
-        path-mapping: /
-        version: 1.2.1
-        license: RedE 公司内部传阅
-        license-url: '#'
-        contact:
-          name: Jerry
-          email: Jerry@redescooter.com
-          url: https://github.com/mrjerryli#联系地址
-
-      scooter-api:
-        group-name: 3.Scooter-API
-        title: 车辆相关的操作
-        description: 车辆相关的操作
-        base-package: com.redescooter.ses
-        path-regex: /scooter/.*
-        path-mapping: /
-        version: 1.2.1
-        license: RedE 公司内部传阅
-        license-url: '#'
-        contact:
-          name: Jerry
-          email: Jerry@redescooter.com
-          url: https://github.com/mrjerryli#联系地址
-
-      userProfile-api:
-        group-name: 4.UserProfile-API
-        title: 个人信息相关的操作
-        description: 个人信息相关的操作
-        base-package: com.redescooter.ses
-        path-regex: /userProfile/.*
-        path-mapping: /
-        version: 1.2.1
-        license: RedE 公司内部传阅
-        license-url: '#'
-        contact:
-          name: Jerry
-          email: Jerry@redescooter.com
-          url: https://github.com/mrjerryli#联系地址
-
-      Data-api:
-        group-name: 5.Data-API
-        title: 个人信息相关的操作
-        description: 个人信息相关的操作
-        base-package: com.redescooter.ses
-        path-regex: /data/.*
-        path-mapping: /
-        version: 1.2.1
-        license: RedE 公司内部传阅
-        license-url: '#'
-        contact:
-          name: Jerry
-          email: Jerry@redescooter.com
-          url: https://github.com/mrjerryli#联系地址
-
-      ExpressOrder-api:
-        group-name: 6.ExpressOrder-API
-        title: 快递模块接口
-        description: 快递模块的操作
-        base-package: com.redescooter.ses
-        path-regex: /ed/order/.*
-        path-mapping: /
-        version: 1.2.1
-        license: RedE 公司内部传阅
-        license-url: '#'
-        contact:
-          name: Jerry
-          email: Jerry@redescooter.com
-          url: https://github.com/mrjerryli#联系地址
-
-      ExpressOrderDate-api:
-        group-name: 7.ExpressOrderDate-API
-        title: 快递订单统计模块接口
-        description: 快递订单统计模块的操作
-        base-package: com.redescooter.ses
-        path-regex: /ed/dashboard/.*
-        path-mapping: /
-        version: 1.2.1
-        license: RedE 公司内部传阅
-        license-url: '#'
-        contact:
-          name: Jerry
-          email: Jerry@redescooter.com
-          url: https://github.com/mrjerryli#联系地址
-
-      PersonalDashboard-api:
-        group-name: 8.PersonalDashboard-API
-        title: 个人统计模块接口
-        description: 个人统计模块接口
-        base-package: com.redescooter.ses
-        path-regex: /id/.*
-        path-mapping: /
-        version: 1.2.1
-        license: RedE 公司内部传阅
-        license-url: '#'
-        contact:
-          name: Jerry
-          email: Jerry@redescooter.com
-          url: https://github.com/mrjerryli#联系地址
 oss:
   protocol: HTTPS
 
@@ -182,7 +77,7 @@ seata:
   service:
     disable-global-transaction: false
     vgroup-mapping:
-      ses-admin-dev-group: default
+      ses-mobile-client-group: default
   client:
     rm:
       report-success-enable: false
