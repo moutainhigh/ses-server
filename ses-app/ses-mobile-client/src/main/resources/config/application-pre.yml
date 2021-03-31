@@ -17,8 +17,8 @@ spring:
       enabled: true
   datasource:
     url: jdbc:mysql://172.31.6.136:3306/corporate_pre?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
-    username: root
-    password: 1qaz2wsx
+    username: redpre
+    password: pre.1qaz2wsx
     druid:
       initial-size: 8
       min-idle: 1
