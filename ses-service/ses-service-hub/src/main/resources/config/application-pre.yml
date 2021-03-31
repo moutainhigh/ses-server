@@ -12,6 +12,7 @@ spring:
   datasource:
     dynamic:
       primary: corporate
+      seata: true
       datasource:
         corporate:
           driver-class-name: com.mysql.cj.jdbc.Driver
