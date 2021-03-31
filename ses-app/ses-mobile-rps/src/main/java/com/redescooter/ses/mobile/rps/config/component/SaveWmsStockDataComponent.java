@@ -162,6 +162,7 @@ public class SaveWmsStockDataComponent {
                     orderSerialBind.setDefaultSerialNum(inWhSn.getTabletSn());
                     serialBindList.add(orderSerialBind);
                 }
+                inWhSn.setSerialNum(inWhSn.getSerialNum() + count);
             }
             scooterService.syncScooterData(scooterDataDTOList);
             opeInWhouseOrderSerialBindService.updateBatch(serialBindList);
