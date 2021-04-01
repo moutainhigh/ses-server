@@ -165,7 +165,7 @@ public class SaveWmsStockDataComponent {
                 inWhSn.setSerialNum(inWhSn.getSerialNum() + count);
             }
             scooterService.syncScooterData(scooterDataDTOList);
-            opeInWhouseOrderSerialBindService.updateBatch(serialBindList);
+            opeInWhouseOrderSerialBindService.updateBatchById(serialBindList);
             /**
              * 保存库存产品序列号信息
              */
