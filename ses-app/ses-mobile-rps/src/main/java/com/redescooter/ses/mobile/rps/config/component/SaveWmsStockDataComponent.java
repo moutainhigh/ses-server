@@ -138,14 +138,15 @@ public class SaveWmsStockDataComponent {
             /**
              * 保存车辆信息至scooter表, ecu表数据会通过车辆上报保存至数据库
              */
-            int count = scooterService.countByScooter();
+            //int count = scooterService.countByScooter();
             List<SyncScooterDataDTO> scooterDataDTOList = new ArrayList<>();
             List<OpeInWhouseOrderSerialBind> serialBindList = new ArrayList<>();
             for (OpeInWhouseOrderSerialBind inWhSn : inWhouseOrderSerialBinds) {
-                count += 1;
+                //count += 1;
                 SyncScooterDataDTO syncScooterData = new SyncScooterDataDTO();
                 // 补充车辆生产流水号
-                syncScooterData.setScooterNo(inWhSn.getSerialNum() + count);
+                //syncScooterData.setScooterNo(inWhSn.getSerialNum() + count);
+                syncScooterData.setScooterNo(inWhSn.getSerialNum());
                 syncScooterData.setTabletSn(inWhSn.getTabletSn());
                 // 车辆入库默认型号是E50
                 syncScooterData.setModel(String.valueOf(ScooterModelEnum.SCOOTER_E50.getType()));
@@ -158,11 +159,13 @@ public class SaveWmsStockDataComponent {
                 qw.last("limit 1");
                 OpeInWhouseOrderSerialBind orderSerialBind = opeInWhouseOrderSerialBindService.getOne(qw);
                 if (orderSerialBind != null) {
-                    orderSerialBind.setSerialNum(inWhSn.getSerialNum() + count);
+                    //orderSerialBind.setSerialNum(inWhSn.getSerialNum() + count);
+                    orderSerialBind.setSerialNum(inWhSn.getSerialNum());
                     orderSerialBind.setDefaultSerialNum(inWhSn.getTabletSn());
                     serialBindList.add(orderSerialBind);
                 }
-                inWhSn.setSerialNum(inWhSn.getSerialNum() + count);
+                //inWhSn.setSerialNum(inWhSn.getSerialNum() + count);
+                inWhSn.setSerialNum(inWhSn.getSerialNum());
             }
             scooterService.syncScooterData(scooterDataDTOList);
             opeInWhouseOrderSerialBindService.updateBatchById(serialBindList);

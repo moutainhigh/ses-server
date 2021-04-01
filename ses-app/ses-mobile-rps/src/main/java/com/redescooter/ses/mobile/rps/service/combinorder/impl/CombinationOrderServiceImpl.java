@@ -56,7 +56,6 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
@@ -693,7 +692,10 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         sb.append("0");
         sb.append(year.substring(2, 4));
         sb.append(MonthCodeEnum.getMonthCodeByMonth(month));
-        String number = String.format("%s%s%s", DayCodeEnum.getDayCodeByDay(day), "1", RandomUtils.nextInt(1000, 9999));
+        // 获取当前时间戳,并截取最后6位拼接在编号最后
+        String timeStamp = String.valueOf(System.currentTimeMillis());
+        String sub = timeStamp.substring(timeStamp.length() - 6);
+        String number = String.format("%s%s%s", DayCodeEnum.getDayCodeByDay(day), "1", sub);
         sb.append(number);
         return sb.toString();
     }
