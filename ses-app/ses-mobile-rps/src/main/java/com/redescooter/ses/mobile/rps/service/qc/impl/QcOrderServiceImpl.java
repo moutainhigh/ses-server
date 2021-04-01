@@ -841,6 +841,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         resultDTO.setSerialNum(ProductTypeEnums.PARTS.getValue().equals(paramDTO.getProductType()) ? serialNum : paramDTO.getSerialNum());
         resultDTO.setBluetoothMacAddress(paramDTO.getBluetoothMacAddress());
         resultDTO.setProductionDate(new Date());
+        resultDTO.setQcResultFlag(qcResultFlag);
         return resultDTO;
     }
 

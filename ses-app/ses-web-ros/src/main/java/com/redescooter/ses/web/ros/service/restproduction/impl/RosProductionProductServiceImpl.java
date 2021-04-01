@@ -791,14 +791,14 @@ public class RosProductionProductServiceImpl implements RosServProductionProduct
             }
 
             // 校验当前的车的颜色和分组是否存在已生效中，有的话  不能生效
-            /*QueryWrapper<OpeProductionScooterBom> qw = new QueryWrapper<>();
+            QueryWrapper<OpeProductionScooterBom> qw = new QueryWrapper<>();
             qw.eq(OpeProductionScooterBom.COL_GROUP_ID, scooter.getGroupId());
             qw.eq(OpeProductionScooterBom.COL_COLOR_ID, scooter.getColorId());
             qw.eq(OpeProductionScooterBom.COL_BOM_STATUS, ProductionBomStatusEnums.ACTIVE.getValue());
             int count = opeProductionScooterBomService.count(qw);
             if (count > 0) {
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_DOES_ALRADY_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_DOES_ALRADY_EXIST.getMessage());
-            }*/
+            }
 
             // 查询当前是否有生效中的Bom 有的话 更新状态为已过期
             LambdaQueryWrapper<OpeProductionScooterBom> wrapper = new LambdaQueryWrapper<>();
