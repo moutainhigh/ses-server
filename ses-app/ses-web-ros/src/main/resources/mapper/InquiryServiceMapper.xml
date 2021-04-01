@@ -7,9 +7,9 @@
             <if test="status != null and status != ''">
                 and inquiry.status= #{status}
             </if>
-            <if test="status == null or status == ''">
+            <!--<if test="status == null or status == ''">
                 and inquiry.status in ('1','3','4','5')
-            </if>
+            </if>-->
             <if test="countryName != null and countryName != ''">
                 and inquiry.def1 =#{countryName}
             </if>
