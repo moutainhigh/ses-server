@@ -331,11 +331,11 @@ public class ScooterServiceImpl implements ScooterService {
      * 根据tabletSn查询sco_scooter
      */
     @Override
-    public ScoScooterResult getScoScooterByTableSn(String tableSn) {
+    public ScoScooterResult getScoScooterByTableSn(String rsn) {
         ScoScooterResult result = new ScoScooterResult();
         LambdaQueryWrapper<ScoScooter> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ScoScooter::getDr, Constant.DR_FALSE);
-        wrapper.eq(ScoScooter::getTabletSn, tableSn);
+        wrapper.eq(ScoScooter::getScooterNo, rsn);
         wrapper.orderByDesc(ScoScooter::getCreatedTime);
         wrapper.last("limit 1");
         ScoScooter scooter = scoScooterService.getOne(wrapper);
@@ -348,8 +348,8 @@ public class ScooterServiceImpl implements ScooterService {
      */
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
-    public GeneralResult updateScooterNo(Long id, String scooterNo, String licensePlate) {
-        scooterServiceMapper.updateScooterNo(id, scooterNo, licensePlate);
+    public GeneralResult updateScooterNo(Long id, String licensePlate) {
+        scooterServiceMapper.updateScooterNo(id, licensePlate);
         return new GeneralResult();
     }
 

@@ -174,10 +174,10 @@
 	    where tablet_sn = #{tabletSn}
     </update>
 
-    <!-- 修改sco_scooter的scooter_no为整车rsn -->
+    <!-- 修改sco_scooter的牌照 -->
     <update id="updateScooterNo">
         update sco_scooter
-        set scooter_no = #{scooterNo}, license_plate = #{licensePlate}
+        set license_plate = #{licensePlate}
         where id = #{id}
     </update>
 

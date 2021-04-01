@@ -151,8 +151,8 @@ public interface ScooterServiceMapper {
     List<String> getToDayScooterNos();
 
     /**
-     * 修改sco_scooter的scooter_no为整车rsn
+     * 修改sco_scooter的牌照
      */
-    int updateScooterNo(@Param("id") Long id, @Param("scooterNo") String scooterNo, @Param("licensePlate") String licensePlate);
+    int updateScooterNo(@Param("id") Long id, @Param("licensePlate") String licensePlate);
 
 }
