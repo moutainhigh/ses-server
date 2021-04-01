@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.scooter.service.impl;
 
+import com.redescooter.ses.api.common.annotation.RecordDubboLog;
 import com.redescooter.ses.api.scooter.service.ScooterMcuService;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterMcuControllerInfoDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterMcuReportedDTO;
@@ -41,6 +42,7 @@ public class ScooterMcuServiceImpl implements ScooterMcuService {
 
 
     @Override
+    @RecordDubboLog
     @GlobalTransactional(rollbackFor = Exception.class)
     public int insertScooterMcuByEmqX(ScooterMcuReportedDTO scooterReportedMcu) {
         try {
