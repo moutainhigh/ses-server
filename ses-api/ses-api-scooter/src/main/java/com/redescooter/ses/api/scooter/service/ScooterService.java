@@ -157,11 +157,11 @@ public interface ScooterService {
     /**
      * 根据tabletSn查询sco_scooter
      */
-    ScoScooterResult getScoScooterByTableSn(String tableSn);
+    ScoScooterResult getScoScooterByTableSn(String rsn);
 
     /**
-     * 修改sco_scooter的scooter_no为整车rsn
+     * 修改sco_scooter的牌照
      */
-    GeneralResult updateScooterNo(Long id, String scooterNo, String licensePlate);
+    GeneralResult updateScooterNo(Long id, String licensePlate);
 
 }
