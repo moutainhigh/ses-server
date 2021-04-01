@@ -14,7 +14,9 @@
             <if test="status != null and status != ''">
                 and opi.status = #{status}
             </if>
-
+            <if test="color != null and color != ''">
+                and opp.color_name = #{color}
+            </if>
             <if test="startCreatedTime != null and endCreatedTime != null">
                 and (opi.created_time between #{startCreatedTime} and #{endCreatedTime})
             </if>
