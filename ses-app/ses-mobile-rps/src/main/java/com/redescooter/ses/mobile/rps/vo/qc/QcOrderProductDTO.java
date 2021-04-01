@@ -29,6 +29,9 @@ public class QcOrderProductDTO extends GeneralResult {
     @ApiModelProperty(value = "产品编号", dataType = "String")
     private String number;
 
+    @ApiModelProperty("部件类型，6：仪表盘")
+    private Integer partsType;
+
     @ApiModelProperty(value = "颜色名称(车辆使用)", dataType = "String")
     private String colorName;
 

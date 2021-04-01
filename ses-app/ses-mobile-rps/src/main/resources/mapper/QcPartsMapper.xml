@@ -48,7 +48,7 @@
     <select id="getQcPartsByQcId" parameterType="java.lang.Long" resultType="com.redescooter.ses.mobile.rps.vo.qc.QcOrderProductDTO">
         select parts.id, parts.qc_id qcId, pp.id bomId, pp.cn_name `name`, pp.parts_no `number`,
         parts.qty, parts.qualified_qty qualifiedQty, parts.unqualified_qty unqualifiedQty,
-        parts.qty - (parts.unqualified_qty + parts.qualified_qty) pendingQcQty, pp.id_calss idClass
+        parts.qty - (parts.unqualified_qty + parts.qualified_qty) pendingQcQty, pp.id_calss idClass,pp.parts_type
         from ope_qc_parts_b parts
         left join ope_production_parts pp
         on parts.parts_id = pp.id and pp.dr = 0 and pp.`disable` = 0
