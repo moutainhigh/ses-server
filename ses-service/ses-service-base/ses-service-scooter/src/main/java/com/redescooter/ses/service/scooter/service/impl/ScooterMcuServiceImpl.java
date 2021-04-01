@@ -46,7 +46,7 @@ public class ScooterMcuServiceImpl implements ScooterMcuService {
         try {
             String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterReportedMcu.getTabletSn());
             if (StringUtils.isBlank(scooterNo)) {
-                log.error("【车辆MCU控制器数据上报失败】----车辆不存在");
+                log.error("【车辆MCU控制器数据上报失败】----{}车辆不存在",scooterReportedMcu.getTabletSn());
                 return 0;
             }
 
