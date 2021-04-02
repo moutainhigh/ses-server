@@ -8,7 +8,7 @@
         from ope_customer_inquiry a
         left join ope_car_distribute_node b on a.customer_id = b.customer_id
         left join ope_customer c on a.customer_id = c.id
-        where a.dr = 0 and c.dr = 0 and c.status = 2  and (b.flag = 1 or b.flag is null)
+        where a.dr = 0 and c.dr = 0 and c.status = 2 and (b.flag = 1 or b.flag is null)
         <include refid="toBeAssignList"/>
     </select>
 
@@ -16,7 +16,7 @@
     <select id="getToBeAssignList" resultType="com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignListResult">
         select
             a.customer_id,
-            a.full_name,
+            IFNULL(a.full_name, c.company_name) as fullName,
             a.email,
             a.scooter_quantity,
             a.updated_time as generateDate,
@@ -24,7 +24,7 @@
         from ope_customer_inquiry a
         left join ope_car_distribute_node b on a.customer_id = b.customer_id
         left join ope_customer c on a.customer_id = c.id
-        where a.dr = 0 and c.dr = 0 and c.status = 2  and (b.flag = 1 or b.flag is null)
+        where a.dr = 0 and c.dr = 0 and c.status = 2 and (b.flag = 1 or b.flag is null)
         <include refid="toBeAssignList"/>
         order by a.updated_time desc
         limit #{param.startRow}, #{param.pageSize}
@@ -44,7 +44,7 @@
     <select id="getAssignedList" resultType="com.redescooter.ses.web.ros.vo.assign.done.result.AssignedListResult">
         select
             a.customer_id,
-            a.full_name,
+            IFNULL(a.full_name, c.company_name) as fullName,
             a.email,
             a.scooter_quantity,
             a.updated_time as finishDate
@@ -61,7 +61,7 @@
     <select id="getCustomerInfo" resultType="com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignDetailCustomerInfoResult">
         select
             a.customer_id,
-            a.full_name,
+            IFNULL(a.full_name, b.company_name) as fullName,
             a.email,
             b.telephone,
             a.post_code,
@@ -89,6 +89,7 @@
         </if>
         <if test="param.keyword != null">
             and ( a.full_name like concat('%', #{param.keyword}, '%') or
+                  c.company_name like concat('%', #{param.keyword}, '%') or
                   a.email like concat('%', #{param.keyword}, '%')
             )
         </if>
@@ -110,6 +111,7 @@
         </if>
         <if test="param.keyword != null">
             and ( a.full_name like concat('%', #{param.keyword}, '%') or
+                  c.company_name like concat('%', #{param.keyword}, '%') or
                   a.email like concat('%', #{param.keyword}, '%')
             )
         </if>
