@@ -166,6 +166,8 @@ public class SaveWmsStockDataComponent {
                 }
                 //inWhSn.setSerialNum(inWhSn.getSerialNum() + count);
                 inWhSn.setSerialNum(inWhSn.getSerialNum());
+                inWhSn.setLot(inWhSn.getLot());
+                inWhSn.setBluetoothMacAddress(inWhSn.getBluetoothMacAddress());
             }
             scooterService.syncScooterData(scooterDataDTOList);
             opeInWhouseOrderSerialBindService.updateBatchById(serialBindList);
