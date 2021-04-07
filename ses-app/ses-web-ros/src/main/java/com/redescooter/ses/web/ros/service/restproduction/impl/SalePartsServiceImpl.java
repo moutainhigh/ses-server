@@ -162,7 +162,7 @@ public class SalePartsServiceImpl implements SalePartsService {
         SyncSalePartsDataEnter model = new SyncSalePartsDataEnter();
         model.setStatus(saleParts.getSaleStutas() == 1 ? 1 : 2);
         model.setPartsType(1);
-        model.setPartsNumber(saleParts.getProductCode());
+        model.setPartsNumber(saleParts.getProductName());
         model.setEnName(saleParts.getPartsName());
         model.setEffectiveTime(new Date());
         model.setRemark(saleParts.getRemark());
