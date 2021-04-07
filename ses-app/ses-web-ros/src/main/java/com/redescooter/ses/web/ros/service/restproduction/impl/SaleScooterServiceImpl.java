@@ -27,13 +27,13 @@ import com.redescooter.ses.web.ros.vo.restproduct.SaleProductionParaEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListResult;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterSaveOrUpdateEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -83,7 +83,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult saveSaleScooter(SaleScooterSaveOrUpdateEnter enter) {
         // 去空格
         enter = SesStringUtils.objStringTrim(enter);
@@ -151,7 +151,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult deleteSaleScooter(IdEnter enter) {
         OpeSaleScooter saleScooter = opeSaleScooterService.getById(enter.getId());
         if (saleScooter == null) {
@@ -171,7 +171,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult editSaleScooterStatus(IdEnter enter) {
         // 编辑这玩意之前有个安全码的校验  并把结果放在Redis中  这里再次验证一下安全码校验是否通过
         String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();

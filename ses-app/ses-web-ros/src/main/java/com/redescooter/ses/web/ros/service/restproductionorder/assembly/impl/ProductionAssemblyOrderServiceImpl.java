@@ -72,12 +72,12 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusF
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasDetailProductListResult;
 import com.redescooter.ses.web.ros.vo.specificat.ColorDataResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -334,7 +334,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
      * @Return: GeneralResult
      * @desc: 保存组装单
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveAssemblyOrderEnter enter) {
         List<SaveAssemblyProductListEnter> productEnterList = new ArrayList<>();
@@ -415,7 +415,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
      * @Return: GeneralResult
      * @desc: 备料
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult materialPreparation(IdEnter enter) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(enter.getId());
@@ -564,7 +564,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
      * @Return: GeneralResult
      * @desc: 组装
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult assembly(IdEnter enter) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(enter.getId());
@@ -601,7 +601,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
      * @Return: GeneralResult
      * @desc: 删除
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult delete(IdEnter enter) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(enter.getId());
@@ -838,7 +838,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
 
     // 备料完成
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void materialPreparationFinish(Long combinOrderId, Long userId) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(combinOrderId);
         if (opeCombinOrder == null) {
@@ -868,7 +868,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
      * @Date 2020/11/17 14:05
      * @Param [enter]
      **/
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startCombin(IdEnter enter) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(enter.getId());
@@ -901,7 +901,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
      * @Param [enter]
      **/
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult endCombin(IdEnter enter) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(enter.getId());
         if (opeCombinOrder == null) {
@@ -933,7 +933,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
      * @Date 2020/11/17 14:23
      * @Param [enter]
      **/
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startQc(IdEnter enter) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(enter.getId());
@@ -966,7 +966,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
      * @Date 2020/11/17 14:23
      * @Param [enter]
      **/
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult endQc(IdEnter enter) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(enter.getId());
@@ -999,7 +999,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
      * @Date 2020/11/17 14:38
      * @Param [productionPurchaseId, inWhId, userId]
      **/
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void statusToPartWhOrAllInWh(Long combinId, Long inWhId, Long userId) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(combinId);

@@ -17,8 +17,20 @@ import com.redescooter.ses.web.ros.enums.datatype.MondayCountryShortNameEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpePartsProductService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
-import com.redescooter.ses.web.ros.vo.monday.enter.*;
-import com.redescooter.ses.web.ros.vo.monday.result.*;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayBookOrderEnter;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationBoardEnter;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationColumnEnter;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationGroupEnter;
+import com.redescooter.ses.web.ros.vo.monday.enter.MultipleWebhookEnter;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayBoardResult;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayColumnResult;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayCreateResult;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayDataResult;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayGeneralResult;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayGroupResult;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayTagResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -28,7 +40,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -154,7 +165,7 @@ public class MondayServiceImpl implements MondayService {
         log.info("-----------------------------初始化备份Monday模板结束------------------------------------------");
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public MondayCreateResult websiteContantUs(MondayGeneralEnter enter) {
 //        if (!mondayConfig.getLoadTemplate()) {
@@ -204,7 +215,7 @@ public class MondayServiceImpl implements MondayService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public MondayCreateResult websiteBookOrder(MondayGeneralEnter<MondayBookOrderEnter> enter) {
 //        if (!mondayConfig.getLoadTemplate()) {
@@ -315,7 +326,7 @@ public class MondayServiceImpl implements MondayService {
      * @param boardId
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public List<MondayGroupResult> queryGroupByBoardId(String boardId) {
 
@@ -368,7 +379,7 @@ public class MondayServiceImpl implements MondayService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public MondayCreateResult mutationBoard(MondayMutationBoardEnter enter) {
         String graphGql =
@@ -445,7 +456,7 @@ public class MondayServiceImpl implements MondayService {
      * @param gql
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public MondayGeneralResult mutationData(String gql) {
         log.info("-----------执行gpl语句{}--------------", gql);

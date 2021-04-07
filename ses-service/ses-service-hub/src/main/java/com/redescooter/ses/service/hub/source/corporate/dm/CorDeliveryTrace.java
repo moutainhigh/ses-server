@@ -7,12 +7,11 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-
-import lombok.Data;
 
 @ApiModel(value = "com-redescooter-ses-service-hub-source-corporate-dm-CorDeliveryTrace")
 @Data
@@ -21,7 +20,7 @@ public class CorDeliveryTrace implements Serializable {
     /**
      * ID
      */
-    @TableField(value = "id")
+    @TableId(value = "id", type = IdType.INPUT)
     @ApiModelProperty(value = "ID")
     private Long id;
 

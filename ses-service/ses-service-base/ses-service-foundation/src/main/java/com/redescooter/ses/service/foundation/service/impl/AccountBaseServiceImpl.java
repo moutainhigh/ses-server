@@ -59,6 +59,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.accountType.AccountTypeUtils;
 import com.redescooter.ses.tool.utils.date.DateUtil;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -68,7 +69,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.util.ArrayList;
@@ -148,7 +148,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public BaseUserResult open(DateTimeParmEnter<BaseCustomerResult> enter) {
         Boolean chectMail = chectMail(enter.getT().getEmail());
@@ -212,7 +212,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @Override
     public Boolean chectMail(String mail) {
         QueryWrapper<PlaUser> wrapper = new QueryWrapper<>();
-        wrapper.in(PlaUser.COL_USER_TYPE, AccountTypeEnums.WEB_RESTAURANT, AccountTypeEnums.WEB_EXPRESS, AccountTypeEnums.APP_PERSONAL);
+        wrapper.in(PlaUser.COL_USER_TYPE, AccountTypeEnums.WEB_RESTAURANT.getAccountType(), AccountTypeEnums.WEB_EXPRESS.getAccountType(), AccountTypeEnums.APP_PERSONAL.getAccountType());
         wrapper.eq(PlaUser.COL_LOGIN_NAME, mail);
         return plaUserMapper.selectCount(wrapper) == 0 ? Boolean.TRUE : Boolean.FALSE;
     }
@@ -239,7 +239,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult freeze(DateTimeParmEnter<BaseCustomerResult> enter) {
         int accountType =
@@ -364,7 +364,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult unFreezeAccount(DateTimeParmEnter<BaseCustomerResult> enter) {
         int accountType =
@@ -485,7 +485,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult renewAccont(DateTimeParmEnter<BaseCustomerResult> enter) {
         if (DateUtil.timeComolete(enter.getStartDateTime(), enter.getEndDateTime()) < 0) {
@@ -569,7 +569,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult setPassword(SetPasswordEnter<BaseCustomerResult> enter) {
         QueryWrapper<PlaUserPassword> plaUserPasswordQueryWrapper = new QueryWrapper<>();
@@ -599,7 +599,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult deleteUser(DeleteUserEnter enter) {
         /**
@@ -674,7 +674,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param dto
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public BaseUserResult openDriver2BAccout(SaveDriverAccountDto dto) {
 
@@ -799,7 +799,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult cancelDriver2BAccout(IdEnter enter) {
         PlaUser plaUser = userMapper.selectById(enter.getId());
@@ -841,7 +841,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult sendEmailActiv(IdEnter enter) {
 
@@ -868,14 +868,15 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         } else {
             baseMailTaskEnter.setName(user.getLoginName());
         }
-        if (StringUtils.equalsAnyIgnoreCase(String.valueOf(user.getUserType()),
+        /*if (StringUtils.equalsAnyIgnoreCase(String.valueOf(user.getUserType()),
                 String.valueOf(AccountTypeEnums.APP_EXPRESS.getAccountType()),
                 String.valueOf(AccountTypeEnums.APP_EXPRESS.getAccountType()),
                 String.valueOf(AccountTypeEnums.APP_RESTAURANT.getAccountType()))) {
             baseMailTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_ACTIVATE.getEvent());
         } else {
             baseMailTaskEnter.setEvent(MailTemplateEventEnums.WEB_ACTIVATE.getEvent());
-        }
+        }*/
+        baseMailTaskEnter.setEvent(MailTemplateEventEnums.MOBILE_ACTIVATE.getEvent());
         baseMailTaskEnter.setToMail(user.getLoginName());
         baseMailTaskEnter.setToUserId(enter.getUserId());
         baseMailTaskEnter.setUserRequestId(enter.getRequestId());

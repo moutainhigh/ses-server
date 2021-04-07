@@ -28,6 +28,7 @@ import com.redescooter.ses.web.website.service.base.SiteUserService;
 import com.redescooter.ses.web.website.vo.customer.AddCustomerEnter;
 import com.redescooter.ses.web.website.vo.customer.CustomerDetailsResult;
 import com.redescooter.ses.web.website.vo.customer.EditSiteCustomerEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -35,7 +36,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -72,7 +72,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addCustomer(AddCustomerEnter enter) {
         SesStringUtils.objStringTrim(enter);
@@ -197,7 +197,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult editCustomer(EditSiteCustomerEnter enter) {
 

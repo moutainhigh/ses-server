@@ -35,11 +35,11 @@ import com.redescooter.ses.web.delivery.vo.DeliveryChartListResult;
 import com.redescooter.ses.web.delivery.vo.DeliveryChartResult;
 import com.redescooter.ses.web.delivery.vo.DeliveryHistroyEnter;
 import com.redescooter.ses.web.delivery.vo.DeliveryHistroyResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -195,7 +195,7 @@ public class EdDriverServiceImpl implements EdDriverService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult assignScooter(AssignScooterEnter enter) {
 
@@ -296,7 +296,7 @@ public class EdDriverServiceImpl implements EdDriverService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult removeScooter(IdEnter enter) {
         CorDriver driver = driverService.getById(enter.getId());

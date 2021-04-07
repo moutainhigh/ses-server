@@ -29,12 +29,12 @@ import com.redescooter.ses.service.foundation.service.base.PlaWorkOrderService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -91,7 +91,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
      * @Param [dto]
      **/
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult workOrderSave(WorkOrderSaveOrUpdateEnter enter) {
         SesStringUtils.objStringTrim(enter);
         // 校验字段的长度
@@ -164,7 +164,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
      * @Param [dto]
      **/
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult workOrderDelete(IdEnter enter) {
         plaWorkOrderService.removeById(enter.getId());
         return new GeneralResult(enter.getRequestId());
@@ -206,7 +206,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
      * @Param [enter]
      **/
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult workOrderStatusFlow(StatusFlowEnter enter) {
         PlaWorkOrder workOrder = plaWorkOrderService.getById(enter.getId());
         if (workOrder == null) {
@@ -226,7 +226,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
      * @Param [enter]
      **/
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult workOrderReply(workOrderReplyEnter enter) {
         PlaWorkOrder workOrder = plaWorkOrderService.getById(enter.getId());
         if (workOrder == null) {

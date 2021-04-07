@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.hub.source.corporate.service.impl;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.hub.service.corporate.CorporateScooterService;
@@ -8,10 +9,10 @@ import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.source.corporate.dm.CorTenantScooter;
 import com.redescooter.ses.service.hub.source.corporate.service.base.CorTenantScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,6 +26,7 @@ import java.util.List;
  * @create: 2020/04/26 11:55
  */
 @DubboService
+@DS("corporate")
 public class CorporateScooterServiceImpl implements CorporateScooterService {
 
     @Autowired
@@ -40,7 +42,7 @@ public class CorporateScooterServiceImpl implements CorporateScooterService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult saveScooter(List<HubSaveScooterEnter> enter) {
 
         List<CorTenantScooter> saveConTenantScooterList = new ArrayList<>();

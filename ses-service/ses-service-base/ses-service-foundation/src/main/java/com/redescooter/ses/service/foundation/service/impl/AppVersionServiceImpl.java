@@ -21,14 +21,13 @@ import com.redescooter.ses.service.foundation.dao.AppVersionUpdateLogMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaAppVersion;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -59,9 +58,6 @@ public class AppVersionServiceImpl implements AppVersionService {
 
     @Resource
     private AppVersionMapper appVersionMapper;
-
-    @Resource
-    private TransactionTemplate transactionTemplate;
 
     @Override
     public QueryAppVersionResultDTO getAppVersionById(Long id) {
@@ -97,7 +93,7 @@ public class AppVersionServiceImpl implements AppVersionService {
         return PageResult.create(enter, count, appVersionMapper.queryAppVersion(paramDTO));
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public int insertAppVersion(InsertAppVersionDTO appVersionDTO) {
 
@@ -151,7 +147,7 @@ public class AppVersionServiceImpl implements AppVersionService {
         return appVersionMapper.insertAppVersion(appVersion);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public int updateAppVersion(InsertAppVersionDTO appVersionDTO) {
         QueryAppVersionResultDTO appVersion = appVersionMapper.getAppVersionById(appVersionDTO.getId());
@@ -199,6 +195,7 @@ public class AppVersionServiceImpl implements AppVersionService {
     }
 
     @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
     public int releaseAppVersion(ReleaseAppVersionParamDTO paramDTO) {
         QueryAppVersionResultDTO appVersion = appVersionMapper.getAppVersionById(paramDTO.getId());
         if (null == appVersion) {
@@ -217,32 +214,27 @@ public class AppVersionServiceImpl implements AppVersionService {
          * 发布版本除了SCS(车载平板)需要调用emq服务通知平板进行更新其余直接修改版本状态为 “生效中”
          * 单服务内 -- 多事务操作推荐使用编程式事务
          */
-        transactionTemplate.execute(releaseAppVersion -> {
-            try {
-                if (AppVersionTypeEnum.SCS.getType().equals(paramDTO.getType())) {
-                    scooterEmqXService.updateScooterTablet(paramDTO);
-                    // SCS(车载平板)允许多个 “生效中” 的版本, 只会在全部升级时才会把之前版本状态改成 “已发布”
-                    if (4 == paramDTO.getReleaseType()) {
-                        appVersionMapper.updateAppVersionStatusByType(paramDTO.getType(),
-                                AppVersionStatusEnum.RELEASED.getStatus(), paramDTO.getId());
-                    }
-                } else {
-                    // 将除了当前发布版本以外的其它版本设置成 “已发布”
+        try {
+            if (AppVersionTypeEnum.SCS.getType().equals(paramDTO.getType())) {
+                scooterEmqXService.updateScooterTablet(paramDTO);
+                // SCS(车载平板)允许多个 “生效中” 的版本, 只会在全部升级时才会把之前版本状态改成 “已发布”
+                if (4 == paramDTO.getReleaseType()) {
                     appVersionMapper.updateAppVersionStatusByType(paramDTO.getType(),
                             AppVersionStatusEnum.RELEASED.getStatus(), paramDTO.getId());
                 }
-                appVersionMapper.updateAppVersionStatusById(paramDTO.getId(), AppVersionStatusEnum.ACTIVE.getStatus());
-            } catch (Exception e) {
-                log.error("【发布版本失败】----{}", ExceptionUtils.getStackTrace(e));
-                releaseAppVersion.setRollbackOnly();
+            } else {
+                // 将除了当前发布版本以外的其它版本设置成 “已发布”
+                appVersionMapper.updateAppVersionStatusByType(paramDTO.getType(),
+                        AppVersionStatusEnum.RELEASED.getStatus(), paramDTO.getId());
             }
-            return 1;
-        });
-
+            appVersionMapper.updateAppVersionStatusById(paramDTO.getId(), AppVersionStatusEnum.ACTIVE.getStatus());
+        } catch (Exception e) {
+            log.error("【发布版本失败】----{}", ExceptionUtils.getStackTrace(e));
+        }
         return 1;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public int deleteAppVersionById(Long id) {
         QueryAppVersionResultDTO appVersion = appVersionMapper.getAppVersionById(id);

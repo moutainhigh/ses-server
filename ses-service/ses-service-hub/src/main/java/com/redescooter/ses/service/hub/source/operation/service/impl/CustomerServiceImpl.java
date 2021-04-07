@@ -16,13 +16,13 @@ import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.hub.source.operation.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
+import io.seata.spring.annotation.GlobalTransactional;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @ClassName:CustomerServiceImpl
@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @create: 2020/01/10 13:28
  */
 @DubboService
+@DS("operation")
 public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
@@ -84,7 +85,7 @@ public class CustomerServiceImpl implements CustomerService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @DS("operation")
     public GeneralResult updateCustomerInfo(BaseCustomerEnter enter) {
 
@@ -143,7 +144,7 @@ public class CustomerServiceImpl implements CustomerService {
      * @desc: 更新客户个人信息
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @DS("operation")
     public GeneralResult updateCustomerInfoByEmail(BaseCustomerEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail, enter.getEmail()).last(" limit 1"));

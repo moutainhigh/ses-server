@@ -5,13 +5,10 @@ import com.redescooter.ses.mobile.rps.dao.base.OpeOpTraceMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeOpTrace;
 import com.redescooter.ses.mobile.rps.service.base.OpeOpTraceService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
-
 public class OpeOpTraceServiceImpl extends ServiceImpl<OpeOpTraceMapper, OpeOpTrace> implements OpeOpTraceService {
 
     @Override

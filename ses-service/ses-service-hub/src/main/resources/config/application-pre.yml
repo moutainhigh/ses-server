@@ -12,6 +12,7 @@ spring:
   datasource:
     dynamic:
       primary: corporate
+      seata: true
       datasource:
         corporate:
           driver-class-name: com.mysql.cj.jdbc.Driver
@@ -38,6 +39,27 @@ spring:
         - 172.31.6.136:7004
         - 172.31.6.136:7005
 
-
+seata:
+  enabled: true
+  enable-auto-data-source-proxy: false
+  tx-service-group: ses-service-hub-group
+  registry:
+    type: zk
+    zk:
+      server-addr: 172.31.6.101:2181
+      cluster: default
+      connect-timeout: 2000000
+  config:
+    type: zk
+    zk:
+      server-addr: 172.31.6.101:2181
+      connect-timeout: 2000000
+  service:
+    disable-global-transaction: false
+    vgroup-mapping:
+      ses-service-hub-group: default
+  client:
+    rm:
+      report-success-enable: false
 
 

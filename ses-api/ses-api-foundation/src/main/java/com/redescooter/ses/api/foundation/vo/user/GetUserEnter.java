@@ -15,6 +15,7 @@ import lombok.*;
 @NoArgsConstructor//生成无参构造函数
 @Builder
 @EqualsAndHashCode(callSuper = false)
+@ToString(callSuper = true)
 public class GetUserEnter extends GeneralEnter {
 
     private String loginName;

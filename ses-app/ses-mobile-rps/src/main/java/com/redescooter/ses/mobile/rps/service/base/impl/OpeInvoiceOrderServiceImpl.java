@@ -5,13 +5,10 @@ import com.redescooter.ses.mobile.rps.dao.base.OpeInvoiceOrderMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeInvoiceOrder;
 import com.redescooter.ses.mobile.rps.service.base.OpeInvoiceOrderService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
-
 public class OpeInvoiceOrderServiceImpl extends ServiceImpl<OpeInvoiceOrderMapper, OpeInvoiceOrder> implements OpeInvoiceOrderService {
 
     @Override

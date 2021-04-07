@@ -656,3 +656,27 @@ monday:
 constant-us-email:
   sale-principal:
     - support@redelectric.fr
+
+
+seata:
+  enabled: true
+  enable-auto-data-source-proxy: true
+  tx-service-group: ses-web-ros-group
+  registry:
+    type: zk
+    zk:
+      server-addr: 192.168.2.200:2181
+      cluster: default
+      connect-timeout: 2000000
+  config:
+    type: zk
+    zk:
+      server-addr: 192.168.2.200:2181
+      connect-timeout: 2000000
+  service:
+    disable-global-transaction: false
+    vgroup-mapping:
+      ses-web-ros-group: default
+  client:
+    rm:
+      report-success-enable: false

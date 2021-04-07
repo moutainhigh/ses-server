@@ -71,6 +71,7 @@ import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.bom.parts.PartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.parts.PartUnbindEnter;
 import com.redescooter.ses.web.ros.vo.bom.parts.PartsTypeResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -79,7 +80,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Transient;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -389,7 +389,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         return result;
     }
 
-    @Transactional
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult deletes(StringEnter enter) {
 
@@ -494,7 +494,7 @@ public class PartsRosServiceImpl implements PartsRosService {
      * @param enter
      * @return
      */
-    @Transactional
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult partUnbind(PartUnbindEnter enter) {
         OpePartsDraft partsDraft = opePartsDraftService.getById(enter.getId());
@@ -627,7 +627,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    @Transactional
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult synchronizeParts(GeneralEnter enter) {
 

@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -15,6 +16,7 @@ import java.util.Date;
  * @author assert
  * @date 2021/1/21 15:35
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel(value = "保存扫码结果返回对象")
 public class SaveScanCodeResultDTO extends GeneralResult {
@@ -47,5 +49,8 @@ public class SaveScanCodeResultDTO extends GeneralResult {
 
     @ApiModelProperty(value = "是否打印标识 true是/false否", dataType = "Boolean")
     private Boolean printFlag;
+
+    @ApiModelProperty("质检是否通过")
+    private Boolean qcResultFlag;
 
 }

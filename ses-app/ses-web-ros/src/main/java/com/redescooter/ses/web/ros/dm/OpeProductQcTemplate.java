@@ -1,15 +1,20 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-web-ros-dm-OpeProductQcTemplate")
 @Data
@@ -165,7 +170,4 @@ public class OpeProductQcTemplate implements Serializable {
 
     public static final String COL_DEF6 = "def6";
 
-    public static OpeProductQcTemplateBuilder builder() {
-        return new OpeProductQcTemplateBuilder();
-    }
 }

@@ -5,13 +5,10 @@ import com.redescooter.ses.mobile.rps.dao.base.OpeEntrustOrderMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeEntrustOrder;
 import com.redescooter.ses.mobile.rps.service.base.OpeEntrustOrderService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
-
 public class OpeEntrustOrderServiceImpl extends ServiceImpl<OpeEntrustOrderMapper, OpeEntrustOrder> implements OpeEntrustOrderService {
 
     @Override

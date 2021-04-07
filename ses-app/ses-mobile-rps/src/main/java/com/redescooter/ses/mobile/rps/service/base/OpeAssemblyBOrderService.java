@@ -1,11 +1,10 @@
 package com.redescooter.ses.mobile.rps.service.base;
 
-import java.util.List;
-import com.redescooter.ses.mobile.rps.dm.OpeAssemblyBOrder;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.transaction.annotation.Transactional;
+import com.redescooter.ses.mobile.rps.dm.OpeAssemblyBOrder;
 
-@Transactional
+import java.util.List;
+
 public interface OpeAssemblyBOrderService extends IService<OpeAssemblyBOrder>{
 
 

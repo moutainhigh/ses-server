@@ -1,5 +1,7 @@
 package com.redescooter.ses.api.foundation.service;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.vo.app.VersionTypeEnter;
 import com.redescooter.ses.api.foundation.vo.app.VersionTypeResult;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +30,11 @@ public interface VersionBaseService {
    * @author joan
    */
   VersionTypeResult getAppNewVersionChData(VersionTypeEnter versionTypeEnter);
+
+  /**
+   * 测试分布式事务
+   */
+  GeneralResult testGlobalTransactional(GeneralEnter enter);
 
 
 }

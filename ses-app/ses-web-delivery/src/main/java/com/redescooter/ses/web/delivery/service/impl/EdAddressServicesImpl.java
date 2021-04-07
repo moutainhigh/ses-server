@@ -6,10 +6,10 @@ import com.redescooter.ses.web.delivery.dm.CorExpressOrder;
 import com.redescooter.ses.web.delivery.service.EdAddressServices;
 import com.redescooter.ses.web.delivery.service.base.CorExpressOrderService;
 import com.redescooter.ses.web.delivery.vo.edorder.GetAddressOfLonLatEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -27,7 +27,7 @@ public class EdAddressServicesImpl implements EdAddressServices {
     private CorExpressOrderService expressOrderService;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult getAddressOfLonLat(GetAddressOfLonLatEnter enter) {
         CorExpressOrder update = new CorExpressOrder();
         update.setId(enter.getId());

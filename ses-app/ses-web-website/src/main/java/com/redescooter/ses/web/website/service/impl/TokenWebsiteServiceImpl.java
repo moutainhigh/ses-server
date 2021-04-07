@@ -8,7 +8,13 @@ import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.ClientTypeEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
+import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
+import com.redescooter.ses.api.common.vo.base.CheckEmailEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.GetAccountKeyResult;
+import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.SendCodeMobileUserTaskEnter;
@@ -29,9 +35,13 @@ import com.redescooter.ses.web.website.service.TokenWebsiteService;
 import com.redescooter.ses.web.website.service.base.SiteUserService;
 import com.redescooter.ses.web.website.vo.login.SiteResetPassword;
 import com.redescooter.ses.web.website.vo.login.SiteSetPasswordEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -39,7 +49,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import redis.clients.jedis.JedisCluster;
@@ -47,7 +56,11 @@ import redis.clients.jedis.JedisCluster;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.UUID;
 
 /**
  * @author Jerry
@@ -84,7 +97,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult signUp(LoginEnter enter) {
         checkUser(getUser(enter));
@@ -112,7 +125,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public TokenResult login(LoginEnter enter) {
         //入参对象去空格

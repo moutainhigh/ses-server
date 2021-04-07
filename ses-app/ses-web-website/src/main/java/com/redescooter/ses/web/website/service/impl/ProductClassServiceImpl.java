@@ -16,13 +16,13 @@ import com.redescooter.ses.web.website.service.base.SiteProductClassService;
 import com.redescooter.ses.web.website.vo.product.AddProductClassEnter;
 import com.redescooter.ses.web.website.vo.product.ModityProductClassEnter;
 import com.redescooter.ses.web.website.vo.product.ProductClassDetailsResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,7 +50,7 @@ public class ProductClassServiceImpl implements ProductClassService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addProductClass(AddProductClassEnter enter) {
 
@@ -83,7 +83,7 @@ public class ProductClassServiceImpl implements ProductClassService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult modityProductClass(ModityProductClassEnter enter) {
 
@@ -101,7 +101,7 @@ public class ProductClassServiceImpl implements ProductClassService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult removeProductClass(IdEnter enter) {
         siteProductClassService.removeById(enter.getId());

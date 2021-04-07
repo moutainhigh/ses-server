@@ -1,11 +1,10 @@
 package com.redescooter.ses.service.scooter.service.base;
 
-import java.util.List;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooterStatus;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
+import java.util.List;
+
 public interface ScoScooterStatusService extends IService<ScoScooterStatus>{
 
 

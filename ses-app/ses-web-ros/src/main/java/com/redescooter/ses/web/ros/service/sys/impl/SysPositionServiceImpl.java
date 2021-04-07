@@ -29,13 +29,13 @@ import com.redescooter.ses.web.ros.vo.sys.position.PositionEnter;
 import com.redescooter.ses.web.ros.vo.sys.position.PositionResult;
 import com.redescooter.ses.web.ros.vo.sys.position.PositionTypeResult;
 import com.redescooter.ses.web.ros.vo.sys.position.SavePositionEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.util.ArrayList;
@@ -154,7 +154,7 @@ public class SysPositionServiceImpl implements SysPositionService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult positionEdit(EditPositionEnter enter) {
         if (enter.getDeptId() != null) {
             sysDeptService.checkDeptStatus(enter.getDeptId(), false);
@@ -202,7 +202,7 @@ public class SysPositionServiceImpl implements SysPositionService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult save(SavePositionEnter enter) {
         // 校验同部门下的岗位名称是否已存在
         checkPositionName(null, enter.getPositionName(), enter.getDeptId());
@@ -278,7 +278,7 @@ public class SysPositionServiceImpl implements SysPositionService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void delePositionByDeptId(Long deptId) {
         QueryWrapper<OpeSysPosition> qw = new QueryWrapper<>();
         qw.eq(OpeSysPosition.COL_DEPT_ID, deptId);

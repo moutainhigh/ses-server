@@ -494,7 +494,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
 //     * @param inWhType
 //     */
 //    @Override
-//    @Transactional
+//    @GlobalTransactional(rollbackFor = Exception.class) 
 //    @Async
 //    public void ableLowWaitOutUp(Integer productionType, Long id, Integer stockType, Long userId, Integer inWhType) {
 //        switch (productionType) {
@@ -659,7 +659,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
     }
 
 
-//    @Transactional
+//    @GlobalTransactional(rollbackFor = Exception.class) 
 //    @Async
 //    @Override
 //    public void usedlUpWaitOutLow(Integer productionType, Long id, Integer stockType, Long userId, Integer inWhType) {

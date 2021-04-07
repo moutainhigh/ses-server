@@ -147,5 +147,3 @@ mybatis-plus:
     auto-mapping-unknown-column-behavior: warning
     local-cache-scope: session
     call-setters-on-nulls: false
-
-

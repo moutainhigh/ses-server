@@ -5,13 +5,10 @@ import com.redescooter.ses.mobile.rps.dao.base.OpeAllocateOrderMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeAllocateOrder;
 import com.redescooter.ses.mobile.rps.service.base.OpeAllocateOrderService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
-
 public class OpeAllocateOrderServiceImpl extends ServiceImpl<OpeAllocateOrderMapper, OpeAllocateOrder> implements OpeAllocateOrderService {
 
     @Override

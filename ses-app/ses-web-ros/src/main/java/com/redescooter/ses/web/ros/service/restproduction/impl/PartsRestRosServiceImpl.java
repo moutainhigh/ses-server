@@ -53,6 +53,7 @@ import com.redescooter.ses.web.ros.vo.restproduct.RosPartsListResult;
 import com.redescooter.ses.web.ros.vo.restproduct.RosPartsSaveOrUpdateEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.RosRepeatResult;
 import com.redescooter.ses.web.ros.vo.sys.staff.StaffDataResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -60,7 +61,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import javax.servlet.http.HttpServletResponse;
@@ -134,7 +134,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult partsSave(StringEnter enter) {
         List<RosPartsSaveOrUpdateEnter> enters = new ArrayList<>();
         try {
@@ -232,14 +232,14 @@ public class PartsRestRosServiceImpl implements PartsRosService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult partsDelete(RosPartsBatchOpEnter enter) {
         opeProductionPartsDraftService.removeByIds(Arrays.asList(enter.getId().split(",")));
         return new GeneralResult(enter.getRequestId());
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult partsEdit(StringEnter enter) {
         // 只有草稿才有编辑操作
         List<RosPartsSaveOrUpdateEnter> enters = new ArrayList<>();
@@ -402,7 +402,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
     }*/
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult partsAnnoun(DraftAnnounEnter enter) {
         // 发布 能进行发布的只有草稿 且支持批量发布
         String[] draftIds = enter.getId().split(",");
@@ -455,7 +455,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public List<OpeProductionPartsDraft> importParts(ImportPartsEnter enter) {
         // 逻辑需要调整
         ExcelImportResult<RosParseExcelData> excelImportResult = importExcelService.setiExcelVerifyHandler(new RosExcelParse()).importOssExcel(enter.getUrl(), RosParseExcelData.class, new ImportParams());
@@ -643,7 +643,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
      * @Date 2020/9/24 17:09
      * @Param [enter]
      **/
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult partsDisable(RosPartsBatchOpEnter enter) {
         String[] ids = enter.getId().split(",");

@@ -20,31 +20,53 @@ import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.base.OpeCombinOrderCombinBMapper;
 import com.redescooter.ses.mobile.rps.dao.base.OpeCombinOrderScooterBMapper;
 import com.redescooter.ses.mobile.rps.dao.base.OpeProductionPartsRelationMapper;
-import com.redescooter.ses.mobile.rps.dao.combinorder.*;
+import com.redescooter.ses.mobile.rps.dao.combinorder.CombinationListCombinMapper;
+import com.redescooter.ses.mobile.rps.dao.combinorder.CombinationListPartsSerialBindMapper;
+import com.redescooter.ses.mobile.rps.dao.combinorder.CombinationListRelationPartsMapper;
+import com.redescooter.ses.mobile.rps.dao.combinorder.CombinationListScooterMapper;
+import com.redescooter.ses.mobile.rps.dao.combinorder.CombinationOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionCombinBomMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionScooterBomMapper;
 import com.redescooter.ses.mobile.rps.dao.qcorder.QcOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.qcorder.QcOrderSerialBindMapper;
-import com.redescooter.ses.mobile.rps.dm.*;
+import com.redescooter.ses.mobile.rps.dm.OpeCombinListCombinB;
+import com.redescooter.ses.mobile.rps.dm.OpeCombinListPartsSerialBind;
+import com.redescooter.ses.mobile.rps.dm.OpeCombinListRelationParts;
+import com.redescooter.ses.mobile.rps.dm.OpeCombinListScooterB;
+import com.redescooter.ses.mobile.rps.dm.OpeCombinOrder;
+import com.redescooter.ses.mobile.rps.dm.OpeCombinOrderCombinB;
+import com.redescooter.ses.mobile.rps.dm.OpeCombinOrderScooterB;
+import com.redescooter.ses.mobile.rps.dm.OpeOrderSerialBind;
+import com.redescooter.ses.mobile.rps.dm.OpeProductionParts;
+import com.redescooter.ses.mobile.rps.dm.OpeProductionPartsRelation;
+import com.redescooter.ses.mobile.rps.dm.OpeQcOrderSerialBind;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.service.base.OpeOrderSerialBindService;
 import com.redescooter.ses.mobile.rps.service.combinorder.CombinationOrderService;
-import com.redescooter.ses.mobile.rps.vo.combinorder.*;
+import com.redescooter.ses.mobile.rps.vo.combinorder.CombinationListDTO;
+import com.redescooter.ses.mobile.rps.vo.combinorder.CombinationListDetailDTO;
+import com.redescooter.ses.mobile.rps.vo.combinorder.CombinationOrderDetailDTO;
+import com.redescooter.ses.mobile.rps.vo.combinorder.QueryCombinationOrderParamDTO;
+import com.redescooter.ses.mobile.rps.vo.combinorder.QueryCombinationOrderResultDTO;
+import com.redescooter.ses.mobile.rps.vo.combinorder.QueryCombinationPartsListParamDTO;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultDTO;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -138,7 +160,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         return PageResult.create(paramDTO, count, combinationOrderMapper.getCombinationOrderList(paramDTO));
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startCombination(IdEnter enter) {
         CombinationOrderDetailDTO combinationOrderDetail = combinationOrderMapper.getCombinationOrderDetailById(enter.getId());
@@ -202,7 +224,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         return combinationListDetail;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO) {
         // 无码产品不填写扫码数量时抛出异常
@@ -287,7 +309,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         return new GeneralResult(paramDTO.getRequestId());
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public SaveScanCodeResultDTO completeCombination(QueryCombinationPartsListParamDTO paramDTO) {
         SaveScanCodeResultDTO resultDTO = new SaveScanCodeResultDTO();
@@ -398,7 +420,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult submitQc(IdEnter enter) {
         OpeCombinOrder opeCombinOrder = combinationOrderMapper.getCombinationOrderById(enter.getId());
         RpsAssert.isNull(opeCombinOrder, ExceptionCodeEnums.COMBINATION_ORDER_IS_NOT_EXISTS.getCode(),
@@ -438,7 +460,7 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult generateCombinationOrderList(IdEnter enter) {
         List<OpeCombinListRelationParts> opeCombinListRelationPartList = new ArrayList<>();
@@ -670,7 +692,10 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
         sb.append("0");
         sb.append(year.substring(2, 4));
         sb.append(MonthCodeEnum.getMonthCodeByMonth(month));
-        String number = String.format("%s%s%s", DayCodeEnum.getDayCodeByDay(day), "1", RandomUtils.nextInt(1000, 9999));
+        // 获取当前时间戳,并截取最后6位拼接在编号最后
+        String timeStamp = String.valueOf(System.currentTimeMillis());
+        String sub = timeStamp.substring(timeStamp.length() - 6);
+        String number = String.format("%s%s%s", DayCodeEnum.getDayCodeByDay(day), "1", sub);
         sb.append(number);
         return sb.toString();
     }

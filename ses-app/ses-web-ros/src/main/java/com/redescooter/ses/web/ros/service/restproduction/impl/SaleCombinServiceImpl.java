@@ -26,13 +26,13 @@ import com.redescooter.ses.web.ros.vo.restproduct.CombinNameEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleCombinListResult;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleCombinSaveOrUpdateEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleListEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -67,7 +67,7 @@ public class SaleCombinServiceImpl implements SaleCombinService {
     private PartsService partsService;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult saveSaleCombin(SaleCombinSaveOrUpdateEnter enter) {
         // 去空格
         enter = SesStringUtils.objStringTrim(enter);
@@ -114,7 +114,7 @@ public class SaleCombinServiceImpl implements SaleCombinService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)  
     public GeneralResult editSaleCombin(SaleCombinSaveOrUpdateEnter enter) {
         // 去空格
         enter = SesStringUtils.objStringTrim(enter);

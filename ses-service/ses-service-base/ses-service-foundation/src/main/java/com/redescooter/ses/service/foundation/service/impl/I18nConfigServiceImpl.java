@@ -12,12 +12,12 @@ import com.redescooter.ses.service.foundation.dao.I18nConfigServiceMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaI18nConfigMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaI18nConfig;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Date;
@@ -87,7 +87,7 @@ public class I18nConfigServiceImpl implements I18nConfigService {
      * @param deleteI18nConfigEnter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void delete(DeleteI18nConfigEnter deleteI18nConfigEnter) {
 
@@ -101,7 +101,7 @@ public class I18nConfigServiceImpl implements I18nConfigService {
      * @param saveI18nConfigEnter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void save(SaveI18nConfigEnter saveI18nConfigEnter) {
         PlaI18nConfig i18nConfigBase = new PlaI18nConfig();

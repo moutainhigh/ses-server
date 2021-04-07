@@ -28,6 +28,7 @@ import com.redescooter.ses.mobile.rps.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -35,7 +36,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.lang.reflect.InvocationTargetException;
@@ -72,7 +72,7 @@ public class TokenRpsServiceImpl implements TokenRpsService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public TokenResult login(LoginEnter enter) {
         //用户名密码去除空格
@@ -249,7 +249,7 @@ public class TokenRpsServiceImpl implements TokenRpsService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public TokenResult rpsLogin(LoginEnter enter) {
         //用户名密码去除空格
         enter.setLoginName(SesStringUtils.stringTrim(enter.getLoginName()));

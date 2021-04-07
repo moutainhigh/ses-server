@@ -23,14 +23,19 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
-import com.redescooter.ses.mobile.rps.dao.base.*;
+import com.redescooter.ses.mobile.rps.dao.base.OpeOrderQcItemMapper;
+import com.redescooter.ses.mobile.rps.dao.base.OpeOrderQcTraceMapper;
+import com.redescooter.ses.mobile.rps.dao.base.OpeWmsStockRecordMapper;
 import com.redescooter.ses.mobile.rps.dao.combinorder.CombinationOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionCombinBomMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionQualityTemplateMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionScooterBomMapper;
 import com.redescooter.ses.mobile.rps.dao.qcorder.*;
-import com.redescooter.ses.mobile.rps.dao.wms.*;
+import com.redescooter.ses.mobile.rps.dao.wms.WmsCombinStockMapper;
+import com.redescooter.ses.mobile.rps.dao.wms.WmsPartsStockMapper;
+import com.redescooter.ses.mobile.rps.dao.wms.WmsScooterStockMapper;
+import com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper;
 import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
@@ -43,14 +48,17 @@ import com.redescooter.ses.mobile.rps.vo.outwhorder.SaveQcResultParamDTO;
 import com.redescooter.ses.mobile.rps.vo.qc.*;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -133,6 +141,17 @@ public class QcOrderServiceImpl implements QcOrderService {
     @Autowired
     private WmsPartsStockMapper wmsPartsStockMapper;
 
+    @Autowired
+    private OpeProductionPurchasePartsBService opeProductionPurchasePartsBService;
+
+    @Autowired
+    private OpeCombinOrderScooterBService opeCombinOrderScooterBService;
+
+    @Autowired
+    private OpeCombinOrderCombinBService opeCombinOrderCombinBService;
+
+
+
     @Override
     public Map<Integer, Integer> getQcOrderTypeCount(GeneralEnter enter) {
         List<CountByStatusResult> countByStatusResultList = qcOrderMapper.getQcOrderTypeCount();
@@ -154,9 +173,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         // 调整status值,避免恶意传参导致查询数据有问题
         paramDTO.setStatus(paramDTO.getStatus() >= 1 ? 1 : 0);
         List<CountByStatusResult> countByStatusResultList = qcOrderMapper.getQcTypeCount(paramDTO);
-        /**
-         * {qcType, totalCount}
-         */
+         // {qcType, totalCount}
         Map<Integer, Integer> map = countByStatusResultList.stream().collect(
                 Collectors.toMap(r -> Integer.valueOf(r.getStatus()), CountByStatusResult::getTotalCount)
         );
@@ -179,7 +196,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         return PageResult.create(paramDTO, count, qcOrderMapper.getQcOrderList(paramDTO));
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult startQc(IdEnter enter) {
         OpeQcOrder opeQcOrder = qcOrderMapper.getQcOrderById(enter.getId());
@@ -195,9 +212,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         opeQcOrder.setUpdatedTime(new Date());
         qcOrderMapper.updateQcOrder(opeQcOrder);
 
-        /**
-         * 开始质检修改组装单状态为“质检中”
-         */
+         // 开始质检修改组装单状态为“质检中”
         if (OrderTypeEnums.COMBIN_ORDER.getValue().equals(opeQcOrder.getRelationOrderType())) {
             OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(opeQcOrder.getRelationOrderId());
             RpsAssert.isNull(opeCombinOrder, ExceptionCodeEnums.COMBINATION_ORDER_IS_NOT_EXISTS.getCode(),
@@ -218,9 +233,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         RpsAssert.isNull(qcOrderDetailDTO, ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getCode(),
                 ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getMessage());
 
-        /**
-         * 查询质检单产品信息 1车辆 2组装件 3部件
-         */
+         // 查询质检单产品信息 1车辆 2组装件 3部件
         List<QcOrderProductDTO> productList = null;
         switch (qcOrderDetailDTO.getOrderType()) {
             case 1:
@@ -234,23 +247,17 @@ public class QcOrderServiceImpl implements QcOrderService {
                 break;
         }
 
-        /**
-         * (合格数量 + 不合格数量) < 质检数量 ---- 待质检
-         */
+         // (合格数量 + 不合格数量) < 质检数量 ---- 待质检
         List<QcOrderProductDTO> pendingQcProductList = productList.stream().filter(
                 p -> (p.getQualifiedQty() + p.getUnqualifiedQty()) < p.getQty()
         ).collect(Collectors.toList());
 
-        /**
-         * 合格数量 > 0 ---- 质检通过
-         */
+         // 合格数量 > 0 ---- 质检通过
         List<QcOrderProductDTO> qcSuccessProductList = productList.stream().filter(
                 p -> p.getQualifiedQty() > 0
         ).collect(Collectors.toList());
 
-        /**
-         * 不合格数量 > 0 ---- 质检失败
-         */
+         // 不合格数量 > 0 ---- 质检失败
         List<QcOrderProductDTO> qcFailedProductList = productList.stream().filter(
                 p -> p.getUnqualifiedQty() > 0
         ).collect(Collectors.toList());
@@ -265,9 +272,7 @@ public class QcOrderServiceImpl implements QcOrderService {
     public QcOrderProductDetailDTO getProductDetailByProductId(QueryProductDetailParamDTO paramDTO) {
         QcOrderProductDetailDTO qcOrderProductDetail = null;
 
-        /**
-         * 查询质检单产品详情 1车辆 2组装件 3部件
-         */
+         // 查询质检单产品详情 1车辆 2组装件 3部件
         switch (paramDTO.getProductType()) {
             case 1:
                 qcOrderProductDetail = qcScooterMapper.getQcScooterDetailById(paramDTO.getProductId());
@@ -286,9 +291,7 @@ public class QcOrderServiceImpl implements QcOrderService {
     @Override
     public QueryQcTemplateResultDTO getQcTemplateByIdAndType(QueryQcTemplateParamDTO paramDTO) {
         QueryQcTemplateResultDTO resultDTO = new QueryQcTemplateResultDTO();
-        /**
-         * 根据入参productType调整为质检模板的产品类型
-         */
+         // 根据入参productType调整为质检模板的产品类型
         Integer productType;
         switch (paramDTO.getProductType()) {
             case 1:
@@ -327,9 +330,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         RpsAssert.isEmpty(qcResultList, ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getCode(),
                 ExceptionCodeEnums.QC_TEMPLATE_B_IS_EMPTY.getMessage());
 
-        /**
-         * {productQualityTempateId, List<ProductQcTemplateResultDTO>}
-         */
+         // {productQualityTempateId, List<ProductQcTemplateResultDTO>}
         Map<Long, List<ProductQcTemplateResultDTO>> templateBMap = qcResultList.stream().collect(
                 Collectors.groupingBy(ProductQcTemplateResultDTO::getTemplateId)
         );
@@ -342,7 +343,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         return resultDTO;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public SaveScanCodeResultDTO saveQcResult(SaveQcResultParamDTO paramDTO) {
         SaveScanCodeResultDTO resultDTO = new SaveScanCodeResultDTO();
@@ -353,9 +354,7 @@ public class QcOrderServiceImpl implements QcOrderService {
                 ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getCode(), ExceptionCodeEnums.SCAN_CODE_QTY_ERROR.getMessage());
         RpsAssert.isTrue(paramDTO.getIdClass() && StringUtils.isBlank(paramDTO.getSerialNum()),
                 ExceptionCodeEnums.SERIAL_NUM_IS_EMPTY.getCode(), ExceptionCodeEnums.SERIAL_NUM_IS_EMPTY.getMessage());
-        /**
-         * 公共参数
-         */
+         // 公共参数
         Integer qcQty = paramDTO.getIdClass() ? 1 : paramDTO.getQcQty();
         Integer remainingQty = 0;
         String name = null;
@@ -373,9 +372,7 @@ public class QcOrderServiceImpl implements QcOrderService {
             throw new SesMobileRpsException(ExceptionCodeEnums.ILLEGAL_DATA.getCode(), ExceptionCodeEnums.ILLEGAL_DATA.getMessage());
         }
 
-        /**
-         * 查询质检模板信息, 用于检查产品质检结果是否通过
-         */
+         // 查询质检模板信息, 用于检查产品质检结果是否通过
         QueryQcTemplateParamDTO queryParam = new QueryQcTemplateParamDTO();
         queryParam.setBomId(paramDTO.getBomId());
         queryParam.setProductType(paramDTO.getProductType());
@@ -386,16 +383,12 @@ public class QcOrderServiceImpl implements QcOrderService {
         RpsAssert.isEmpty(productQcTemplateList, ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getCode(),
                 ExceptionCodeEnums.QC_TEMPLATE_IS_EMPTY.getMessage());
 
-        /**
-         * {templateId, List<ProductQcTemplateResultDTO>}
-         */
+         // {templateId, List<ProductQcTemplateResultDTO>}
         Map<Long, List<ProductQcTemplateResultDTO>> qcResultMap = productQcTemplateList.stream().collect(
                 Collectors.toMap(ProductQcTemplateDTO::getId, t -> t.getQcTemplateResultList())
         );
 
-        /**
-         * {templateId, ProductQcTemplateDTO}
-         */
+         // {templateId, ProductQcTemplateDTO}
         Map<Long, ProductQcTemplateDTO> qcTemplateMap = productQcTemplateList.stream().collect(
                 Collectors.toMap(ProductQcTemplateDTO::getId, t -> t)
         );
@@ -423,9 +416,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         opeOrderQcItem.setUpdatedBy(paramDTO.getUserId());
         opeOrderQcItem.setUpdatedTime(new Date());
 
-        /**
-         * 检查质检结果是否通过
-         */
+         // 检查质检结果是否通过
         boolean qcResultIdIsExists = false;
         for (QcProductResultDTO qc : qcProductResultList) {
             // 组装质检记录数据
@@ -470,9 +461,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         // 质检结果 pass/ng
         opeOrderQcItem.setQcResult(qcResultFlag ? 1 : 2);
 
-        /**
-         * 产品扫码质检 1车辆 2组装件 3部件
-         */
+         // 产品扫码质检 1车辆 2组装件 3部件
         Long qcId = null;
         Long stockId = null;
         OpeQcOrder opeQcOrder = null;
@@ -490,15 +479,15 @@ public class QcOrderServiceImpl implements QcOrderService {
                 // 质检成功合格数量+1,失败不合格数量+1
                 if (qcResultFlag) {
                     opeQcScooterB.setQualifiedQty(opeQcScooterB.getQualifiedQty() + 1);
+                    // 质检合格之后 需要将数量同步到质检单对应的生成采购单的部件表中(部件了类型的质检单 只可能是由生产采购单来的)
+                    changeCombinScooter(opeQcOrder.getRelationOrderId(),opeQcScooterB.getScooterBomId());
                 } else {
                     opeQcScooterB.setUnqualifiedQty(opeQcScooterB.getUnqualifiedQty() + 1);
                     OpeProductionScooterBom scooterBom = scooterBomMapper.getScooterBomById(paramDTO.getBomId());
                     RpsAssert.isNull(scooterBom, ExceptionCodeEnums.PRODUCT_IS_EMPTY.getCode(),
                             ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
 
-                    /**
-                     * 第一次入库仓库中是没有这辆车的,需要把这辆车添加到不合格品库里面去
-                     */
+                     // 第一次入库仓库中是没有这辆车的,需要把这辆车添加到不合格品库里面去
                     QueryWrapper<OpeWmsQualifiedScooterStock> scooterStockQueryWrapper = new QueryWrapper<>();
                     scooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_DR, "0");
                     scooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_GROUP_ID, scooterBom.getGroupId());
@@ -526,9 +515,7 @@ public class QcOrderServiceImpl implements QcOrderService {
                     stockRelationType = WmsTypeEnum.SCOOTER_UNQUALIFIED_WAREHOUSE.getType();
                     inWhType = InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue();
 
-                    /**
-                     * 质检失败产品到不合格品库,同时成品库可用数量同时也需要扣减(只针对于调拨发货流程)
-                     */
+                     // 质检失败产品到不合格品库,同时成品库可用数量同时也需要扣减(只针对于调拨发货流程)
                     if (OrderTypeEnums.OUTBOUND.getValue().equals(opeQcOrder.getRelationOrderType())
                             && QcTypeEnum.SHIP.getType().equals(opeQcOrder.getQcType())) {
                         OpeWmsScooterStock opeWmsScooterStock = wmsScooterStockMapper
@@ -544,9 +531,15 @@ public class QcOrderServiceImpl implements QcOrderService {
                         opeWmsScooterStock.setUpdatedTime(new Date());
                         wmsScooterStockMapper.updateWmsScooterStock(opeWmsScooterStock);
 
-                        // 把产品从仓库详情中删除(有码产品)
+                        // 把产品从仓库详情中删除(有码产品)(将库存状态改为不可用)
                         if (paramDTO.getIdClass()) {
-                            wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(Arrays.asList(paramDTO.getSerialNum()));
+                            OpeWmsStockSerialNumber model = new OpeWmsStockSerialNumber();
+                            model.setStockStatus(WmsStockStatusEnum.UNAVAILABLE.getStatus());
+                            model.setRsn(paramDTO.getSerialNum());
+                            model.setUpdatedBy(paramDTO.getUserId());
+                            model.setUpdatedTime(new Date());
+                            wmsStockSerialNumberMapper.updateWmsStockSerialNumberByRSn(model);
+                            //wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(Arrays.asList(paramDTO.getSerialNum()));
                         }
                     }
 
@@ -573,12 +566,12 @@ public class QcOrderServiceImpl implements QcOrderService {
                 // 更新组装件质检合格/不合格数量
                 if (qcResultFlag) {
                     opeQcCombinB.setQualifiedQty(opeQcCombinB.getQualifiedQty() + 1);
+                    // 质检合格之后 需要将数量同步到质检单对应的生成采购单的部件表中(部件了类型的质检单 只可能是由生产采购单来的)
+                    changeCombinScooter(opeQcOrder.getRelationOrderId(),opeQcCombinB.getProductionCombinBomId());
                 } else {
                     opeQcCombinB.setUnqualifiedQty(opeQcCombinB.getUnqualifiedQty() + 1);
 
-                    /**
-                     * 第一次入库仓库中是没有这个组装件的,需要把这个组装件添加到不合格品库里面去
-                     */
+                     // 第一次入库仓库中是没有这个组装件的,需要把这个组装件添加到不合格品库里面去
                     QueryWrapper<OpeWmsQualifiedCombinStock> combinStockQueryWrapper = new QueryWrapper<>();
                     combinStockQueryWrapper.eq(OpeWmsQualifiedCombinStock.COL_DR, "0");
                     combinStockQueryWrapper.eq(OpeWmsQualifiedCombinStock.COL_PRODUCTION_COMBIN_BOM_ID, paramDTO.getBomId());
@@ -612,9 +605,7 @@ public class QcOrderServiceImpl implements QcOrderService {
                     stockRelationType = WmsTypeEnum.COMBINATION_UNQUALIFIED_WAREHOUSE.getType();
                     inWhType = InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue();
 
-                    /**
-                     * 质检失败产品到不合格品库,同时成品库可用数量同时也需要扣减(只针对于调拨发货流程)
-                     */
+                     // 质检失败产品到不合格品库,同时成品库可用数量同时也需要扣减(只针对于调拨发货流程)
                     if (OrderTypeEnums.OUTBOUND.getValue().equals(opeQcOrder.getRelationOrderType())
                             && QcTypeEnum.SHIP.getType().equals(opeQcOrder.getQcType())) {
                         OpeWmsCombinStock opeWmsCombinStock = wmsCombinStockMapper.getWmsCombinStockByBomId(opeQcCombinB.getProductionCombinBomId());
@@ -629,9 +620,15 @@ public class QcOrderServiceImpl implements QcOrderService {
                         opeWmsCombinStock.setUpdatedTime(new Date());
                         wmsCombinStockMapper.updateWmsCombinStock(opeWmsCombinStock);
 
-                        // 把产品从仓库详情中删除(有码产品)
+                        // 把产品从仓库详情中删除(有码产品)(将库存状态改为不可用)
                         if (paramDTO.getIdClass()) {
-                            wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(Arrays.asList(paramDTO.getSerialNum()));
+                            OpeWmsStockSerialNumber model = new OpeWmsStockSerialNumber();
+                            model.setStockStatus(WmsStockStatusEnum.UNAVAILABLE.getStatus());
+                            model.setRsn(paramDTO.getSerialNum());
+                            model.setUpdatedBy(paramDTO.getUserId());
+                            model.setUpdatedTime(new Date());
+                            wmsStockSerialNumberMapper.updateWmsStockSerialNumberByRSn(model);
+                            //wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(Arrays.asList(paramDTO.getSerialNum()));
                         }
                     }
                 }
@@ -650,7 +647,7 @@ public class QcOrderServiceImpl implements QcOrderService {
                 Integer idClass = partsMapper.getPartsIdClassById(paramDTO.getBomId(), paramDTO.getPartsNo());
                 RpsAssert.isNull(idClass, ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(),
                         ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
-                boolean flag = 0 == idClass ? false : true;
+                boolean flag = 0 != idClass;
                 RpsAssert.isFalse(paramDTO.getIdClass() == flag, ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getCode(),
                         ExceptionCodeEnums.PRODUCT_ID_CLASS_ERROR.getMessage());
                 // 无码产品不填写质检数量时抛出异常
@@ -672,10 +669,8 @@ public class QcOrderServiceImpl implements QcOrderService {
                     RpsAssert.isTrue(opeQcPartsB.getUnqualifiedQty() > 0 || opeQcPartsB.getQualifiedQty() > 0,
                             ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getCode(), ExceptionCodeEnums.NO_NEED_TO_CHECK_AGAIN.getMessage());
                 } else {
-                    /**
-                     * 如果是质检单是由“工厂采购单”所生成对于重复扫码校验的逻辑就要修改, 因为工厂采购生成的质检单扫码时,扫的码是部件本身的,
-                     * 其它例如,组装、出库生成的质检单扫码时，扫的是后台生成的码, 这里比较特殊所以需要这样处理
-                     */
+                     // 如果是质检单是由“工厂采购单”所生成对于重复扫码校验的逻辑就要修改, 因为工厂采购生成的质检单扫码时,扫的码是部件本身的,
+                     // 其它例如,组装、出库生成的质检单扫码时，扫的是后台生成的码, 这里比较特殊所以需要这样处理
                     if (OrderTypeEnums.FACTORY_PURCHAS.getValue().equals(opeQcOrder.getRelationOrderType())) {
                         int count = qcOrderSerialBindMapper.isExistsSerialNum(paramDTO.getSerialNum(), paramDTO.getProductId(),
                                 OrderTypeEnums.FACTORY_PURCHAS.getValue());
@@ -689,13 +684,13 @@ public class QcOrderServiceImpl implements QcOrderService {
                 if (qcResultFlag) {
                     qty = paramDTO.getIdClass() ? opeQcPartsB.getQualifiedQty() + 1 : qcQty;
                     opeQcPartsB.setQualifiedQty(qty);
+                    // 质检合格之后 需要将数量同步到质检单对应的生成采购单的部件表中(部件了类型的质检单 只可能是由生产采购单来的)
+                    changePurchaseParts(opeQcOrder.getRelationOrderId(),opeQcPartsB.getPartsId(),paramDTO.getIdClass()?1:qcQty);
                 } else {
                     qty = paramDTO.getIdClass() ? opeQcPartsB.getUnqualifiedQty() + 1 : qcQty;
                     opeQcPartsB.setUnqualifiedQty(qty);
 
-                    /**
-                     * 第一次入库仓库中是没有这个部件的,需要把这个部件添加到不合格品库里面去
-                     */
+                     // 第一次入库仓库中是没有这个部件的,需要把这个部件添加到不合格品库里面去
                     QueryWrapper<OpeWmsQualifiedPartsStock> partsStockQueryWrapper = new QueryWrapper<>();
                     partsStockQueryWrapper.eq(OpeWmsQualifiedPartsStock.COL_DR, "0");
                     partsStockQueryWrapper.eq(OpeWmsQualifiedPartsStock.COL_PARTS_ID, paramDTO.getBomId());
@@ -729,9 +724,7 @@ public class QcOrderServiceImpl implements QcOrderService {
                     stockRelationType = WmsTypeEnum.PARTS_UNQUALIFIED_WAREHOUSE.getType();
                     inWhType = InWhTypeEnums.PURCHASE_IN_WHOUSE.getValue();
 
-                    /**
-                     * 质检失败产品到不合格品库,同时成品库可用数量同时也需要扣减(只针对于调拨发货流程)
-                     */
+                     // 质检失败产品到不合格品库,同时成品库可用数量同时也需要扣减(只针对于调拨发货流程)
                     if (OrderTypeEnums.OUTBOUND.getValue().equals(opeQcOrder.getRelationOrderType())
                             && QcTypeEnum.SHIP.getType().equals(opeQcOrder.getQcType())) {
                         OpeWmsPartsStock opeWmsPartsStock = wmsPartsStockMapper.getWmsPartsStockByBomId(opeQcPartsB.getPartsId());
@@ -746,9 +739,15 @@ public class QcOrderServiceImpl implements QcOrderService {
                         opeWmsPartsStock.setUpdatedTime(new Date());
                         wmsPartsStockMapper.updateWmsPartsStock(opeWmsPartsStock);
 
-                        // 把产品从仓库详情中删除(有码产品)
+                        // 把产品从仓库详情中删除(有码产品)(将库存状态改为不可用)
                         if (paramDTO.getIdClass()) {
-                            wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(Arrays.asList(paramDTO.getSerialNum()));
+                            OpeWmsStockSerialNumber model = new OpeWmsStockSerialNumber();
+                            model.setStockStatus(WmsStockStatusEnum.UNAVAILABLE.getStatus());
+                            model.setRsn(paramDTO.getSerialNum());
+                            model.setUpdatedBy(paramDTO.getUserId());
+                            model.setUpdatedTime(new Date());
+                            wmsStockSerialNumberMapper.updateWmsStockSerialNumberByRSn(model);
+                            //wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(Arrays.asList(paramDTO.getSerialNum()));
                         }
                     }
                 }
@@ -762,9 +761,7 @@ public class QcOrderServiceImpl implements QcOrderService {
                 break;
         }
 
-        /**
-         * 保存质检产品序列号信息
-         */
+         // 保存质检产品序列号信息
         OpeQcOrderSerialBind opeQcOrderSerialBind = new OpeQcOrderSerialBind();
         Long serialId = idAppService.getId(SequenceName.OPE_QC_ORDER_SERIAL_BIND);
         opeQcOrderSerialBind.setId(serialId);
@@ -782,9 +779,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         opeQcOrderSerialBind.setUpdatedBy(paramDTO.getUserId());
         opeQcOrderSerialBind.setUpdatedTime(new Date());
 
-        /**
-         * 保存库存产品序列号信息(质检失败时保存, 质检成功在入库单那边保存)
-         */
+         // 保存库存产品序列号信息(质检失败时保存, 质检成功在入库单那边保存)
         OpeWmsStockSerialNumber opeWmsStockSerialNumber = new OpeWmsStockSerialNumber();
         opeWmsStockSerialNumber.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_SERIAL_NUMBER));
         opeWmsStockSerialNumber.setRelationId(stockId);
@@ -832,9 +827,7 @@ public class QcOrderServiceImpl implements QcOrderService {
             opeWmsStockRecordMapper.insertOrUpdateSelective(opeWmsStockRecord);
         }
 
-        /**
-         * 保存产品质检记录
-         */
+         // 保存产品质检记录
         opeOrderQcItem.setOrderSerialId(serialId);
         opeOrderQcItem.setOrderType(opeQcOrder.getRelationOrderType());
         opeOrderQcItemMapper.insertOrUpdate(opeOrderQcItem);
@@ -848,23 +841,69 @@ public class QcOrderServiceImpl implements QcOrderService {
         resultDTO.setSerialNum(ProductTypeEnums.PARTS.getValue().equals(paramDTO.getProductType()) ? serialNum : paramDTO.getSerialNum());
         resultDTO.setBluetoothMacAddress(paramDTO.getBluetoothMacAddress());
         resultDTO.setProductionDate(new Date());
+        resultDTO.setQcResultFlag(qcResultFlag);
         return resultDTO;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+
+    // 质检通过之后 将数量同步到质检单对应的生成采购单的部件表中
+    public void changePurchaseParts(Long purchaseId,Long partsId,Integer qty){
+        // 找到生产采购的部件表
+        QueryWrapper<OpeProductionPurchasePartsB> qw = new QueryWrapper<>();
+        qw.eq(OpeProductionPurchasePartsB.COL_PARTS_ID,partsId);
+        qw.eq(OpeProductionPurchasePartsB.COL_PRODUCTION_PURCHASE_ID,purchaseId);
+        qw.last("limit 1");
+        OpeProductionPurchasePartsB purchasePartsB = opeProductionPurchasePartsBService.getOne(qw);
+        if (purchasePartsB != null) {
+            purchasePartsB.setQualifiedQty((purchasePartsB.getQualifiedQty()==null?0:purchasePartsB.getQualifiedQty()) + qty);
+            opeProductionPurchasePartsBService.saveOrUpdate(purchasePartsB);
+        }
+    }
+
+
+    // 质检通过之后 将数量同步到质检单对应的组装单的车辆表中
+    public void changeCombinScooter(Long combinId,Long scooterBomId) {
+        // 找到组装单的车辆表
+        QueryWrapper<OpeCombinOrderScooterB> qw = new QueryWrapper<>();
+        qw.eq(OpeCombinOrderScooterB.COL_COMBIN_ID, combinId);
+        qw.eq(OpeCombinOrderScooterB.COL_SCOOTER_BOM_ID, scooterBomId);
+        qw.last("limit 1");
+        OpeCombinOrderScooterB orderScooterB = opeCombinOrderScooterBService.getOne(qw);
+        if (orderScooterB != null) {
+            orderScooterB.setWaitInWhQty((orderScooterB.getWaitInWhQty()==null?0:orderScooterB.getWaitInWhQty())+1);
+            opeCombinOrderScooterBService.saveOrUpdate(orderScooterB);
+        }
+    }
+
+
+    // 质检通过之后 将数量同步到质检单对应的组装单的组装件中
+    public void changeCombinCombin(Long combinId,Long productionCombinBomId) {
+        // 找到组装单的车辆表
+        QueryWrapper<OpeCombinOrderCombinB> qw = new QueryWrapper<>();
+        qw.eq(OpeCombinOrderCombinB.COL_COMBIN_ID, combinId);
+        qw.eq(OpeCombinOrderCombinB.COL_PRODUCTION_COMBIN_BOM_ID, productionCombinBomId);
+        qw.last("limit 1");
+        OpeCombinOrderCombinB orderCombinB = opeCombinOrderCombinBService.getOne(qw);
+        if (orderCombinB != null) {
+            orderCombinB.setWaitInWhQty((orderCombinB.getWaitInWhQty()==null?0:orderCombinB.getWaitInWhQty())+1);
+            opeCombinOrderCombinBService.saveOrUpdate(orderCombinB);
+        }
+    }
+
+
+
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult completeQc(IdEnter enter) {
         OpeQcOrder opeQcOrder = qcOrderMapper.getQcOrderById(enter.getId());
 
         RpsAssert.isNull(opeQcOrder, ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getCode(),
                 ExceptionCodeEnums.QC_ORDER_IS_NOT_EXISTS.getMessage());
-        RpsAssert.isTrue(!QcStatusEnum.QUALITY_INSPECTION.getStatus().equals(opeQcOrder.getQcStatus()),
-                ExceptionCodeEnums.QC_ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.QC_ORDER_STATUS_ERROR.getMessage());
+        /*RpsAssert.isTrue(!QcStatusEnum.QUALITY_INSPECTION.getStatus().equals(opeQcOrder.getQcStatus()),
+                ExceptionCodeEnums.QC_ORDER_STATUS_ERROR.getCode(), ExceptionCodeEnums.QC_ORDER_STATUS_ERROR.getMessage());*/
 
-        /**
-         * 完成质检时检查产品是否全部质检完 1车辆 2组装件 3部件
-         */
-        List<QcOrderProductDTO> productList = null;
+         // 完成质检时检查产品是否全部质检完 1车辆 2组装件 3部件
+        List<QcOrderProductDTO> productList;
         switch (opeQcOrder.getOrderType()) {
             case 1:
                 productList = qcScooterMapper.getQcScooterByQcId(enter.getId());
@@ -885,9 +924,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         opeQcOrder.setUpdatedTime(new Date());
         qcOrderMapper.updateQcOrder(opeQcOrder);
 
-        /**
-         * 完成质检修改关联单据状态
-         */
+         // 完成质检修改关联单据状态
         if (OrderTypeEnums.FACTORY_PURCHAS.getValue().equals(opeQcOrder.getRelationOrderType())) {
             OpeProductionPurchaseOrder opeProductionPurchaseOrder = new OpeProductionPurchaseOrder();
             opeProductionPurchaseOrder.setId(opeQcOrder.getRelationOrderId());

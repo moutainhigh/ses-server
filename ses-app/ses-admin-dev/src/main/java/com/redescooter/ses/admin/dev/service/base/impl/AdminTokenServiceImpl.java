@@ -31,6 +31,7 @@ import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -39,7 +40,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.lang.reflect.InvocationTargetException;
@@ -81,7 +81,7 @@ public class AdminTokenServiceImpl implements AdminTokenService {
      * @Date 2020/12/3 14:03
      * @Param [enter]
      **/
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public TokenResult login(LoginEnter enter) {
 
@@ -255,7 +255,7 @@ public class AdminTokenServiceImpl implements AdminTokenService {
      * @Param [enter]
      **/
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult emailLoginSendCode(LoginEnter enter) {
         // 先验证码输入的邮箱是否在系统中注册过
         AdmSysUser sysUser = getOpeSysUser(enter);
@@ -338,7 +338,7 @@ public class AdminTokenServiceImpl implements AdminTokenService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult modifyPassword(ModifyPasswordEnter enter) {
         //密码去空格
         if (StringUtils.isNotEmpty(enter.getOldPassword())) {
@@ -489,7 +489,7 @@ public class AdminTokenServiceImpl implements AdminTokenService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult sendForgetPasswordEmail(BaseSendMailEnter enter) {
         if (Strings.isNullOrEmpty(enter.getMail())) {
             throw new SesAdminDevException(ExceptionCodeEnums.EMAIL_NOT_NULL.getCode(), ExceptionCodeEnums.EMAIL_NOT_NULL.getMessage());

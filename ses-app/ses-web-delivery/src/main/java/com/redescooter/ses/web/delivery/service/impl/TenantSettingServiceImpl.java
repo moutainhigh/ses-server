@@ -23,13 +23,13 @@ import com.redescooter.ses.web.delivery.service.TenantSettingService;
 import com.redescooter.ses.web.delivery.vo.TenantInforResult;
 import com.redescooter.ses.web.delivery.vo.UpdateCustomerInfoEnter;
 import com.redescooter.ses.web.delivery.vo.UpdateTenantConfigEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -104,7 +104,7 @@ public class TenantSettingServiceImpl implements TenantSettingService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult updateTenantConfig(UpdateTenantConfigEnter enter) {
         List<String> weekList = new ArrayList<>();
@@ -126,7 +126,7 @@ public class TenantSettingServiceImpl implements TenantSettingService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult updateCustomerInfo(UpdateCustomerInfoEnter enter) {
         // 更新客户信息

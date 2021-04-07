@@ -85,6 +85,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.PurchasPartLi
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.SaveProductionPurchasEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.SavePurchasPaymentEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.purchass.SavePurchasProductEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -92,7 +93,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -278,7 +278,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
      * @Return: GeneralResult
      * @desc: 保存采购单
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveProductionPurchasEnter enter) {
         // 产品列表
@@ -487,7 +487,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
      * @desc: 关闭订单
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult close(IdEnter enter) {
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(enter.getId());
         if (Objects.isNull(opeProductionPurchaseOrder)) {
@@ -524,7 +524,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
      * @desc: 取消订单
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult cancel(CancelOrderEnter enter) {
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(enter.getId());
         if (Objects.isNull(opeProductionPurchaseOrder)) {
@@ -561,7 +561,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
      * @desc: 删除
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult delete(IdEnter enter) {
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(enter.getId());
         if (Objects.isNull(opeProductionPurchaseOrder)) {
@@ -591,7 +591,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
      * @desc: 下单
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult bookOrder(IdEnter enter) {
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(enter.getId());
         if (Objects.isNull(opeProductionPurchaseOrder)) {
@@ -620,7 +620,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
 
     // 部件入库单准备质检时，将关联的部件入库单的状态变为待入库
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void statusToBeStored(Long productionPurchaseId, Long userId) {
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(productionPurchaseId);
         if (Objects.isNull(opeProductionPurchaseOrder)) {
@@ -647,7 +647,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
 
     // 部件入库单确认入库时，将关联的部件入库单的状态变为部分入库或已入库
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void statusToPartWhOrAllInWh(Long productionPurchaseId, Long inWhId, Long userId) {
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = opeProductionPurchaseOrderService.getById(productionPurchaseId);
         if (Objects.isNull(opeProductionPurchaseOrder)) {
@@ -678,7 +678,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
      * 生成组装单的质检单(提供给rps使用)
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult generatorQcOrderByCombin(IdEnter enter) {
         log.info("生成组装单的质检单(提供给rps使用)的入参是:[{}]", enter);
         OpeCombinOrder combinOrder = opeCombinOrderMapper.selectById(enter.getId());
@@ -789,7 +789,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
      * 生成出库单的质检单(提供给rps使用)
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult generatorQcOrderByOutBound(IdEnter enter) {
         log.info("生成出库单的质检单(提供给rps使用)的入参是:[{}]", enter);
         OpeOutWhouseOrder outOrder = opeOutWhouseOrderMapper.selectById(enter.getId());
@@ -947,7 +947,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
      * 确认到货
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult arrived(IdEnter enter) {
         OpeProductionPurchaseOrder order = opeProductionPurchaseOrderService.getById(enter.getId());
         if (null == order) {

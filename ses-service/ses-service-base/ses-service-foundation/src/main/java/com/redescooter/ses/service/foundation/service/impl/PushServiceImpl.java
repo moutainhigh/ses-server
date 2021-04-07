@@ -29,6 +29,7 @@ import com.redescooter.ses.service.foundation.dm.base.PlaPushResult;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.foundation.service.base.PlaJpushUserService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +37,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -161,7 +161,7 @@ public class PushServiceImpl implements PushService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public List<PushJgResult> pushPC(MessagePushEnter enter) {
         // pc 端的消息推送 实质就是消息保存 消息已经在前面统一保存过了
@@ -191,7 +191,7 @@ public class PushServiceImpl implements PushService {
      *
      * @param str
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)  
     @Override
     public void pushMessage(String str) {
         Map map = JSON.parseObject(str, Map.class);

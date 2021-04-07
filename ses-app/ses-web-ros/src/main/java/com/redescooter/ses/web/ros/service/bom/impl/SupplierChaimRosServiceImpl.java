@@ -35,11 +35,11 @@ import com.redescooter.ses.web.ros.vo.bom.supplierChaim.EditProductPriceEnter;
 import com.redescooter.ses.web.ros.vo.bom.supplierChaim.ProductPriceChartResult;
 import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListEnter;
 import com.redescooter.ses.web.ros.vo.bom.supplierChaim.SupplierChaimListResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -149,7 +149,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
      * @date: 2020/2/25 15:42
      * @Version: Ros 1.2
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult editProductPrice(EditProductPriceEnter enter) {
         OpeProductionParts opeProductionParts = opeProductionPartsService.getById(enter.getId());

@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeWhse">
     <!--@mbg.generated-->
     <!--@Table ope_whse-->
-    <result column="id" jdbcType="BIGINT" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="code" jdbcType="VARCHAR" property="code" />
