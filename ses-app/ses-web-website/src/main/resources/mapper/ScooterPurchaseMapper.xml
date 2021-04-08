@@ -92,16 +92,26 @@
     </select>
 
     <select id="modelAndPriceList" resultType="com.redescooter.ses.web.website.vo.product.ModelPriceResult">
-        select spm.id                 as modelid,
+        <!--select spm.id                 as modelid,
                spm.product_model_name as productModelName,
                spp.id                 as productPriceId,
                spp.price_type         as priceType,
                spp.price,
                spp.start_price        as startPrice
         from site_product_model spm
-                     left join site_product_price spp on spm.id = spp.product_model_id and spp.dr = 0
+        left join site_product_price spp on spm.id = spp.product_model_id and spp.dr = 0
+        where spm.dr = 0 and spp.price_type = 0
+        group by modelid, productPriceId-->
+
+        select  spm.id                 as modelid,
+                spm.product_model_name as productModelName,
+                spp.id                 as productPriceId,
+                IFNULL(spp.price_type, 0) as priceType,
+                IFNULL(spp.price, 0) as price,
+                IFNULL(spp.start_price, 0) as startPrice
+        from site_product_model spm
+        left join site_product_price spp on spm.id = spp.product_model_id and spp.dr = 0
         where spm.dr = 0
-          and spp.price_type = 0
         group by modelid, productPriceId
     </select>
 </mapper>
