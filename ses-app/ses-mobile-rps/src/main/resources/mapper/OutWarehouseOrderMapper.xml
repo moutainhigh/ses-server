@@ -38,13 +38,14 @@
         <if test="status == 1">and out_wh_status = 20</if>
         <if test="orderType != null">and out_wh_type = #{orderType}</if>
         <if test="type != null">and out_type = #{type}</if>
+
     </sql>
 
     <!--查询所有出库单类型数量-->
     <select id="getOutWarehouseOrderTypeCount" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select out_wh_type `status`, count(id) totalCount
         from ope_out_whouse_order whorder
-        where whorder.dr = 0
+        where whorder.dr = 0 and whorder.country_type = 1
         group by out_wh_type
     </select>
 
@@ -53,7 +54,7 @@
             resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select out_type `status`, count(id) totalCount
         from ope_out_whouse_order
-        where dr = 0 and out_wh_type = #{type}
+        where dr = 0 and out_wh_type = #{type} and country_type = 1
         <if test="status == 0">and out_wh_status in (-1, 10)</if>
         <if test="status == 1">and out_wh_status = 20</if>
         group by out_type
@@ -63,7 +64,7 @@
     <select id="countByOutWarehouseOrder" parameterType="com.redescooter.ses.mobile.rps.vo.outwhorder.QueryOutWarehouseOrderParamDTO"
             resultType="java.lang.Integer">
         select count(*) from ope_out_whouse_order
-	    where dr = 0
+	    where dr = 0 and country_type = 1
 	    <include refid="getOutWarehouseOrderListWhere" />
     </select>
 
@@ -73,7 +74,7 @@
         select id,out_wh_no outWarehouseNo,out_wh_status `status`,out_wh_type orderType,
         out_type `type`,out_wh_qty qty
         from ope_out_whouse_order
-        where dr = 0
+        where dr = 0 and country_type = 1
         <include refid="getOutWarehouseOrderListWhere" />
         order by created_time asc
         limit #{startRow}, #{pageSize}

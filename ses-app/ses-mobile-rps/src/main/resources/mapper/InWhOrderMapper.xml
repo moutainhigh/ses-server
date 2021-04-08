@@ -39,7 +39,7 @@
     <select id="getInWarehouseOrderTypeCount" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select order_type `status`, count(id) totalCount
         from ope_in_whouse_order
-        where dr = 0
+        where dr = 0 and country_type = 1
         group by order_type
     </select>
 
@@ -48,7 +48,7 @@
             resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
         select in_wh_type `status`, count(id) totalCount
         from ope_in_whouse_order
-        where dr = 0 and order_type = #{type}
+        where dr = 0 and order_type = #{type} and country_type = 1
         <if test="status == 0">and in_wh_status = 1</if>
         <if test="status == 1">and in_wh_status = 10</if>
         group by in_wh_type
@@ -58,7 +58,7 @@
     <select id="countByInWhOrder" parameterType="com.redescooter.ses.mobile.rps.vo.inwhorder.QueryInWhOrderParamDTO"
             resultType="java.lang.Integer">
         select count(*) from ope_in_whouse_order
-	    where dr = 0
+	    where dr = 0 and country_type = 1
 	    <include refid="InWarehouseOrderListWhere" />
     </select>
 
@@ -68,7 +68,7 @@
         select id, in_wh_no inWhNo, in_wh_qty qty, order_type orderType,
         in_wh_type `type`, in_wh_status `status`
 	    from ope_in_whouse_order
-	    where dr = 0
+	    where dr = 0 and country_type = 1
 	    <include refid="InWarehouseOrderListWhere" />
         order by created_time asc
         limit #{startRow}, #{pageSize}
