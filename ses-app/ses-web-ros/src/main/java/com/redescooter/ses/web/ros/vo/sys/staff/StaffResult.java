@@ -121,6 +121,9 @@ public class StaffResult extends GeneralResult {
     @ApiModelProperty(value = "国家编码如")
     private String countryCode;
 
+    @ApiModelProperty(value = "国家编码缩写如CN")
+    private String countryCodeName;
+
     @ApiModelProperty(value = "是否开启安全码（0：否，1：是）")
     private Integer ifSafeCode;
 

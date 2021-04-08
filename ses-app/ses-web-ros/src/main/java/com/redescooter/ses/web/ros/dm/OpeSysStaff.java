@@ -291,6 +291,10 @@ public class OpeSysStaff {
     @ApiModelProperty(value = "冗余字段")
     private String def5;
 
+    @TableField(value = "country_code_name")
+    @ApiModelProperty(value = "城市图标名称如中国(cn）")
+    private String countryCodeName;
+
     /**
      * 冗余字段
      */
@@ -375,4 +379,6 @@ public class OpeSysStaff {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
+    public static final String COL_COUNTRY_CODE_NAME = "country_code_name";
 }

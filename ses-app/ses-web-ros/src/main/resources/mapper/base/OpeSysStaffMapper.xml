@@ -43,6 +43,7 @@
     <result column="def3" jdbcType="VARCHAR" property="def3" />
     <result column="def5" jdbcType="VARCHAR" property="def5" />
     <result column="def6" jdbcType="DOUBLE" property="def6" />
+    <result column="country_code_name" jdbcType="VARCHAR" property="countryCodeName" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
@@ -51,7 +52,7 @@
     certificat_picture_1, certificat_picture_2, open_account, remark, employee_picture,
     first_name, last_name, full_name, code, gender, sys_user_id, if_safe_code, safe_code,
     system_root, created_by, created_time, updated_by, updated_time, def1, def2, def3,
-    def5, def6
+    def5, def6,country_code_name
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
@@ -247,6 +248,13 @@
           when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
         </foreach>
       </trim>
+
+      <trim prefix="country_code_name = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id = #{item.id,jdbcType=BIGINT} then #{item.def6,jdbcType=DOUBLE}
+        </foreach>
+      </trim>
+
     </trim>
     where id in
     <foreach close=")" collection="list" item="item" open="(" separator=", ">
@@ -261,7 +269,7 @@
       certificat_picture_1, certificat_picture_2, open_account, remark, employee_picture,
       first_name, last_name, full_name, code, gender, sys_user_id, if_safe_code, safe_code,
       system_root, created_by, created_time, updated_by, updated_time, def1, def2, def3,
-      def5, def6)
+      def5, def6,country_code_name)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
@@ -277,7 +285,7 @@
         #{item.safeCode,jdbcType=VARCHAR}, #{item.systemRoot,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT},
         #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP},
         #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
-        #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE})
+        #{item.def5,jdbcType=VARCHAR}, #{item.def6,jdbcType=DOUBLE}),#{item.countryCodeName,jdbcType=VARCHAR}
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysStaff">
@@ -288,7 +296,7 @@
       certificat_picture_1, certificat_picture_2, open_account, remark, employee_picture,
       first_name, last_name, full_name, code, gender, sys_user_id, if_safe_code, safe_code,
       system_root, created_by, created_time, updated_by, updated_time, def1, def2, def3,
-      def5, def6)
+      def5, def6,country_code_name)
     values
     (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER},
       #{deptId,jdbcType=BIGINT}, #{positionId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT},
@@ -302,7 +310,7 @@
       #{ifSafeCode,jdbcType=INTEGER}, #{safeCode,jdbcType=VARCHAR}, #{systemRoot,jdbcType=VARCHAR},
       #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
       #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR},
-      #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE})
+      #{def3,jdbcType=VARCHAR}, #{def5,jdbcType=VARCHAR}, #{def6,jdbcType=DOUBLE},#{item.countryCodeName,jdbcType=VARCHAR})
     on duplicate key update
     id = #{id,jdbcType=BIGINT},
     dr = #{dr,jdbcType=INTEGER},
@@ -342,7 +350,8 @@
     def2 = #{def2,jdbcType=VARCHAR},
     def3 = #{def3,jdbcType=VARCHAR},
     def5 = #{def5,jdbcType=VARCHAR},
-    def6 = #{def6,jdbcType=DOUBLE}
+    def6 = #{def6,jdbcType=DOUBLE},
+    country_code_name = #{item.countryCodeName,jdbcType=VARCHAR}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysStaff">
     <!--@mbg.generated-->
@@ -465,6 +474,9 @@
       <if test="def6 != null">
         def6,
       </if>
+      <if test="countryCodeName != null">
+        country_code_name,
+      </if>
     </trim>
     values
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -585,6 +597,9 @@
       <if test="def6 != null">
         #{def6,jdbcType=DOUBLE},
       </if>
+      <if test="countryCodeName != null">
+        #{countryCodeName,jdbcType=VARCHAR},
+      </if>
     </trim>
     on duplicate key update
     <trim suffixOverrides=",">
@@ -704,6 +719,9 @@
       </if>
       <if test="def6 != null">
         def6 = #{def6,jdbcType=DOUBLE},
+      </if>
+      <if test="countryCodeName != null">
+        def6 = #{countryCodeName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
