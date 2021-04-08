@@ -40,4 +40,6 @@ public class ColourDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "Color hexadecimal color coding")
     private String colour16;
 
+    private String colourCode;
+
 }

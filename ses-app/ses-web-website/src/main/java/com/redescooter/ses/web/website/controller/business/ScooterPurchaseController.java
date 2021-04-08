@@ -42,7 +42,7 @@ public class ScooterPurchaseController {
      */
     @IgnoreLoginCheck
     @PostMapping(value = "/modelist")
-    @ApiOperation(value = "Get a list of models and prices", response = ModelPriceResult.class)
+    @ApiOperation(value = "车型列表", response = ModelPriceResult.class)
     public Response<List<ModelPriceResult>> modelList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response<>(scooterPurchaseService.modelAndPriceList(enter));
     }
@@ -55,7 +55,7 @@ public class ScooterPurchaseController {
      */
     @IgnoreLoginCheck
     @PostMapping(value = "/detailsByModel")
-    @ApiOperation(value = "Get the product details according to the main building of the model", response = ProductsResult.class)
+    @ApiOperation(value = "获取产品详情", response = ProductsResult.class)
     public Response<List<ProductsResult>> detailsByModel(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(scooterPurchaseService.getProductDetailByModel(enter));
     }
@@ -68,7 +68,7 @@ public class ScooterPurchaseController {
      */
     @IgnoreLoginCheck
     @PostMapping(value = "/getpartslist")
-    @ApiOperation(value = "Get the list of accessories, support fuzzy search by name", response = PartsDetailsResult.class)
+    @ApiOperation(value = "获取配件列表", response = PartsDetailsResult.class)
     public Response<List<PartsDetailsResult>> getPartsList(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         return new Response<>(scooterPurchaseService.getPartsList(enter));
     }
@@ -81,7 +81,7 @@ public class ScooterPurchaseController {
      */
     @IgnoreLoginCheck
     @PostMapping(value = "/getscooterbatterys")
-    @ApiOperation(value = "Get vehicle battery configuration information list", response = ProductPartsDetailsResult.class)
+    @ApiOperation(value = "获取车辆电池配置列表", response = ProductPartsDetailsResult.class)
     public Response<List<ProductPartsDetailsResult>> getScooterBatterys(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(scooterPurchaseService.getScooterBatterysByProductId(enter));
     }
