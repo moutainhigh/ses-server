@@ -7,13 +7,12 @@ import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.source.website.dm.*;
 import com.redescooter.ses.service.hub.source.website.service.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -66,9 +65,9 @@ public class ProductionServiceImpl implements ProductionService {
 
 
     @Override
-    @Async
-    @Transactional
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void syncProductionData(SyncProductionDataEnter syncProductionDataEnter) {
+        log.info("准备同步官网的数据了。。。。。。。。。。。。。。。。");
         // 先创建 site_product 信息
         SiteProduct product = new SiteProduct();
         BeanUtils.copyProperties(syncProductionDataEnter,product);

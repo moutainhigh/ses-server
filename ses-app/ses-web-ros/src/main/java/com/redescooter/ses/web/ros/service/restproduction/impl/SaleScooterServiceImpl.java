@@ -253,6 +253,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
                 // 因为在ros里面 对于高速/低速  没有所谓的code 所以这里先把名字的值赋给code
                 syncProductionDataEnter.setProductClassCode(specificatGroup.getGroupName());
                 // 参数对象封装好 下面直接调用api方法
+                log.info("组装好数据了，调用方法同步数据*******************");
                 productionService.syncProductionData(syncProductionDataEnter);
             }
 
