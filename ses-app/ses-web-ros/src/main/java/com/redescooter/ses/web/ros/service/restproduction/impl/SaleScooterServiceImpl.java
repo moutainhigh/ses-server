@@ -211,6 +211,8 @@ public class SaleScooterServiceImpl implements SaleScooterService {
                 syncProductionDataEnter.setMinBatteryNum(saleScooter.getMinBatteryNum());
                 syncProductionDataEnter.setProductModelId(saleScooter.getSpecificatId());
                 syncProductionDataEnter.setRemark(saleScooter.getRemark());
+                syncProductionDataEnter.setProductModelName(saleScooter.getProductName());
+                syncProductionDataEnter.setProductModelCode(saleScooter.getProductCode());
                 if (!Strings.isNullOrEmpty(saleScooter.getProductionParam())){
                     List<SaleProductionParaEnter> params;
                     try {
@@ -252,8 +254,6 @@ public class SaleScooterServiceImpl implements SaleScooterService {
                 syncProductionDataEnter.setProductClassName(specificatGroup.getGroupName());
                 // 因为在ros里面 对于高速/低速  没有所谓的code 所以这里先把名字的值赋给code
                 syncProductionDataEnter.setProductClassCode(specificatGroup.getGroupName());
-                syncProductionDataEnter.setProductModelCode(specificatGroup.getGroupName());
-                syncProductionDataEnter.setProductModelName(specificatGroup.getGroupName());
                 // 参数对象封装好 下面直接调用api方法
                 log.info("组装好数据了，调用方法同步数据*******************");
                 productionService.syncProductionData(syncProductionDataEnter);
