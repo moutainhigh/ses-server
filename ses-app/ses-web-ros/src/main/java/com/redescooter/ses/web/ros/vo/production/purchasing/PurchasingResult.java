@@ -110,9 +110,6 @@ public class PurchasingResult extends GeneralResult {
     @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     private Date createdTime;
 
-    @ApiModelProperty(value = "国家缩写(CN)")
-    private String countryCodeName;
-
     @ApiModelProperty(value = "支付记录详情")
     private List<PaymentItemDetailResult> paymentItemDetailResultList;
 }
