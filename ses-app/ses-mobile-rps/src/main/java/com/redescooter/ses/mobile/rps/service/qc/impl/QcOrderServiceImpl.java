@@ -567,7 +567,7 @@ public class QcOrderServiceImpl implements QcOrderService {
                 if (qcResultFlag) {
                     opeQcCombinB.setQualifiedQty(opeQcCombinB.getQualifiedQty() + 1);
                     // 质检合格之后 需要将数量同步到质检单对应的生成采购单的部件表中(部件了类型的质检单 只可能是由生产采购单来的)
-                    changeCombinScooter(opeQcOrder.getRelationOrderId(),opeQcCombinB.getProductionCombinBomId());
+                    changeCombinCombin(opeQcOrder.getRelationOrderId(),opeQcCombinB.getProductionCombinBomId());
                 } else {
                     opeQcCombinB.setUnqualifiedQty(opeQcCombinB.getUnqualifiedQty() + 1);
 
