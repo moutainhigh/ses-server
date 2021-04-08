@@ -159,6 +159,9 @@ public class StaffSaveOrEditEnter extends GeneralEnter {
     @ApiModelProperty(value = "国家编码如")
     private String countryCode;
 
+    @ApiModelProperty(value = "城市图标名称如中国")
+    private String countryCodeName;
+
     @ApiModelProperty(value = "是否开启安全码（0：否，1：是）")
     private Integer ifSafeCode;
 

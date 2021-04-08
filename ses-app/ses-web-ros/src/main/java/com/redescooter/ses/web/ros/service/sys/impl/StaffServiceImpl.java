@@ -130,6 +130,7 @@ public class StaffServiceImpl implements StaffService {
         staff.setUpdatedBy(enter.getUserId());
         staff.setUpdatedTime(new Date());
         staff.setCreatedBy(enter.getUserId());
+        staff.setCountryCodeName(enter.getCountryCodeName());
         if (!Strings.isNullOrEmpty(enter.getBirthday())) {
             staff.setBirthday(DateUtil.stringToDate(enter.getBirthday()));
         }
@@ -238,6 +239,7 @@ public class StaffServiceImpl implements StaffService {
         staff.setFullName(staff.getFirstName() + " " + staff.getLastName());
         staff.setUpdatedBy(enter.getUserId());
         staff.setUpdatedTime(new Date());
+        staff.setCountryCodeName(staff.getCountryCodeName());
         if (!Strings.isNullOrEmpty(enter.getBirthday())) {
             staff.setBirthday(DateUtil.stringToDate(enter.getBirthday()));
         }
