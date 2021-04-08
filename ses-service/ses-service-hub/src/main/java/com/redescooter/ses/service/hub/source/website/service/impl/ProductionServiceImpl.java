@@ -83,6 +83,7 @@ public class ProductionServiceImpl implements ProductionService {
         SiteProduct product = new SiteProduct();
         BeanUtils.copyProperties(syncProductionDataEnter,product);
         product.setId(idAppService.getId(SequenceName.SITE_PRODUCT));
+        product.setDr(0);
         product.setCreatedBy(0L);
         product.setCreatedTime(new Date());
         product.setUpdatedBy(0L);
@@ -99,6 +100,7 @@ public class ProductionServiceImpl implements ProductionService {
             // 说明之前没有同步过
             productClass = new SiteProductClass();
             productClass.setId(idAppService.getId(SequenceName.SITE_PRODUCT_CLASS));
+            productClass.setDr(0);
             productClass.setStatus(1);
             productClass.setProductClassName(syncProductionDataEnter.getProductClassName());
             productClass.setProductClassCode(syncProductionDataEnter.getProductClassCode());
@@ -119,6 +121,7 @@ public class ProductionServiceImpl implements ProductionService {
         if (productModel == null) {
             productModel = new SiteProductModel();
             productModel.setId(idAppService.getId(SequenceName.SITE_PRODUCT_MODEL));
+            productModel.setDr(0);
             productModel.setProductClassId(productClass.getId());
             productModel.setProductModelName(syncProductionDataEnter.getProductModelName());
             productModel.setProductModelCode(syncProductionDataEnter.getProductModelCode());
@@ -143,6 +146,8 @@ public class ProductionServiceImpl implements ProductionService {
             // 说明颜色之前没有同步过
             colour = new SiteColour();
             colour.setId(idAppService.getId(SequenceName.SITE_COLOUR));
+            colour.setDr(0);
+            colour.setColourRange("1");
             colour.setStatus(1);
             colour.setColourName(syncProductionDataEnter.getColourName());
             colour.setColourCode(syncProductionDataEnter.getColourCode());
