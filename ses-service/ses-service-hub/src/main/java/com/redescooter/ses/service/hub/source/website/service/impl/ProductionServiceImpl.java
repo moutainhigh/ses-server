@@ -1,11 +1,20 @@
 package com.redescooter.ses.service.hub.source.website.service.impl;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.hub.service.website.ProductionService;
 import com.redescooter.ses.api.hub.vo.website.SyncProductionDataEnter;
 import com.redescooter.ses.service.hub.constant.SequenceName;
-import com.redescooter.ses.service.hub.source.website.dm.*;
-import com.redescooter.ses.service.hub.source.website.service.base.*;
+import com.redescooter.ses.service.hub.source.website.dm.SiteColour;
+import com.redescooter.ses.service.hub.source.website.dm.SiteProduct;
+import com.redescooter.ses.service.hub.source.website.dm.SiteProductClass;
+import com.redescooter.ses.service.hub.source.website.dm.SiteProductColour;
+import com.redescooter.ses.service.hub.source.website.dm.SiteProductModel;
+import com.redescooter.ses.service.hub.source.website.service.base.SiteColourService;
+import com.redescooter.ses.service.hub.source.website.service.base.SiteProductClassService;
+import com.redescooter.ses.service.hub.source.website.service.base.SiteProductColourService;
+import com.redescooter.ses.service.hub.source.website.service.base.SiteProductModelService;
+import com.redescooter.ses.service.hub.source.website.service.base.SiteProductService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +53,7 @@ public class ProductionServiceImpl implements ProductionService {
     private IdAppService idAppService;
 
     @Override
+    @DS("website")
     public boolean syncByProductionCode(String productionCode,Integer saleStatus) {
         // 给个默认值 先默认同步过了
         boolean flag = true;
@@ -66,6 +76,7 @@ public class ProductionServiceImpl implements ProductionService {
 
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
+    @DS("website")
     public void syncProductionData(SyncProductionDataEnter syncProductionDataEnter) {
         log.info("准备同步官网的数据了。。。。。。。。。。。。。。。。");
         // 先创建 site_product 信息
@@ -168,6 +179,7 @@ public class ProductionServiceImpl implements ProductionService {
 
 
     @Override
+    @DS("website")
     public void syncDeleteData(String productionCode) {
         QueryWrapper<SiteProduct> qw = new QueryWrapper<>();
         qw.eq(SiteProduct.COL_PRODUCT_CODE,productionCode);
