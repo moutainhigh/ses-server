@@ -80,14 +80,20 @@ public class ProductionServiceImpl implements ProductionService {
     public void syncProductionData(SyncProductionDataEnter syncProductionDataEnter) {
         log.info("准备同步官网的数据了。。。。。。。。。。。。。。。。");
         // 先创建 site_product 信息
-        SiteProduct product = new SiteProduct();
-        BeanUtils.copyProperties(syncProductionDataEnter,product);
-        product.setId(idAppService.getId(SequenceName.SITE_PRODUCT));
-        product.setDr(0);
-        product.setCreatedBy(0L);
-        product.setCreatedTime(new Date());
-        product.setUpdatedBy(0L);
-        product.setUpdatedTime(new Date());
+        SiteProduct product;
+        QueryWrapper<SiteProduct> qw = new QueryWrapper<>();
+        qw.eq(SiteProduct.COL_FR_NAME,syncProductionDataEnter.getFrName());
+        qw.last("limit 1");
+        product = siteProductService.getOne(qw);
+        if (product == null) {
+            BeanUtils.copyProperties(syncProductionDataEnter,product);
+            product.setId(idAppService.getId(SequenceName.SITE_PRODUCT));
+            product.setDr(0);
+            product.setCreatedBy(0L);
+            product.setCreatedTime(new Date());
+            product.setUpdatedBy(0L);
+            product.setUpdatedTime(new Date());
+        }
 
         // 再创建 site_product_class 信息
         // 先要通过大类的code 判断有没有同步过
@@ -115,7 +121,7 @@ public class ProductionServiceImpl implements ProductionService {
         // 先要根据code判断有没有同步过
         SiteProductModel productModel;
         QueryWrapper<SiteProductModel> productModelQw = new QueryWrapper<>();
-        productModelQw.eq(SiteProductModel.COL_PRODUCT_MODEL_CODE,syncProductionDataEnter.getProductModelCode());
+        productModelQw.eq(SiteProductModel.COL_PRODUCT_MODEL_NAME,syncProductionDataEnter.getProductModelName());
         productModelQw.last("limit 1");
         productModel = siteProductModelService.getOne(productModelQw);
         if (productModel == null) {

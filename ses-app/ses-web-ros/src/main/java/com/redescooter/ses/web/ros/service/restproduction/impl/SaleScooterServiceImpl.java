@@ -204,6 +204,9 @@ public class SaleScooterServiceImpl implements SaleScooterService {
                 // 下面开始给这个对象找数据赋值
                 // 首先是产品数据
                 syncProductionDataEnter.setProductCode(saleScooter.getProductCode());
+                syncProductionDataEnter.setCnName(saleScooter.getProductName());
+                syncProductionDataEnter.setFrName(saleScooter.getProductName());
+                syncProductionDataEnter.setEnName(saleScooter.getProductName());
                 syncProductionDataEnter.setProductType(1);
                 syncProductionDataEnter.setStatus(1);
                 syncProductionDataEnter.setOtherParameter(saleScooter.getOtherParam());

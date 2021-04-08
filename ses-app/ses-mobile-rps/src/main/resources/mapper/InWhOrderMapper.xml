@@ -29,6 +29,7 @@
 
     <!--入库单列表查询条件-->
     <sql id="InWarehouseOrderListWhere">
+        and source = 0
         <if test="orderType != null">and order_type = #{orderType}</if>
         <if test="type != null">and in_wh_type = #{type}</if>
         <if test="status == 0">and in_wh_status = 1</if>
