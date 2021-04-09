@@ -159,14 +159,14 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         }
         opeSaleScooterService.removeById(enter.getId());
         // 删除销售车辆的时候  需要把官网的数据也删除掉
-        syncDeleteData(saleScooter.getProductCode());
+        syncDeleteData(saleScooter.getProductName());
         return new GeneralResult(enter.getRequestId());
     }
 
 
     @Async
-    void syncDeleteData(String productionCode){
-        productionService.syncDeleteData(productionCode);
+    void syncDeleteData(String productionName){
+        productionService.syncDeleteData(productionName);
     }
 
 
@@ -198,7 +198,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
     void dataSyncToWebsite(OpeSaleScooter saleScooter){
         try {
             // 这个要同步好几张表 先判断本次同步多少张表（1张或5张）
-            if(!productionService.syncByProductionCode(saleScooter.getProductCode(),saleScooter.getSaleStutas())){
+            if(!productionService.syncByProductionCode(saleScooter.getProductName(),saleScooter.getSaleStutas())){
                 // 进入到这里  说明是第一次同步这条数据  需要同步5张表
                 SyncProductionDataEnter syncProductionDataEnter = new SyncProductionDataEnter();
                 // 下面开始给这个对象找数据赋值
