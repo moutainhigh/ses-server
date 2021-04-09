@@ -54,11 +54,11 @@ public class ProductionServiceImpl implements ProductionService {
 
     @Override
     @DS("website")
-    public boolean syncByProductionCode(String productionName,Integer saleStatus) {
+    public boolean syncByProductionCode(String productionCode,Integer saleStatus) {
         // 给个默认值 先默认同步过了
         boolean flag = true;
         QueryWrapper<SiteProductModel> qw = new QueryWrapper<>();
-        qw.eq(SiteProductModel.COL_PRODUCT_MODEL_NAME,productionName);
+        qw.eq(SiteProductModel.COL_PRODUCT_MODEL_CODE,productionCode);
         qw.last("limit 1");
         SiteProductModel product = siteProductModelService.getOne(qw);
         if (product != null) {
