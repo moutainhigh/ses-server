@@ -690,7 +690,16 @@ public class QcOrderServiceImpl implements QcOrderService {
                     qty = paramDTO.getIdClass() ? opeQcPartsB.getUnqualifiedQty() + 1 : qcQty;
                     opeQcPartsB.setUnqualifiedQty(qty);
 
-                     // 第一次入库仓库中是没有这个部件的,需要把这个部件添加到不合格品库里面去
+                    // 如果质检数量<不合格数量+合格数量,代表传递参数有误,抛出异常
+                    Integer totalQty = opeQcPartsB.getQty();
+                    Integer unqualifiedQty = opeQcPartsB.getUnqualifiedQty();
+                    Integer qualifiedQty = opeQcPartsB.getQualifiedQty();
+                    Integer sumQty = unqualifiedQty + qualifiedQty;
+                    if (totalQty.compareTo(sumQty) < 0) {
+                        throw new SesMobileRpsException(ExceptionCodeEnums.QC_QTY_ERROR.getCode(), ExceptionCodeEnums.QC_QTY_ERROR.getMessage());
+                    }
+
+                    // 第一次入库仓库中是没有这个部件的,需要把这个部件添加到不合格品库里面去
                     QueryWrapper<OpeWmsQualifiedPartsStock> partsStockQueryWrapper = new QueryWrapper<>();
                     partsStockQueryWrapper.eq(OpeWmsQualifiedPartsStock.COL_DR, "0");
                     partsStockQueryWrapper.eq(OpeWmsQualifiedPartsStock.COL_PARTS_ID, paramDTO.getBomId());
