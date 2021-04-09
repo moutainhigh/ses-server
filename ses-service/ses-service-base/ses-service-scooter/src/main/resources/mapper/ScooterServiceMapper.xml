@@ -135,6 +135,8 @@
     <select id="getScooterNoByTabletSn" parameterType="java.lang.String" resultType="java.lang.String">
         select scooter_no from sco_scooter
 	    where tablet_sn = #{tabletSn} and dr = '0'
+        order by created_time desc
+        limit 1
     </select>
 
     <!--根据tabletSn更新车辆锁状态-->
