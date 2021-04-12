@@ -342,6 +342,16 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
 
     @Override
     public GeneralResult emailSubscribe(CheckEmailEnter enter) {
+        String decryptEamil = "";
+        if (StringUtils.isNotEmpty(enter.getEmail())) {
+            try {
+                //邮箱解密
+                decryptEamil = RsaUtils.decrypt(enter.getEmail(), requestsKeyProperties.getPrivateKey());
+            } catch (Exception e) {
+                throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+            enter.setEmail(decryptEamil);
+        }
         String eamil = enter.getEmail();
         adPush(eamil);
         return new GeneralResult(enter.getRequestId());
