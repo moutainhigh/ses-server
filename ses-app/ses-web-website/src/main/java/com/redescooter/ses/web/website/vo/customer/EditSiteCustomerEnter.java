@@ -110,4 +110,10 @@ public class EditSiteCustomerEnter extends GeneralEnter {
     @ApiModelProperty(value = "telephone")
     private String telephone;
 
+    /**
+     * 邮箱
+     */
+    @ApiModelProperty(value = "email")
+    private String email;
+
 }
