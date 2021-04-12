@@ -3,6 +3,7 @@ package com.redescooter.ses.api.hub.vo.operation;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -12,7 +13,7 @@ import java.util.Date;
  * @Date 2021/3/17 13:49
  */
 @Data
-public class SyncCustomerDataEnter {
+public class SyncCustomerDataEnter implements Serializable {
 
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
