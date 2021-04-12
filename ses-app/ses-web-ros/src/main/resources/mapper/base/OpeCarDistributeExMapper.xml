@@ -30,6 +30,22 @@
         limit #{param.startRow}, #{param.pageSize}
     </select>
 
+    <!-- 待分配列表(不支持分页) -->
+    <select id="getToBeAssignListNoPage" resultType="com.redescooter.ses.web.ros.vo.assign.tobe.result.ToBeAssignListResult">
+        select
+            a.customer_id,
+            IFNULL(a.full_name, c.company_name) as fullName,
+            a.email,
+            a.scooter_quantity,
+            a.updated_time as generateDate,
+            b.node
+        from ope_customer_inquiry a
+        left join ope_car_distribute_node b on a.customer_id = b.customer_id
+        left join ope_customer c on a.customer_id = c.id
+        where a.dr = 0 and c.dr = 0 and c.status = 2 and (b.flag = 1 or b.flag is null)
+        order by a.updated_time desc
+    </select>
+
     <!-- 已分配列表条数 -->
     <select id="getAssignedListCount" resultType="java.lang.Integer">
         select count(*)

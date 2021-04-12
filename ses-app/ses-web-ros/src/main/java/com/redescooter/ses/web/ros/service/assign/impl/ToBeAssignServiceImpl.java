@@ -99,6 +99,7 @@ import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -183,7 +184,6 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         logger.info("待分配列表的入参是:[{}]", enter);
         SesStringUtils.objStringTrim(enter);
 
-        List<ToBeAssignListResult> resultList = Lists.newArrayList();
         int count = opeCarDistributeExMapper.getToBeAssignListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
@@ -192,16 +192,18 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
         // 正式客户且点击了创建账号的才能流转到待分配列表
         if (CollectionUtils.isNotEmpty(list)) {
-            for (ToBeAssignListResult item : list) {
-                String email = item.getEmail();
-                // 拿着email去pla_user表查询,如果存在,说明已创建账号
+            Iterator<ToBeAssignListResult> iterator = list.iterator();
+            while (iterator.hasNext()) {
+                ToBeAssignListResult next = iterator.next();
+                String email = next.getEmail();
+                // 拿着email去pla_user表查询,如果存在,说明已创建账号 flag:存在就是true,不存在就是false
                 Boolean flag = assignScooterService.getPlaUserIsExistByEmail(email);
-                if (flag) {
-                    resultList.add(item);
+                if (!flag) {
+                    iterator.remove();
                 }
             }
         }
-        return PageResult.create(enter, resultList.size(), resultList);
+        return PageResult.create(enter, list.size(), list);
     }
 
     /**
@@ -807,9 +809,25 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @Override
     public Map<String, Object> getTabCount(GeneralEnter enter) {
         Map<String, Object> result = Maps.newHashMapWithExpectedSize(2);
-        PageResult<ToBeAssignListResult> pageResult = getToBeAssignList(new ToBeAssignListEnter());
+
+        // 待分配列表条数
+        List<ToBeAssignListResult> list = opeCarDistributeExMapper.getToBeAssignListNoPage(enter);
+        // 正式客户且点击了创建账号的才能流转到待分配列表
+        if (CollectionUtils.isNotEmpty(list)) {
+            Iterator<ToBeAssignListResult> iterator = list.iterator();
+            while (iterator.hasNext()) {
+                ToBeAssignListResult next = iterator.next();
+                String email = next.getEmail();
+                // 拿着email去pla_user表查询,如果存在,说明已创建账号 flag:存在就是true,不存在就是false
+                Boolean flag = assignScooterService.getPlaUserIsExistByEmail(email);
+                if (!flag) {
+                    iterator.remove();
+                }
+            }
+        }
+        // 已分配列表条数
         int assignedCount = opeCarDistributeExMapper.getAssignedListCount(new AssignedListEnter());
-        result.put("toBeAssignCount", pageResult.getRowTotal());
+        result.put("toBeAssignCount", list.size());
         result.put("assignedCount", assignedCount);
         return result;
     }
