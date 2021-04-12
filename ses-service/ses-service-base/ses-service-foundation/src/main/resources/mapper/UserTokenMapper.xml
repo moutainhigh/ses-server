@@ -25,7 +25,7 @@
         where a.dr = 0
         and a.USER_ID = #{userId}
         and a.SYSTEM_ID=#{systemId}
-<!--        and a.app_id=#{appId}-->
+        and a.app_id=#{appId}
     </select>
     <select id="checkAPPUser" resultType="com.redescooter.ses.api.foundation.vo.login.AccountsDto">
 
