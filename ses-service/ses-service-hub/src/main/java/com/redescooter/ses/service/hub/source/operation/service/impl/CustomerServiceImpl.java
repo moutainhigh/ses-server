@@ -18,6 +18,7 @@ import com.redescooter.ses.service.hub.source.operation.dao.base.OpeCustomerMapp
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
 import io.seata.spring.annotation.GlobalTransactional;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -33,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @DubboService
 @DS("operation")
+@Slf4j
 public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
@@ -168,6 +170,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @DS("operation")
     public GeneralResult syncCustomerData(SyncCustomerDataEnter enter) {
+        log.info("**********************客户的信息准备同步到ROS中了哦*************************");
         LambdaQueryWrapper<OpeCustomer> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeCustomer::getDr, Constant.DR_FALSE);
         qw.eq(OpeCustomer::getEmail, enter.getEmail());

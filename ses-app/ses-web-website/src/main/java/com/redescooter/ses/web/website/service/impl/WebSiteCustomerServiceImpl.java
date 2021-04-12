@@ -200,12 +200,13 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult editCustomer(EditSiteCustomerEnter enter) {
-
+        log.info("**********************开始编辑客户的信息*************************");
         SiteCustomer edit = new SiteCustomer();
         BeanUtils.copyProperties(enter, edit);
         siteCustomerService.updateById(edit);
 
         // 官网编辑客户数据同步到ros
+        log.info("**********************准备把客户的信息同步到ROS中*************************");
         syncEditData(edit);
 
         return new GeneralResult(enter.getRequestId());
@@ -239,6 +240,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         model.setAccountFlag(String.valueOf(AccountFlagEnums.INACTIVATED.getValue()));
         model.setUpdatedBy(0L);
         model.setUpdatedTime(new Date());
+        log.info("**********************开始调用方法把客户的信息同步到ROS中*************************");
         customerService.syncCustomerData(model);
     }
 
