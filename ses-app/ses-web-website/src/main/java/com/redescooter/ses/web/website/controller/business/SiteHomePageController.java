@@ -41,7 +41,7 @@ public class SiteHomePageController {
     @IgnoreLoginCheck
     @PostMapping(value = "/contactUsSave")
     @ApiOperation(value = "contact Us", response = GeneralResult.class)
-    public Response<GeneralResult> contactUsSave(@RequestBody SiteSaveAboutUsEnter enter) {
+    public Response<GeneralResult> contactUsSave(@ModelAttribute SiteSaveAboutUsEnter enter) {
         return new Response<>(sitePageHomeService.saveAboutUs(enter));
     }
 
