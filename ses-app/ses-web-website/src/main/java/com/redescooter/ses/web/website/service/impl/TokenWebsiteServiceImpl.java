@@ -263,6 +263,16 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
      */
     @Override
     public GeneralResult forgetPasswordEmail(BaseSendMailEnter enter) {
+        String decryptEamil = "";
+        if (StringUtils.isNotEmpty(enter.getMail())) {
+            try {
+                //邮箱解密
+                decryptEamil = RsaUtils.decrypt(enter.getMail(), requestsKeyProperties.getPrivateKey());
+            } catch (Exception e) {
+                throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+            enter.setMail(decryptEamil);
+        }
 
         SiteUser user = siteUserService.getOne(new QueryWrapper<SiteUser>()
                 .eq(SiteUser.COL_LOGIN_NAME, enter.getMail()));
