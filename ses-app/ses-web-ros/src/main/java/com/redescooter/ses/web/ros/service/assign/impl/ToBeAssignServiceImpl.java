@@ -608,6 +608,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 scooter.setTenantId(accountInfo.getTenantId());
                 scooter.setDriverId(driverId);
                 scooter.setScooterId(scooterId);
+                scooter.setStatus("1");
                 scooter.setBeginTime(new Date());
                 scooter.setCreatedBy(enter.getUserId());
                 scooter.setCreatedTime(new Date());
