@@ -89,7 +89,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
             }
             enter.setEmail(decryptEamil);
         }
-        if (StringUtils.isNotEmpty(enter.getEmail())) {
+        if (StringUtils.isNotEmpty(enter.getTelephone())) {
             try {
                 //手机号解密
                 phone = RsaUtils.decrypt(enter.getTelephone(), requestsKeyProperties.getPrivateKey());
@@ -201,6 +201,16 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
     @Override
     public GeneralResult editCustomer(EditSiteCustomerEnter enter) {
         log.info("**********************开始编辑客户的信息*************************");
+        String phone = "";
+        if (StringUtils.isNotEmpty(enter.getTelephone())) {
+            try {
+                //手机号解密
+                phone = RsaUtils.decrypt(enter.getTelephone(), requestsKeyProperties.getPrivateKey());
+            } catch (Exception e) {
+                throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+            enter.setTelephone(phone);
+        }
         SiteCustomer edit = new SiteCustomer();
         BeanUtils.copyProperties(enter, edit);
         siteCustomerService.updateById(edit);
