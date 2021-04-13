@@ -164,4 +164,9 @@ public interface ScooterService {
      */
     GeneralResult updateScooterNo(Long id, String licensePlate);
 
+    /**
+     * 根据平板序列号(sn)查询在sco_scooter表是否存在
+     */
+    Boolean getSnIsExist(String sn);
+
 }
