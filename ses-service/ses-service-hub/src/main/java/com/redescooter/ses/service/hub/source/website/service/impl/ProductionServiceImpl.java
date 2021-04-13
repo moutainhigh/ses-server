@@ -130,6 +130,7 @@ public class ProductionServiceImpl implements ProductionService {
         qw.last("limit 1");
         product = siteProductService.getOne(qw);
         if (product == null) {
+            product = new SiteProduct();
             BeanUtils.copyProperties(syncProductionDataEnter,product);
             product.setId(idAppService.getId(SequenceName.SITE_PRODUCT));
             product.setDr(0);
@@ -138,6 +139,7 @@ public class ProductionServiceImpl implements ProductionService {
             product.setUpdatedBy(0L);
             product.setUpdatedTime(new Date());
             product.setProductModelId(productModel.getId());
+            siteProductService.saveOrUpdate(product);
         }
 
         // 再创建 site_colour 信息
