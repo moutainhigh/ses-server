@@ -31,13 +31,13 @@ public class OrderController {
 
     @PostMapping(value = "/add")
     @ApiOperation(value = "Add", response = IdResult.class)
-    public Response<IdResult> add(@RequestBody AddUpdateOrderEnter enter) {
+    public Response<IdResult> add(@ModelAttribute AddUpdateOrderEnter enter) {
         return new Response<>(orderService.addOrder(enter));
     }
 
     @PostMapping(value = "/addOrderParts")
     @ApiOperation(value = "AddOrderParts", response = GeneralResult.class)
-    public Response<GeneralResult> AddOrderParts(@RequestBody AddOrderPartsEnter enter) {
+    public Response<GeneralResult> AddOrderParts(@ModelAttribute AddOrderPartsEnter enter) {
         return new Response<>(orderService.AddOrderParts(enter));
     }
 
