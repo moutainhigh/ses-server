@@ -63,7 +63,7 @@ public class ProductionServiceImpl implements ProductionService {
         SiteProductModel product = siteProductModelService.getOne(qw);
         if (product != null) {
             // 到这里说明同步过数据了  ，这次只要修改一下数据的状态就好了
-            product.setStatus(saleStatus==1?1:2);
+            product.setStatus(saleStatus==1?1:-1);
             product.setUpdatedTime(new Date());
             product.setUpdatedBy(0L);
             siteProductModelService.saveOrUpdate(product);
