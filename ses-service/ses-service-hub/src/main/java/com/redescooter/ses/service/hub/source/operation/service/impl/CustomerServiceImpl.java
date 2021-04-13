@@ -169,6 +169,7 @@ public class CustomerServiceImpl implements CustomerService {
      */
     @Override
     @DS("operation")
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult syncCustomerData(SyncCustomerDataEnter enter) {
         log.info("**********************客户的信息准备同步到ROS中了哦*************************");
         LambdaQueryWrapper<OpeCustomer> qw = new LambdaQueryWrapper<>();
