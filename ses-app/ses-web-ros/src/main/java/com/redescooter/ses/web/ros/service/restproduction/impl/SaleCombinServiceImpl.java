@@ -163,16 +163,15 @@ public class SaleCombinServiceImpl implements SaleCombinService {
         opeSaleCombinService.updateById(combin);
 
         // 数据同步到官网的销售配件
-        OpeSaleCombin opeSaleCombin = opeSaleCombinService.getById(enter.getId());
-        syncData(opeSaleCombin);
+        syncData(combin);
         return new GeneralResult(enter.getRequestId());
     }
 
     @Async
     void syncData(OpeSaleCombin combin) {
         SyncSalePartsDataEnter model = new SyncSalePartsDataEnter();
-        model.setStatus(combin.getSaleStutas() == 1 ? 1 : 2);
-        model.setPartsType(2);
+        model.setStatus(combin.getSaleStutas() == 1 ? 1 : -1);
+        model.setPartsType(5);
         model.setPartsNumber(combin.getProductName());
         model.setEnName(combin.getCombinName());
         model.setEffectiveTime(new Date());
