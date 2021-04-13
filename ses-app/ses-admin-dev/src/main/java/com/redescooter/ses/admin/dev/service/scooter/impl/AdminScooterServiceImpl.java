@@ -173,13 +173,12 @@ public class AdminScooterServiceImpl implements AdminScooterService {
             adminScooterMapper.insertAdminScooter(admScooter);
             adminScooterPartsMapper.batchInsertAdminScooterParts(newList);
 
-            // 生成车辆编号
-            String scooterNo = generateScooterNo();
             // 需要把车辆数据同步到scooter数据库中去,scooter库中需要同步的表：sco_scooter(根据sn查询,如果不存在才新增)、sco_scooter_ecu(不同步,代码已注释)
             String sn = admScooter.getSn();
             // 根据平板序列号(sn)查询在sco_scooter表是否存在 不存在返回true 存在返回false
             Boolean flag = scooterService.getSnIsExist(sn);
             if (flag) {
+                String scooterNo = generateScooterNo();
                 scooterService.syncScooterData(buildSyncScooterData(id, sn, admScooter.getScooterController(), userId, scooterNo));
                 /*scooterEcuService.syncScooterEcuData(buildSyncScooterEcuData(admScooter.getMacAddress(), admScooter.getMacName(), userId, scooterNo));*/
             }
