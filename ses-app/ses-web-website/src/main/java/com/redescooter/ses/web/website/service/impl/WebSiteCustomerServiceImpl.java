@@ -321,6 +321,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         addCustomer.setCreatedTime(new Date());
         addCustomer.setUpdatedBy(0L);
         addCustomer.setUpdatedTime(new Date());
+        addCustomer.setCountryName(enter.getCountryName());
         siteCustomerService.save(addCustomer);
 
         return addCustomer.getId();
