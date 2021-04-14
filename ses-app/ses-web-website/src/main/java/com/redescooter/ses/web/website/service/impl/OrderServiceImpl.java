@@ -129,7 +129,7 @@ public class OrderServiceImpl implements OrderService {
             throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        if (enter.getOrderId() == null && enter.getOrderId() == 0L) {
+        if (enter.getOrderId() == 0) {
             //创建订单
             //查询该用户是否有订单
             List<SiteOrder> orderSize = siteOrderService.list(new QueryWrapper<SiteOrder>()
