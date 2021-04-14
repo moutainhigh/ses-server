@@ -50,13 +50,12 @@ public class ProductPartsServiceImpl implements ProductPartsService {
         log.info("impl>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
         SiteProductParts addProductPartsVO = new SiteProductParts();
         List<String> list = Arrays.asList(enter.getPartsId().split(","));
-
+        QueryWrapper<SiteProductParts> wrapper = new QueryWrapper<SiteProductParts>().eq("product_id",enter.getProductId()).eq("dr",0);
+        List<SiteProductParts> list1 = siteProductPartsService.list(wrapper);
+        if(list1.size()>0){
+           siteProductPartsService.remove(wrapper);
+        }
         list.stream().forEach(item->{
-           QueryWrapper<SiteProductParts> wrapper = new QueryWrapper<SiteProductParts>().eq("parts_id",item).eq("product_id",enter.getProductId());
-            List<SiteProductParts> list1 = siteProductPartsService.list(wrapper);
-            if(list1.size()>0){
-                throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-            }
             addProductPartsVO.setId(idAppService.getId(SequenceName.SITE_PRODUCT_PARTS));
             addProductPartsVO.setDr(Constant.DR_FALSE);
             addProductPartsVO.setStatus(CommonStatusEnums.NORMAL.getValue());
