@@ -148,6 +148,7 @@ public class PartsServiceImpl implements PartsService {
         if (list.size() > 0) {
             list.forEach(pc -> {
                 PartsDetailsResult result = new PartsDetailsResult();
+                result.setPartsId(pc.getId());
                 BeanUtils.copyProperties(pc, result);
                 resultList.add(result);
             });

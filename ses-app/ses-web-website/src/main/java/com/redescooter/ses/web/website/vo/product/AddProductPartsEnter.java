@@ -26,7 +26,7 @@ public class AddProductPartsEnter extends GeneralEnter {
      * 配件ID
      */
     @ApiModelProperty(value = "配件ID")
-    private Long partsId;
+    private String partsId;
 
     /**
      * 产品ID
