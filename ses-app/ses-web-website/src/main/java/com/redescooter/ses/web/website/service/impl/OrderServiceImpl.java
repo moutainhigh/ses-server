@@ -1,5 +1,8 @@
 package com.redescooter.ses.web.website.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.DateConstant;
@@ -53,10 +56,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Author jerry
@@ -300,7 +300,14 @@ public class OrderServiceImpl implements OrderService {
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult AddOrderParts(AddOrderPartsEnter enter) {
-
+        List<AddPartListEnter> partslist = new ArrayList<>();
+        JSONArray jsonArray = JSONArray.parseArray(enter.getPartslist().toString());
+        for (int i = 0;i<jsonArray.size();i++){
+            AddPartListEnter addPartListEnter = new AddPartListEnter();
+            addPartListEnter.setPartsId(jsonArray.getJSONObject(i).getLong("partsId"));
+            addPartListEnter.setParts_qty(jsonArray.getJSONObject(i).getInteger("parts_qty"));
+            partslist.add(addPartListEnter);
+        }
         Long orderId = enter.getOrderId();
         if (orderId == 0) {
             throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(),
@@ -309,7 +316,6 @@ public class OrderServiceImpl implements OrderService {
         //获取订单
         SiteOrder order = siteOrderService.getById(orderId);
         //获取配件
-        List<AddPartListEnter> partslist = enter.getPartslist();
         if (partslist.size() == 0) {
             return new GeneralResult(enter.getRequestId());
         }
