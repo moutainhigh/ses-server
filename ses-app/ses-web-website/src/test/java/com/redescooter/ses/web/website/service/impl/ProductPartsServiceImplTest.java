@@ -6,8 +6,6 @@ import com.redescooter.ses.web.website.vo.product.AddProductPartsEnter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class ProductPartsServiceImplTest extends SesWebsiteApplicationTests {
 
     @Autowired
@@ -16,8 +14,8 @@ public class ProductPartsServiceImplTest extends SesWebsiteApplicationTests {
     @Test
     void addProductParts() {
         AddProductPartsEnter enter = new AddProductPartsEnter();
-        enter.setPartsId(3770018097152l);
-        enter.setProductId(121442149339136l);
+        enter.setPartsId("3770018097152");
+        enter.setProductId(121442149339136L);
         enter.setQty(2);
         enter.setParameter("{\"Maximum mileage\":\"140\",\"Minimum payment\":\"12.50\",\"full payment\":\"890\"}");
         enter.setUserId(0L);
