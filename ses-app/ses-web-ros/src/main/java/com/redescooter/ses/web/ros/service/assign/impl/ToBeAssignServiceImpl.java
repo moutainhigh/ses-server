@@ -865,8 +865,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         wrapper.orderByDesc(OpeWmsScooterStock::getCreatedTime);
         List<OpeWmsScooterStock> list = opeWmsScooterStockMapper.selectList(wrapper);
         if (CollectionUtils.isEmpty(list)) {
-            //result.setSuccess(Boolean.FALSE); // 正确
-            result.setSuccess(Boolean.TRUE); //暂时
+            result.setSuccess(Boolean.FALSE); // 正确
+            //result.setSuccess(Boolean.TRUE); //暂时
             return result;
         }
         OpeWmsScooterStock scooterStock = list.get(0);
