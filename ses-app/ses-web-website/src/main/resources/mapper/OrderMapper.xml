@@ -48,7 +48,10 @@
                sps.en_name          as enName,
                sob.parts_qty        as partsQty,
                sob.parts_price      as partsPrice,
-               sob.created_time     as createdTime
+               sob.created_time     as createdTime,
+               so.amount_obligation as amountObligation,
+               so.amount_discount as amountDiscount,
+               so.prepaid_deposit as prepaidDeposit
         from site_order so
                      left join site_order_b sob on so.id = sob.order_id and sob.dr = 0
                      left join site_parts sps on sob.parts_id = sps.id and sps.dr = 0
