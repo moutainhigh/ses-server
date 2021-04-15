@@ -33,6 +33,7 @@ import com.stripe.param.PaymentIntentCreateParams;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -51,6 +52,21 @@ import java.util.UUID;
 public class StripePaymentServiceImpl implements StripePaymentService {
 
     private final String integrationCheck = "integration_check";
+
+    @Value("${rede.stripe.secret_key}")
+    private String API_SECRET_KEY;
+
+    @Value("${rede.stripe.receipt_email}")
+    private String ReceiptEmail;
+
+    @Value("${rede.stripe.currency}")
+    private String Currency;
+
+    @Value("${rede.stripe.payment_method_types}")
+    private String PaymentMethodType;
+
+    @Value("${rede.stripe.payment_event}")
+    private String PaymentEvent;
 
     @Autowired
     private StripeConfigProperties stripeConfigProperties;
@@ -89,7 +105,8 @@ public class StripePaymentServiceImpl implements StripePaymentService {
     public StringResult paymentIntent(IdEnter enter) {
         StringResult result = new StringResult();
 
-        Stripe.apiKey = stripeConfigProperties.getSecretkey();
+        Stripe.apiKey = API_SECRET_KEY;
+        log.info(Stripe.apiKey+"{>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>}");
         SiteOrder order = siteOrderService.getById(enter.getId());
 
         if (order == null) {
@@ -97,15 +114,15 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                     ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getMessage());
         }
         Map<String, String> map = new HashMap<>();
-        map.put(integrationCheck, stripeConfigProperties.getPaymentEvent());
+        map.put(integrationCheck, PaymentEvent);
         map.put("order_id", String.valueOf(order.getId()));
         map.put("order_no", order.getOrderNo());
         map.put("product_id", String.valueOf(order.getProductId()));
 
         try {
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-                    .setReceiptEmail(stripeConfigProperties.getReceiptEmail())
-                    .setCurrency(stripeConfigProperties.getCurrency()).addPaymentMethodType(stripeConfigProperties.getPaymentMethodTypes())
+                    .setReceiptEmail(ReceiptEmail)
+                    .setCurrency(Currency).addPaymentMethodType(PaymentMethodType)
                     /**欧元转换欧分**/
                     .setAmount(order.getPrepaidDeposit().multiply(new BigDecimal("100")).longValue())
                     .putAllMetadata(map)
@@ -113,7 +130,6 @@ public class StripePaymentServiceImpl implements StripePaymentService {
 
             PaymentIntent intent = PaymentIntent.create(params);
             String clientSecret = intent.getClientSecret();
-
             log.info("===========" + clientSecret);
             result.setValue(clientSecret);
 

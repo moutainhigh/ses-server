@@ -125,6 +125,26 @@ public class OrderDetailsResult extends GeneralResult {
     private Date createdTime;
 
     /**
+     * 待付款金额
+     */
+    @ApiModelProperty(value = "amount_obligation")
+    private BigDecimal amountObligation;
+
+
+    /**
+     * 预付定金
+     */
+    @ApiModelProperty(value = "prepaid_deposit")
+    private BigDecimal prepaidDeposit;
+
+
+    /**
+     * 优惠抵扣金额
+     */
+    @ApiModelProperty(value = "amount_discount")
+    private BigDecimal amountDiscount;
+
+    /**
      * 子订单
      */
     private List<orderBlist> orderBlist = new ArrayList<>();
@@ -159,23 +179,5 @@ class orderBlist extends GeneralResult {
     @ApiModelProperty(value = "parts_qty")
     private Integer partsQty;
 
-    /**
-     * 待付款金额
-     */
-    @ApiModelProperty(value = "amount_obligation")
-    private BigDecimal amountObligation;
 
-
-    /**
-     * 预付定金
-     */
-    @ApiModelProperty(value = "prepaid_deposit")
-    private BigDecimal prepaidDeposit;
-
-
-    /**
-     * 优惠抵扣金额
-     */
-    @ApiModelProperty(value = "amount_discount")
-    private BigDecimal amountDiscount;
 }

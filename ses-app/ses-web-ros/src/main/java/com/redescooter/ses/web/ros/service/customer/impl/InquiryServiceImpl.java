@@ -13,11 +13,7 @@ import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.oss.ProtocolEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.starter.common.config.OssConfig;
@@ -28,14 +24,17 @@ import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.InquiryServiceMapper;
-import com.redescooter.ses.web.ros.dm.OpeCustomer;
-import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.dao.base.OpeColorMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryBMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeSpecificatTypeMapper;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.customer.InquiryService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
+import com.redescooter.ses.web.ros.service.specificat.SpecificatTypeService;
 import com.redescooter.ses.web.ros.service.website.ContactUsService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryExportResult;
@@ -96,6 +95,15 @@ public class InquiryServiceImpl implements InquiryService {
 
     @DubboReference
     private IdAppService idAppService;
+
+    @Autowired
+    private OpeSpecificatTypeMapper opeSpecificatTypeMapper;
+
+    @Autowired
+    private OpeColorMapper opeColorMapper;
+
+    @Autowired
+    private OpeCustomerInquiryBMapper opeCustomerInquiryBMapper;
 
     @Value("${Request.privateKey}")
     private String privateKey;
@@ -463,6 +471,37 @@ public class InquiryServiceImpl implements InquiryService {
             }
         }
         return new GeneralResult(excelPath);
+    }
+
+    @Override
+    public GeneralResult updateSaleOrder(UpdateInfoResult enter) {
+        OpeSpecificatType opeSpecificatType = opeSpecificatTypeMapper.selectById(enter.getSpecificatTypeId());
+        if(opeSpecificatType==null) throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_NOT_FOUND.getCode(), ExceptionCodeEnums.SPECIFICAT_NOT_FOUND.getMessage());
+        OpeCustomerInquiryB opeCustomerInquiryB = opeCustomerInquiryBMapper.selectById(enter.getCustomerInquiryId());
+        if (opeCustomerInquiryB==null) throw new SesWebRosException(ExceptionCodeEnums.CUSTOMERINQUIRY_NOT_FOUND.getCode(), ExceptionCodeEnums.CUSTOMERINQUIRY_NOT_FOUND.getMessage());
+        OpeColor opeColor = opeColorMapper.selectById(enter.getColorId());
+        if(opeColor==null) throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_FOUND.getCode(), ExceptionCodeEnums.COLOR_NOT_FOUND.getMessage());
+        OpeColor opeColors = new OpeColor();
+        opeColors.setId(enter.getColorId());
+        opeColors.setColorName(enter.getColor());
+        int colorResult = opeColorMapper.updateById(opeColors);
+        if(colorResult>0){
+            OpeSpecificatType opeSpecificatType1 = new OpeSpecificatType();
+            opeSpecificatType1.setId(enter.getSpecificatTypeId());
+            opeSpecificatType1.setSpecificatName(enter.getEnName());
+            int specificatResult = opeSpecificatTypeMapper.updateById(opeSpecificatType1);
+            if(specificatResult>0){
+                OpeCustomerInquiryB opeCustomerInquiryB1 = new OpeCustomerInquiryB();
+                opeCustomerInquiryB1.setId(enter.getCustomerInquiryId());
+                opeCustomerInquiryB1.setProductQty(enter.getBatteryQty());
+                opeCustomerInquiryBMapper.updateById(opeCustomerInquiryB1);
+            }else{
+                throw new SesWebRosException(ExceptionCodeEnums.SPECIFICATION_CHANGE_ERRO.getCode(), ExceptionCodeEnums.SPECIFICATION_CHANGE_ERRO.getMessage());
+            }
+        }else {
+            throw new SesWebRosException(ExceptionCodeEnums.COLOR_CHANGE_ERRO.getCode(), ExceptionCodeEnums.COLOR_CHANGE_ERRO.getMessage());
+        }
+        return new GeneralResult(enter.getRequestId());
     }
 
 

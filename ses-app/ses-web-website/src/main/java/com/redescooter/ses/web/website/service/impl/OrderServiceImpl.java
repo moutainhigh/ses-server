@@ -216,7 +216,7 @@ public class OrderServiceImpl implements OrderService {
         addSiteOrderVO.setDealerId(enter.getDealerId());
 
         addSiteOrderVO.setProductId(productColour.getProductId());
-        addSiteOrderVO.setBatteryQty(scooterBatteryParts.getQty());
+        addSiteOrderVO.setBatteryQty(enter.getBatteryQty());
         addSiteOrderVO.setColourId(productColour.getColourId());
         addSiteOrderVO.setFullName(customer.getCustomerFullName());
         addSiteOrderVO.setCountryName(customer.getCountryName());
@@ -248,8 +248,6 @@ public class OrderServiceImpl implements OrderService {
         addSiteOrderVO.setPaymentTypeId(enter.getPaymentTypeId());
         //支付状态
         addSiteOrderVO.setPayStatus(SiteOrderPaymentStatusEnums.UN_PAID.getValue());
-        //购买电池数
-        addSiteOrderVO.setBatteryQty(scooterBatteryParts.getQty());
         //购买车辆数
         addSiteOrderVO.setScooterQuantity(enter.getScooterQuantity());
         addSiteOrderVO.setSynchronizeFlag(false);

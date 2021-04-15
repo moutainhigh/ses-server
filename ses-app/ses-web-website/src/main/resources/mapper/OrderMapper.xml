@@ -19,6 +19,12 @@
         <result column="batteryQty" jdbcType="INTEGER" property="batteryQty"/>
         <result column="etdDeliveryTime" jdbcType="TIMESTAMP" property="etdDeliveryTime"/>
         <result column="createdTime" jdbcType="TIMESTAMP" property="createdTime"/>
+
+        <result column="amountObligation" jdbcType="DECIMAL" property="amountObligation"/>
+
+        <result column="prepaidDeposit" jdbcType="DECIMAL" property="prepaidDeposit"/>
+
+        <result column="amountDiscount" jdbcType="DECIMAL" property="amountDiscount"/>
         <collection property="orderBlist" javaType="java.util.ArrayList"
                     ofType="com.redescooter.ses.web.website.vo.order.orderBlist">
             <id column="orderBId" jdbcType="BIGINT" property="orderBId"/>

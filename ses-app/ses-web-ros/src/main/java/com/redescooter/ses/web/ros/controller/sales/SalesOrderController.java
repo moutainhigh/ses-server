@@ -83,4 +83,10 @@ public class SalesOrderController {
     public Response<GeneralResult> lastParagraphEmail(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(inquiryService.lastParagraphEmail(enter));
     }
+
+    @PostMapping(value = "/updateSaleOrder")
+    @ApiOperation(value = "修改电池数量颜色和规格", response = GeneralResult.class)
+    public Response<GeneralResult> updateSaleOrder(@ModelAttribute @ApiParam("请求参数")UpdateInfoResult  enter) {
+        return new Response<>(inquiryService.updateSaleOrder(enter));
+    }
 }

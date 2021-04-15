@@ -8,6 +8,7 @@ import com.redescooter.ses.api.hub.exception.ValidationExceptionCode;
 import com.redescooter.ses.web.website.exception.SiteValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.models.auth.In;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -87,5 +88,12 @@ public class AddUpdateOrderEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "remarks")
     private String remarks;
+
+
+    /**
+     * 电池数量
+     */
+    @ApiModelProperty(value = "qty")
+    private Integer batteryQty;
 
 }
