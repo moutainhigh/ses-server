@@ -46,5 +46,10 @@ public class SaveOrUpdateScooterBEnter {
     @ApiModelProperty(value="备注")
     private String remark;
 
+    @ApiModelProperty(value = "平板序列号")
+    private String sn;
+
+    @ApiModelProperty(value = "蓝牙地址")
+    private String bluetoothMacAddress;
 
 }

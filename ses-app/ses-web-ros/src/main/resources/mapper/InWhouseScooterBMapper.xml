@@ -13,7 +13,9 @@
           scooter.in_wh_qty,
           group1.group_name AS groupName,
           color.color_value AS colorValue,
-          color.color_name AS colorName
+          color.color_name AS colorName,
+          scooter.def1 as sn,
+          scooter.def2 as bluetoothMacAddress
         from ope_in_whouse_scooter_b scooter
         left join ope_specificat_group group1 on scooter.group_id = group1.id
         left join ope_color color ON color.id = scooter.color_id
