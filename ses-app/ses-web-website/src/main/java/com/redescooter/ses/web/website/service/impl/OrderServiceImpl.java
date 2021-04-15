@@ -59,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author jerry
@@ -407,6 +408,51 @@ public class OrderServiceImpl implements OrderService {
         orderDetails.setRequestId(enter.getRequestId());
         return orderDetails;
     }
+
+
+    /**
+     * 删除订单
+     * @param enter
+     * @return
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult deleteOrder(IdEnter enter) {
+        SiteOrder siteOrder = siteOrderService.getById(enter.getId());
+        if (siteOrder == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
+        }
+        siteOrderService.removeById(enter.getId());
+        QueryWrapper<SiteOrderB> qw = new QueryWrapper<>();
+        qw.eq(SiteOrderB.COL_ORDER_ID,enter.getId());
+        List<SiteOrderB> orderBS = siteOrderBService.list(qw);
+        if (CollectionUtils.isNotEmpty(orderBS)){
+            siteOrderBService.removeByIds(orderBS.stream().map(SiteOrderB::getId).collect(Collectors.toList()));
+        }
+        // 官网数据删除  需要把ROS那边对应的订单删除
+        try {
+            deleRosOrder(siteOrder);
+        }catch (Exception e) {
+
+        }
+        return new GeneralResult(enter.getRequestId());
+    }
+
+
+    @Async
+    public void deleRosOrder(SiteOrder siteOrder){
+        QueryWrapper<SiteCustomer> qw = new QueryWrapper<>();
+        qw.eq(SiteCustomer.COL_ID,siteOrder.getCustomerId());
+        qw.last("limit 1");
+        SiteCustomer customer = siteCustomerService.getOne(qw);
+        if (customer == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        siteWebInquiryService.webDeleteOrderAsynRos(customer.getEmail());
+
+    }
+
 
 
     /**

@@ -23,4 +23,10 @@ public interface SiteWebInquiryService {
      */
     void siteWebInquiryPay(SiteWebInquiryPayEnter enter);
 
+
+    /**
+     * 官网订单删除 ROS这边的订单也删除
+     * @param email
+     */
+    void webDeleteOrderAsynRos(String email);
 }
