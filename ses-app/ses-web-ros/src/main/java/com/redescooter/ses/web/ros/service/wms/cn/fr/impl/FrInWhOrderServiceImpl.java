@@ -247,6 +247,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             wrapper.last("limit 1");
             OpeInWhouseOrderSerialBind inSerialBind = opeInWhouseOrderSerialBindService.getOne(wrapper);
             if (null == inSerialBind) {
+                log.info("生成的rsn在ope_in_whouse_order_serial_bind表不存在,正常执行新增");
                 // 根据groupId和colorId找到productId
                 LambdaQueryWrapper<OpeProductionScooterBom> lqw = new LambdaQueryWrapper<>();
                 lqw.eq(OpeProductionScooterBom::getDr, Constant.DR_FALSE);
@@ -256,6 +257,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
                 lqw.last("limit 1");
                 OpeProductionScooterBom bom = opeProductionScooterBomService.getOne(lqw);
                 if (null != bom) {
+                    log.info("找到了bom");
                     OpeInWhouseOrderSerialBind bind = new OpeInWhouseOrderSerialBind();
                     bind.setId(idAppService.getId(SequenceName.OPE_IN_WHOUSE_ORDER));
                     bind.setDr(Constant.DR_FALSE);
@@ -284,6 +286,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             wmsWrapper.last("limit 1");
             OpeWmsStockSerialNumber serialNumber = opeWmsStockSerialNumberService.getOne(wmsWrapper);
             if (null == serialNumber) {
+                log.info("生成的rsn在ope_wms_stock_serial_number表不存在,正常执行新增");
                 // 根据groupId和colorId找到relationId
                 LambdaQueryWrapper<OpeWmsScooterStock> stockWrapper = new LambdaQueryWrapper<>();
                 stockWrapper.eq(OpeWmsScooterStock::getDr, Constant.DR_FALSE);
@@ -293,6 +296,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
                 stockWrapper.last("limit 1");
                 OpeWmsScooterStock stock = opeWmsScooterStockService.getOne(stockWrapper);
                 if (null != stock) {
+                    log.info("找到了stock");
                     OpeWmsStockSerialNumber number = new OpeWmsStockSerialNumber();
                     number.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_SERIAL_NUMBER));
                     number.setDr(Constant.DR_FALSE);
@@ -317,12 +321,15 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
 
         if (CollectionUtils.isNotEmpty(syncList)) {
             scooterService.syncScooterData(syncList);
+            log.info("新增sco_scooter表成功");
         }
         if (CollectionUtils.isNotEmpty(saveInSerialBindList)) {
             opeInWhouseOrderSerialBindService.saveOrUpdateBatch(saveInSerialBindList);
+            log.info("新增ope_in_whouse_order_serial_bind表成功");
         }
         if (CollectionUtils.isNotEmpty(saveStockSerialNumberList)) {
             opeWmsStockSerialNumberService.saveOrUpdateBatch(saveStockSerialNumberList);
+            log.info("新增ope_wms_stock_serial_number表成功");
         }
         return new GeneralResult(enter.getRequestId());
     }

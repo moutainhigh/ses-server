@@ -20,13 +20,13 @@ import lombok.NoArgsConstructor;
 @ApiModel(value = "新增法国仓库入库单入参", description = "新增法国仓库入库单入参")
 public class FrInWhOrderAddEnter extends GeneralEnter {
 
-    @ApiModelProperty("入库类型，1：生产入库，2：返修入库，3：采购入库，4：退料入库，5：其他")
+    @ApiModelProperty("入库类型 1:生产入库 2:返修入库 3:采购入库 4:退料入库 5:其他  此处传递5")
     private Integer inWhType;
 
     @ApiModelProperty("备注")
     private String remark;
 
-    @ApiModelProperty("入库明细,json格式的字符串")
+    @ApiModelProperty("入库明细,json格式的字符串 格式:{\"groupId\":\"\",\"colorId\":\"\",\"sn\":\"\",\"bluetoothMacAddress\":\"\"}")
     private String st;
 
 }
