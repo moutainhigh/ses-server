@@ -22,7 +22,7 @@ public class SiteStripeController {
 
     @PostMapping(value = "/paymentIntent")
     @ApiOperation(value = "Get [client_secret]", response = StringResult.class)
-    public Response<StringResult> paymentIntent(@RequestBody IdEnter enter) {
+    public Response<StringResult> paymentIntent(@ModelAttribute IdEnter enter) {
         return new Response<>(stripePaymentService.paymentIntent(enter));
     }
 
