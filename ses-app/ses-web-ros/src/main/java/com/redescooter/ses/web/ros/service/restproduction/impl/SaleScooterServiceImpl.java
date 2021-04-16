@@ -27,6 +27,8 @@ import com.redescooter.ses.web.ros.vo.restproduct.SaleProductionParaEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListResult;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterSaveOrUpdateEnter;
+import com.redescooter.ses.web.ros.vo.specificat.ColorDataResult;
+import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeResult;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -34,8 +36,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import spark.utils.CollectionUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassNameSaleScooterServiceImpl
@@ -204,9 +208,6 @@ public class SaleScooterServiceImpl implements SaleScooterService {
                 // 下面开始给这个对象找数据赋值
                 // 首先是产品数据
                 syncProductionDataEnter.setProductCode(saleScooter.getProductCode());
-                syncProductionDataEnter.setCnName(saleScooter.getProductName());
-                syncProductionDataEnter.setFrName(saleScooter.getProductName());
-                syncProductionDataEnter.setEnName(saleScooter.getProductName());
                 syncProductionDataEnter.setProductType(1);
                 syncProductionDataEnter.setStatus(1);
                 syncProductionDataEnter.setOtherParameter(saleScooter.getOtherParam());
@@ -296,5 +297,48 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         map.put("2", opeSaleCombinService.count());
         map.put("3", opeSalePartsService.count());
         return map;
+    }
+
+    @Override
+    public List<SpecificatTypeResult> specificatTypeDataList(GeneralEnter enter) {
+       List<OpeSaleScooter> list = opeSaleScooterService.list();
+        List<SpecificatTypeResult> specificatTypeResults  = new ArrayList<>();;
+        if (CollectionUtils.isNotEmpty(list)){
+            QueryWrapper<OpeSpecificatType> wrapper = new QueryWrapper<OpeSpecificatType>()
+                    .in(OpeSpecificatType.COL_ID,list.stream().map(OpeSaleScooter::getSpecificatId).collect(Collectors.toList()));
+            List<OpeSpecificatType> opeSpecificatTypes = opeSpecificatTypeService.list(wrapper);
+            if (CollectionUtils.isNotEmpty(opeSpecificatTypes)){
+                for (OpeSpecificatType ope : opeSpecificatTypes){
+                    SpecificatTypeResult specificatTypeResult = new SpecificatTypeResult();
+                    specificatTypeResult.setSpecificatId(ope.getId());
+                    specificatTypeResult.setSpecificatName(ope.getSpecificatName());
+                    specificatTypeResults.add(specificatTypeResult);
+                }
+            }
+        }
+        return specificatTypeResults;
+    }
+
+    @Override
+    public List<ColorDataResult> SpecificationsColorLinkage(Long specificatId) {
+        QueryWrapper<OpeSaleScooter> wrapper = new QueryWrapper<OpeSaleScooter>()
+                .eq(OpeSaleScooter.COL_SPECIFICAT_ID,specificatId);
+        List<OpeSaleScooter> saleScooterList = opeSaleScooterService.list(wrapper);
+        List<ColorDataResult> resultList  = new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(saleScooterList)){
+             QueryWrapper<OpeColor> qw = new QueryWrapper<>();
+            qw.in(OpeColor.COL_ID,saleScooterList.stream().map(OpeSaleScooter::getColorId).collect(Collectors.toList()));
+            List<OpeColor> colorList = opeColorService.list(qw);
+            if (CollectionUtils.isNotEmpty(colorList)){
+                for (OpeColor opeColor : colorList) {
+                    ColorDataResult result = new ColorDataResult();
+                    result.setColorId(opeColor.getId());
+                    result.setColorName(opeColor.getColorName());
+                    result.setColorValue(opeColor.getColorValue());
+                    resultList.add(result);
+                }
+            }
+        }
+        return resultList;
     }
 }

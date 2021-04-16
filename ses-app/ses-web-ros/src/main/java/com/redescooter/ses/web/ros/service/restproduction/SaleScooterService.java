@@ -1,13 +1,14 @@
 package com.redescooter.ses.web.ros.service.restproduction;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListResult;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterSaveOrUpdateEnter;
+import com.redescooter.ses.web.ros.vo.specificat.ColorDataResult;
+import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeResult;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -77,5 +78,23 @@ public interface SaleScooterService {
      * @return
      **/
     Map<String,Integer> listCount(GeneralEnter enter);
+
+
+
+    /**
+     * @Author
+     * @Description  获取规格下拉数据的接口
+     * @Date  2020/10/13 15:26
+     * @Param
+     * @return
+     **/
+    List<SpecificatTypeResult> specificatTypeDataList(GeneralEnter enter);
+
+    /**
+     * 规格和颜色的二级联动
+     * @param specificatId
+     * @return
+     */
+    List<ColorDataResult> SpecificationsColorLinkage(Long specificatId);
 
 }

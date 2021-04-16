@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.models.auth.In;
 import lombok.*;
 
 @ApiModel(value = "Primary key parameters", description = "Primary key parameters")
@@ -22,17 +23,13 @@ public class UpdateInfoResult extends GeneralEnter {
     @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "colorId不能为空")
     private Long colorId;
 
-    @ApiModelProperty(value = "customerInquiryId",required = true)
-    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "customerInquiryId不能为空")
-    private Long customerInquiryId;
+    @ApiModelProperty(value = "productQty",required = true)
+    private Integer productQty;
 
-    @ApiModelProperty(value = "color",required = true)
-    private String color;
 
-    @ApiModelProperty(value = "batteryQty",required = true)
-    private Integer batteryQty;
+    @ApiModelProperty(value = "客户咨询管理主键id",required = true)
+    @NotNull(code = ValidationExceptionBaseCode.ID_IS_EMPTY, message = "客户咨询管理主键id不能为空")
+    private Long id;
 
-    @ApiModelProperty(value = "enName",required = true)
-    private String enName;
 
 }

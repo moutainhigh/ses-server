@@ -536,9 +536,9 @@ public enum ExceptionCodeEnums {
 
     CUSTOMERINQUIRY_NOT_FOUND(10259,"客户咨询找不到"),
 
-    SPECIFICAT_NOT_FOUND(10260,"规格找不到")
+    SPECIFICAT_NOT_FOUND(10260,"规格找不到"),
 
-
+    ORDER_NOT_FOUND(10261,"订单不存在")
     ;
 
     private int code;
