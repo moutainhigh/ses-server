@@ -26,6 +26,7 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.InquiryServiceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeColorMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryBMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeSaleScooterMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSpecificatTypeMapper;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -86,6 +87,9 @@ public class InquiryServiceImpl implements InquiryService {
 
     @Autowired
     private OpeCustomerService opeCustomerService;
+
+    @Autowired
+    private OpeSaleScooterMapper opeSaleScooterMapper;
 
     @DubboReference
     private MailMultiTaskService mailMultiTaskService;
@@ -475,31 +479,25 @@ public class InquiryServiceImpl implements InquiryService {
 
     @Override
     public GeneralResult updateSaleOrder(UpdateInfoResult enter) {
-        OpeSpecificatType opeSpecificatType = opeSpecificatTypeMapper.selectById(enter.getSpecificatTypeId());
-        if(opeSpecificatType==null) throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_NOT_FOUND.getCode(), ExceptionCodeEnums.SPECIFICAT_NOT_FOUND.getMessage());
-        OpeCustomerInquiryB opeCustomerInquiryB = opeCustomerInquiryBMapper.selectById(enter.getCustomerInquiryId());
-        if (opeCustomerInquiryB==null) throw new SesWebRosException(ExceptionCodeEnums.CUSTOMERINQUIRY_NOT_FOUND.getCode(), ExceptionCodeEnums.CUSTOMERINQUIRY_NOT_FOUND.getMessage());
-        OpeColor opeColor = opeColorMapper.selectById(enter.getColorId());
-        if(opeColor==null) throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_FOUND.getCode(), ExceptionCodeEnums.COLOR_NOT_FOUND.getMessage());
-        OpeColor opeColors = new OpeColor();
-        opeColors.setId(enter.getColorId());
-        opeColors.setColorName(enter.getColor());
-        int colorResult = opeColorMapper.updateById(opeColors);
-        if(colorResult>0){
-            OpeSpecificatType opeSpecificatType1 = new OpeSpecificatType();
-            opeSpecificatType1.setId(enter.getSpecificatTypeId());
-            opeSpecificatType1.setSpecificatName(enter.getEnName());
-            int specificatResult = opeSpecificatTypeMapper.updateById(opeSpecificatType1);
-            if(specificatResult>0){
-                OpeCustomerInquiryB opeCustomerInquiryB1 = new OpeCustomerInquiryB();
-                opeCustomerInquiryB1.setId(enter.getCustomerInquiryId());
-                opeCustomerInquiryB1.setProductQty(enter.getBatteryQty());
-                opeCustomerInquiryBMapper.updateById(opeCustomerInquiryB1);
-            }else{
-                throw new SesWebRosException(ExceptionCodeEnums.SPECIFICATION_CHANGE_ERRO.getCode(), ExceptionCodeEnums.SPECIFICATION_CHANGE_ERRO.getMessage());
-            }
-        }else {
-            throw new SesWebRosException(ExceptionCodeEnums.COLOR_CHANGE_ERRO.getCode(), ExceptionCodeEnums.COLOR_CHANGE_ERRO.getMessage());
+        QueryWrapper<OpeSaleScooter> wrapper = new QueryWrapper<OpeSaleScooter>()
+                .eq(OpeSaleScooter.COL_COLOR_ID, enter.getColorId())
+                .eq(OpeSaleScooter.COL_SPECIFICAT_ID, enter.getSpecificatTypeId())
+                .eq(OpeSaleScooter.COL_SALE_STUTAS,1)
+                .last("limit 1");
+        OpeSaleScooter result = opeSaleScooterMapper.selectOne(wrapper);
+        OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getById(enter.getId());
+        if (opeCustomerInquiry == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
+        }
+        opeCustomerInquiry.setProductId(result.getId());
+        opeCustomerInquiryService.updateById(opeCustomerInquiry);
+        List<OpeCustomerInquiryB> opeCustomerInquiryB = opeCustomerInquiryBMapper.selectList(new QueryWrapper<OpeCustomerInquiryB>().eq("product_id",result.getId()));
+        if(opeCustomerInquiryB==null){
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        }
+        for (OpeCustomerInquiryB ope:opeCustomerInquiryB){
+            ope.setProductQty(enter.getProductQty());
+            opeCustomerInquiryBMapper.updateBatch(opeCustomerInquiryB);
         }
         return new GeneralResult(enter.getRequestId());
     }
