@@ -2,8 +2,13 @@ package com.redescooter.ses.web.website.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.hub.service.operation.CustomerService;
 import com.redescooter.ses.api.hub.vo.operation.SyncCustomerDataEnter;
@@ -66,6 +71,9 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
     @DubboReference
     private CustomerService customerService;
 
+    @DubboReference
+    private MailMultiTaskService mailMultiTaskService;
+
     /**
      * 创建客户
      *
@@ -119,6 +127,17 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
 
         // 官网创建客户数据同步到ros
         syncData(enter);
+
+        // 官网创建客户后发送创建账号成功邮件
+        BaseMailTaskEnter mailTask = new BaseMailTaskEnter();
+        mailTask.setName(enter.getCustomerFirstName() + " " + enter.getCustomerLastName());
+        mailTask.setEvent(MailTemplateEventEnums.WEBSITE_SIGN_UP.getEvent());
+        mailTask.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
+        mailTask.setAppId(AppIDEnums.SES_ROS.getValue());
+        mailTask.setEmail(enter.getEmail());
+        mailTask.setUserId(customerID);
+        mailTask.setRequestId(enter.getRequestId());
+        mailMultiTaskService.addMultiMailTask(mailTask);
 
         LoginEnter signUp = new LoginEnter();
         signUp.setLoginName(enter.getEmail());
