@@ -84,7 +84,7 @@
         opi.order_no                                    as orderNo,
         opi.status,
         IFNULL(OPI.pay_status, '1')                     as payStatus,
-        api.source
+        api.source,
         oc.customer_full_name                           as customerFullName,
         oc.email,
         opi.product_model                  -             as productModel,
