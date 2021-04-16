@@ -87,7 +87,7 @@
         api.source,
         oc.customer_full_name                           as customerFullName,
         oc.email,
-        opi.product_model                  -             as productModel,
+        opi.product_model                            as productModel,
         spe.specificat_name                             as enName,
         spe.id                                          as specificatTypeId,
         opp.color_name                                  as color,
