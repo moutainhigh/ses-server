@@ -478,27 +478,32 @@ public class InquiryServiceImpl implements InquiryService {
     }
 
     @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult updateSaleOrder(UpdateInfoResult enter) {
         QueryWrapper<OpeSaleScooter> wrapper = new QueryWrapper<OpeSaleScooter>()
                 .eq(OpeSaleScooter.COL_COLOR_ID, enter.getColorId())
                 .eq(OpeSaleScooter.COL_SPECIFICAT_ID, enter.getSpecificatTypeId())
                 .eq(OpeSaleScooter.COL_SALE_STUTAS,1)
                 .last("limit 1");
-        OpeSaleScooter result = opeSaleScooterMapper.selectOne(wrapper);
-        OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getById(enter.getId());
-        if (opeCustomerInquiry == null) {
+        OpeSaleScooter scooter = opeSaleScooterMapper.selectOne(wrapper);
+        Long productId = scooter.getId();
+
+        OpeCustomerInquiry inquiry = opeCustomerInquiryService.getById(enter.getId());
+        if (inquiry == null) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        opeCustomerInquiry.setProductId(result.getId());
-        opeCustomerInquiryService.updateById(opeCustomerInquiry);
-        List<OpeCustomerInquiryB> opeCustomerInquiryB = opeCustomerInquiryBMapper.selectList(new QueryWrapper<OpeCustomerInquiryB>().eq("product_id",result.getId()));
-        if(opeCustomerInquiryB==null){
+        inquiry.setProductId(productId);
+        opeCustomerInquiryService.updateById(inquiry);
+
+        List<OpeCustomerInquiryB> inquiryBList = opeCustomerInquiryBMapper.selectList(new QueryWrapper<OpeCustomerInquiryB>().eq("inquiry_id", inquiry.getId()));
+        if(CollectionUtils.isEmpty(inquiryBList)){
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
-        for (OpeCustomerInquiryB ope:opeCustomerInquiryB){
+        for (OpeCustomerInquiryB ope : inquiryBList){
             ope.setProductQty(enter.getProductQty());
-            opeCustomerInquiryBMapper.updateBatch(opeCustomerInquiryB);
         }
+
+        opeCustomerInquiryBMapper.updateBatch(inquiryBList);
         return new GeneralResult(enter.getRequestId());
     }
 
