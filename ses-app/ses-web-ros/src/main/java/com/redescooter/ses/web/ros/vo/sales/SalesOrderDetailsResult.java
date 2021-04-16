@@ -29,6 +29,10 @@ public class SalesOrderDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "订单支付状态")
     private String payStatus;
 
+    @ApiModelProperty(value = "订单支付状态")
+    private String source;
+
+
     @ApiModelProperty(value = "客户全名")
     private String customerFullName;
 
