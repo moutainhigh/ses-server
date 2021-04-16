@@ -96,12 +96,12 @@ public class SalesOrderDetailsResult extends GeneralResult {
     private Double prepaidDeposit;
 
     @ApiModelProperty("规格类型id")
-    private Double specificatTypeId;
+    private Long specificatTypeId;
 
     @ApiModelProperty("客户咨询管理id")
-    private Double customerInquiryId;
+    private Long customerInquiryId;
 
     @ApiModelProperty("颜色id")
-    private Double colorId;
+    private Long colorId;
 
 }

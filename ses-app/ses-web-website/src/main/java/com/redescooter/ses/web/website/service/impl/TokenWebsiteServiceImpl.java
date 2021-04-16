@@ -293,8 +293,8 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         baseMailTask.setToUserId(user.getId());
         baseMailTask.setUserRequestId(enter.getRequestId());
         baseMailTask.setEvent(MailTemplateEventEnums.FORGET_PSD_SEND_MAIL.getEvent());
-        baseMailTask.setMailAppId(AppIDEnums.SES_WEBSITE.getValue());
-        baseMailTask.setMailSystemId(AppIDEnums.SES_WEBSITE.getSystemId());
+        baseMailTask.setMailSystemId(SystemIDEnums.REDE_SES.getSystemId());
+        baseMailTask.setMailAppId(AppIDEnums.SES_ROS.getValue());
         mailMultiTaskService.addSetPasswordWebUserTask(baseMailTask);
 
         return new GeneralResult(enter.getRequestId());
