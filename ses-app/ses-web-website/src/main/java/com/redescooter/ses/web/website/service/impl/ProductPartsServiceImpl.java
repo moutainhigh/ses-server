@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.website.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -15,6 +14,7 @@ import com.redescooter.ses.web.website.service.base.SiteProductPartsService;
 import com.redescooter.ses.web.website.vo.product.AddProductPartsEnter;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,6 +48,9 @@ public class ProductPartsServiceImpl implements ProductPartsService {
     @Override
     public GeneralResult addProductParts(AddProductPartsEnter enter) {
         log.info("impl>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+        if (StringUtils.isBlank(enter.getPartsId()) || null == enter.getProductId()) {
+            throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(), ExceptionCodeEnums.PARAM_ERROR.getMessage());
+        }
         SiteProductParts addProductPartsVO = new SiteProductParts();
         List<String> list = Arrays.asList(enter.getPartsId().split(","));
         QueryWrapper<SiteProductParts> wrapper = new QueryWrapper<SiteProductParts>().eq("product_id",enter.getProductId()).eq("dr",0);
