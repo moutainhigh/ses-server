@@ -177,7 +177,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
         flow.setUserId(enter.getUserId());
         orderStatusFlowService.save(flow);
 
-        // 待入库数量增加
+        // 操作法国仓库车辆库存,待入库数量增加
         wmsMaterialStockService.waitInStock(inWhOrder.getOrderType(), inWhOrder.getId(), inWhOrder.getCountryType(), enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
@@ -223,7 +223,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
         // 生成批次号
         String lot = getProductLot();
         List<SyncScooterDataDTO> syncList = Lists.newArrayList();
-        List<OpeInWhouseOrderSerialBind> saveInSerialBindList = Lists.newArrayList();
+        List<OpeInWhouseOrderSerialBind> saveInWhSerialBindList = Lists.newArrayList();
         List<OpeWmsStockSerialNumber> saveStockSerialNumberList = Lists.newArrayList();
 
         // 循环入库单车辆子表,拿到每辆要入库的车的信息
@@ -275,7 +275,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
                     bind.setCreatedTime(new Date());
                     bind.setUpdatedBy(enter.getUserId());
                     bind.setUpdatedTime(new Date());
-                    saveInSerialBindList.add(bind);
+                    saveInWhSerialBindList.add(bind);
                 }
             }
 
@@ -323,8 +323,8 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             scooterService.syncScooterData(syncList);
             log.info("新增sco_scooter表成功");
         }
-        if (CollectionUtils.isNotEmpty(saveInSerialBindList)) {
-            opeInWhouseOrderSerialBindService.saveOrUpdateBatch(saveInSerialBindList);
+        if (CollectionUtils.isNotEmpty(saveInWhSerialBindList)) {
+            opeInWhouseOrderSerialBindService.saveOrUpdateBatch(saveInWhSerialBindList);
             log.info("新增ope_in_whouse_order_serial_bind表成功");
         }
         if (CollectionUtils.isNotEmpty(saveStockSerialNumberList)) {
