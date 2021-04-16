@@ -29,7 +29,7 @@ public class SalesOrderDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "订单支付状态")
     private String payStatus;
 
-    @ApiModelProperty(value = "订单支付状态")
+    @ApiModelProperty(value = "订单来源")
     private String source;
 
 
