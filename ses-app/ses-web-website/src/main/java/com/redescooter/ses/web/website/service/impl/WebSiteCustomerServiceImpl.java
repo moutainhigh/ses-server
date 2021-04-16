@@ -130,13 +130,19 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
 
         // 官网创建客户后发送创建账号成功邮件
         BaseMailTaskEnter mailTask = new BaseMailTaskEnter();
-        mailTask.setName(enter.getCustomerFirstName() + " " + enter.getCustomerLastName());
+        BeanUtils.copyProperties(enter, mailTask);
         mailTask.setEvent(MailTemplateEventEnums.WEBSITE_SIGN_UP.getEvent());
-        mailTask.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
-        mailTask.setAppId(AppIDEnums.SES_ROS.getValue());
+        if (enter.getEmail().indexOf("@") == (-1)) {
+            mailTask.setName(enter.getEmail());
+        } else {
+            mailTask.setName(enter.getEmail().split("@", 2)[0]);
+        }
+        mailTask.setToMail(enter.getEmail());
         mailTask.setEmail(enter.getEmail());
-        mailTask.setUserId(customerID);
-        mailTask.setRequestId(enter.getRequestId());
+        mailTask.setToUserId(customerID);
+        mailTask.setUserRequestId(enter.getRequestId());
+        mailTask.setMailSystemId(SystemIDEnums.REDE_SES.getSystemId());
+        mailTask.setMailAppId(AppIDEnums.SES_ROS.getValue());
         mailMultiTaskService.addMultiMailTask(mailTask);
 
         LoginEnter signUp = new LoginEnter();
