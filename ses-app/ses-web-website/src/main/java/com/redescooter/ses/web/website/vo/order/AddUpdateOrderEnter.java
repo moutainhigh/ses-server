@@ -96,4 +96,17 @@ public class AddUpdateOrderEnter extends GeneralEnter {
     @ApiModelProperty(value = "qty")
     private Integer batteryQty;
 
+
+    @ApiModelProperty(value = "国家名称")
+    private String countryName;
+
+
+    @ApiModelProperty(value = "城市名称")
+    private String cityName;
+
+
+    @ApiModelProperty(value = "postcode")
+    private String postcode;
+
+
 }

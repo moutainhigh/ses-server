@@ -256,6 +256,9 @@ public class OrderServiceImpl implements OrderService {
         addSiteOrderVO.setRevision(0);
         addSiteOrderVO.setCreatedBy(enter.getUserId());
         addSiteOrderVO.setCreatedTime(new Date());
+        addSiteOrderVO.setCountryName(enter.getCountryName());
+        addSiteOrderVO.setCityName(enter.getCityName());
+        addSiteOrderVO.setPostcode(enter.getPostcode());
         addSiteOrderVO.setUpdatedBy(enter.getUserId());
 
         siteOrderService.saveOrUpdate(addSiteOrderVO);
