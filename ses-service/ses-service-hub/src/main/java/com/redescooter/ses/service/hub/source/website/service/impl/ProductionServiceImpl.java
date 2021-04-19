@@ -157,9 +157,7 @@ public class ProductionServiceImpl implements ProductionService {
             product.setProductModelId(productModel.getId());
             siteProductService.saveOrUpdate(product);
         } else {
-            //BeanUtils.copyProperties(syncProductionDataEnter, product);
-            product.setMaterParameter(syncProductionDataEnter.getMaterParameter());
-            product.setOtherParameter(syncProductionDataEnter.getOtherParameter());
+            BeanUtils.copyProperties(syncProductionDataEnter, product);
             siteProductService.updateById(product);
         }
 

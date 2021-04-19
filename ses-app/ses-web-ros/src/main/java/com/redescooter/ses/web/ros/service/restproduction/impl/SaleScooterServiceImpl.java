@@ -202,7 +202,9 @@ public class SaleScooterServiceImpl implements SaleScooterService {
     void dataSyncToWebsite(OpeSaleScooter saleScooter){
         try {
             // 这个要同步好几张表 先判断本次同步多少张表（1张或5张）
-            if(!productionService.syncByProductionCode(saleScooter.getProductCode(),saleScooter.getSaleStutas())){
+            boolean flag = productionService.syncByProductionCode(saleScooter.getProductCode(), saleScooter.getSaleStutas());
+            log.info("flag的结果是:[{}]", flag);
+            if(!flag){
                 // 进入到这里  说明是第一次同步这条数据  需要同步5张表
                 log.info("是第一次同步数据");
                 SyncProductionDataEnter syncProductionDataEnter = new SyncProductionDataEnter();

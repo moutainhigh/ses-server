@@ -242,7 +242,7 @@ public class OrderServiceImpl implements OrderService {
         //实际付款电池数: 选配电池总数-产品最小电池数
         int paidBattery = scooterBatteryParts.getQty() - product.getMinBatteryNum();
         //加上选购电池的价格
-        totalPrice = totalPrice.add(battery.getPrice().multiply(new BigDecimal(String.valueOf(paidBattery))));
+        //totalPrice = totalPrice.add(battery.getPrice().multiply(new BigDecimal(String.valueOf(paidBattery))));
         //设置总价（未包含其他部件）
         addSiteOrderVO.setTotalPrice(totalPrice);
         //已付金额
