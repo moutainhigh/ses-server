@@ -67,7 +67,7 @@
                amount_discount,
                remark
         from site_parts
-                where dr = 0
+        where dr = 0 and `status` = 1
         <if test="keyword != null and keyword != ''">
             and (
                     en_name like concat('%', #{keyword}, '%')
