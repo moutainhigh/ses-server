@@ -10,14 +10,17 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.service.operation.CustomerService;
+import com.redescooter.ses.api.hub.vo.operation.SyncContactUsDataEnter;
 import com.redescooter.ses.api.hub.vo.operation.SyncCustomerDataEnter;
 import com.redescooter.ses.service.common.service.CityAppService;
 import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.hub.source.operation.dao.base.OpeCustomerMapper;
+import com.redescooter.ses.service.hub.source.operation.dm.OpeContactUs;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
-import io.seata.spring.annotation.GlobalTransactional;
+import com.redescooter.ses.service.hub.source.operation.service.base.OpeContactUsService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -39,6 +42,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private OpeCustomerMapper opeCustomerMapper;
+
+    @Autowired
+    private OpeContactUsService opeContactUsService;
 
     @DubboReference
     private CityAppService cityAppService;
@@ -189,6 +195,20 @@ public class CustomerServiceImpl implements CustomerService {
             param.setId(customer.getId());
             opeCustomerMapper.updateById(param);
         }
+        return new GeneralResult();
+    }
+
+    /**
+     * 官网联系我们同步数据到ros
+     */
+    @Override
+    @DS("operation")
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult syncContactUsData(SyncContactUsDataEnter enter) {
+        OpeContactUs contactUs = new OpeContactUs();
+        BeanUtils.copyProperties(enter, contactUs);
+        contactUs.setId(idAppService.getId(SequenceName.OPE_CONTACT_US));
+        opeContactUsService.save(contactUs);
         return new GeneralResult();
     }
 

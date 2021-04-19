@@ -2,6 +2,8 @@ package com.redescooter.ses.web.website.service.impl;
 
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.hub.service.operation.CustomerService;
+import com.redescooter.ses.api.hub.vo.operation.SyncContactUsDataEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.web.website.config.RequestsKeyProperties;
@@ -18,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -39,6 +42,10 @@ public class SitePageHomeServiceImpl implements SitePageHomeService {
 
     @Autowired
     private RequestsKeyProperties requestsKeyProperties;
+
+    @DubboReference
+    private CustomerService customerService;
+
     /**
      * 官网首页联系我们
      *
@@ -71,9 +78,30 @@ public class SitePageHomeServiceImpl implements SitePageHomeService {
         save.setCreatedTime(new Date());
         save.setUpdatedBy(enter.getUserId());
         save.setUpdatedTime(new Date());
-
         siteContactUsService.save(save);
 
+        // 官网创建客户数据同步到ros
+        syncData(enter);
         return new GeneralResult(enter.getRequestId());
     }
+
+    @Async
+    public void syncData(SiteSaveAboutUsEnter enter) {
+        SyncContactUsDataEnter model = new SyncContactUsDataEnter();
+        model.setDr(Constant.DR_FALSE);
+        model.setEmail(enter.getEmail());
+        model.setFirstName(enter.getFirstName());
+        model.setLastName(enter.getLastName());
+        if (StringUtils.isNoneBlank(enter.getFirstName(), enter.getLastName())) {
+            model.setFullName(new StringBuffer().append(enter.getFirstName()).append(" ").append(enter.getLastName()).toString());
+        }
+        model.setRemark(enter.getMessage());
+        model.setRevision(0);
+        model.setCreatedBy(0L);
+        model.setCreatedTime(new Date());
+        model.setUpdatedBy(0L);
+        model.setUpdatedTime(new Date());
+        customerService.syncContactUsData(model);
+    }
+
 }
