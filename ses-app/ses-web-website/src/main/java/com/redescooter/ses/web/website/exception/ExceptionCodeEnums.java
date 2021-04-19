@@ -89,7 +89,7 @@ public enum ExceptionCodeEnums {
 
     WRONG_ORDER_STATUS(10034, "订单状态不对"),
 
-    PHONE_LENGTH_OUT(10035, "手机号码长度不能大于11"),
+    PHONE_LENGTH_OUT(10035, "手机号码长度过长"),
 
     ADDRESS_LENGTH_OUT(10036, "地址长度过长"),
 
