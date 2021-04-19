@@ -156,9 +156,6 @@ public class ProductionServiceImpl implements ProductionService {
             product.setUpdatedTime(new Date());
             product.setProductModelId(productModel.getId());
             siteProductService.saveOrUpdate(product);
-        } else {
-            BeanUtils.copyProperties(syncProductionDataEnter, product);
-            siteProductService.updateById(product);
         }
 
         // 再创建 site_colour 信息
@@ -199,6 +196,7 @@ public class ProductionServiceImpl implements ProductionService {
             productColour.setProductId(productModel.getId());
             siteProductColourService.saveOrUpdate(productColour);
         }
+        siteProductService.saveOrUpdate(product);
 
 
 

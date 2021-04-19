@@ -354,7 +354,8 @@ public class OrderServiceImpl implements OrderService {
             orderB.setPartsId(p.getPartsId());
             orderB.setPartsQty(p.getParts_qty());
             //单个配件价格合
-            BigDecimal partPriceSun = part.getPrice().multiply(new BigDecimal(p.getParts_qty()));
+            //BigDecimal partPriceSun = part.getPrice().multiply(new BigDecimal(p.getParts_qty()));
+            BigDecimal partPriceSun = new BigDecimal("4880");
             orderB.setPartsPrice(partPriceSun);
             orderB.setRevision(0);
             orderB.setCreatedBy(enter.getUserId());
