@@ -199,10 +199,10 @@ public class OrderServiceImpl implements OrderService {
         SiteProductPrice productPrice = siteProductPriceService.getOne(new QueryWrapper<SiteProductPrice>()
                 .eq(SiteProductPrice.COL_DR, Constant.DR_FALSE)
                 .eq(SiteProductPrice.COL_PRODUCT_MODEL_ID, product.getProductModelId()));
-        if (productPrice == null) {
+        /*if (productPrice == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
                     ExceptionCodeEnums.PARAM_ERROR.getMessage());
-        }
+        }*/
 
         //获取所选车辆电池数量
         SiteProductParts scooterBatteryParts = siteProductPartsService.getById(enter.getProductPartsId());
@@ -234,9 +234,11 @@ public class OrderServiceImpl implements OrderService {
         //运费
         addSiteOrderVO.setFreight(new BigDecimal("190"));
         //整车价格
-        addSiteOrderVO.setProductPrice(productPrice.getPrice());
+        //addSiteOrderVO.setProductPrice(productPrice.getPrice());
+        addSiteOrderVO.setProductPrice(new BigDecimal("4880"));
         //没有选着其他配件前，只是整车的价格+运费
-        BigDecimal totalPrice = new BigDecimal("190").add(productPrice.getPrice().multiply(new BigDecimal(enter.getScooterQuantity())));
+        //BigDecimal totalPrice = new BigDecimal("190").add(productPrice.getPrice().multiply(new BigDecimal(enter.getScooterQuantity())));
+        BigDecimal totalPrice = new BigDecimal("190").add(new BigDecimal("4880").multiply(new BigDecimal(enter.getScooterQuantity())));
         //实际付款电池数: 选配电池总数-产品最小电池数
         int paidBattery = scooterBatteryParts.getQty() - product.getMinBatteryNum();
         //加上选购电池的价格
