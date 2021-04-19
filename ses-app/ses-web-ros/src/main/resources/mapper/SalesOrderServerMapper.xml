@@ -46,10 +46,10 @@
 
     <sql id="list_column">
         opi.id,
-         opi.order_no                                    as orderNo,
+        opi.order_no                                    as orderNo,
         opi.status,
         IFNULL(OPI.pay_status, '1')                     as payStatus,
-        oc.customer_full_name                           as customerFullName,
+        IFNULL(oc.customer_full_name, oc.company_name)  as customerFullName,
         oc.email,
         opi.product_model                               as productModel,
         spe.specificat_name                             as enName,
