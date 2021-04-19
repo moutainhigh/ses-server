@@ -1,7 +1,9 @@
 package com.redescooter.ses.service.hub.source.website.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.hub.service.website.ProductionService;
 import com.redescooter.ses.api.hub.vo.website.SyncProductionDataEnter;
 import com.redescooter.ses.service.hub.constant.SequenceName;
@@ -63,11 +65,25 @@ public class ProductionServiceImpl implements ProductionService {
         SiteProductModel product = siteProductModelService.getOne(qw);
         if (product != null) {
             // 到这里说明同步过数据了  ，这次只要修改一下数据的状态就好了
-            product.setStatus(saleStatus==1?1:-1);
+            product.setStatus(saleStatus == 1 ? 1 : -1);
             product.setUpdatedTime(new Date());
             product.setUpdatedBy(0L);
             siteProductModelService.saveOrUpdate(product);
-        }else {
+
+            // 修改site_product的状态
+            Long productModelId = product.getId();
+            LambdaQueryWrapper<SiteProduct> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(SiteProduct::getDr, Constant.DR_FALSE);
+            wrapper.eq(SiteProduct::getProductModelId, productModelId);
+            wrapper.last("limit 1");
+            SiteProduct siteProduct = siteProductService.getOne(wrapper);
+            if (null != siteProduct) {
+                siteProduct.setStatus(saleStatus == 1 ? 1 : 2);
+                siteProduct.setUpdatedTime(new Date());
+                siteProduct.setUpdatedBy(0L);
+                siteProductService.saveOrUpdate(siteProduct);
+            }
+        } else {
             flag = false;
         }
         return flag;
@@ -131,7 +147,7 @@ public class ProductionServiceImpl implements ProductionService {
         product = siteProductService.getOne(qw);
         if (product == null) {
             product = new SiteProduct();
-            BeanUtils.copyProperties(syncProductionDataEnter,product);
+            BeanUtils.copyProperties(syncProductionDataEnter, product);
             product.setId(idAppService.getId(SequenceName.SITE_PRODUCT));
             product.setDr(0);
             product.setCreatedBy(0L);
@@ -140,6 +156,11 @@ public class ProductionServiceImpl implements ProductionService {
             product.setUpdatedTime(new Date());
             product.setProductModelId(productModel.getId());
             siteProductService.saveOrUpdate(product);
+        } else {
+            //BeanUtils.copyProperties(syncProductionDataEnter, product);
+            product.setMaterParameter(syncProductionDataEnter.getMaterParameter());
+            product.setOtherParameter(syncProductionDataEnter.getOtherParameter());
+            siteProductService.updateById(product);
         }
 
         // 再创建 site_colour 信息
@@ -180,7 +201,7 @@ public class ProductionServiceImpl implements ProductionService {
             productColour.setProductId(productModel.getId());
             siteProductColourService.saveOrUpdate(productColour);
         }
-        siteProductService.saveOrUpdate(product);
+
 
 
 
