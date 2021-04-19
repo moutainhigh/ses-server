@@ -13,7 +13,12 @@ import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.oss.ProtocolEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.UpdateInfoResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.starter.common.config.OssConfig;
@@ -28,14 +33,17 @@ import com.redescooter.ses.web.ros.dao.base.OpeColorMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryBMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSaleScooterMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSpecificatTypeMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeCustomer;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
+import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
+import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.customer.InquiryService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
-import com.redescooter.ses.web.ros.service.specificat.SpecificatTypeService;
 import com.redescooter.ses.web.ros.service.website.ContactUsService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryExportResult;
@@ -480,6 +488,26 @@ public class InquiryServiceImpl implements InquiryService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult updateSaleOrder(UpdateInfoResult enter) {
+        // 根据型号做电池数量的限制 E50:1~4 E100:2~4 E125:4
+        OpeSpecificatType type = opeSpecificatTypeMapper.selectById(enter.getSpecificatTypeId());
+        Integer qty = enter.getProductQty();
+        if (null != type) {
+            String specificatName = type.getSpecificatName();
+            if ("E50".equals(specificatName)) {
+                if (qty > 4) {
+                    throw new SesWebRosException(ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getCode(), ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getMessage());
+                }
+            } else if ("E100".equals(specificatName)) {
+                if (qty < 2) {
+                    throw new SesWebRosException(ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getCode(), ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getMessage());
+                }
+            } else if ("E125".equals(specificatName)) {
+                if (qty < 4) {
+                    throw new SesWebRosException(ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getCode(), ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getMessage());
+                }
+            }
+        }
+
         QueryWrapper<OpeSaleScooter> wrapper = new QueryWrapper<OpeSaleScooter>()
                 .eq(OpeSaleScooter.COL_COLOR_ID, enter.getColorId())
                 .eq(OpeSaleScooter.COL_SPECIFICAT_ID, enter.getSpecificatTypeId())
