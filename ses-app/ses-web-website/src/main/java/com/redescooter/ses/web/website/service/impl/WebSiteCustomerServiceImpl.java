@@ -39,10 +39,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Map;
+
+import static com.redescooter.ses.tool.crypt.RsaUtils.generateRsaKey;
 
 /**
  * @Author jerry
@@ -236,6 +240,13 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
                 throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
             }
             enter.setTelephone(phone);
+        }
+        if(enter.getTelephone().length()>20){
+            throw new SesWebsiteException(ExceptionCodeEnums.PHONE_LENGTH_OUT.getCode(), ExceptionCodeEnums.PHONE_LENGTH_OUT.getMessage());
+        }
+
+        if (enter.getTelephone().length()>255){
+            throw new SesWebsiteException(ExceptionCodeEnums.ADDRESS_LENGTH_OUT.getCode(), ExceptionCodeEnums.ADDRESS_LENGTH_OUT.getMessage());
         }
 
         if (StringUtils.isNotEmpty(enter.getEmail())) {
