@@ -115,4 +115,8 @@ public class InquiryResult extends GeneralResult {
 
     @ApiModelProperty(value = "邮编")
     private String def3;
+
+    @ApiModelProperty(value = "支付状态")
+    private String payStatus;
+
 }

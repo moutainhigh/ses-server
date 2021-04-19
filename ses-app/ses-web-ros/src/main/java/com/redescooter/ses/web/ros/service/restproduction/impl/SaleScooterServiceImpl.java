@@ -301,7 +301,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
 
     @Override
     public List<SpecificatTypeResult> specificatTypeDataList(GeneralEnter enter) {
-       List<OpeSaleScooter> list = opeSaleScooterService.list();
+       List<OpeSaleScooter> list = opeSaleScooterService.list(new QueryWrapper<OpeSaleScooter>().eq(OpeSaleScooter.COL_SALE_STUTAS,1));
         List<SpecificatTypeResult> specificatTypeResults  = new ArrayList<>();;
         if (CollectionUtils.isNotEmpty(list)){
             QueryWrapper<OpeSpecificatType> wrapper = new QueryWrapper<OpeSpecificatType>()
@@ -322,7 +322,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
     @Override
     public List<ColorDataResult> SpecificationsColorLinkage(Long specificatId) {
         QueryWrapper<OpeSaleScooter> wrapper = new QueryWrapper<OpeSaleScooter>()
-                .eq(OpeSaleScooter.COL_SPECIFICAT_ID,specificatId);
+                .eq(OpeSaleScooter.COL_SPECIFICAT_ID,specificatId).eq(OpeSaleScooter.COL_SALE_STUTAS,1);
         List<OpeSaleScooter> saleScooterList = opeSaleScooterService.list(wrapper);
         List<ColorDataResult> resultList  = new ArrayList<>();
         if(CollectionUtils.isNotEmpty(saleScooterList)){
