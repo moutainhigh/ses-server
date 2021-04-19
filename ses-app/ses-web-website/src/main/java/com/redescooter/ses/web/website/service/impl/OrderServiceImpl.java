@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.website.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.DateConstant;
@@ -175,7 +176,12 @@ public class OrderServiceImpl implements OrderService {
                     ExceptionCodeEnums.PAYMENTTYPE_NOT_EXIST_EXIST.getMessage());
         }
         //获取产品
-        SiteProduct product = siteProductService.getById(enter.getProductId());
+        //SiteProduct product = siteProductService.getById(enter.getProductId());
+        LambdaQueryWrapper<SiteProduct> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SiteProduct::getDr, Constant.DR_FALSE);
+        wrapper.eq(SiteProduct::getProductModelId, enter.getProductId());
+        wrapper.last("limit 1");
+        SiteProduct product = siteProductService.getOne(wrapper);
         if (product == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.PRODUCT_NOT_EXIST_EXIST.getCode(),
                     ExceptionCodeEnums.PRODUCT_NOT_EXIST_EXIST.getMessage());
