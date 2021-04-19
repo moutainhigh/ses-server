@@ -88,6 +88,11 @@ public enum ExceptionCodeEnums {
     PHONE_NOT_EXIST(10033, "手机号不能为空"),
 
     WRONG_ORDER_STATUS(10034, "订单状态不对"),
+
+    PHONE_LENGTH_OUT(10035, "手机号码长度不能大于11"),
+
+    ADDRESS_LENGTH_OUT(10036, "地址长度过长"),
+
     ;
 
 

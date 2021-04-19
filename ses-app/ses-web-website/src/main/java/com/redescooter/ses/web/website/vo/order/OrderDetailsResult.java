@@ -71,6 +71,13 @@ public class OrderDetailsResult extends GeneralResult {
     private String productColour;
 
     /**
+     * 产品颜色code
+     */
+    @ApiModelProperty(value = "product_colour_code ")
+    private String productColourCode;
+
+
+    /**
      * 提货方式
      */
     @ApiModelProperty(value = "delivery_type")

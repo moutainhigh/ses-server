@@ -7,6 +7,7 @@
         <result column="status" jdbcType="VARCHAR" property="status"/>
         <result column="orderType" jdbcType="VARCHAR" property="orderType"/>
         <result column="productColour" jdbcType="VARCHAR" property="productColour"/>
+        <result column="productColourCode" jdbcType="VARCHAR" property="productColourCode"/>
         <result column="productName" jdbcType="VARCHAR" property="productName"/>
         <result column="deliveryType" jdbcType="VARCHAR" property="deliveryType"/>
         <result column="freight" jdbcType="DECIMAL" property="freight"/>
@@ -31,6 +32,7 @@
             <result column="enName" jdbcType="VARCHAR" property="enName"/>
             <result column="partsPrice" jdbcType="VARCHAR" property="partsPrice"/>
             <result column="partsQty" jdbcType="INTEGER" property="partsQty"/>
+
         </collection>
     </resultMap>
     <select id="getOrderDetails" resultMap="getOrderDetailsMap">
@@ -42,6 +44,7 @@
                spt.en_name          as productName,
                so.freight,
                sc.colour_name       as productColour,
+               sc.colour_code       as productColourCode,
                so.delivery_type     as deliveryType,
                spte.payment_name    as paymentName,
                so.scooter_quantity  as scooterQuantity,
@@ -77,6 +80,7 @@
                spt.en_name          as productName,
                so.freight,
                sc.colour_name       as productColour,
+               sc.colour_code       as productColourCode,
                so.delivery_type     as deliveryType,
                spte.payment_name    as paymentName,
                so.scooter_quantity  as scooterQuantity,
