@@ -161,7 +161,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         model.setDef2(enter.getCityName());
         model.setDef3(enter.getPostcode());
         model.setCountryCode(enter.getCountryCode());
-        model.setStatus("1");
+        model.setStatus("4");
         model.setCustomerFirstName(enter.getCustomerFirstName());
         model.setCustomerLastName(enter.getCustomerLastName());
         if (StringUtils.isNoneBlank(enter.getCustomerFirstName(), enter.getCustomerLastName())) {
