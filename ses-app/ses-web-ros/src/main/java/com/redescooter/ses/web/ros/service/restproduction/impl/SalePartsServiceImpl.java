@@ -15,9 +15,11 @@ import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionPartsServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproduction.SalePartsMapper;
+import com.redescooter.ses.web.ros.dm.OpeProductionParts;
 import com.redescooter.ses.web.ros.dm.OpeSaleParts;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
 import com.redescooter.ses.web.ros.service.base.OpeSalePartsService;
 import com.redescooter.ses.web.ros.service.restproduction.SalePartsService;
 import com.redescooter.ses.web.ros.vo.restproduct.PartsNameData;
@@ -56,6 +58,9 @@ public class SalePartsServiceImpl implements SalePartsService {
 
     @Autowired
     private RosProductionPartsServiceMapper rosProductionPartsServiceMapper;
+
+    @Autowired
+    private OpeProductionPartsService opeProductionPartsService;
 
     @Autowired
     private JedisService jedisService;
@@ -158,17 +163,21 @@ public class SalePartsServiceImpl implements SalePartsService {
 
     @Async
     void syncData(OpeSaleParts saleParts) {
-        SyncSalePartsDataEnter model = new SyncSalePartsDataEnter();
-        model.setStatus(saleParts.getSaleStutas() == 1 ? 1 : -1);
-        model.setPartsType(1);
-        model.setPartsNumber(saleParts.getProductName());
-        model.setEnName(saleParts.getPartsName());
-        model.setEffectiveTime(new Date());
-        model.setRemark(saleParts.getRemark());
-        model.setRevision(0);
-        model.setCreatedBy(0L);
-        model.setCreatedTime(new Date());
-        partsService.syncSalePartsData(model);
+        Long partsId = saleParts.getPartsId();
+        OpeProductionParts parts = opeProductionPartsService.getById(partsId);
+        if (null != parts) {
+            SyncSalePartsDataEnter model = new SyncSalePartsDataEnter();
+            model.setStatus(saleParts.getSaleStutas() == 1 ? 1 : -1);
+            model.setPartsType(parts.getPartsType());
+            model.setPartsNumber(saleParts.getProductName());
+            model.setEnName(saleParts.getPartsName());
+            model.setEffectiveTime(new Date());
+            model.setRemark(saleParts.getRemark());
+            model.setRevision(0);
+            model.setCreatedBy(0L);
+            model.setCreatedTime(new Date());
+            partsService.syncSalePartsData(model);
+        }
     }
 
     @Async
