@@ -4,6 +4,7 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.website.ContantUsMessageType;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -17,8 +18,10 @@ import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.hub.source.operation.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeContactUs;
+import com.redescooter.ses.service.hub.source.operation.dm.OpeContactUsTrace;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
 import com.redescooter.ses.service.hub.source.operation.service.base.OpeContactUsService;
+import com.redescooter.ses.service.hub.source.operation.service.base.OpeContactUsTraceService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +30,8 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
 
 /**
  * @ClassName:CustomerServiceImpl
@@ -45,6 +50,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private OpeContactUsService opeContactUsService;
+
+    @Autowired
+    private OpeContactUsTraceService opeContactUsTraceService;
 
     @DubboReference
     private CityAppService cityAppService;
@@ -209,6 +217,27 @@ public class CustomerServiceImpl implements CustomerService {
         BeanUtils.copyProperties(enter, contactUs);
         contactUs.setId(idAppService.getId(SequenceName.OPE_CONTACT_US));
         opeContactUsService.save(contactUs);
+
+        // 官网联系我们 数据同步还要往ope_contact_us_trace表查数据
+        OpeContactUsTrace opeContactUsTraceEntity = new OpeContactUsTrace();
+        opeContactUsTraceEntity.setId(idAppService.getId(SequenceName.OPE_CONTACT_US_TRACE));
+        opeContactUsTraceEntity.setCreatedBy(0L);
+        opeContactUsTraceEntity.setCreatedTime(new Date());
+        opeContactUsTraceEntity.setUpdatedBy(0L);
+        opeContactUsTraceEntity.setUpdatedTime(new Date());
+        opeContactUsTraceEntity.setContactUsId(contactUs.getId());
+        opeContactUsTraceEntity.setFirstName(contactUs.getFirstName());
+        opeContactUsTraceEntity.setLastName(contactUs.getLastName());
+        opeContactUsTraceEntity.setEmail(contactUs.getEmail());
+        opeContactUsTraceEntity.setFullName(contactUs.getFullName());
+        opeContactUsTraceEntity.setTelephone(contactUs.getTelephone());
+        opeContactUsTraceEntity.setCountryName(contactUs.getCountryName());
+        opeContactUsTraceEntity.setCityName(contactUs.getCityName());
+        opeContactUsTraceEntity.setDistrictName(contactUs.getDistrictName());
+        opeContactUsTraceEntity.setAddress(contactUs.getAddress());
+        opeContactUsTraceEntity.setRemark(contactUs.getRemark());
+        opeContactUsTraceEntity.setMessageType(ContantUsMessageType.LEAVE_MESSAGE.getValue());
+        opeContactUsTraceService.saveOrUpdate(opeContactUsTraceEntity);
         return new GeneralResult();
     }
 
