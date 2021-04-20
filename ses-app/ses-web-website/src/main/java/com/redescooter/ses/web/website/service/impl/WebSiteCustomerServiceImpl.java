@@ -137,7 +137,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         mailTask.setAppId(AppIDEnums.SES_ROS.getValue());
         mailTask.setEmail(enter.getEmail());
         mailTask.setRequestId(enter.getRequestId());
-        mailTask.setUserId(enter.getUserId());
+        mailTask.setUserId(0L);
         log.info("封装发送邮件的参数是:[{}]", mailTask);
         mailMultiTaskService.addMultiMailTask(mailTask);
         log.info("给客户发送邮件完成");
