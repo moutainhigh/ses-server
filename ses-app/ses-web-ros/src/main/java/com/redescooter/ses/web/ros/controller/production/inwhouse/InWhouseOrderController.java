@@ -73,11 +73,11 @@ public class InWhouseOrderController {
         return new Response<>(inWhouseService.inWhouseDetail(enter));
     }
 
-    @PostMapping(value = "/inWhConfirm")
+    /*@PostMapping(value = "/inWhConfirm")
     @ApiOperation(value = "入库确认", response = GeneralResult.class)
     public Response<GeneralResult> inWhConfirm(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(inWhouseService.inWhConfirm(enter));
-    }
+    }*/
 
     @PostMapping(value = "/readyQc")
     @ApiOperation(value = "准备质检", response = GeneralResult.class)

@@ -24,6 +24,7 @@ import com.redescooter.ses.web.ros.dm.OpeInWhouseOrderSerialBind;
 import com.redescooter.ses.web.ros.dm.OpeInWhouseScooterB;
 import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
@@ -31,6 +32,7 @@ import com.redescooter.ses.web.ros.service.base.OpeInWhouseOrderService;
 import com.redescooter.ses.web.ros.service.base.OpeInWhouseScooterBService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsScooterStockService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsStockRecordService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
 import com.redescooter.ses.web.ros.service.restproductionorder.inwhouse.OpeInWhouseOrderSerialBindService;
 import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
@@ -41,15 +43,18 @@ import com.redescooter.ses.web.ros.service.wms.cn.fr.FrInWhOrderService;
 import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsInStockRecordEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderAddEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderAddScooterBEnter;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -86,6 +91,9 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
 
     @Autowired
     private OpeProductionScooterBomService opeProductionScooterBomService;
+
+    @Autowired
+    private OpeWmsStockRecordService opeWmsStockRecordService;
 
     @Autowired
     private ProductionOrderTraceService productionOrderTraceService;
@@ -218,7 +226,40 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
         productionOrderTraceService.save(trace);
 
         // 操作法国仓库车辆库存表,待入库数量减少,可用数量增加,并生成入库记录
-        wmsMaterialStockService.inStock(inWhOrder.getOrderType(), inWhOrder.getId(), inWhOrder.getCountryType(), enter.getUserId(), inWhOrder.getInWhType());
+        //wmsMaterialStockService.inStock(inWhOrder.getOrderType(), inWhOrder.getId(), inWhOrder.getCountryType(), enter.getUserId(), inWhOrder.getInWhType());
+        List<WmsInStockRecordEnter> recordList = Lists.newArrayList();
+        LambdaQueryWrapper<OpeInWhouseScooterB> wq = new LambdaQueryWrapper<>();
+        wq.eq(OpeInWhouseScooterB::getInWhId, inWhOrder.getId());
+        List<OpeInWhouseScooterB> scooterBList = opeInWhouseScooterBService.list(wq);
+        if (CollectionUtils.isNotEmpty(scooterBList)) {
+            List<OpeWmsScooterStock> stockList = Lists.newArrayList();
+            for (OpeInWhouseScooterB item : scooterBList) {
+                // 在库存里面增加可用数量 待入库数量减少
+                LambdaQueryWrapper<OpeWmsScooterStock> lqw = new LambdaQueryWrapper<>();
+                lqw.eq(OpeWmsScooterStock::getGroupId, item.getGroupId());
+                lqw.eq(OpeWmsScooterStock::getColorId, item.getColorId());
+                lqw.eq(OpeWmsScooterStock::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
+                lqw.last("limit 1");
+                OpeWmsScooterStock stock = opeWmsScooterStockService.getOne(lqw);
+                if (null != stock) {
+                    stock.setAbleStockQty(stock.getAbleStockQty() + item.getInWhQty());
+                    stock.setWaitInStockQty(stock.getWaitInStockQty() - item.getInWhQty());
+                    stockList.add(stock);
+
+                    // 构建入库记录对象
+                    WmsInStockRecordEnter record = new WmsInStockRecordEnter();
+                    record.setRelationId(stock.getId());
+                    record.setInWhType(inWhOrder.getInWhType());
+                    record.setRelationType(7);
+                    record.setInWhQty(item.getInWhQty());
+                    record.setRecordType(1);
+                    record.setStockType(WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
+                    recordList.add(record);
+                }
+            }
+            opeWmsScooterStockService.saveOrUpdateBatch(stockList);
+        }
+        createInStockRecord(recordList, enter.getUserId());
 
         // 生成批次号
         String lot = getProductLot();
@@ -332,6 +373,23 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             log.info("新增ope_wms_stock_serial_number表成功");
         }
         return new GeneralResult(enter.getRequestId());
+    }
+
+    public void createInStockRecord(List<WmsInStockRecordEnter> list, Long userId) {
+        if (CollectionUtils.isNotEmpty(list)) {
+            List<OpeWmsStockRecord> resultList = new ArrayList<>();
+            for (WmsInStockRecordEnter item : list) {
+                OpeWmsStockRecord record = new OpeWmsStockRecord();
+                BeanUtils.copyProperties(item, record);
+                record.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_RECORD));
+                record.setCreatedBy(userId);
+                record.setCreatedTime(new Date());
+                record.setUpdatedBy(userId);
+                record.setUpdatedTime(new Date());
+                resultList.add(record);
+            }
+            opeWmsStockRecordService.saveOrUpdateBatch(resultList);
+        }
     }
 
     /**
