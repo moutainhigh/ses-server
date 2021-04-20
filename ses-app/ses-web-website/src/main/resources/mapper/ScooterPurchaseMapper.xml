@@ -54,26 +54,24 @@
     </select>
 
     <select id="getPartsList" resultType="com.redescooter.ses.web.website.vo.parts.PartsDetailsResult">
-        select id as partsId,
-               parts_type,
-               parts_number,
-               cn_name,
-               fr_name,
-               en_name,
-               picture,
-               price,
-               sources,
-               currency_unit,
-               amount_discount,
-               remark
-        from site_parts
-        where dr = 0 and `status` = 1
-        <if test="keyword != null and keyword != ''">
-            and (
-                    en_name like concat('%', #{keyword}, '%')
-                            or cn_name like concat('%', #{keyword}, '%')
-                            or fr_name like concat('%', #{keyword}, '%')
-                    )
+        select DISTINCT
+                sp.id as partsId,
+                sp.parts_type,
+                sp.parts_number,
+                sp.cn_name,
+                sp.fr_name,
+                sp.en_name,
+                sp.picture,
+                sp.price,
+                sp.sources,
+                sp.currency_unit,
+                sp.amount_discount,
+                sp.remark
+        from site_parts sp
+        left join site_product_parts spp on sp.id = spp.parts_id and spp.dr = 0
+        where sp.dr = 0 and sp.`status` = 1
+        <if test="id != null and id != ''">
+            and spp.product_id = #{id}
         </if>
     </select>
 

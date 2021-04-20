@@ -2,7 +2,6 @@ package com.redescooter.ses.web.website.service.impl;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.website.dao.ScooterPurchaseMapper;
 import com.redescooter.ses.web.website.service.ScooterPurchaseService;
 import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
@@ -57,7 +56,7 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
      * @return
      */
     @Override
-    public List<PartsDetailsResult> getPartsList(StringEnter enter) {
+    public List<PartsDetailsResult> getPartsList(IdEnter enter) {
         return scooterPurchaseMapper.getPartsList(enter);
     }
 
