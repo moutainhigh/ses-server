@@ -48,6 +48,7 @@ import com.redescooter.ses.web.website.vo.order.OrderDetailsResult;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -312,72 +313,74 @@ public class OrderServiceImpl implements OrderService {
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult AddOrderParts(AddOrderPartsEnter enter) {
-        // 解析
-        List<AddPartListEnter> partslist;
-        try {
-            partslist = JSONArray.parseArray(enter.getPartslist(), AddPartListEnter.class);
-        } catch (Exception ex) {
-            throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-        }
-        if (CollectionUtils.isEmpty(partslist)) {
-            throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-        }
-
-        Long orderId = enter.getOrderId();
-        if (orderId == 0) {
-            throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(),
-                    ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
-        }
-        //获取订单
-        SiteOrder order = siteOrderService.getById(orderId);
-        //获取配件
-        if (partslist.size() == 0) {
-            return new GeneralResult(enter.getRequestId());
-        }
-
-        //配件总金额计算
-        BigDecimal partAllTotalPrice = new BigDecimal("0");
-        SiteOrderB orderB = null;
-        List<SiteOrderB> list = new ArrayList<>();
-        for (AddPartListEnter p : partslist) {
-            //获取配件信息
-            SiteParts part = sitePartsService.getById(p.getPartsId());
-            //如果没有查到配件，直接直接跳过本次循环
-            if (part == null) {
-                continue;
+        if (null != enter && StringUtils.isNotBlank(enter.getPartslist()) && !"[]".equals(enter.getPartslist())) {
+            // 解析
+            List<AddPartListEnter> partslist;
+            try {
+                partslist = JSONArray.parseArray(enter.getPartslist(), AddPartListEnter.class);
+            } catch (Exception ex) {
+                throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
             }
-            orderB = new SiteOrderB();
-            orderB.setId(idAppService.getId(SequenceName.SITE_ORDER_B));
-            orderB.setDr(Constant.DR_FALSE);
-            orderB.setOrderId(orderId);
-            orderB.setProductId(order.getProductId());
-            orderB.setPartsId(p.getPartsId());
-            orderB.setPartsQty(p.getParts_qty());
-            //单个配件价格合
-            //BigDecimal partPriceSun = part.getPrice().multiply(new BigDecimal(p.getParts_qty()));
-            BigDecimal partPriceSun = new BigDecimal("4880");
-            orderB.setPartsPrice(partPriceSun);
-            orderB.setRevision(0);
-            orderB.setCreatedBy(enter.getUserId());
-            orderB.setCreatedTime(new Date());
-            orderB.setUpdatedBy(enter.getUserId());
-            orderB.setUpdatedTime(new Date());
-            list.add(orderB);
-            //价格累计
-            partAllTotalPrice = partAllTotalPrice.add(partPriceSun);
-        }
-        BigDecimal orderTotalPrice = order.getTotalPrice().add(partAllTotalPrice);
-        //更新总金额
-        order.setTotalPrice(orderTotalPrice);
-        //更新待付金额
-        order.setAmountObligation(orderTotalPrice);
-        //所选择配件总价格做备份记录
-        order.setDef1(partAllTotalPrice.toPlainString());
+            if (CollectionUtils.isEmpty(partslist)) {
+                throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
 
-        //更新主订单金额
-        siteOrderService.updateById(order);
-        //创建子订单
-        siteOrderBService.batchInsert(list);
+            Long orderId = enter.getOrderId();
+            if (orderId == 0) {
+                throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(),
+                        ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
+            }
+            //获取订单
+            SiteOrder order = siteOrderService.getById(orderId);
+            //获取配件
+            if (partslist.size() == 0) {
+                return new GeneralResult(enter.getRequestId());
+            }
+
+            //配件总金额计算
+            BigDecimal partAllTotalPrice = new BigDecimal("0");
+            SiteOrderB orderB = null;
+            List<SiteOrderB> list = new ArrayList<>();
+            for (AddPartListEnter p : partslist) {
+                //获取配件信息
+                SiteParts part = sitePartsService.getById(p.getPartsId());
+                //如果没有查到配件，直接直接跳过本次循环
+                if (part == null) {
+                    continue;
+                }
+                orderB = new SiteOrderB();
+                orderB.setId(idAppService.getId(SequenceName.SITE_ORDER_B));
+                orderB.setDr(Constant.DR_FALSE);
+                orderB.setOrderId(orderId);
+                orderB.setProductId(order.getProductId());
+                orderB.setPartsId(p.getPartsId());
+                orderB.setPartsQty(p.getParts_qty());
+                //单个配件价格合
+                //BigDecimal partPriceSun = part.getPrice().multiply(new BigDecimal(p.getParts_qty()));
+                BigDecimal partPriceSun = new BigDecimal("4880");
+                orderB.setPartsPrice(partPriceSun);
+                orderB.setRevision(0);
+                orderB.setCreatedBy(enter.getUserId());
+                orderB.setCreatedTime(new Date());
+                orderB.setUpdatedBy(enter.getUserId());
+                orderB.setUpdatedTime(new Date());
+                list.add(orderB);
+                //价格累计
+                partAllTotalPrice = partAllTotalPrice.add(partPriceSun);
+            }
+            BigDecimal orderTotalPrice = order.getTotalPrice().add(partAllTotalPrice);
+            //更新总金额
+            order.setTotalPrice(orderTotalPrice);
+            //更新待付金额
+            order.setAmountObligation(orderTotalPrice);
+            //所选择配件总价格做备份记录
+            order.setDef1(partAllTotalPrice.toPlainString());
+
+            //更新主订单金额
+            siteOrderService.updateById(order);
+            //创建子订单
+            siteOrderBService.batchInsert(list);
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
