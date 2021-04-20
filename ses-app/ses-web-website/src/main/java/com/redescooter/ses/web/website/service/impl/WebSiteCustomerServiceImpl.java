@@ -129,21 +129,18 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         syncData(enter);
 
         // 官网创建客户后发送创建账号成功邮件
+        log.info("开始给客户发送邮件");
         BaseMailTaskEnter mailTask = new BaseMailTaskEnter();
-        BeanUtils.copyProperties(enter, mailTask);
+        mailTask.setName(new StringBuffer().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
         mailTask.setEvent(MailTemplateEventEnums.WEBSITE_SIGN_UP.getEvent());
-        if (enter.getEmail().indexOf("@") == (-1)) {
-            mailTask.setName(enter.getEmail());
-        } else {
-            mailTask.setName(enter.getEmail().split("@", 2)[0]);
-        }
-        mailTask.setToMail(enter.getEmail());
+        mailTask.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
+        mailTask.setAppId(AppIDEnums.SES_ROS.getValue());
         mailTask.setEmail(enter.getEmail());
-        mailTask.setToUserId(customerID);
-        mailTask.setUserRequestId(enter.getRequestId());
-        mailTask.setMailSystemId(SystemIDEnums.REDE_SES.getSystemId());
-        mailTask.setMailAppId(AppIDEnums.SES_ROS.getValue());
+        mailTask.setRequestId(enter.getRequestId());
+        mailTask.setUserId(enter.getUserId());
+        log.info("封装发送邮件的参数是:[{}]", mailTask);
         mailMultiTaskService.addMultiMailTask(mailTask);
+        log.info("给客户发送邮件完成");
 
         LoginEnter signUp = new LoginEnter();
         signUp.setLoginName(enter.getEmail());
