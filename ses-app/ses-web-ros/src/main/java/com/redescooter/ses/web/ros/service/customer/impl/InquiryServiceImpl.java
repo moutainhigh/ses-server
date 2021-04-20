@@ -301,7 +301,6 @@ public class InquiryServiceImpl implements InquiryService {
     public GeneralResult depositPaymentEmail(IdEnter enter) {
         OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getOne(new LambdaQueryWrapper<OpeCustomerInquiry>()
                 .eq(OpeCustomerInquiry::getId, enter.getId())
-                .eq(OpeCustomerInquiry::getSource, InquirySourceEnums.ORDER_FORM.getValue())
                 .last("limit 1"));
         //询价单校验
         if (opeCustomerInquiry == null) {
@@ -341,7 +340,6 @@ public class InquiryServiceImpl implements InquiryService {
     public GeneralResult lastParagraphEmail(IdEnter enter) {
         OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getOne(new LambdaQueryWrapper<OpeCustomerInquiry>()
                 .eq(OpeCustomerInquiry::getId, enter.getId())
-                .eq(OpeCustomerInquiry::getSource, InquirySourceEnums.ORDER_FORM.getValue())
                 .last("limit 1"));
         //询价单校验
         if (opeCustomerInquiry == null) {
