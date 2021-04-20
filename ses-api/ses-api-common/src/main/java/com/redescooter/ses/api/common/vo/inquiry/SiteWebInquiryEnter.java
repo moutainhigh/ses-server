@@ -3,6 +3,7 @@ package com.redescooter.ses.api.common.vo.inquiry;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -12,7 +13,7 @@ import java.util.Date;
  * @create: 2021/01/27 16:04
  */
 @Data
-public class SiteWebInquiryEnter {
+public class SiteWebInquiryEnter implements Serializable {
 
     @ApiModelProperty(value = "主建")
     private Long id;
