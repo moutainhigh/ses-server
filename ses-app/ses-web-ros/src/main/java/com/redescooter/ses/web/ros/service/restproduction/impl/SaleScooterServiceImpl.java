@@ -201,8 +201,8 @@ public class SaleScooterServiceImpl implements SaleScooterService {
     @Async
     void dataSyncToWebsite(OpeSaleScooter saleScooter){
         try {
-            // 这个要同步好几张表 先判断本次同步多少张表（1张或5张）
-            boolean flag = productionService.syncByProductionCode(saleScooter.getProductCode(), saleScooter.getSaleStutas());
+            // 这个要同步好几张表 先判断当前的这条数据 有没有同步过
+            boolean flag = productionService.syncByProductionCode(saleScooter.getProductName(), saleScooter.getSaleStutas());
             log.info("flag的结果是:[{}]", flag);
             if(!flag){
                 // 进入到这里  说明是第一次同步这条数据  需要同步5张表
