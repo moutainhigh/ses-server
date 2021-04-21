@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.service.website.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
@@ -21,7 +23,6 @@ import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayBookOrderEnter;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
-import com.redescooter.ses.web.ros.vo.website.ProductResult;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -67,7 +68,7 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
      */
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
-    public void siteWebOrderToRosInquiry(SiteWebInquiryEnter enter) {
+    public void siteWebOrderToRosInquiry(SiteWebInquiryEnter enter, String email) {
         log.info("开始进入ros进行同步");
         OpeCustomerInquiry inquiry = new OpeCustomerInquiry();
         BeanUtils.copyProperties(enter, inquiry);
@@ -89,7 +90,11 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         // 2表示个人
         inquiry.setCustomerType("2");
         // 下面的数据是从客户表来的
-        OpeCustomer customer = opeCustomerService.getById(enter.getCustomerId());
+        LambdaQueryWrapper<OpeCustomer> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeCustomer::getDr, Constant.DR_FALSE);
+        qw.eq(OpeCustomer::getEmail, email);
+        qw.last("limit 1");
+        OpeCustomer customer = opeCustomerService.getOne(qw);
         if (customer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
@@ -119,12 +124,13 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         inquiryB.setUpdatedBy(0L);
         opeCustomerInquiryBService.saveOrUpdate(inquiryB);
 
-        ProductResult product = websiteInquiryServiceMapper.queryProductById(enter.getProductId());
+        /*ProductResult product = websiteInquiryServiceMapper.queryProductById(enter.getProductId());
         if (product == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
         //发送数据到Monday
-        mondayData(product.getColor(), enter.getBatteryQty(), product.getProductModel(), inquiry);
+        mondayData(product.getColor(), enter.getBatteryQty(), product.getProductModel(), inquiry);*/
+        mondayData("5", enter.getBatteryQty(), enter.getProductModel(), inquiry);
     }
 
 

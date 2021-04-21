@@ -128,6 +128,9 @@ public class OrderServiceImpl implements OrderService {
             throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
+
+        String email = user.getLoginName();
+
         //获取客户
         SiteCustomer customer = siteCustomerService.getById(user.getCustomerId());
         if (customer == null) {
@@ -276,7 +279,7 @@ public class OrderServiceImpl implements OrderService {
         result.setRequestId(enter.getRequestId());
 
         // 官网的订单数据 要同步到ROS系统中
-        syncdataToRos(addSiteOrderVO);
+        syncdataToRos(addSiteOrderVO, email);
 
         return result;
     }
@@ -287,7 +290,7 @@ public class OrderServiceImpl implements OrderService {
      * @param addSiteOrderVO
      */
     @Async
-    public void syncdataToRos(SiteOrder addSiteOrderVO) {
+    public void syncdataToRos(SiteOrder addSiteOrderVO, String email) {
         // 构造请求的参数
         SiteWebInquiryEnter enter = new SiteWebInquiryEnter();
         BeanUtils.copyProperties(addSiteOrderVO, enter);
@@ -299,7 +302,7 @@ public class OrderServiceImpl implements OrderService {
 
         // 调方法 同步数据
         log.info("开始同步");
-        siteWebInquiryService.siteWebOrderToRosInquiry(enter);
+        siteWebInquiryService.siteWebOrderToRosInquiry(enter, email);
         log.info("结束同步");
 
         // 同步之后要把同步表示改为已同步
