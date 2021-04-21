@@ -319,7 +319,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             code = OrderNoGenerateUtil.orderNoGenerate(inquiry.getOrderNo(),orderNoEnum);
         }else {
             // 说明今天还没有产生过单据号，给今天的第一个就好
-            code = orderNoEnum + DateUtil.getSimpleDateStamp() + "001";
+            code = orderNoEnum + DateUtil.getSimpleDateStamp() + "R001";
         }
         return code;
     }
