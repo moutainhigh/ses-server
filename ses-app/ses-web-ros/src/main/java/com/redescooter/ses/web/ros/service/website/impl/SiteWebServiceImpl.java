@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
-import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.service.SiteWebInquiryService;
 import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryEnter;
 import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryPayEnter;
@@ -130,7 +129,7 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         }
         //发送数据到Monday
         mondayData(product.getColor(), enter.getBatteryQty(), product.getProductModel(), inquiry);*/
-        mondayData("5", enter.getBatteryQty(), enter.getProductModel(), inquiry);
+        //mondayData("5", enter.getBatteryQty(), enter.getProductModel(), inquiry);
     }
 
 
@@ -155,7 +154,8 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         MondayBookOrderEnter mondayBookOrderEnter = new MondayBookOrderEnter();
         mondayBookOrderEnter.setProductColor(Objects.requireNonNull(ProductColorEnums.getProductColorEnumsByValue(productColor)).getMessage());
         mondayBookOrderEnter.setBatteryQty(batteryQty);
-        mondayBookOrderEnter.setProducModeltName(Objects.requireNonNull(ProductModelEnums.getProductModelEnumsByValue(productModel)).getMessage());
+        //mondayBookOrderEnter.setProducModeltName(Objects.requireNonNull(ProductModelEnums.getProductModelEnumsByValue(productModel)).getMessage());
+        mondayBookOrderEnter.setProducModeltName(productModel);
         mondayBookOrderEnter.setQty(1);
         mondayGeneralEnter.setT(mondayBookOrderEnter);
         //Monday 同步数据
