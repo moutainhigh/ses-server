@@ -23,6 +23,7 @@ import com.redescooter.ses.web.ros.vo.monday.enter.MondayBookOrderEnter;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
 import com.redescooter.ses.web.ros.vo.website.ProductResult;
 import io.seata.spring.annotation.GlobalTransactional;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -40,6 +41,7 @@ import java.util.stream.Collectors;
  * @create: 2021/01/27 16:02
  */
 @DubboService
+@Slf4j
 public class SiteWebServiceImpl implements SiteWebInquiryService {
 
     @Autowired
@@ -50,7 +52,6 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
 
     @Autowired
     private OpeCustomerService opeCustomerService;
-
 
     @Autowired
     private MondayService mondayService;
@@ -67,6 +68,7 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public void siteWebOrderToRosInquiry(SiteWebInquiryEnter enter) {
+        log.info("开始进入ros进行同步");
         OpeCustomerInquiry inquiry = new OpeCustomerInquiry();
         BeanUtils.copyProperties(enter, inquiry);
         inquiry.setCreatedBy(0L);

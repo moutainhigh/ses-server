@@ -15,6 +15,8 @@ import java.util.Date;
 @Data
 public class SiteWebInquiryEnter implements Serializable {
 
+    private static final long serialVersionUID = 2428716396029520054L;
+
     @ApiModelProperty(value = "主建")
     private Long id;
 
@@ -228,6 +230,9 @@ public class SiteWebInquiryEnter implements Serializable {
     @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
+    /**
+     * 产品型号
+     */
     @ApiModelProperty("产品型号")
     private String productModel;
 }

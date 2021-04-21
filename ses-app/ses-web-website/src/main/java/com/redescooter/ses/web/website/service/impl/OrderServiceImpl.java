@@ -274,12 +274,10 @@ public class OrderServiceImpl implements OrderService {
         IdResult result = new IdResult();
         result.setId(addSiteOrderVO.getId());
         result.setRequestId(enter.getRequestId());
-        try {
-            // 官网的订单数据 要同步到ROS系统中
-            syncdataToRos(addSiteOrderVO);
-        } catch (Exception e) {
 
-        }
+        // 官网的订单数据 要同步到ROS系统中
+        syncdataToRos(addSiteOrderVO);
+
         return result;
     }
 
@@ -289,14 +287,20 @@ public class OrderServiceImpl implements OrderService {
      * @param addSiteOrderVO
      */
     @Async
-    void syncdataToRos(SiteOrder addSiteOrderVO) {
+    public void syncdataToRos(SiteOrder addSiteOrderVO) {
         // 构造请求的参数
         SiteWebInquiryEnter enter = new SiteWebInquiryEnter();
         BeanUtils.copyProperties(addSiteOrderVO, enter);
         // 給productModel赋值
-        enter.setProductModel(orderMapper.getProductModelByOrderId(addSiteOrderVO.getId()));
+        String productModel = orderMapper.getProductModelByOrderId(addSiteOrderVO.getId());
+        if (StringUtils.isNotBlank(productModel)) {
+            enter.setProductModel(productModel);
+        }
+
         // 调方法 同步数据
+        log.info("开始同步");
         siteWebInquiryService.siteWebOrderToRosInquiry(enter);
+        log.info("结束同步");
 
         // 同步之后要把同步表示改为已同步
         addSiteOrderVO.setSynchronizeFlag(true);
