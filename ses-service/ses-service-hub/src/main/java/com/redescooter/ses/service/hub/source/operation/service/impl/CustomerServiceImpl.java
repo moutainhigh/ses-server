@@ -213,10 +213,30 @@ public class CustomerServiceImpl implements CustomerService {
     @DS("operation")
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult syncContactUsData(SyncContactUsDataEnter enter) {
-        OpeContactUs contactUs = new OpeContactUs();
-        BeanUtils.copyProperties(enter, contactUs);
-        contactUs.setId(idAppService.getId(SequenceName.OPE_CONTACT_US));
-        opeContactUsService.save(contactUs);
+        // 先看这个邮箱是否已存在
+        QueryWrapper<OpeContactUs> qw = new QueryWrapper<>();
+        qw.eq("email", enter.getEmail());
+        qw.last("limit 1");
+        OpeContactUs opeContactUs = opeContactUsService.getOne(qw);
+        if (opeContactUs != null) {
+            // 说明这个邮箱已经存在
+            opeContactUs.setFrequency(opeContactUs.getFrequency() + 1);
+        } else {
+            // 说明这个邮箱是第一次联系我们
+            opeContactUs = new OpeContactUs();
+            opeContactUs.setId(idAppService.getId(SequenceName.OPE_CONTACT_US));
+            opeContactUs.setEmail(enter.getEmail());
+            opeContactUs.setFrequency(1);
+            opeContactUs.setCreatedTime(new Date());
+        }
+        opeContactUs.setFirstName(enter.getFirstName());
+        opeContactUs.setLastName(enter.getLastName());
+        opeContactUs.setFullName(opeContactUs.getFirstName() + " " + opeContactUs.getLastName());
+        opeContactUs.setTelephone(enter.getTelephone());
+        opeContactUs.setAddress(enter.getAddress());
+        opeContactUs.setRemark(enter.getRemark());
+        opeContactUs.setUpdatedTime(new Date());
+        opeContactUsService.saveOrUpdate(opeContactUs);
 
         // 官网联系我们 数据同步还要往ope_contact_us_trace表查数据
         OpeContactUsTrace opeContactUsTraceEntity = new OpeContactUsTrace();
@@ -225,17 +245,17 @@ public class CustomerServiceImpl implements CustomerService {
         opeContactUsTraceEntity.setCreatedTime(new Date());
         opeContactUsTraceEntity.setUpdatedBy(0L);
         opeContactUsTraceEntity.setUpdatedTime(new Date());
-        opeContactUsTraceEntity.setContactUsId(contactUs.getId());
-        opeContactUsTraceEntity.setFirstName(contactUs.getFirstName());
-        opeContactUsTraceEntity.setLastName(contactUs.getLastName());
-        opeContactUsTraceEntity.setEmail(contactUs.getEmail());
-        opeContactUsTraceEntity.setFullName(contactUs.getFullName());
-        opeContactUsTraceEntity.setTelephone(contactUs.getTelephone());
-        opeContactUsTraceEntity.setCountryName(contactUs.getCountryName());
-        opeContactUsTraceEntity.setCityName(contactUs.getCityName());
-        opeContactUsTraceEntity.setDistrictName(contactUs.getDistrictName());
-        opeContactUsTraceEntity.setAddress(contactUs.getAddress());
-        opeContactUsTraceEntity.setRemark(contactUs.getRemark());
+        opeContactUsTraceEntity.setContactUsId(opeContactUs.getId());
+        opeContactUsTraceEntity.setFirstName(opeContactUs.getFirstName());
+        opeContactUsTraceEntity.setLastName(opeContactUs.getLastName());
+        opeContactUsTraceEntity.setEmail(opeContactUs.getEmail());
+        opeContactUsTraceEntity.setFullName(opeContactUs.getFullName());
+        opeContactUsTraceEntity.setTelephone(opeContactUs.getTelephone());
+        opeContactUsTraceEntity.setCountryName(opeContactUs.getCountryName());
+        opeContactUsTraceEntity.setCityName(opeContactUs.getCityName());
+        opeContactUsTraceEntity.setDistrictName(opeContactUs.getDistrictName());
+        opeContactUsTraceEntity.setAddress(opeContactUs.getAddress());
+        opeContactUsTraceEntity.setRemark(opeContactUs.getRemark());
         opeContactUsTraceEntity.setMessageType(ContantUsMessageType.LEAVE_MESSAGE.getValue());
         opeContactUsTraceService.saveOrUpdate(opeContactUsTraceEntity);
         return new GeneralResult();
