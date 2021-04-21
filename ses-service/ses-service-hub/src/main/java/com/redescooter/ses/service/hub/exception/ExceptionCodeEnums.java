@@ -80,6 +80,14 @@ public enum ExceptionCodeEnums {
 
     CUSTOMER_IS_NOT_EXIST(10033, "客户不存在"),
 
+    PRODUCTION_MODEL_NOT_EXIST(10034, "产品型号不存在"),
+
+    PRODUCTION_COLOR_NOT_EXIST(10035, "产品颜色不存在"),
+
+    COLOR_NOT_EXIST(10036, "颜色不存在")
+
+
+
     ;
     private int code;
 
