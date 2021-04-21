@@ -14,7 +14,7 @@ public interface SiteWebInquiryService {
      * 官网的预订单数据同步到ROS中的预订单
      * @param enter
      */
-    void siteWebOrderToRosInquiry(SiteWebInquiryEnter enter);
+    void siteWebOrderToRosInquiry(SiteWebInquiryEnter enter, String email);
 
 
     /**
