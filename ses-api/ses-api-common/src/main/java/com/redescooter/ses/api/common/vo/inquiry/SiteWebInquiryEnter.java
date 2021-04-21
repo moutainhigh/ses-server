@@ -3,6 +3,7 @@ package com.redescooter.ses.api.common.vo.inquiry;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -12,7 +13,9 @@ import java.util.Date;
  * @create: 2021/01/27 16:04
  */
 @Data
-public class SiteWebInquiryEnter {
+public class SiteWebInquiryEnter implements Serializable {
+
+    private static final long serialVersionUID = 2428716396029520054L;
 
     @ApiModelProperty(value = "主建")
     private Long id;
@@ -227,6 +230,9 @@ public class SiteWebInquiryEnter {
     @ApiModelProperty(value = "更新时间")
     private Date updatedTime;
 
+    /**
+     * 产品型号
+     */
     @ApiModelProperty("产品型号")
     private String productModel;
 }
