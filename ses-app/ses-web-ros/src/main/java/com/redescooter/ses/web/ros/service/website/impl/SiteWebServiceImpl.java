@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.website.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
 import com.redescooter.ses.api.common.service.SiteWebInquiryService;
@@ -97,6 +98,11 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         if (customer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
+        inquiry.setCustomerId(customer.getId());
+        inquiry.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
+        inquiry.setStatus(String.valueOf(enter.getStatus()));
+        inquiry.setProductModel("1");
+        inquiry.setPayStatus(String.valueOf(enter.getPayStatus()));
         inquiry.setFirstName(customer.getCustomerFirstName());
         inquiry.setLastName(customer.getCustomerLastName());
         inquiry.setTelephone(customer.getTelephone());
@@ -129,7 +135,7 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         }
         //发送数据到Monday
         mondayData(product.getColor(), enter.getBatteryQty(), product.getProductModel(), inquiry);*/
-        //mondayData("5", enter.getBatteryQty(), enter.getProductModel(), inquiry);
+        mondayData("5", enter.getBatteryQty(), enter.getProductModel(), inquiry);
     }
 
 
