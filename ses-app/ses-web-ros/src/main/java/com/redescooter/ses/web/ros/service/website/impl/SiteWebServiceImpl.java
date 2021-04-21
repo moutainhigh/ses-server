@@ -23,7 +23,6 @@ import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayBookOrderEnter;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
-import com.redescooter.ses.web.ros.vo.website.ProductResult;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -125,12 +124,13 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         inquiryB.setUpdatedBy(0L);
         opeCustomerInquiryBService.saveOrUpdate(inquiryB);
 
-        ProductResult product = websiteInquiryServiceMapper.queryProductById(enter.getProductId());
+        /*ProductResult product = websiteInquiryServiceMapper.queryProductById(enter.getProductId());
         if (product == null) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
         //发送数据到Monday
-        mondayData(product.getColor(), enter.getBatteryQty(), product.getProductModel(), inquiry);
+        mondayData(product.getColor(), enter.getBatteryQty(), product.getProductModel(), inquiry);*/
+        mondayData("5", enter.getBatteryQty(), enter.getProductModel(), inquiry);
     }
 
 
