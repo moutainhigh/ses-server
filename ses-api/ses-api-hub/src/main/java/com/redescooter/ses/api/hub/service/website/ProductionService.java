@@ -2,6 +2,8 @@ package com.redescooter.ses.api.hub.service.website;
 
 import com.redescooter.ses.api.hub.vo.website.SyncProductionDataEnter;
 
+import java.util.Map;
+
 /**
  * @description: 销售产品数据同步到官网的接口
  * @author: Aleks
@@ -17,5 +19,8 @@ public interface ProductionService {
 
     // ros那边删除数据的时候 官网对应的数据也要删除
     void syncDeleteData(String productionName);
+
+    // 根据site_product_model表的主键找到名字,颜色,型号
+    Map<String, String> getProductInfoByModelId(Long id);
 
 }

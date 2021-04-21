@@ -9,17 +9,22 @@ import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
 import com.redescooter.ses.api.common.service.SiteWebInquiryService;
 import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryEnter;
 import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryPayEnter;
+import com.redescooter.ses.api.hub.service.website.ProductionService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.website.WebsiteInquiryServiceMapper;
+import com.redescooter.ses.web.ros.dm.OpeColor;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
+import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeColorService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
+import com.redescooter.ses.web.ros.service.base.OpeSaleScooterService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayBookOrderEnter;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
@@ -33,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -49,6 +55,12 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
     private OpeCustomerInquiryService opeCustomerInquiryService;
 
     @Autowired
+    private OpeSaleScooterService opeSaleScooterService;
+
+    @Autowired
+    private OpeColorService opeColorService;
+
+    @Autowired
     private OpeCustomerInquiryBService opeCustomerInquiryBService;
 
     @Autowired
@@ -62,6 +74,9 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
 
     @DubboReference
     private IdAppService idAppService;
+
+    @DubboReference
+    private ProductionService productionService;
 
     /**
      * 官网的订单数据同步到ROS中
@@ -112,6 +127,41 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         inquiry.setContantFullName(customer.getContactFullName());
         inquiry.setSource(InquirySourceEnums.ORDER_FORM.getValue());
         inquiry.setProductModel(enter.getProductModel());
+
+        // 将productId转为销售车辆id,根据名字,颜色,型号,开启状态进行匹配
+        Long productId = inquiry.getProductId();
+        if (null != productId) {
+            Map<String, String> map = productionService.getProductInfoByModelId(productId);
+            if (null != map) {
+                String colorName = map.get("colorName");
+                String code = map.get("code");
+                String name = map.get("name");
+
+                // 根据colorName获得colorId
+                LambdaQueryWrapper<OpeColor> wrapper = new LambdaQueryWrapper<>();
+                wrapper.eq(OpeColor::getDr, Constant.DR_FALSE);
+                wrapper.eq(OpeColor::getColorName, colorName);
+                wrapper.last("limit 1");
+                OpeColor color = opeColorService.getOne(wrapper);
+                if (null == color) {
+                    throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+                }
+                Long colorId = color.getId();
+
+                // 匹配
+                LambdaQueryWrapper<OpeSaleScooter> lqw = new LambdaQueryWrapper<>();
+                lqw.eq(OpeSaleScooter::getDr, Constant.DR_FALSE);
+                lqw.eq(OpeSaleScooter::getColorId, colorId);
+                lqw.eq(OpeSaleScooter::getSaleStutas, 1);
+                lqw.eq(OpeSaleScooter::getProductName, name);
+                lqw.eq(OpeSaleScooter::getProductCode, code);
+                lqw.last("limit 1");
+                OpeSaleScooter saleScooter = opeSaleScooterService.getOne(lqw);
+                if (null != saleScooter) {
+                    inquiry.setProductId(saleScooter.getId());
+                }
+            }
+        }
         opeCustomerInquiryService.saveOrUpdate(inquiry);
 
         // 同步ROS的询价单的字表

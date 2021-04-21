@@ -3,10 +3,12 @@ package com.redescooter.ses.service.hub.source.website.service.impl;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.redescooter.ses.api.common.constant.Constant;
+import com.google.common.collect.Maps;
+import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.service.website.ProductionService;
 import com.redescooter.ses.api.hub.vo.website.SyncProductionDataEnter;
 import com.redescooter.ses.service.hub.constant.SequenceName;
+import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.hub.source.website.dm.SiteColour;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProduct;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProductClass;
@@ -28,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -353,4 +356,41 @@ public class ProductionServiceImpl implements ProductionService {
             siteProductColourService.removeByIds(colourList.stream().map(SiteProductColour::getId).collect(Collectors.toList()));
         }
     }
+
+    /**
+     * 根据site_product_model表的主键找到名字,颜色,型号
+     */
+    @Override
+    @DS("website")
+    public Map<String, String> getProductInfoByModelId(Long id) {
+        Map<String, String> result = Maps.newHashMapWithExpectedSize(3);
+
+        // 获得颜色
+        LambdaQueryWrapper<SiteProductColour> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SiteProductColour::getProductId, id);
+        wrapper.last("limit 1");
+        SiteProductColour productColour = siteProductColourService.getOne(wrapper);
+        if (null == productColour) {
+            throw new SeSHubException(ExceptionCodeEnums.PRODUCTION_COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCTION_COLOR_NOT_EXIST.getMessage());
+        }
+        Long colourId = productColour.getColourId();
+        SiteColour colour = siteColourService.getById(colourId);
+        if (null == colour) {
+            throw new SeSHubException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+        }
+        String colorName = colour.getColourName();
+
+        // 获得名字和型号
+        SiteProductModel model = siteProductModelService.getById(id);
+        if (null == model) {
+            throw new SeSHubException(ExceptionCodeEnums.PRODUCTION_MODEL_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCTION_MODEL_NOT_EXIST.getMessage());
+        }
+        String code = model.getProductModelCode();
+        String name = model.getProductModelName();
+        result.put("colorName", colorName);
+        result.put("code", code);
+        result.put("name", name);
+        return result;
+    }
+
 }

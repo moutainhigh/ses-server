@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
+import com.redescooter.ses.api.hub.service.operation.CustomerInquiryService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.web.website.config.RequestsKeyProperties;
@@ -31,6 +32,7 @@ import com.stripe.model.StripeObject;
 import com.stripe.net.ApiResource;
 import com.stripe.param.PaymentIntentCreateParams;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -94,6 +96,9 @@ public class StripePaymentServiceImpl implements StripePaymentService {
 
     @DubboReference
     private IdAppService idAppService;
+
+    @DubboReference
+    private CustomerInquiryService customerInquiryService;
 
     /**
      * 支付
@@ -222,6 +227,17 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         result.setFront(front);
         result.setBehind(behind);
         return result;
+    }
+
+    /**
+     * 在次支付校验
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public BooleanResult payAgainCheck(IdEnter enter) {
+       return customerInquiryService.payAgainCheck(enter);
     }
 
     private PayResponseBody generateResponse(PaymentIntent intent, PayResponseBody response, String stripeJson) {
