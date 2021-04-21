@@ -28,9 +28,9 @@ spring:
         - 172.31.8.126:7004
         - 172.31.8.126:7005
 mqtt:
-  ca: /root/certs/certs/my_root_ca.pem
-  clientCrt: /root/certs/certs/client.pem
-  clientKey: /root/certs/certs/client.key
+  ca: /root/certs/test/my_root_ca.pem
+  clientCrt: /root/certs/test/client.pem
+  clientKey: /root/certs/test/client.key
   timeout: 60
   keepalive: 60
   url: ssl://iclient.redescooter.net
