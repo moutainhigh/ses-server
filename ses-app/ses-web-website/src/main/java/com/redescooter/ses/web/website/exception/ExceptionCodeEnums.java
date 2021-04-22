@@ -91,11 +91,7 @@ public enum ExceptionCodeEnums {
 
     PHONE_LENGTH_OUT(10035, "手机号码长度过长"),
 
-    ADDRESS_LENGTH_OUT(10036, "地址长度过长"),
-
-    INQUIRY_IS_NOT_EXIST(10037, "询价单不存在"),
-
-    STATUS_ILLEGAL(10038, "状态异常"),
+    ADDRESS_LENGTH_OUT(10036, "地址长度过长")
     ;
 
 
