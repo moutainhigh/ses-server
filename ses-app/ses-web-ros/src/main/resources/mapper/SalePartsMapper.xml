@@ -28,7 +28,9 @@
         parts.parts_name,
         proparts.parts_no,
         parts.parts_id,
-        parts.sale_stutas
+        parts.sale_stutas,
+        parts.picture,
+        parts.price
        from ope_sale_parts parts
         left join ope_production_parts proparts on parts.parts_id = proparts.id
        where parts.dr = 0
