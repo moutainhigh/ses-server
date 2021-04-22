@@ -1,7 +1,5 @@
 package com.redescooter.ses.web.ros.vo.restproduct;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -39,5 +37,8 @@ public class SaleScooterSaveOrUpdateEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "其他参数 存储JSON")
     private String otherParam;
+
+    @ApiModelProperty(value = "图片")
+    private String picture;
 
 }

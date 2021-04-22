@@ -123,6 +123,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         saleScooter.setMinBatteryNum(enter.getMinBatteryNum());
         saleScooter.setOtherParam(enter.getOtherParam());
         saleScooter.setProductionParam(enter.getProductionParam());
+        saleScooter.setPicture(enter.getPicture());
         opeSaleScooterService.saveOrUpdate(saleScooter);
         return new GeneralResult(enter.getRequestId());
     }
@@ -226,6 +227,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
                 syncProductionDataEnter.setCnName(saleScooter.getProductName());
                 syncProductionDataEnter.setEnName(saleScooter.getProductName());
                 syncProductionDataEnter.setFrName(saleScooter.getProductName());
+                syncProductionDataEnter.setPicture(saleScooter.getPicture());
                 if (!Strings.isNullOrEmpty(saleScooter.getProductionParam())){
                     List<SaleProductionParaEnter> params;
                     try {
