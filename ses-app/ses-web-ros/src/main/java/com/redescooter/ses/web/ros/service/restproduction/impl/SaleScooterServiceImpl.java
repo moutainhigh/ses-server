@@ -228,7 +228,6 @@ public class SaleScooterServiceImpl implements SaleScooterService {
                 syncProductionDataEnter.setCnName(saleScooter.getProductName());
                 syncProductionDataEnter.setEnName(saleScooter.getProductName());
                 syncProductionDataEnter.setFrName(saleScooter.getProductName());
-                syncProductionDataEnter.setPicture(saleScooter.getPicture());
                 if (!Strings.isNullOrEmpty(saleScooter.getProductionParam())){
                     List<SaleProductionParaEnter> params;
                     try {
