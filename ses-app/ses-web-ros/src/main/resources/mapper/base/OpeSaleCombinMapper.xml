@@ -11,6 +11,8 @@
     <result column="product_code" jdbcType="VARCHAR" property="productCode" />
     <result column="combin_name" jdbcType="VARCHAR" property="combinName" />
     <result column="production_combin_bom_id" jdbcType="BIGINT" property="productionCombinBomId" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
     <result column="sale_stutas" jdbcType="INTEGER" property="saleStutas" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="created_by" jdbcType="BIGINT" property="createdBy" />
@@ -27,7 +29,7 @@
     <!--@mbg.generated-->
     id, dr, dept_id, product_name, product_code, combin_name, production_combin_bom_id,
     sale_stutas, remark, created_by, created_time, updated_by, updated_time, def1, def2,
-    def3, def4, def5
+    def3, def4, def5, picture, price
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->

@@ -12,6 +12,7 @@
     <result column="specificat_id" jdbcType="BIGINT" property="specificatId" />
     <result column="group_id" jdbcType="BIGINT" property="groupId" />
     <result column="color_id" jdbcType="BIGINT" property="colorId" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
     <result column="sale_stutas" jdbcType="INTEGER" property="saleStutas" />
     <result column="min_battery_num" jdbcType="INTEGER" property="minBatteryNum" />
     <result column="production_param" jdbcType="VARCHAR" property="productionParam" />
@@ -31,6 +32,6 @@
     <!--@mbg.generated-->
     id, dr, dept_id, product_name, product_code, specificat_id, group_id, color_id, sale_stutas, 
     min_battery_num, production_param, other_param, remark, created_by, created_time, 
-    updated_by, updated_time, def1, def2, def3, def4, def5
+    updated_by, updated_time, def1, def2, def3, def4, def5, picture
   </sql>
 </mapper>

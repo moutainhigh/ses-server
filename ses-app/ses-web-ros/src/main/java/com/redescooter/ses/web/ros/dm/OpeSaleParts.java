@@ -70,6 +70,20 @@ public class OpeSaleParts {
     private Long partsId;
 
     /**
+     * 图片
+     */
+    @TableField(value = "picture")
+    @ApiModelProperty(value = "图片")
+    private String picture;
+
+    /**
+     * 价格
+     */
+    @TableField(value = "price")
+    @ApiModelProperty(value = "价格")
+    private BigDecimal price;
+
+    /**
      * 销售状态，0：不可销售，1：可销售
      */
     @TableField(value = "sale_stutas")
@@ -159,6 +173,10 @@ public class OpeSaleParts {
     public static final String COL_PARTS_NAME = "parts_name";
 
     public static final String COL_PARTS_ID = "parts_id";
+
+    public static final String COL_PICTURE = "picture";
+
+    public static final String COL_PRICE = "price";
 
     public static final String COL_SALE_STUTAS = "sale_stutas";
 
