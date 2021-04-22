@@ -4,6 +4,8 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @Author Aleks
  * @Description
@@ -28,5 +30,10 @@ public class SalePartsSaveOrUpdateEnter extends GeneralEnter {
     @ApiModelProperty(value = "部件id")
     private Long partsId;
 
+    @ApiModelProperty("部件图片")
+    private String picture;
+
+    @ApiModelProperty("销售价格")
+    private BigDecimal price;
 
 }
