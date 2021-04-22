@@ -309,8 +309,8 @@ public class StripePaymentServiceImpl implements StripePaymentService {
     private void sendmail(SiteOrder order) {
 
         SiteCustomer customer = siteCustomerService.getById(order.getCustomerId());
-        SiteProduct product = siteProductService.getById(order.getProductId());
-        SiteProductModel productModel = siteProductModelService.getById(product.getProductModelId());
+//        SiteProduct product = siteProductService.getById(order.getProductId());
+        SiteProductModel productModel = siteProductModelService.getById(order.getProductId());
 
         String eamil = customer.getEmail();
         String name = eamil.substring(0, eamil.indexOf("@"));
