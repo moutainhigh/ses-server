@@ -14,12 +14,14 @@ import com.redescooter.ses.api.hub.service.operation.CustomerInquiryService;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomerInquiry;
 import com.redescooter.ses.service.hub.source.operation.service.base.OpeCustomerInquiryService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @DubboService
 @DS("operation")
+@Slf4j
 public class CustomerInquiryServiceImpl implements CustomerInquiryService {
 
     @Autowired
@@ -46,6 +48,7 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
     @Override
     @DS("operation")
     public BooleanResult synchronizationOfRosSuccess(IdEnter enter) {
+        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>进入hub的synchronizationOfRosSuccess");
         OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getById(enter.getId());
         if (opeCustomerInquiry==null){
             throw new SeSHubException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(),
@@ -54,6 +57,7 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
         opeCustomerInquiry.setId(enter.getId());
         // 判断这次是预定金的支付 还是尾款的支付
         if (opeCustomerInquiry.getPayStatus() == InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue()){
+            log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>这个时候是预定金的支付 需要改动已付金额 待付金额");
             // 这个时候是预定金的支付 需要改动已付金额 待付金额
             opeCustomerInquiry.setAmountPaid(opeCustomerInquiry.getPrepaidDeposit());
             opeCustomerInquiry.setAmountObligation(opeCustomerInquiry.getAmountObligation().subtract(opeCustomerInquiry.getPrepaidDeposit()));
@@ -61,6 +65,7 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
             opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_DEPOSIT.getValue());
 
         }else if(opeCustomerInquiry.getPayStatus() == InquiryPayStatusEnums.PAY_DEPOSIT.getValue()){
+            log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>这个时候是尾款的支付 需要改动已付金额 待付金额");
             // 这个时候是尾款的支付 需要改动已付金额 待付金额
             opeCustomerInquiry.setAmountPaid(opeCustomerInquiry.getTotalPrice());
             opeCustomerInquiry.setAmountObligation(opeCustomerInquiry.getAmountObligation().subtract(opeCustomerInquiry.getAmountObligation()));
@@ -68,6 +73,7 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
             opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_LAST_PARAGRAPH.getValue());
         }
         boolean inquiryResult = opeCustomerInquiryService.updateById(opeCustomerInquiry);
+        log.info(inquiryResult+"{>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>inquiryResult}");
         return new BooleanResult(inquiryResult);
     }
 
