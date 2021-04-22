@@ -490,10 +490,25 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
 
         // 生成新的access_token
         String token = UUID.randomUUID().toString().replaceAll("-", "");
+        // 获得refresh_token的原来的值
         Map<String, String> map = jedisCluster.hgetAll(refreshToken);
+        map.put("token", token);
 
+        // redis存储新的access_token
+        jedisCluster.hmset(token, map);
+        jedisCluster.expire(token, new Long(RedisExpireEnum.MINUTES_60.getSeconds()).intValue());
+        // 更新db
+        SiteUser model = new SiteUser();
+        Long userId = Long.valueOf(map.get("userId"));
+        model.setId(userId);
+        model.setLastLoginToken(token);
+        model.setLastLoginTime(new Date());
+        siteUserService.updateById(model);
 
-        return null;
+        TokenResult result = new TokenResult();
+        result.setToken(token);
+        result.setRefreshToken(refreshToken);
+        return result;
     }
 
     /**
