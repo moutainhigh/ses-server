@@ -213,6 +213,7 @@ public class ProductionServiceImpl implements ProductionService {
             productColour.setId(idAppService.getId(SequenceName.SITE_PRODUCT_COLOUR));
             productColour.setColourId(colour.getId());
             productColour.setProductId(productModel.getId());
+            productColour.setPicture(syncProductionDataEnter.getPicture());
             siteProductColourService.saveOrUpdate(productColour);
         }
         siteProductService.saveOrUpdate(product);

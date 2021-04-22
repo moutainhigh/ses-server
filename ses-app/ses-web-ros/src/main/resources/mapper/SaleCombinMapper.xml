@@ -31,7 +31,9 @@
         combin.combin_name,
         bom.bom_no,
         combin.production_combin_bom_id,
-        combin.sale_stutas
+        combin.sale_stutas,
+        combin.picture,
+        combin.price
         from ope_sale_combin combin
         left join ope_production_combin_bom bom on combin.production_combin_bom_id = bom.id
         where combin.dr = 0

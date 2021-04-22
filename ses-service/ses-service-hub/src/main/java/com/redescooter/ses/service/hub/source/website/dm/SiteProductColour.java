@@ -36,6 +36,13 @@ public class SiteProductColour {
     private Long colourId;
 
     /**
+     * 图片
+     */
+    @TableField(value = "picture")
+    @ApiModelProperty(value = "图片")
+    private String picture;
+
+    /**
      * 是否同步
      */
     @TableField(value = "synchronize_flag")
