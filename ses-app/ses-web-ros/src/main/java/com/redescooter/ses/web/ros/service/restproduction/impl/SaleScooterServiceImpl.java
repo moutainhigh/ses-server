@@ -216,6 +216,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
                 syncProductionDataEnter.setProductCode(saleScooter.getProductCode());
                 syncProductionDataEnter.setProductType(1);
                 syncProductionDataEnter.setStatus(1);
+                syncProductionDataEnter.setPicture(saleScooter.getPicture());
                 syncProductionDataEnter.setOtherParameter(saleScooter.getOtherParam());
                 syncProductionDataEnter.setMaterParameter(saleScooter.getProductionParam());
                 syncProductionDataEnter.setMinBatteryNum(saleScooter.getMinBatteryNum());

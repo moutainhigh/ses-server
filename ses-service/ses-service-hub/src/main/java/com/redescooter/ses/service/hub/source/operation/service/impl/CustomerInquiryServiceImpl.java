@@ -52,8 +52,21 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
                     ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
         opeCustomerInquiry.setId(enter.getId());
-        opeCustomerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
-        opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_DEPOSIT.getValue());
+        // 判断这次是预定金的支付 还是尾款的支付
+        if (opeCustomerInquiry.getPayStatus() == InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue()){
+            // 这个时候是预定金的支付 需要改动已付金额 待付金额
+            opeCustomerInquiry.setAmountPaid(opeCustomerInquiry.getPrepaidDeposit());
+            opeCustomerInquiry.setAmountObligation(opeCustomerInquiry.getAmountObligation().subtract(opeCustomerInquiry.getPrepaidDeposit()));
+            opeCustomerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
+            opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_DEPOSIT.getValue());
+
+        }else if(opeCustomerInquiry.getPayStatus() == InquiryPayStatusEnums.PAY_DEPOSIT.getValue()){
+            // 这个时候是尾款的支付 需要改动已付金额 待付金额
+            opeCustomerInquiry.setAmountPaid(opeCustomerInquiry.getTotalPrice());
+            opeCustomerInquiry.setAmountObligation(opeCustomerInquiry.getAmountObligation().subtract(opeCustomerInquiry.getAmountObligation()));
+            opeCustomerInquiry.setStatus(InquiryStatusEnums.PAY_LAST_PARAGRAPH.getValue());
+            opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_LAST_PARAGRAPH.getValue());
+        }
         boolean inquiryResult = opeCustomerInquiryService.updateById(opeCustomerInquiry);
         return new BooleanResult(inquiryResult);
     }
