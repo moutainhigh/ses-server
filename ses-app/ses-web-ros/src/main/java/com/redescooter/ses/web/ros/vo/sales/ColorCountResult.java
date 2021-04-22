@@ -16,7 +16,7 @@ import lombok.Data;
 public class ColorCountResult extends GeneralResult {
 
     @ApiModelProperty(value = "颜色key")
-    private int id;
+    private Long id;
 
     @ApiModelProperty(value = "颜色value")
     private String name;

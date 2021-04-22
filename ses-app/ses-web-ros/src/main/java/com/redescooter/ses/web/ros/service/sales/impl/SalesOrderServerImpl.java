@@ -1,8 +1,10 @@
 package com.redescooter.ses.web.ros.service.sales.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.google.common.collect.Lists;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
-import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
 import com.redescooter.ses.api.common.vo.CountByStatusResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -10,7 +12,9 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper;
 import com.redescooter.ses.web.ros.dao.sales.SalesOrderServerMapper;
+import com.redescooter.ses.web.ros.dm.OpeColor;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.service.base.OpeColorService;
 import com.redescooter.ses.web.ros.service.sales.SalesOrderServer;
 import com.redescooter.ses.web.ros.vo.sales.ColorCountResult;
 import com.redescooter.ses.web.ros.vo.sales.SalesOrderDetailsResult;
@@ -18,10 +22,10 @@ import com.redescooter.ses.web.ros.vo.sales.SalesOrderEnter;
 import com.redescooter.ses.web.ros.vo.sales.SalesOrderListResult;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +45,9 @@ public class SalesOrderServerImpl implements SalesOrderServer {
 
     @Autowired
     private OpeCustomerInquiryMapper baseCustomerInquiryMapper;
+
+    @Autowired
+    private OpeColorService opeColorService;
 
     /**
      * 销售订单状态统计
@@ -74,23 +81,19 @@ public class SalesOrderServerImpl implements SalesOrderServer {
      */
     @Override
     public List<ColorCountResult> colorCount(GeneralEnter enter) {
-        Map<String, Integer> map = new HashMap<String, Integer>();
-
-        List<ColorCountResult> countResultList = new ArrayList<>();
-        ColorCountResult colorResult = null;
-
-        for (ProductColorEnums item : ProductColorEnums.values()) {
-            if (!map.containsKey(item.getCode())) {
-                map.put(item.getCode(), Integer.parseInt(item.getValue()));
-
-                colorResult = new ColorCountResult();
-                colorResult.setId(Integer.parseInt(item.getValue()));
-                colorResult.setName(item.getCode());
-                countResultList.add(colorResult);
+        List<ColorCountResult> resultList = Lists.newArrayList();
+        LambdaQueryWrapper<OpeColor> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeColor::getDr, Constant.DR_FALSE);
+        List<OpeColor> list = opeColorService.list(qw);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (OpeColor color : list) {
+                ColorCountResult model = new ColorCountResult();
+                model.setId(color.getId());
+                model.setName(color.getColorName());
+                resultList.add(model);
             }
         }
-
-        return countResultList;
+        return resultList;
     }
 
     /**

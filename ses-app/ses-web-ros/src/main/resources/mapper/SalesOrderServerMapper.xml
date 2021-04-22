@@ -10,12 +10,12 @@
     </select>
     <sql id="where_list">
         <where>
-            and opi.dr =0
+            and opi.dr = 0
             <if test="status != null and status != ''">
                 and opi.status = #{status}
             </if>
             <if test="color != null and color != ''">
-                and opp.color_name = #{color}
+                and opp.id = #{color}
             </if>
             <if test="startCreatedTime != null and endCreatedTime != null">
                 and (opi.created_time between #{startCreatedTime} and #{endCreatedTime})
