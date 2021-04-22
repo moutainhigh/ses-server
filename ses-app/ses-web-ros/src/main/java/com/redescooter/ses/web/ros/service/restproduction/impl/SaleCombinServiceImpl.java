@@ -81,6 +81,7 @@ public class SaleCombinServiceImpl implements SaleCombinService {
         combin.setUpdatedTime(new Date());
         combin.setId(idAppService.getId(SequenceName.OPE_SALE_COMBIN));
         combin.setDef1(enter.getPicture());
+        combin.setDef5(enter.getPrice());
         opeSaleCombinService.saveOrUpdate(combin);
         return new GeneralResult(enter.getRequestId());
     }
@@ -129,6 +130,7 @@ public class SaleCombinServiceImpl implements SaleCombinService {
         combin.setCombinName(enter.getCombinName());
         combin.setProductionCombinBomId(enter.getProductionCombinBomId());
         combin.setDef1(enter.getPicture());
+        combin.setDef5(enter.getPrice());
         combin.setUpdatedBy(enter.getUserId());
         combin.setUpdatedTime(new Date());
         opeSaleCombinService.updateById(combin);
@@ -178,6 +180,7 @@ public class SaleCombinServiceImpl implements SaleCombinService {
         model.setEnName(combin.getCombinName());
         model.setEffectiveTime(new Date());
         model.setPicture(combin.getDef1());
+        model.setPrice(combin.getDef5());
         model.setRemark(combin.getRemark());
         model.setRevision(0);
         model.setCreatedBy(0L);
