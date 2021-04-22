@@ -2,7 +2,10 @@ package com.redescooter.ses.service.hub.source.operation.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
+import com.redescooter.ses.api.common.enums.production.PaymentTypeEnums;
+import com.redescooter.ses.api.common.enums.production.purchasing.PayStatusEnums;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryEnter;
@@ -49,8 +52,8 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
                     ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
         opeCustomerInquiry.setId(enter.getId());
-        opeCustomerInquiry.setStatus("5");
-        opeCustomerInquiry.setPayStatus("2");
+        opeCustomerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
+        opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_DEPOSIT.getValue());
         boolean inquiryResult = opeCustomerInquiryService.updateById(opeCustomerInquiry);
         return new BooleanResult(inquiryResult);
     }
@@ -64,8 +67,8 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
                     ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
         opeCustomerInquiry.setId(idEnter.getId());
-        opeCustomerInquiry.setStatus("4");
-        opeCustomerInquiry.setPayStatus("1");
+        opeCustomerInquiry.setStatus(InquiryStatusEnums.UNPAY_DEPOSIT.getValue());
+//        opeCustomerInquiry.setPayStatus();
         boolean inquiryResult = opeCustomerInquiryService.updateById(opeCustomerInquiry);
         return new BooleanResult(inquiryResult);
     }

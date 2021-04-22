@@ -38,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -345,11 +346,13 @@ public class StripePaymentServiceImpl implements StripePaymentService {
     }
 
 
-    private void synchronizationOfRosSuccess(IdEnter idEnter){
+    @Async
+    public void synchronizationOfRosSuccess(IdEnter idEnter){
         customerInquiryService.synchronizationOfRosSuccess(idEnter);
     }
 
-    private void synchronizationOfRosFail(IdEnter idEnter){
+    @Async
+    public void synchronizationOfRosFail(IdEnter idEnter){
         customerInquiryService.synchronizationOfRosFail(idEnter);
     }
 
