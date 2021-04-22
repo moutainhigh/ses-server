@@ -296,7 +296,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
      * @param id
      */
     private void paymentSuccess(Long id, String stripeJson) {
-
+        log.info(">>>>>>>>>>>>>>>>>>进入paymentSuccess");
         SiteOrder siteOrder = siteOrderService.getById(id);
         if (ObjectUtil.isNull(siteOrder)) {
             //TODO 邮件发送给我
