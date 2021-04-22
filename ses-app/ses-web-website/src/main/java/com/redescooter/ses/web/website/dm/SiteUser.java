@@ -1,11 +1,16 @@
 package com.redescooter.ses.web.website.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 官网用户表
@@ -91,6 +96,13 @@ public class SiteUser implements Serializable {
     @TableField(value = "last_login_token")
     @ApiModelProperty(value = "最后登录TOKEN")
     private String lastLoginToken;
+
+    /**
+     * 刷新token
+     */
+    @TableField(value = "refresh_token")
+    @ApiModelProperty(value = "刷新token")
+    private String refreshToken;
 
     /**
      * 最后登录IP地址
@@ -213,6 +225,8 @@ public class SiteUser implements Serializable {
     public static final String COL_LAST_LOGIN_TIME = "last_login_time";
 
     public static final String COL_LAST_LOGIN_TOKEN = "last_login_token";
+
+    public static final String COL_REFRESH_TOKEN = "refresh_token";
 
     public static final String COL_LAST_LOGIN_IP = "last_login_ip";
 
