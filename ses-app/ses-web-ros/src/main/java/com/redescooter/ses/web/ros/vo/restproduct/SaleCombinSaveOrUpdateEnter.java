@@ -28,5 +28,7 @@ public class SaleCombinSaveOrUpdateEnter extends GeneralEnter {
     @ApiModelProperty(value = "组装件id")
     private Long productionCombinBomId;
 
+    @ApiModelProperty("组装件图片")
+    private String picture;
 
 }

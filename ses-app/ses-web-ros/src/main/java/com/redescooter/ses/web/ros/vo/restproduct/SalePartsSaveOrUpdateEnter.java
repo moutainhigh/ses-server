@@ -28,5 +28,7 @@ public class SalePartsSaveOrUpdateEnter extends GeneralEnter {
     @ApiModelProperty(value = "部件id")
     private Long partsId;
 
+    @ApiModelProperty("部件图片")
+    private String picture;
 
 }
