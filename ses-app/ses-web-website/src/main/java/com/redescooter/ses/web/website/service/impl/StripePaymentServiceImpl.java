@@ -126,13 +126,18 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         map.put("order_id", String.valueOf(order.getId()));
         map.put("order_no", order.getOrderNo());
         map.put("product_id", String.valueOf(order.getProductId()));
-
+        BigDecimal amout = null;
+        if (order.getPayStatus() == PaymentStatusEnums.UNPAID_PAID.getValue()){
+            amout = order.getPrepaidDeposit();
+        }else if (order.getPayStatus() == PaymentStatusEnums.DEPOSIT_PAID.getValue()){
+            amout = order.getAmountObligation();
+        }
         try {
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
                     .setReceiptEmail(ReceiptEmail)
                     .setCurrency(Currency).addPaymentMethodType(PaymentMethodType)
                     /**欧元转换欧分**/
-                    .setAmount(order.getPrepaidDeposit().multiply(new BigDecimal("100")).longValue())
+                    .setAmount(amout.multiply(new BigDecimal("100")).longValue())
                     .putAllMetadata(map)
                     .build();
 
@@ -297,14 +302,26 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             //TODO 邮件发送给我
             throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
         }
+        // 判断是预定金支付 还是尾款支付
+        if (siteOrder.getPayStatus() == PaymentStatusEnums.UNPAID_PAID.getValue()){
+            // 这是预定金支付 只需要更改已付金额和待付款金额
+            siteOrder.setAmountPaid(siteOrder.getPrepaidDeposit());
+            siteOrder.setAmountObligation(siteOrder.getTotalPrice().subtract(siteOrder.getPrepaidDeposit()));
+            siteOrder.setPayStatus(PaymentStatusEnums.DEPOSIT_PAID.getValue());
+            siteOrder.setStatus(SiteOrderStatusEnums.IN_PROGRESS.getValue());
+        }else if(siteOrder.getPayStatus() == PaymentStatusEnums.DEPOSIT_PAID.getValue()){
+            // 这是尾款支付
+            siteOrder.setAmountPaid(siteOrder.getTotalPrice());
+            siteOrder.setAmountObligation(siteOrder.getAmountObligation().subtract(siteOrder.getAmountObligation()));
+            siteOrder.setPayStatus(PaymentStatusEnums.BALANCE_PAID.getValue());
+            siteOrder.setStatus(SiteOrderStatusEnums.COMPLETED.getValue());
+        }
         //获取已付金额
         BigDecimal price = siteOrder.getPrepaidDeposit();
         //更新已付金额
         siteOrder.setAmountPaid(siteOrder.getAmountPaid().add(price));
         //减少待付金额：代付金额=总金额-已付金额-优惠价
         siteOrder.setAmountObligation(siteOrder.getAmountObligation().subtract(price).subtract(siteOrder.getAmountDiscount()));
-        siteOrder.setPayStatus(PaymentStatusEnums.DEPOSIT_PAID.getValue());
-        siteOrder.setStatus(SiteOrderStatusEnums.IN_PROGRESS.getValue());
         siteOrder.setUpdatedTime(new Date());
         siteOrderService.updateById(siteOrder);
 

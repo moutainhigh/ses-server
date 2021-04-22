@@ -333,21 +333,22 @@ public class ProductionServiceImpl implements ProductionService {
         SiteProductModel product = siteProductModelService.getOne(qw);
         if (product != null) {
             siteProductModelService.removeById(product.getId());
-        }
-        // 删除site_product
-        QueryWrapper<SiteProduct> productQueryWrapper = new QueryWrapper<>();
-        productQueryWrapper.eq(SiteProduct.COL_PRODUCT_MODEL_ID, product.getId());
-        List<SiteProduct> productList = siteProductService.list(productQueryWrapper);
-        if (CollectionUtils.isNotEmpty(productList)) {
-            siteProductService.removeByIds(productList.stream().map(SiteProduct::getId).collect(Collectors.toList()));
-        }
 
-        // 删除site_product_colour
-        QueryWrapper<SiteProductColour> colourQueryWrapper = new QueryWrapper<>();
-        colourQueryWrapper.eq(SiteProductColour.COL_PRODUCT_ID, product.getId());
-        List<SiteProductColour> colourList = siteProductColourService.list(colourQueryWrapper);
-        if (CollectionUtils.isNotEmpty(colourList)) {
-            siteProductColourService.removeByIds(colourList.stream().map(SiteProductColour::getId).collect(Collectors.toList()));
+            // 删除site_product
+            QueryWrapper<SiteProduct> productQueryWrapper = new QueryWrapper<>();
+            productQueryWrapper.eq(SiteProduct.COL_PRODUCT_MODEL_ID, product.getId());
+            List<SiteProduct> productList = siteProductService.list(productQueryWrapper);
+            if (CollectionUtils.isNotEmpty(productList)) {
+                siteProductService.removeByIds(productList.stream().map(SiteProduct::getId).collect(Collectors.toList()));
+            }
+
+            // 删除site_product_colour
+            QueryWrapper<SiteProductColour> colourQueryWrapper = new QueryWrapper<>();
+            colourQueryWrapper.eq(SiteProductColour.COL_PRODUCT_ID, product.getId());
+            List<SiteProductColour> colourList = siteProductColourService.list(colourQueryWrapper);
+            if (CollectionUtils.isNotEmpty(colourList)) {
+                siteProductColourService.removeByIds(colourList.stream().map(SiteProductColour::getId).collect(Collectors.toList()));
+            }
         }
     }
 
