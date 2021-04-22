@@ -7,12 +7,13 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="product_id" jdbcType="BIGINT" property="productId" />
     <result column="colour_id" jdbcType="BIGINT" property="colourId" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
     <result column="synchronize_flag" jdbcType="BOOLEAN" property="synchronizeFlag" />
     <result column="revision" jdbcType="INTEGER" property="revision" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, product_id, colour_id, synchronize_flag, revision
+    id, product_id, colour_id, synchronize_flag, revision, picture
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
