@@ -7,9 +7,7 @@ import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.GetAccountKeyResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.web.website.service.TokenWebsiteService;
@@ -121,7 +119,8 @@ public class AuthentionController {
     /**
      * 刷新token
      */
-    @ApiOperation(value = "刷新token", response = GeneralResult.class)
+    @IgnoreLoginCheck
+    @ApiOperation(value = "刷新token", response = TokenResult.class)
     @PostMapping(value = "/refresh")
     public Response<TokenResult> refreshToken(@ModelAttribute RefreshTokenEnter enter) {
         return new Response<>(tokenWebsiteService.refreshToken(enter));

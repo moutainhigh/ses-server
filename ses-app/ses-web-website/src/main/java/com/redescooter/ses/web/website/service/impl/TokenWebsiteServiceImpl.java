@@ -488,13 +488,9 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
             throw new SesWebsiteException(ExceptionCodeEnums.REFRESH_TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.REFRESH_TOKEN_NOT_EXIST.getMessage());
         }
 
-
-
-
-
-
-
-
+        // 生成新的access_token
+        String token = UUID.randomUUID().toString().replaceAll("-", "");
+        Map<String, String> map = jedisCluster.hgetAll(refreshToken);
 
 
         return null;
