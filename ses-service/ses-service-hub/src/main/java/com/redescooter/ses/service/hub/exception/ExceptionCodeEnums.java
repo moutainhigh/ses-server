@@ -79,7 +79,6 @@ public enum ExceptionCodeEnums {
     USER_PROFILE_IS_NOT_EXIST(10032, "用户个人信息不存在"),
 
     CUSTOMER_IS_NOT_EXIST(10033, "客户不存在"),
-    PART_PRODUCT_IS_NOT_EXIST(1034,"采购商品不存在"),
 
     PRODUCTION_MODEL_NOT_EXIST(10034, "产品型号不存在"),
 
