@@ -76,6 +76,13 @@ public class OpeSaleScooter {
     private Long colorId;
 
     /**
+     * 图片
+     */
+    @TableField(value = "picture")
+    @ApiModelProperty(value = "图片")
+    private String picture;
+
+    /**
      * 销售状态，0：不可销售，1：可销售
      */
     @TableField(value = "sale_stutas")
@@ -188,6 +195,8 @@ public class OpeSaleScooter {
     public static final String COL_GROUP_ID = "group_id";
 
     public static final String COL_COLOR_ID = "color_id";
+
+    public static final String COL_PICTURE = "picture";
 
     public static final String COL_SALE_STUTAS = "sale_stutas";
 

@@ -123,6 +123,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         saleScooter.setMinBatteryNum(enter.getMinBatteryNum());
         saleScooter.setOtherParam(enter.getOtherParam());
         saleScooter.setProductionParam(enter.getProductionParam());
+        saleScooter.setPicture(enter.getPicture());
         opeSaleScooterService.saveOrUpdate(saleScooter);
         return new GeneralResult(enter.getRequestId());
     }
@@ -201,10 +202,13 @@ public class SaleScooterServiceImpl implements SaleScooterService {
     @Async
     void dataSyncToWebsite(OpeSaleScooter saleScooter){
         try {
-            // 这个要同步好几张表 先判断当前的这条数据 有没有同步过
-            boolean flag = productionService.syncByProductionCode(saleScooter.getProductName(), saleScooter.getSaleStutas());
-            log.info("flag的结果是:[{}]", flag);
-            if(!flag){
+            if (0 == saleScooter.getSaleStutas()){
+                // 关闭的时候调
+                productionService.syncByProductionCode(saleScooter.getProductName(), saleScooter.getSaleStutas());
+            }else {
+                // 开启的时候调
+//            log.info("flag的结果是:[{}]", flag);
+//            if(!flag){
                 // 进入到这里  说明是第一次同步这条数据  需要同步5张表
                 log.info("是第一次同步数据");
                 SyncProductionDataEnter syncProductionDataEnter = new SyncProductionDataEnter();
@@ -223,6 +227,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
                 syncProductionDataEnter.setCnName(saleScooter.getProductName());
                 syncProductionDataEnter.setEnName(saleScooter.getProductName());
                 syncProductionDataEnter.setFrName(saleScooter.getProductName());
+                syncProductionDataEnter.setPicture(saleScooter.getPicture());
                 if (!Strings.isNullOrEmpty(saleScooter.getProductionParam())){
                     List<SaleProductionParaEnter> params;
                     try {
@@ -268,7 +273,6 @@ public class SaleScooterServiceImpl implements SaleScooterService {
                 log.info("组装好数据了，调用方法同步数据*******************");
                 productionService.syncProductionData(syncProductionDataEnter);
             }
-
         }catch (Exception ignored){}
     }
 

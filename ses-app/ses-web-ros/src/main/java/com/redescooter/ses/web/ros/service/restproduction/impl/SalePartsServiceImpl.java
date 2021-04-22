@@ -85,8 +85,6 @@ public class SalePartsServiceImpl implements SalePartsService {
         saleParts.setUpdatedBy(enter.getUserId());
         saleParts.setUpdatedTime(new Date());
         saleParts.setId(idAppService.getId(SequenceName.OPE_SALE_PARTS));
-        saleParts.setDef1(enter.getPicture());
-        saleParts.setDef5(enter.getPrice());
         opeSalePartsService.saveOrUpdate(saleParts);
         return new GeneralResult(enter.getRequestId());
     }
@@ -121,8 +119,8 @@ public class SalePartsServiceImpl implements SalePartsService {
         saleParts.setProductCode(enter.getProductCode());
         saleParts.setPartsName(enter.getPartsName());
         saleParts.setPartsId(enter.getPartsId());
-        saleParts.setDef1(enter.getPicture());
-        saleParts.setDef5(enter.getPrice());
+        saleParts.setPicture(enter.getPicture());
+        saleParts.setPrice(enter.getPrice());
         saleParts.setUpdatedBy(enter.getUserId());
         saleParts.setUpdatedTime(new Date());
         opeSalePartsService.updateById(saleParts);
@@ -176,8 +174,8 @@ public class SalePartsServiceImpl implements SalePartsService {
             model.setPartsNumber(saleParts.getProductName());
             model.setEnName(saleParts.getPartsName());
             model.setEffectiveTime(new Date());
-            model.setPicture(saleParts.getDef1());
-            model.setPrice(saleParts.getDef5());
+            model.setPicture(saleParts.getPicture());
+            model.setPrice(saleParts.getPrice());
             model.setRemark(saleParts.getRemark());
             model.setRevision(0);
             model.setCreatedBy(0L);

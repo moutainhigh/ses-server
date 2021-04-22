@@ -38,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -268,6 +269,12 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                 break;
             // 付款失败
             case "faild":
+                Map<String, String> metadata2 = intent.getMetadata();
+                metadata2.forEach((k, v) -> {
+                    log.info("====={}=================={}======", k, v);
+                });
+                //订单支付失败后，走后续业务
+                paymentFail(Long.valueOf(metadata2.get("order_id")));
                 break;
             // 取消付款
             case "canceled":
@@ -306,6 +313,47 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         sendmail(siteOrder);
         //保存支付记录
         savePaymentRecords(siteOrder, stripeJson);
+        //同步ros订单状态
+        IdEnter idEnter = new IdEnter();
+        idEnter.setId(siteOrder.getId());
+        synchronizationOfRosSuccess(idEnter);
+
+    }
+
+
+
+
+    /**
+     * 支付成功进行订单数据保存
+     *
+     * @param id
+     */
+    private void paymentFail(Long id) {
+
+        SiteOrder siteOrder = siteOrderService.getById(id);
+        if (ObjectUtil.isNull(siteOrder)) {
+            //TODO 邮件发送给我
+            throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
+        }
+        siteOrder.setPayStatus(PaymentStatusEnums.UNPAID_PAID.getValue());
+        siteOrder.setStatus(SiteOrderStatusEnums.TO_BE_PAID.getValue());
+        siteOrder.setUpdatedTime(new Date());
+        siteOrderService.updateById(siteOrder);
+        //同步ros订单状态
+        IdEnter idEnter = new IdEnter();
+        idEnter.setId(siteOrder.getId());
+        synchronizationOfRosFail(idEnter);
+    }
+
+
+    @Async
+    public void synchronizationOfRosSuccess(IdEnter idEnter){
+        customerInquiryService.synchronizationOfRosSuccess(idEnter);
+    }
+
+    @Async
+    public void synchronizationOfRosFail(IdEnter idEnter){
+        customerInquiryService.synchronizationOfRosFail(idEnter);
     }
 
     private void sendmail(SiteOrder order) {

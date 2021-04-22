@@ -9,16 +9,8 @@ import com.redescooter.ses.api.hub.service.website.ProductionService;
 import com.redescooter.ses.api.hub.vo.website.SyncProductionDataEnter;
 import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
-import com.redescooter.ses.service.hub.source.website.dm.SiteColour;
-import com.redescooter.ses.service.hub.source.website.dm.SiteProduct;
-import com.redescooter.ses.service.hub.source.website.dm.SiteProductClass;
-import com.redescooter.ses.service.hub.source.website.dm.SiteProductColour;
-import com.redescooter.ses.service.hub.source.website.dm.SiteProductModel;
-import com.redescooter.ses.service.hub.source.website.service.base.SiteColourService;
-import com.redescooter.ses.service.hub.source.website.service.base.SiteProductClassService;
-import com.redescooter.ses.service.hub.source.website.service.base.SiteProductColourService;
-import com.redescooter.ses.service.hub.source.website.service.base.SiteProductModelService;
-import com.redescooter.ses.service.hub.source.website.service.base.SiteProductService;
+import com.redescooter.ses.service.hub.source.website.dm.*;
+import com.redescooter.ses.service.hub.source.website.service.base.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.common.util.CollectionUtils;
 import io.seata.spring.annotation.GlobalTransactional;
@@ -62,35 +54,36 @@ public class ProductionServiceImpl implements ProductionService {
 
     @Override
     @DS("website")
-    public boolean syncByProductionCode(String productionName, Integer saleStatus) {
+    public void syncByProductionCode(String productionName, Integer saleStatus) {
+
+        // 关闭的时候到这里 把之前同步过的数据清除掉就好了
         // 给个默认值 先默认同步过了
-        boolean flag = true;
+//        boolean flag = true;
         QueryWrapper<SiteProductModel> qw = new QueryWrapper<>();
         qw.eq(SiteProductModel.COL_PRODUCT_MODEL_NAME, productionName);
         qw.last("limit 1");
         SiteProductModel product = siteProductModelService.getOne(qw);
         if (product != null) {
             // 到这里说明同步过数据了  ，这次只要修改一下数据的状态就好了
-            if(0 == saleStatus){
-                // 这里表示这里是关闭销售状态 直接把之前的数据删除
-                siteProductModelService.removeById(product.getId());
+            // 这里表示这里是关闭销售状态 直接把之前的数据删除
+            siteProductModelService.removeById(product.getId());
 
-                // 删除site_product
-                QueryWrapper<SiteProduct> productQueryWrapper = new QueryWrapper<>();
-                productQueryWrapper.eq(SiteProduct.COL_PRODUCT_MODEL_ID, product.getId());
-                List<SiteProduct> productList = siteProductService.list(productQueryWrapper);
-                if (CollectionUtils.isNotEmpty(productList)){
-                    siteProductService.removeByIds(productList.stream().map(SiteProduct::getId).collect(Collectors.toList()));
-                }
-
-                // 删除site_product_colour
-                QueryWrapper<SiteProductColour> colourQueryWrapper = new QueryWrapper<>();
-                colourQueryWrapper.eq(SiteProductColour.COL_PRODUCT_ID,product.getId());
-                List<SiteProductColour> colourList = siteProductColourService.list(colourQueryWrapper);
-                if(CollectionUtils.isNotEmpty(colourList)){
-                    siteProductColourService.removeByIds(colourList.stream().map(SiteProductColour::getId).collect(Collectors.toList()));
-                }
+            // 删除site_product
+            QueryWrapper<SiteProduct> productQueryWrapper = new QueryWrapper<>();
+            productQueryWrapper.eq(SiteProduct.COL_PRODUCT_MODEL_ID, product.getId());
+            List<SiteProduct> productList = siteProductService.list(productQueryWrapper);
+            if (CollectionUtils.isNotEmpty(productList)) {
+                siteProductService.removeByIds(productList.stream().map(SiteProduct::getId).collect(Collectors.toList()));
             }
+
+            // 删除site_product_colour
+            QueryWrapper<SiteProductColour> colourQueryWrapper = new QueryWrapper<>();
+            colourQueryWrapper.eq(SiteProductColour.COL_PRODUCT_ID, product.getId());
+            List<SiteProductColour> colourList = siteProductColourService.list(colourQueryWrapper);
+            if (CollectionUtils.isNotEmpty(colourList)) {
+                siteProductColourService.removeByIds(colourList.stream().map(SiteProductColour::getId).collect(Collectors.toList()));
+            }
+
 //            product.setStatus(saleStatus == 1 ? 1 : -1);
 //            product.setUpdatedTime(new Date());
 //            product.setUpdatedBy(0L);
@@ -109,10 +102,10 @@ public class ProductionServiceImpl implements ProductionService {
 //                siteProduct.setUpdatedBy(0L);
 //                siteProductService.saveOrUpdate(siteProduct);
 //            }
-        } else {
-            flag = false;
+//        } else {
+//            flag = false;
         }
-        return flag;
+//        return flag;
     }
 
 
@@ -168,7 +161,7 @@ public class ProductionServiceImpl implements ProductionService {
         // 接着创建 site_product 信息
         SiteProduct product;
         QueryWrapper<SiteProduct> qw = new QueryWrapper<>();
-        qw.eq(SiteProduct.COL_FR_NAME,syncProductionDataEnter.getFrName());
+        qw.eq(SiteProduct.COL_FR_NAME, syncProductionDataEnter.getFrName());
         qw.last("limit 1");
         product = siteProductService.getOne(qw);
         if (product == null) {
@@ -188,7 +181,7 @@ public class ProductionServiceImpl implements ProductionService {
         // 先要根据色值判断这个颜色有没有创建过
         SiteColour colour;
         QueryWrapper<SiteColour> colourQw = new QueryWrapper<>();
-        colourQw.eq(SiteColour.COL_COLOUR_CODE,syncProductionDataEnter.getColourCode());
+        colourQw.eq(SiteColour.COL_COLOUR_CODE, syncProductionDataEnter.getColourCode());
         colourQw.last("limit 1");
         colour = siteColourService.getOne(colourQw);
         if (colour == null) {
@@ -220,6 +213,7 @@ public class ProductionServiceImpl implements ProductionService {
             productColour.setId(idAppService.getId(SequenceName.SITE_PRODUCT_COLOUR));
             productColour.setColourId(colour.getId());
             productColour.setProductId(productModel.getId());
+            productColour.setPicture(syncProductionDataEnter.getPicture());
             siteProductColourService.saveOrUpdate(productColour);
         }
         siteProductService.saveOrUpdate(product);
@@ -344,15 +338,15 @@ public class ProductionServiceImpl implements ProductionService {
         QueryWrapper<SiteProduct> productQueryWrapper = new QueryWrapper<>();
         productQueryWrapper.eq(SiteProduct.COL_PRODUCT_MODEL_ID, product.getId());
         List<SiteProduct> productList = siteProductService.list(productQueryWrapper);
-        if (CollectionUtils.isNotEmpty(productList)){
+        if (CollectionUtils.isNotEmpty(productList)) {
             siteProductService.removeByIds(productList.stream().map(SiteProduct::getId).collect(Collectors.toList()));
         }
 
         // 删除site_product_colour
         QueryWrapper<SiteProductColour> colourQueryWrapper = new QueryWrapper<>();
-        colourQueryWrapper.eq(SiteProductColour.COL_PRODUCT_ID,product.getId());
+        colourQueryWrapper.eq(SiteProductColour.COL_PRODUCT_ID, product.getId());
         List<SiteProductColour> colourList = siteProductColourService.list(colourQueryWrapper);
-        if(CollectionUtils.isNotEmpty(colourList)){
+        if (CollectionUtils.isNotEmpty(colourList)) {
             siteProductColourService.removeByIds(colourList.stream().map(SiteProductColour::getId).collect(Collectors.toList()));
         }
     }

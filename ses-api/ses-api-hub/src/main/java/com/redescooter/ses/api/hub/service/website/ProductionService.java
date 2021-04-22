@@ -11,10 +11,10 @@ import java.util.Map;
  */
 public interface ProductionService {
 
-    // 通过产品名称 判断改产品是否已经同步过（如果之前同步过，本次就是关闭销售状态，将之前的数据删除）
-    boolean syncByProductionCode(String productionName,Integer saleStatus);
+    // 如果是关闭操作 走这个方法  将之前同步的数据清除
+    void syncByProductionCode(String productionName,Integer saleStatus);
 
-    //同步数据（5张表）
+    //开启的时候同步数据（5张表）
     void syncProductionData(SyncProductionDataEnter syncProductionDataEnter);
 
     // ros那边删除数据的时候 官网对应的数据也要删除
