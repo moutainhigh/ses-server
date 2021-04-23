@@ -10,6 +10,7 @@ import com.redescooter.ses.service.scooter.dao.ScooterBbiMapper;
 import com.redescooter.ses.service.scooter.dao.ScooterBmsMapper;
 import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -54,7 +55,7 @@ public class ScooterBbiServiceImpl implements ScooterBbiService {
         try {
             String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterReportedBbi.getTabletSn());
             if (StringUtils.isBlank(scooterNo)) {
-                log.error("【车辆电池相关信息数据上报失败】----车辆不存在");
+                log.error("【车辆电池相关信息数据上报失败】----{}车辆不存在", scooterReportedBbi.getTabletSn());
                 return 0;
             }
 
@@ -63,6 +64,7 @@ public class ScooterBbiServiceImpl implements ScooterBbiService {
              */
             ScooterBbiReportedDTO scooterBbi = scooterBbiMapper.getScooterBbiByScooterNoAndBatchNo(scooterNo,
                     scooterReportedBbi.getBatchNo());
+            log.info("【车辆{}:::ECU控制器数据上报开始】----{}", scooterReportedBbi.getTabletSn(), DateUtil.format(new Date(), DateUtil.DEFAULT_DATETIME_FORMAT));
 
             try {
                 /**
@@ -154,6 +156,8 @@ public class ScooterBbiServiceImpl implements ScooterBbiService {
                         scooterBmsMapper.batchInsertScooterBms(scooterBmsNew.size() > 4 ? scooterBmsNew.subList(0, 4) : scooterBmsNew);
                     }
                 }
+                log.info("【车辆{}:::ECU控制器数据上报结束】----{}", scooterReportedBbi.getTabletSn(), DateUtil.format(new Date(), DateUtil.DEFAULT_DATETIME_FORMAT));
+
             } catch (Exception e) {
                 log.error("【车辆电池相关信息数据上报失败】----{}", ExceptionUtils.getStackTrace(e));
             }
@@ -166,9 +170,10 @@ public class ScooterBbiServiceImpl implements ScooterBbiService {
 
     /**
      * 组装电池仓位信息(BatteryWare)
+     *
      * @param batteryWares
      * @param scooterNo
-     * @param type 1新增 2修改
+     * @param type         1新增 2修改
      * @return
      */
     private List<BatteryWareDTO> buildBatteryWareData(List<BatteryWareDTO> batteryWares, String scooterNo, int type) {

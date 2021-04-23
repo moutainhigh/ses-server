@@ -16,26 +16,49 @@ spring:
       datasource:
         corporate:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://10.1.2.53:2021/corporate_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          url: jdbc:mysql://10.1.2.238:2021/corporate_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
           username: rede
           password: rede1qaz2wsx
         operation:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://10.1.2.53:2021/operation_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          url: jdbc:mysql://10.1.2.238:2021/operation_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
           username: rede
           password: rede1qaz2wsx
         consumer:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://10.1.2.53:2021/consumer_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          url: jdbc:mysql://10.1.2.238:2021/consumer_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
           username: rede
           password: rede1qaz2wsx
   #REDIS集群配置
   redis:
     cluster:
       nodes:
-        - 10.1.2.53:7000
-        - 10.1.2.53:7001
-        - 10.1.2.53:7002
-        - 10.1.2.53:7003
-        - 10.1.2.53:7004
-        - 10.1.2.53:7005
+        - 10.1.2.238:7000
+        - 10.1.2.238:7001
+        - 10.1.2.238:7002
+        - 10.1.2.238:7003
+        - 10.1.2.238:7004
+        - 10.1.2.238:7005
+
+seata:
+  enabled: true
+  enable-auto-data-source-proxy: true
+  tx-service-group: ses-service-hub-group
+  registry:
+    type: zk
+    zk:
+      server-addr: 172.31.6.101:2181
+      cluster: default
+      connect-timeout: 2000000
+  config:
+    type: zk
+    zk:
+      server-addr: 172.31.6.101:2181
+      connect-timeout: 2000000
+  service:
+    disable-global-transaction: false
+    vgroup-mapping:
+      ses-service-proxy-group: default
+  client:
+    rm:
+      report-success-enable: false

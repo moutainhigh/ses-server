@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.scooter.service.impl;
 
+import com.redescooter.ses.api.common.annotation.RecordDubboLog;
 import com.redescooter.ses.api.scooter.service.ScooterMcuService;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterMcuControllerInfoDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterMcuReportedDTO;
@@ -8,6 +9,7 @@ import com.redescooter.ses.service.scooter.dao.ScooterMcuControllerInfoMapper;
 import com.redescooter.ses.service.scooter.dao.ScooterMcuMapper;
 import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -40,12 +42,13 @@ public class ScooterMcuServiceImpl implements ScooterMcuService {
 
 
     @Override
+    @RecordDubboLog
     @GlobalTransactional(rollbackFor = Exception.class)
     public int insertScooterMcuByEmqX(ScooterMcuReportedDTO scooterReportedMcu) {
         try {
             String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterReportedMcu.getTabletSn());
             if (StringUtils.isBlank(scooterNo)) {
-                log.error("【车辆MCU控制器数据上报失败】----车辆不存在");
+                log.error("【车辆MCU控制器数据上报失败】----{}车辆不存在",scooterReportedMcu.getTabletSn());
                 return 0;
             }
 
@@ -55,6 +58,7 @@ public class ScooterMcuServiceImpl implements ScooterMcuService {
             ScooterMcuReportedDTO scooterMcu = scooterMcuMapper.getScooterMcuByScooterNoAndBatchNo(scooterNo,
                     scooterReportedMcu.getBatchNo());
 
+            log.info("【车辆{}MCU控制器数据上报开始】----{}", scooterReportedMcu.getTabletSn(), DateUtil.format(new Date(), DateUtil.DEFAULT_DATETIME_FORMAT));
             try {
                 if (null != scooterMcu) {
                     /**
@@ -91,6 +95,8 @@ public class ScooterMcuServiceImpl implements ScooterMcuService {
                         mcuControllerInfoMapper.insertMcuController(mcuControllerInfo);
                     }
                 }
+                log.info("【车辆{}MCU控制器数据上报结束】----{}", scooterReportedMcu.getTabletSn(), DateUtil.format(new Date(), DateUtil.DEFAULT_DATETIME_FORMAT));
+
             } catch (Exception e) {
                 log.error("【车辆MCU控制器数据上报失败】----{}", ExceptionUtils.getStackTrace(e));
             }

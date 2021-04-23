@@ -17,7 +17,7 @@ spring:                                                                         
       max-file-size: 20MB
       enabled: true
   datasource:
-    url: jdbc:mysql://10.1.2.53:2021/admin-dev?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://10.1.2.238:2021/admin_dev_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: rede
     password: rede1qaz2wsx
     druid:
@@ -34,12 +34,12 @@ spring:                                                                         
   redis:
     cluster:
       nodes:
-        - 10.1.2.53:7000
-        - 10.1.2.53:7001
-        - 10.1.2.53:7002
-        - 10.1.2.53:7003
-        - 10.1.2.53:7004
-        - 10.1.2.53:7005
+        - 10.1.2.238:7000
+        - 10.1.2.238:7001
+        - 10.1.2.238:7002
+        - 10.1.2.238:7003
+        - 10.1.2.238:7004
+        - 10.1.2.238:7005
   #rabbitmq配置
   rabbitmq:
     host: 127.0.0.1
@@ -57,3 +57,31 @@ spring:                                                                         
 
   swagger:                                                                                                              #swagger在线文档配置
     enabled: false
+
+#应用更新包文件上传下载路径
+fileUpload:
+  path: /opt/nginx/soft/download/
+  download: https://redelectric.fr/ses/t/admin/w/dev/api/app/version/downLoadFile/
+
+seata:
+  enabled: true
+  enable-auto-data-source-proxy: true
+  tx-service-group: ses-admin-dev-group
+  registry:
+    type: zk
+    zk:
+      server-addr: 10.1.1.142:2181
+      cluster: default
+      connect-timeout: 2000000
+  config:
+    type: zk
+    zk:
+      server-addr: 10.1.1.142:2181
+      connect-timeout: 2000000
+  service:
+    disable-global-transaction: false
+    vgroup-mapping:
+      ses-admin-dev-group: default
+  client:
+    rm:
+      report-success-enable: false
