@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.hub.source.website.dao.SiteColourMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.hub.source.website.dm.SiteColour">
+    <!--@mbg.generated-->
+    <!--@Table site_colour-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dr" jdbcType="INTEGER" property="dr" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="colour_range" jdbcType="VARCHAR" property="colourRange" />
+    <result column="colour_name" jdbcType="VARCHAR" property="colourName" />
+    <result column="colour_code" jdbcType="VARCHAR" property="colourCode" />
+    <result column="colour_RGB" jdbcType="VARCHAR" property="colourRgb" />
+    <result column="colour_16" jdbcType="VARCHAR" property="colour16" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="synchronize_flag" jdbcType="BOOLEAN" property="synchronizeFlag" />
+    <result column="revision" jdbcType="INTEGER" property="revision" />
+    <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="def1" jdbcType="VARCHAR" property="def1" />
+    <result column="def2" jdbcType="VARCHAR" property="def2" />
+    <result column="def3" jdbcType="VARCHAR" property="def3" />
+    <result column="def5" jdbcType="VARCHAR" property="def5" />
+    <result column="def6" jdbcType="DECIMAL" property="def6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, dr, `status`, colour_range, colour_name, colour_code, colour_RGB, colour_16, 
+    remark, synchronize_flag, revision, created_by, created_time, updated_by, updated_time, 
+    def1, def2, def3, def5, def6
+  </sql>
+</mapper>

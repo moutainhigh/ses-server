@@ -1022,6 +1022,14 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         return list;
     }
 
+    /**
+     * @param specificatId   规格类型id
+     * @param specificatName 车型类型
+     * @param seatNumber     座位数量类型
+     * @param i
+     * @return
+     */
+    @Override
     public String show(Long specificatId, String specificatName, Integer seatNumber, int i) {
         String msg = "VXS";
         StringBuffer result = new StringBuffer();

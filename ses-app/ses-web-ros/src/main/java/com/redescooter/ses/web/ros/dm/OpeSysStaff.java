@@ -375,4 +375,5 @@ public class OpeSysStaff {
     public static final String COL_DEF5 = "def5";
 
     public static final String COL_DEF6 = "def6";
+
 }

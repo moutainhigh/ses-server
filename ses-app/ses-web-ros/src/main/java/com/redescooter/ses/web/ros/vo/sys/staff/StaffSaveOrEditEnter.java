@@ -5,8 +5,6 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * @ClassNameStaffSaveOrEditEnter
  * @Description

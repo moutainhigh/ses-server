@@ -6,9 +6,9 @@ log:
     max-history: 180
 dubbo: ##DUBBO配置
   registry: #注册中心
-    address: zookeeper://192.168.2.211:2183
+    address: zookeeper://192.168.2.200:52181
   metadata-report:
-    address: zookeeper://192.168.2.211:2183
+    address: zookeeper://192.168.2.200:52181
 spring: #spring config
   http:                                                                                                                 #上传配置
   servlet:
@@ -17,7 +17,7 @@ spring: #spring config
       max-file-size: 20MB
       enabled: true
   datasource: #数据库连接
-    url: jdbc:mysql://192.168.2.200:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://127.0.0.1:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 1qaz2wsx
     druid:
@@ -34,12 +34,12 @@ spring: #spring config
   redis:
     cluster:
       nodes:
-        - 192.168.2.211:7000
-        - 192.168.2.211:7001
-        - 192.168.2.211:7002
-        - 192.168.2.211:7003
-        - 192.168.2.211:7004
-        - 192.168.2.211:7005
+        - 192.168.2.200:7000
+        - 192.168.2.200:7001
+        - 192.168.2.200:7002
+        - 192.168.2.200:7003
+        - 192.168.2.200:7004
+        - 192.168.2.200:7005
   #rabbitmq配置
   rabbitmq:
     host: 127.0.0.1
@@ -109,7 +109,7 @@ spring: #spring config
         title: allocate Service Support
         description: allocate Service Support
         base-package: com.redescooter.ses.web.ros.controller.restproduction.allocateorder.AllocateOrderController
-        path-regex: /sys/allocate/order/.*
+        path-regex: /sales/sys/allocate/order/.*
         path-mapping: /
         version: v1.2.1
         license: RedE Circulation within the company
@@ -125,7 +125,7 @@ spring: #spring config
         title: 入库单
         description: 入库单
         base-package: com.redescooter.ses
-        path-regex: /sys/inWhouse/order/.*
+        path-regex: /production/sys/inWhouse/order/.*
         path-mapping: /
         version: v1.2.1
         license: RedE Circulation within the company
@@ -141,7 +141,7 @@ spring: #spring config
         title: purchase Service Support
         description: purchase Service Support
         base-package: com.redescooter.ses
-        path-regex: /sys/purchase/order/.*
+        path-regex: /production/sys/purchase/order/.*
         path-mapping: /
         version: v1.2.1
         license: RedE Circulation within the company
@@ -162,7 +162,7 @@ spring: #spring config
         description: 组装销售
         #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses
-        path-regex: /sale/combin/.*
+        path-regex: /sales/combin/.*
         #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.8.2                                                                                                 #Api版本
@@ -183,7 +183,7 @@ spring: #spring config
         description: 部件销售
         #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses
-        path-regex: /sale/parts/.*
+        path-regex: /sales/parts/.*
         #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.8.2                                                                                                 #Api版本
@@ -204,7 +204,7 @@ spring: #spring config
         description: 生产单据API
         #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses
-        path-regex: /restproduction/.*
+        path-regex: /sales/restproduction/purchas/.*
         #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.8.2                                                                                                 #Api版本
@@ -225,7 +225,7 @@ spring: #spring config
         description: 经销商API
         #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses
-        path-regex: /distributor/.*
+        path-regex: /supply/distributor/.*
         #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.8.2                                                                                                 #Api版本
@@ -246,7 +246,7 @@ spring: #spring config
         description: 待分配车辆API
         #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses
-        path-regex: /tobe/assign/.*
+        path-regex: /scooter/tobe/assign/.*
         #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.8.2                                                                                                 #Api版本
@@ -267,7 +267,7 @@ spring: #spring config
         description: 已分配车辆API
         #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses
-        path-regex: /assigned/.*
+        path-regex: /scooter/assigned/.*
         #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.8.2                                                                                                 #Api版本
@@ -288,7 +288,7 @@ spring: #spring config
         description: 中国仓库首页API
         #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses
-        path-regex: /cn/wh/.*
+        path-regex: /warehouse/cn/wh/.*
         #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.8.2                                                                                                 #Api版本
@@ -309,7 +309,7 @@ spring: #spring config
         description: 中国成品库API
         #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses
-        path-regex: /wms/stock/.*
+        path-regex: /warehouse/wms/stock/.*
         #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.8.2                                                                                                 #Api版本
@@ -330,7 +330,7 @@ spring: #spring config
         description: 中国不合格品库API
         #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses
-        path-regex: /wms/unqualified/stock/.*
+        path-regex: /warehouse/wms/unqualified/stock/.*
         #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.8.2                                                                                                 #Api版本
@@ -351,7 +351,7 @@ spring: #spring config
         description: 法国仓库API
         #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses
-        path-regex: /fr/wh/.*
+        path-regex: /warehouse/fr/wh/.*
         #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.8.2                                                                                                 #Api版本
@@ -372,7 +372,7 @@ spring: #spring config
         description: 菜单API
         #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses
-        path-regex: /sys/menu/.*
+        path-regex: /setup/sys/menu/.*
         #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.8.2                                                                                                 #Api版本
@@ -393,7 +393,7 @@ spring: #spring config
         description: 邮件API
         #api组的描述，会在swagger-ui的描述中显示
         base-package: com.redescooter.ses
-        path-regex: /email/.*
+        path-regex: /basic/email/.*
         #匹配到本组的api接口，匹配uri，可以用用正则表达式
         path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
         version: v1.8.2                                                                                                 #Api版本
@@ -449,4 +449,25 @@ constant-us-email:
   sale-principal:
     - alex@redescooter.com
 
-
+seata:
+  enabled: true
+  enable-auto-data-source-proxy: true
+  tx-service-group: ses-web-ros-group
+  registry:
+    type: zk
+    zk:
+      server-addr: 192.168.2.200:2181
+      cluster: default
+      connect-timeout: 2000000
+  config:
+    type: zk
+    zk:
+      server-addr: 192.168.2.200:2181
+      connect-timeout: 2000000
+  service:
+    disable-global-transaction: false
+    vgroup-mapping:
+      ses-web-ros-group: default
+  client:
+    rm:
+      report-success-enable: false
