@@ -33,6 +33,7 @@ import com.redescooter.ses.web.website.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.website.exception.SesWebsiteException;
 import com.redescooter.ses.web.website.service.TokenWebsiteService;
 import com.redescooter.ses.web.website.service.base.SiteUserService;
+import com.redescooter.ses.web.website.vo.login.RefreshTokenEnter;
 import com.redescooter.ses.web.website.vo.login.SiteResetPassword;
 import com.redescooter.ses.web.website.vo.login.SiteSetPasswordEnter;
 import io.seata.spring.annotation.GlobalTransactional;
@@ -144,8 +145,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         }
         SiteUser user = getUser(enter);
         if (user == null) {
-            throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
-                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+            throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         if (StringUtils.isNotBlank(user.getLastLoginToken())) {
             // 清除原有token 生成新token
@@ -154,15 +154,15 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         String loginPassword = DigestUtils.md5Hex(enter.getPassword() + user.getSalt());
 
         if (!loginPassword.equals(user.getPassword())) {
-            throw new SesWebsiteException(ExceptionCodeEnums.PASSROD_WRONG.getCode(),
-                    ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+            throw new SesWebsiteException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
         }
+
+        // 设置token和refresh_token
         UserToken token = setToken(enter, user);
 
         // 数据库同步登陆信息
         SiteUser updateUser = new SiteUser();
         updateUser.setId(user.getId());
-
         if (user.getActivationTime() == null) {
             user.setActivationTime(new Date());
         }
@@ -170,10 +170,12 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         updateUser.setLastLoginIp(token.getClientIp());
         updateUser.setLastLoginTime(new Date(token.getTimestamp()));
         updateUser.setLastLoginToken(token.getToken());
+        updateUser.setRefreshToken(token.getRefreshToken());
         siteUserService.updateById(updateUser);
 
         TokenResult tokens = new TokenResult();
         tokens.setToken(token.getToken());
+        tokens.setRefreshToken(token.getRefreshToken());
         tokens.setRequestId(enter.getRequestId() == null ? UUID.randomUUID().toString().replaceAll("-", "") : enter.getRequestId());
         return tokens;
     }
@@ -441,28 +443,24 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         if (!StringUtils.equals(userToken.getClientType(), enter.getClientType())
                 || !StringUtils.equals(userToken.getSystemId(), enter.getSystemId())
                 || !StringUtils.equals(userToken.getAppId(), enter.getAppId())) {
-            throw new SesWebsiteException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(),
-                    ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+            throw new SesWebsiteException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
         }
         return userToken;
     }
 
     private void checkUser(SiteUser user) {
         if (user != null) {
-            throw new SesWebsiteException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(),
-                    ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+            throw new SesWebsiteException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
     }
 
     private UserToken getUserToken(String token) {
         if (StringUtils.isBlank(token)) {
-            throw new SesWebsiteException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(),
-                    ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+            throw new SesWebsiteException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
         }
         Map<String, String> map = jedisCluster.hgetAll(token);
         if (map == null) {
-            throw new SesWebsiteException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(),
-                    ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+            throw new SesWebsiteException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
         }
         UserToken userToken = new UserToken();
         try {
@@ -476,6 +474,45 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
     }
 
     /**
+     * 刷新token
+     */
+    @Override
+    public TokenResult refreshToken(RefreshTokenEnter enter) {
+        if (null == enter || StringUtils.isBlank(enter.getRefreshToken())) {
+            throw new SesWebsiteException(ExceptionCodeEnums.REFRESH_TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.REFRESH_TOKEN_NOT_EXIST.getMessage());
+        }
+        String refreshToken = enter.getRefreshToken();
+        Boolean flag = jedisCluster.exists(refreshToken);
+        // 刷新token在redis不存在,直接抛出异常,让前端返回登录页面
+        if (!flag) {
+            throw new SesWebsiteException(ExceptionCodeEnums.REFRESH_TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.REFRESH_TOKEN_NOT_EXIST.getMessage());
+        }
+
+        // 生成新的access_token
+        String token = UUID.randomUUID().toString().replaceAll("-", "");
+        // 获得refresh_token的原来的值
+        Map<String, String> map = jedisCluster.hgetAll(refreshToken);
+        map.put("token", token);
+
+        // redis存储新的access_token
+        jedisCluster.hmset(token, map);
+        jedisCluster.expire(token, new Long(RedisExpireEnum.MINUTES_60.getSeconds()).intValue());
+        //jedisCluster.expire(token, new Long(RedisExpireEnum.MINUTES_1.getSeconds()).intValue());  // 测试使用
+        // 更新db
+        SiteUser model = new SiteUser();
+        Long userId = Long.valueOf(map.get("userId"));
+        model.setId(userId);
+        model.setLastLoginToken(token);
+        model.setLastLoginTime(new Date());
+        siteUserService.updateById(model);
+
+        TokenResult result = new TokenResult();
+        result.setToken(token);
+        result.setRefreshToken(refreshToken);
+        return result;
+    }
+
+    /**
      * 设置token
      *
      * @param enter
@@ -483,9 +520,14 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
      * @return
      */
     public UserToken setToken(LoginEnter enter, SiteUser user) {
+        // 产生token
         String token = UUID.randomUUID().toString().replaceAll("-", "");
+        // 产生refresh_token
+        String refreshToken = UUID.randomUUID().toString().replaceAll("-", "");
+
         UserToken userToken = new UserToken();
         userToken.setToken(token);
+        userToken.setRefreshToken(refreshToken);
         userToken.setUserId(user.getId());
         userToken.setTenantId(new Long("0"));
         userToken.setSystemId(user.getSystemId());
@@ -510,7 +552,11 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
             map.remove("requestId");
             map.remove("deptId");
             jedisCluster.hmset(token, map);
-            jedisCluster.expire(token, new Long(RedisExpireEnum.MINUTES_30.getSeconds()).intValue());
+            jedisCluster.expire(token, new Long(RedisExpireEnum.MINUTES_60.getSeconds()).intValue());
+            //jedisCluster.expire(token, new Long(RedisExpireEnum.MINUTES_1.getSeconds()).intValue());  //测试使用
+            jedisCluster.hmset(refreshToken, map);
+            jedisCluster.expire(refreshToken, new Long(RedisExpireEnum.DAY_1.getSeconds()).intValue());
+            //jedisCluster.expire(refreshToken, new Long(RedisExpireEnum.MINUTES_3.getSeconds()).intValue());  // 测试使用
         } catch (IllegalAccessException e) {
             log.error("setToken IllegalAccessException userSession:" + userToken, e);
         } catch (InvocationTargetException e) {

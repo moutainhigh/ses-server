@@ -2,9 +2,11 @@ package com.redescooter.ses.api.common.vo.base;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
-
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * description: UserLoginCrmEnter
@@ -23,4 +25,8 @@ public class TokenResult extends GeneralResult {
 
     @ApiModelProperty(value = "token")
     private String token;
+
+    @ApiModelProperty(value = "刷新token")
+    private String refreshToken;
+
 }

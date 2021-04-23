@@ -91,7 +91,11 @@ public enum ExceptionCodeEnums {
 
     PHONE_LENGTH_OUT(10035, "手机号码长度过长"),
 
-    ADDRESS_LENGTH_OUT(10036, "地址长度过长")
+    ADDRESS_LENGTH_OUT(10036, "地址长度过长"),
+
+    REFRESH_TOKEN_NOT_EXIST(10037, "刷新token不存在")
+
+
     ;
 
 

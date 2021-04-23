@@ -3,16 +3,26 @@ package com.redescooter.ses.web.website.controller;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.LogAnnotation;
 import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.GetAccountKeyResult;
+import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.web.website.service.TokenWebsiteService;
+import com.redescooter.ses.web.website.vo.login.RefreshTokenEnter;
 import com.redescooter.ses.web.website.vo.login.SiteResetPassword;
 import com.redescooter.ses.web.website.vo.login.SiteSetPasswordEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @Author jerry
@@ -105,4 +115,15 @@ public class AuthentionController {
     public Response<GeneralResult> resetPassword(@ModelAttribute @ApiParam("Parameter") SiteResetPassword enter) {
         return new Response<>(tokenWebsiteService.resetPassword(enter));
     }
+
+    /**
+     * 刷新token
+     */
+    @IgnoreLoginCheck
+    @ApiOperation(value = "刷新token", response = TokenResult.class)
+    @PostMapping(value = "/refresh")
+    public Response<TokenResult> refreshToken(@ModelAttribute RefreshTokenEnter enter) {
+        return new Response<>(tokenWebsiteService.refreshToken(enter));
+    }
+
 }
