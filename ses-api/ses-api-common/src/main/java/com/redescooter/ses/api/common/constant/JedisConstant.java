@@ -28,4 +28,7 @@ public interface JedisConstant {
 
     //默认超时时间为1s
     int DEFAULT_EXPIRE = 1;
+
+    // 接口权限
+    String PERMISSION = "permission:";
 }
