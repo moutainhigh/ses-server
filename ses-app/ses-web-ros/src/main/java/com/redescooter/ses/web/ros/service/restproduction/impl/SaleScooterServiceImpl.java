@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.restproduction.impl;
 
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -120,38 +121,8 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         saleScooter.setId(idAppService.getId(SequenceName.OPE_SALE_SCOOTER));
         opeSaleScooterService.saveOrUpdate(saleScooter);
 
-        // 新增ope_sale_scooter_battery_relation表,并生成中英法文
-        for (int j = 0; j < 3; j++) {
-            String language;
-            String msg;
-            if (j == 0) {
-                language = "cn";
-                msg = "块电池";
-            } else if (j == 1) {
-                language = "en";
-                msg = "Battery";
-            } else {
-                language = "fr";
-                msg = "Batterie";
-            }
-            List<OpeSaleScooterBatteryRelation> list = Lists.newArrayList();
-            Integer maxBatteryNum = 4;
-            // 要生成的条数  E50生成4条 E100生成3条 E125生成1条
-            Integer count = maxBatteryNum - saleScooter.getMinBatteryNum() + 1;
-            for (int i = 1; i <= count; i++) {
-                OpeSaleScooterBatteryRelation relation = new OpeSaleScooterBatteryRelation();
-                relation.setId(idAppService.getId(SequenceName.OPE_SALE_SCOOTER_BATTERY_RELATION));
-                relation.setDr(Constant.DR_FALSE);
-                relation.setContent(saleScooter.getProductName() + "+" + i + msg);
-                relation.setLanguage(language);
-                relation.setCreatedBy(enter.getUserId());
-                relation.setCreatedTime(new Date());
-                relation.setUpdatedBy(enter.getUserId());
-                relation.setUpdatedTime(new Date());
-                list.add(relation);
-            }
-            opeSaleScooterBatteryRelationService.saveBatch(list);
-        }
+        // 新增车型电池关系表
+        insertSaleScooterBatteryRelation(saleScooter, enter);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -175,9 +146,64 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         saleScooter.setProductionParam(enter.getProductionParam());
         saleScooter.setPicture(enter.getPicture());
         opeSaleScooterService.saveOrUpdate(saleScooter);
+
+        // 先删除车型电池关系表
+        deleteSaleScooterBatteryRelation(saleScooter);
+
+        // 再新增车型电池关系表
+        insertSaleScooterBatteryRelation(saleScooter, enter);
         return new GeneralResult(enter.getRequestId());
     }
 
+    /**
+     * 新增ope_sale_scooter_battery_relation表,并生成中英法文
+     */
+    public void insertSaleScooterBatteryRelation(OpeSaleScooter saleScooter, SaleScooterSaveOrUpdateEnter enter) {
+        for (int j = 0; j < 3; j++) {
+            String language;
+            String msg;
+            if (j == 0) {
+                language = "cn";
+                msg = "块电池";
+            } else if (j == 1) {
+                language = "en";
+                msg = "Battery";
+            } else {
+                language = "fr";
+                msg = "Batterie";
+            }
+            List<OpeSaleScooterBatteryRelation> list = Lists.newArrayList();
+            Integer maxBatteryNum = 4;
+            // 要生成的条数  比如:E50生成4条 E100生成3条 E125生成1条
+            Integer count = maxBatteryNum - saleScooter.getMinBatteryNum() + 1;
+            for (int i = 1; i <= count; i++) {
+                OpeSaleScooterBatteryRelation relation = new OpeSaleScooterBatteryRelation();
+                relation.setId(idAppService.getId(SequenceName.OPE_SALE_SCOOTER_BATTERY_RELATION));
+                relation.setDr(Constant.DR_FALSE);
+                relation.setSaleScooterId(saleScooter.getId());
+                relation.setContent(saleScooter.getProductName() + "+" + i + msg);
+                relation.setLanguage(language);
+                relation.setCreatedBy(enter.getUserId());
+                relation.setCreatedTime(new Date());
+                relation.setUpdatedBy(enter.getUserId());
+                relation.setUpdatedTime(new Date());
+                list.add(relation);
+            }
+            opeSaleScooterBatteryRelationService.saveBatch(list);
+        }
+    }
+
+    /**
+     * 删除ope_sale_scooter_battery_relation表
+     */
+    public void deleteSaleScooterBatteryRelation(OpeSaleScooter saleScooter) {
+        LambdaQueryWrapper<OpeSaleScooterBatteryRelation> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeSaleScooterBatteryRelation::getDr, Constant.DR_FALSE);
+        qw.eq(OpeSaleScooterBatteryRelation::getSaleScooterId, saleScooter.getId());
+        List<OpeSaleScooterBatteryRelation> relationList = opeSaleScooterBatteryRelationService.list(qw);
+        List<Long> ids = relationList.stream().map(o -> o.getId()).collect(Collectors.toList());
+        opeSaleScooterBatteryRelationService.removeByIds(ids);
+    }
 
     public void check(SaleScooterSaveOrUpdateEnter enter) {
         if (Strings.isNullOrEmpty(enter.getProductCode())) {
@@ -215,6 +241,9 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         opeSaleScooterService.removeById(enter.getId());
         // 删除销售车辆的时候  需要把官网的数据也删除掉
         syncDeleteData(saleScooter.getProductName());
+
+        // 删除车型电池关系表
+        deleteSaleScooterBatteryRelation(saleScooter);
         return new GeneralResult(enter.getRequestId());
     }
 

@@ -5,6 +5,7 @@
     <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeSaleScooterBatteryRelation">
         <id column="id" property="id"/>
         <result column="dr" property="dr"/>
+        <result column="sale_scooter_id" property="saleScooterId"/>
         <result column="content" property="content"/>
         <result column="language" property="language"/>
         <result column="created_by" property="createdBy"/>
@@ -19,6 +20,6 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, dr, content, language, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+        id, dr, sale_scooter_id, content, language, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
     </sql>
 </mapper>

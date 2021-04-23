@@ -42,6 +42,9 @@ public class OpeSaleScooterBatteryRelation implements Serializable {
     @TableLogic
     private Integer dr;
 
+    @ApiModelProperty(value = "售卖车辆id")
+    private Long saleScooterId;
+
     @ApiModelProperty(value = "车型电池数")
     private String content;
 
