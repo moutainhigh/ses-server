@@ -197,12 +197,16 @@
         left join sco_scooter_ecu ecu
         on s.tablet_sn = ecu.sn
         where s.tablet_sn = #{tabletSn}
+        order by created_time desc
+        limit 1
     </select>
 
     <!--根据tabletSn查询车辆id-->
     <select id="getScooterIdByTabletSn" parameterType="java.lang.String" resultType="java.lang.Long">
         select id from sco_scooter
         where dr = 0 and tablet_sn = #{tabletSn}
+        order by created_time desc
+        limit 1
     </select>
 
     <!--查询当天生产车辆编号信息-->
