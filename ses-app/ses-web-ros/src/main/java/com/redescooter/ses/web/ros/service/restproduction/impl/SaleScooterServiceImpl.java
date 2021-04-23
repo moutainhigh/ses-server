@@ -3,6 +3,8 @@ package com.redescooter.ses.web.ros.service.restproduction.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -17,11 +19,18 @@ import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproduction.SaleScooterMapper;
 import com.redescooter.ses.web.ros.dm.OpeColor;
 import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
+import com.redescooter.ses.web.ros.dm.OpeSaleScooterBatteryRelation;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.base.OpeColorService;
+import com.redescooter.ses.web.ros.service.base.OpeSaleCombinService;
+import com.redescooter.ses.web.ros.service.base.OpeSalePartsService;
+import com.redescooter.ses.web.ros.service.base.OpeSaleScooterBatteryRelationService;
+import com.redescooter.ses.web.ros.service.base.OpeSaleScooterService;
+import com.redescooter.ses.web.ros.service.base.OpeSpecificatGroupService;
+import com.redescooter.ses.web.ros.service.base.OpeSpecificatTypeService;
 import com.redescooter.ses.web.ros.service.restproduction.SaleScooterService;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleProductionParaEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListEnter;
@@ -38,7 +47,12 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import spark.utils.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -85,6 +99,9 @@ public class SaleScooterServiceImpl implements SaleScooterService {
     @Autowired
     private OpeSpecificatGroupService opeSpecificatGroupService;
 
+    @Autowired
+    private OpeSaleScooterBatteryRelationService opeSaleScooterBatteryRelationService;
+
 
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
@@ -102,6 +119,39 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         saleScooter.setUpdatedTime(new Date());
         saleScooter.setId(idAppService.getId(SequenceName.OPE_SALE_SCOOTER));
         opeSaleScooterService.saveOrUpdate(saleScooter);
+
+        // 新增ope_sale_scooter_battery_relation表,并生成中英法文
+        for (int j = 0; j < 3; j++) {
+            String language;
+            String msg;
+            if (j == 0) {
+                language = "cn";
+                msg = "块电池";
+            } else if (j == 1) {
+                language = "en";
+                msg = "Battery";
+            } else {
+                language = "fr";
+                msg = "Batterie";
+            }
+            List<OpeSaleScooterBatteryRelation> list = Lists.newArrayList();
+            Integer maxBatteryNum = 4;
+            // 要生成的条数  E50生成4条 E100生成3条 E125生成1条
+            Integer count = maxBatteryNum - saleScooter.getMinBatteryNum() + 1;
+            for (int i = 1; i <= count; i++) {
+                OpeSaleScooterBatteryRelation relation = new OpeSaleScooterBatteryRelation();
+                relation.setId(idAppService.getId(SequenceName.OPE_SALE_SCOOTER_BATTERY_RELATION));
+                relation.setDr(Constant.DR_FALSE);
+                relation.setContent(saleScooter.getProductName() + "+" + i + msg);
+                relation.setLanguage(language);
+                relation.setCreatedBy(enter.getUserId());
+                relation.setCreatedTime(new Date());
+                relation.setUpdatedBy(enter.getUserId());
+                relation.setUpdatedTime(new Date());
+                list.add(relation);
+            }
+            opeSaleScooterBatteryRelationService.saveBatch(list);
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
