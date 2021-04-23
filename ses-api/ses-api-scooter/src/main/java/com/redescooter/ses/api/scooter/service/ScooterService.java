@@ -4,10 +4,13 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
+import com.redescooter.ses.api.scooter.vo.ScoScooterResult;
 import com.redescooter.ses.api.scooter.vo.UpdateStatusEnter;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterLockReportedDTO;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName:ScooterService
@@ -145,5 +148,20 @@ public interface ScooterService {
      * @date 2021/2/1
     */
     List<String> getToDayScooterNos();
+
+    /**
+     * 根据scooterId找到最后一次的经纬度
+     */
+    Map<String, BigDecimal> getPositionByScooterId(Long scooterId);
+
+    /**
+     * 根据tabletSn查询sco_scooter
+     */
+    ScoScooterResult getScoScooterByTableSn(String rsn);
+
+    /**
+     * 修改sco_scooter的牌照
+     */
+    GeneralResult updateScooterNo(Long id, String licensePlate);
 
 }

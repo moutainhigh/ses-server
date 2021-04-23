@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
@@ -26,6 +27,12 @@ public class AdminController {
     public Response<GeneralResult> accountList(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
         deleteRosLoginDateService.deleteRosLoginDate(enter);
         return new Response<>(new GeneralResult());
+    }
+
+    @PostMapping("/testGlobalTransactional")
+    @ApiOperation(value = "测试分布式事务", tags = "测试分布式事务")
+    public Response<GeneralResult> testGlobalTransactional(@ModelAttribute GeneralEnter enter) {
+        return new Response<>(deleteRosLoginDateService.testGlobalTransactional(enter));
     }
 
 }

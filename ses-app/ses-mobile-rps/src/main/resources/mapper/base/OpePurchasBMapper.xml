@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpePurchasB">
     <!--@mbg.generated-->
     <!--@Table ope_purchas_b-->
-    <result column="id" jdbcType="BIGINT" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />

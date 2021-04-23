@@ -23,12 +23,12 @@ import com.redescooter.ses.service.scooter.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.scooter.service.base.ScoScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.map.MapUtil;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -63,7 +63,7 @@ public class ScooterIotServiceImpl implements ScooterIotService {
     private ScooterIotServiceMapper scooterIotServiceMapper;
 
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult navigation(IotScooterEnter enter) {
         ScoScooter scoScooter = checkIotScooterEnterParameter(enter);
@@ -145,7 +145,7 @@ public class ScooterIotServiceImpl implements ScooterIotService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult lock(IotScooterEnter enter) {
         ScoScooter scoScooter = checkIotScooterEnterParameter(enter);
 

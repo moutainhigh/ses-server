@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.mobile.rps.dao.base.OpeOutWhPartsBMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeOutWhPartsB">
     <!--@mbg.generated-->
-    <!--@Table operation.ope_out_wh_parts_b-->
+    <!--@Tableope_out_wh_parts_b-->
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="out_wh_id" jdbcType="BIGINT" property="outWhId" />
@@ -28,13 +28,13 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, out_wh_id, parts_id, parts_name, parts_no, parts_type, qty, already_out_wh_qty, 
-    total_qty, remark, picture, created_by, created_time, updated_by, updated_time, def1, 
+    id, dr, out_wh_id, parts_id, parts_name, parts_no, parts_type, qty, already_out_wh_qty,
+    total_qty, remark, picture, created_by, created_time, updated_by, updated_time, def1,
     def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update operation.ope_out_wh_parts_b
+    updateope_out_wh_parts_b
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -144,7 +144,7 @@
   </update>
   <update id="updateBatchSelective" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update operation.ope_out_wh_parts_b
+    updateope_out_wh_parts_b
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -294,62 +294,62 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into operation.ope_out_wh_parts_b
-    (id, dr, out_wh_id, parts_id, parts_name, parts_no, parts_type, qty, already_out_wh_qty, 
-      total_qty, remark, picture, created_by, created_time, updated_by, updated_time, 
+    insert into ope_out_wh_parts_b
+    (id, dr, out_wh_id, parts_id, parts_name, parts_no, parts_type, qty, already_out_wh_qty,
+      total_qty, remark, picture, created_by, created_time, updated_by, updated_time,
       def1, def2, def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=INTEGER}, #{item.dr,jdbcType=INTEGER}, #{item.outWhId,jdbcType=BIGINT}, 
-        #{item.partsId,jdbcType=BIGINT}, #{item.partsName,jdbcType=VARCHAR}, #{item.partsNo,jdbcType=VARCHAR}, 
-        #{item.partsType,jdbcType=INTEGER}, #{item.qty,jdbcType=INTEGER}, #{item.alreadyOutWhQty,jdbcType=INTEGER}, 
-        #{item.totalQty,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, #{item.picture,jdbcType=VARCHAR}, 
-        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
-        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
+      (#{item.id,jdbcType=INTEGER}, #{item.dr,jdbcType=INTEGER}, #{item.outWhId,jdbcType=BIGINT},
+        #{item.partsId,jdbcType=BIGINT}, #{item.partsName,jdbcType=VARCHAR}, #{item.partsNo,jdbcType=VARCHAR},
+        #{item.partsType,jdbcType=INTEGER}, #{item.qty,jdbcType=INTEGER}, #{item.alreadyOutWhQty,jdbcType=INTEGER},
+        #{item.totalQty,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, #{item.picture,jdbcType=VARCHAR},
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
+        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
         #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL}
         )
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOutWhPartsB">
     <!--@mbg.generated-->
-    insert into operation.ope_out_wh_parts_b
-    (id, dr, out_wh_id, parts_id, parts_name, parts_no, parts_type, qty, already_out_wh_qty, 
-      total_qty, remark, picture, created_by, created_time, updated_by, updated_time, 
+    insert into ope_out_wh_parts_b
+    (id, dr, out_wh_id, parts_id, parts_name, parts_no, parts_type, qty, already_out_wh_qty,
+      total_qty, remark, picture, created_by, created_time, updated_by, updated_time,
       def1, def2, def3, def4, def5)
     values
-    (#{id,jdbcType=INTEGER}, #{dr,jdbcType=INTEGER}, #{outWhId,jdbcType=BIGINT}, #{partsId,jdbcType=BIGINT}, 
-      #{partsName,jdbcType=VARCHAR}, #{partsNo,jdbcType=VARCHAR}, #{partsType,jdbcType=INTEGER}, 
-      #{qty,jdbcType=INTEGER}, #{alreadyOutWhQty,jdbcType=INTEGER}, #{totalQty,jdbcType=INTEGER}, 
-      #{remark,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
-      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, 
+    (#{id,jdbcType=INTEGER}, #{dr,jdbcType=INTEGER}, #{outWhId,jdbcType=BIGINT}, #{partsId,jdbcType=BIGINT},
+      #{partsName,jdbcType=VARCHAR}, #{partsNo,jdbcType=VARCHAR}, #{partsType,jdbcType=INTEGER},
+      #{qty,jdbcType=INTEGER}, #{alreadyOutWhQty,jdbcType=INTEGER}, #{totalQty,jdbcType=INTEGER},
+      #{remark,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT},
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP},
+      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR},
       #{def5,jdbcType=DECIMAL})
-    on duplicate key update 
-    id = #{id,jdbcType=INTEGER}, 
-    dr = #{dr,jdbcType=INTEGER}, 
-    out_wh_id = #{outWhId,jdbcType=BIGINT}, 
-    parts_id = #{partsId,jdbcType=BIGINT}, 
-    parts_name = #{partsName,jdbcType=VARCHAR}, 
-    parts_no = #{partsNo,jdbcType=VARCHAR}, 
-    parts_type = #{partsType,jdbcType=INTEGER}, 
-    qty = #{qty,jdbcType=INTEGER}, 
-    already_out_wh_qty = #{alreadyOutWhQty,jdbcType=INTEGER}, 
-    total_qty = #{totalQty,jdbcType=INTEGER}, 
-    remark = #{remark,jdbcType=VARCHAR}, 
-    picture = #{picture,jdbcType=VARCHAR}, 
-    created_by = #{createdBy,jdbcType=BIGINT}, 
-    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
-    def1 = #{def1,jdbcType=VARCHAR}, 
-    def2 = #{def2,jdbcType=VARCHAR}, 
-    def3 = #{def3,jdbcType=VARCHAR}, 
-    def4 = #{def4,jdbcType=VARCHAR}, 
+    on duplicate key update
+    id = #{id,jdbcType=INTEGER},
+    dr = #{dr,jdbcType=INTEGER},
+    out_wh_id = #{outWhId,jdbcType=BIGINT},
+    parts_id = #{partsId,jdbcType=BIGINT},
+    parts_name = #{partsName,jdbcType=VARCHAR},
+    parts_no = #{partsNo,jdbcType=VARCHAR},
+    parts_type = #{partsType,jdbcType=INTEGER},
+    qty = #{qty,jdbcType=INTEGER},
+    already_out_wh_qty = #{alreadyOutWhQty,jdbcType=INTEGER},
+    total_qty = #{totalQty,jdbcType=INTEGER},
+    remark = #{remark,jdbcType=VARCHAR},
+    picture = #{picture,jdbcType=VARCHAR},
+    created_by = #{createdBy,jdbcType=BIGINT},
+    created_time = #{createdTime,jdbcType=TIMESTAMP},
+    updated_by = #{updatedBy,jdbcType=BIGINT},
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+    def1 = #{def1,jdbcType=VARCHAR},
+    def2 = #{def2,jdbcType=VARCHAR},
+    def3 = #{def3,jdbcType=VARCHAR},
+    def4 = #{def4,jdbcType=VARCHAR},
     def5 = #{def5,jdbcType=DECIMAL}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeOutWhPartsB">
     <!--@mbg.generated-->
-    insert into operation.ope_out_wh_parts_b
+    insert into ope_out_wh_parts_b
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -481,7 +481,7 @@
         #{def5,jdbcType=DECIMAL},
       </if>
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=INTEGER},

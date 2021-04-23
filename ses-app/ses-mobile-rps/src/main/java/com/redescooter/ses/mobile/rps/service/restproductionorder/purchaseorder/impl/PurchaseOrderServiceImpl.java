@@ -11,10 +11,10 @@ import com.redescooter.ses.mobile.rps.service.restproductionorder.orderflow.Orde
 import com.redescooter.ses.mobile.rps.service.restproductionorder.purchaseorder.PurchaseOrderService;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @ClassNamePurchaseOrderServiceImpl
@@ -39,7 +39,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private IdAppService idAppService;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void purchaseWaitSign(Long purchaseId, Long userId) {
         // 采购单变为待签收状态
         OpePurchaseOrder opePurchaseOrder  = opePurchaseOrderService.getById(purchaseId);

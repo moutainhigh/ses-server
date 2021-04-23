@@ -5,6 +5,8 @@ import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
+import com.redescooter.ses.api.hub.service.operation.CustomerService;
+import com.redescooter.ses.api.hub.vo.operation.SyncCustomerDataEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -26,13 +28,14 @@ import com.redescooter.ses.web.website.service.base.SiteUserService;
 import com.redescooter.ses.web.website.vo.customer.AddCustomerEnter;
 import com.redescooter.ses.web.website.vo.customer.CustomerDetailsResult;
 import com.redescooter.ses.web.website.vo.customer.EditSiteCustomerEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -60,13 +63,16 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
     @DubboReference
     private IdAppService idAppService;
 
+    @DubboReference
+    private CustomerService customerService;
+
     /**
      * 创建客户
      *
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addCustomer(AddCustomerEnter enter) {
         SesStringUtils.objStringTrim(enter);
@@ -111,11 +117,47 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         checkEmail(enter.getEmail());
         Long customerID = saveCustomer(enter);
 
+        // 官网创建客户数据同步到ros
+        syncData(enter);
+
         LoginEnter signUp = new LoginEnter();
         signUp.setLoginName(enter.getEmail());
         signUp.setPassword(enter.getCfmPassword().trim());
         signUp.setCustomerId(customerID);
         return tokenWebsiteService.signUp(signUp);
+    }
+
+    @Async
+    void syncData(AddCustomerEnter enter) {
+        SyncCustomerDataEnter model = new SyncCustomerDataEnter();
+        model.setDr(Constant.DR_FALSE);
+        model.setTimeZone("08:00");
+        model.setDef1(enter.getCountryName());
+        model.setDef2(enter.getCityName());
+        model.setDef3(enter.getPostcode());
+        model.setCountryCode(enter.getCountryCode());
+        model.setStatus("1");
+        model.setCustomerFirstName(enter.getCustomerFirstName());
+        model.setCustomerLastName(enter.getCustomerLastName());
+        if (StringUtils.isNoneBlank(enter.getCustomerFirstName(), enter.getCustomerLastName())) {
+            model.setCustomerFullName(new StringBuffer().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
+        }
+        model.setCustomerSource(String.valueOf(WebSiteCustomerSourceEnums.OFFICIAL.getValue()));
+        model.setCustomerType(String.valueOf(CustomerTypeEnums.PERSONAL.getValue()));
+        model.setAddress(enter.getAddress());
+        model.setPlaceId(enter.getPlaceId());
+        model.setLongitude(enter.getLongitude());
+        model.setLatitude(enter.getLatitude());
+        model.setTelephone(enter.getTelephone());
+        model.setEmail(enter.getEmail());
+        model.setScooterQuantity(1);
+        model.setAssignationScooterQty(0);
+        model.setAccountFlag(String.valueOf(AccountFlagEnums.INACTIVATED.getValue()));
+        model.setCreatedBy(0L);
+        model.setCreatedTime(new Date());
+        model.setUpdatedTime(new Date());
+        model.setUpdatedBy(0L);
+        customerService.syncCustomerData(model);
     }
 
     /**
@@ -155,7 +197,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult editCustomer(EditSiteCustomerEnter enter) {
 
@@ -163,8 +205,43 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         BeanUtils.copyProperties(enter, edit);
         siteCustomerService.updateById(edit);
 
+        // 官网编辑客户数据同步到ros
+        syncEditData(edit);
+
         return new GeneralResult(enter.getRequestId());
     }
+
+    @Async
+    void syncEditData(SiteCustomer enter) {
+        SyncCustomerDataEnter model = new SyncCustomerDataEnter();
+        model.setDr(Constant.DR_FALSE);
+        model.setTimeZone("08:00");
+        model.setDef1(enter.getCountryName());
+        model.setDef2(enter.getCityName());
+        model.setDef3(enter.getPostcode());
+        model.setCountryCode(enter.getCountryCode());
+        model.setStatus("1");
+        model.setCustomerFirstName(enter.getCustomerFirstName());
+        model.setCustomerLastName(enter.getCustomerLastName());
+        if (StringUtils.isNoneBlank(enter.getCustomerFirstName(), enter.getCustomerLastName())) {
+            model.setCustomerFullName(new StringBuffer().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
+        }
+        model.setCustomerSource(String.valueOf(WebSiteCustomerSourceEnums.OFFICIAL.getValue()));
+        model.setCustomerType(String.valueOf(CustomerTypeEnums.PERSONAL.getValue()));
+        model.setAddress(enter.getAddress());
+        model.setPlaceId(enter.getPlaceId());
+        model.setLongitude(enter.getLongitude());
+        model.setLatitude(enter.getLatitude());
+        model.setTelephone(enter.getTelephone());
+        model.setEmail(enter.getEmail());
+        model.setScooterQuantity(1);
+        model.setAssignationScooterQty(0);
+        model.setAccountFlag(String.valueOf(AccountFlagEnums.INACTIVATED.getValue()));
+        model.setUpdatedBy(0L);
+        model.setUpdatedTime(new Date());
+        customerService.syncCustomerData(model);
+    }
+
 
     private void checkEmail(String email) {
         if (StringUtils.isBlank(email)) {

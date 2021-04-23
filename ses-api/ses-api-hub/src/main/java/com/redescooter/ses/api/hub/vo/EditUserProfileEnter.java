@@ -44,4 +44,7 @@ public class EditUserProfileEnter extends GeneralResult {
 
     @ApiModelProperty("用户id")
     private Long userId;
+
+    @ApiModelProperty(value = "电话号")
+    private String telNumber1;
 }

@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.restproduction.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.JedisConstant;
@@ -7,34 +8,34 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.hub.service.website.ProductionService;
+import com.redescooter.ses.api.hub.vo.website.SyncProductionDataEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.restproduction.SaleScooterMapper;
+import com.redescooter.ses.web.ros.dm.OpeColor;
 import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
+import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeSaleCombinService;
-import com.redescooter.ses.web.ros.service.base.OpeSalePartsService;
-import com.redescooter.ses.web.ros.service.base.OpeSaleScooterService;
-import com.redescooter.ses.web.ros.service.base.OpeSpecificatTypeService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproduction.SaleScooterService;
+import com.redescooter.ses.web.ros.vo.restproduct.SaleProductionParaEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListResult;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterSaveOrUpdateEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassNameSaleScooterServiceImpl
@@ -68,8 +69,21 @@ public class SaleScooterServiceImpl implements SaleScooterService {
     @Autowired
     private OpeSalePartsService opeSalePartsService;
 
+    @DubboReference
+    private ProductionService productionService;
+
+    @Autowired
+    private OpeColorService opeColorService;
+
+    @Autowired
+    private OpeSpecificatTypeService opeSpecificatTypeService;
+
+    @Autowired
+    private OpeSpecificatGroupService opeSpecificatGroupService;
+
+
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult saveSaleScooter(SaleScooterSaveOrUpdateEnter enter) {
         // 去空格
         enter = SesStringUtils.objStringTrim(enter);
@@ -102,6 +116,9 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         saleScooter.setSpecificatId(enter.getSpecificatId());
         saleScooter.setGroupId(findGroupId(enter.getSpecificatId()));
         saleScooter.setColorId(enter.getColorId());
+        saleScooter.setMinBatteryNum(enter.getMinBatteryNum());
+        saleScooter.setOtherParam(enter.getOtherParam());
+        saleScooter.setProductionParam(enter.getProductionParam());
         opeSaleScooterService.saveOrUpdate(saleScooter);
         return new GeneralResult(enter.getRequestId());
     }
@@ -134,20 +151,32 @@ public class SaleScooterServiceImpl implements SaleScooterService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult deleteSaleScooter(IdEnter enter) {
+        OpeSaleScooter saleScooter = opeSaleScooterService.getById(enter.getId());
+        if (saleScooter == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        }
         opeSaleScooterService.removeById(enter.getId());
+        // 删除销售车辆的时候  需要把官网的数据也删除掉
+        syncDeleteData(saleScooter.getProductName());
         return new GeneralResult(enter.getRequestId());
     }
 
 
+    @Async
+    void syncDeleteData(String productionName){
+        productionService.syncDeleteData(productionName);
+    }
+
+
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult editSaleScooterStatus(IdEnter enter) {
         // 编辑这玩意之前有个安全码的校验  并把结果放在Redis中  这里再次验证一下安全码校验是否通过
         String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
         String checkResut = jedisService.get(key);
-        if (!Boolean.valueOf(checkResut)) {
+        if (!Boolean.parseBoolean(checkResut)) {
             throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(), ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
         }
         jedisService.delKey(key);
@@ -158,8 +187,84 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         Integer saleStutas = saleScooter.getSaleStutas();
         saleScooter.setSaleStutas(saleStutas == 0 ? 1 : 0);
         opeSaleScooterService.updateById(saleScooter);
+
+        // 销售产品状态改变时  需要把数据同步到官网那边的数据库中（那边没有数据就新建数据）
+        dataSyncToWebsite(saleScooter);
         return new GeneralResult(enter.getRequestId());
     }
+
+    // 这个方法要写成异步的
+    @Async
+    void dataSyncToWebsite(OpeSaleScooter saleScooter){
+        try {
+            // 这个要同步好几张表 先判断本次同步多少张表（1张或5张）
+            if(!productionService.syncByProductionCode(saleScooter.getProductCode(),saleScooter.getSaleStutas())){
+                // 进入到这里  说明是第一次同步这条数据  需要同步5张表
+                SyncProductionDataEnter syncProductionDataEnter = new SyncProductionDataEnter();
+                // 下面开始给这个对象找数据赋值
+                // 首先是产品数据
+                syncProductionDataEnter.setProductCode(saleScooter.getProductCode());
+                syncProductionDataEnter.setCnName(saleScooter.getProductName());
+                syncProductionDataEnter.setFrName(saleScooter.getProductName());
+                syncProductionDataEnter.setEnName(saleScooter.getProductName());
+                syncProductionDataEnter.setProductType(1);
+                syncProductionDataEnter.setStatus(1);
+                syncProductionDataEnter.setOtherParameter(saleScooter.getOtherParam());
+                syncProductionDataEnter.setMaterParameter(saleScooter.getProductionParam());
+                syncProductionDataEnter.setMinBatteryNum(saleScooter.getMinBatteryNum());
+                syncProductionDataEnter.setProductModelId(saleScooter.getSpecificatId());
+                syncProductionDataEnter.setRemark(saleScooter.getRemark());
+                syncProductionDataEnter.setProductModelName(saleScooter.getProductName());
+                syncProductionDataEnter.setProductModelCode(saleScooter.getProductCode());
+                if (!Strings.isNullOrEmpty(saleScooter.getProductionParam())){
+                    List<SaleProductionParaEnter> params;
+                    try {
+                        params = JSONArray.parseArray(saleScooter.getProductionParam(), SaleProductionParaEnter.class);
+                    }catch (Exception e) {
+                        throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                    }
+                    // 1:speed，2：power，3：mileage，4：charge_cycle
+                    for (SaleProductionParaEnter param : params) {
+                        if (Objects.equals(param.getDefName(), "1")){
+                            syncProductionDataEnter.setSpeed(param.getDefValue());
+                        }else if (Objects.equals(param.getDefName(), "2")){
+                            syncProductionDataEnter.setPower(param.getDefValue());
+                        }else if (Objects.equals(param.getDefName(), "3")){
+                            syncProductionDataEnter.setMileage(param.getDefValue());
+                        }else if (Objects.equals(param.getDefName(), "4")){
+                            syncProductionDataEnter.setChargeCycle(param.getDefValue());
+                        }
+                    }
+                }
+
+                // 然后是颜色数据
+                OpeColor color = opeColorService.getById(saleScooter.getColorId());
+                if (color == null) {
+                    throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+                }
+                syncProductionDataEnter.setColourCode(color.getColorValue());
+                syncProductionDataEnter.setColourName(color.getColorName());
+
+                // 接着是分组（高速、低速）数据
+                OpeSpecificatType specificatType = opeSpecificatTypeService.getById(saleScooter.getSpecificatId());
+                if (specificatType == null) {
+                    throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
+                }
+                OpeSpecificatGroup specificatGroup = opeSpecificatGroupService.getById(specificatType.getGroupId());
+                if (specificatGroup == null) {
+                    throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
+                }
+                syncProductionDataEnter.setProductClassName(specificatGroup.getGroupName());
+                // 因为在ros里面 对于高速/低速  没有所谓的code 所以这里先把名字的值赋给code
+                syncProductionDataEnter.setProductClassCode(specificatGroup.getGroupName());
+                // 参数对象封装好 下面直接调用api方法
+                log.info("组装好数据了，调用方法同步数据*******************");
+                productionService.syncProductionData(syncProductionDataEnter);
+            }
+
+        }catch (Exception ignored){}
+    }
+
 
 
 //    @SneakyThrows

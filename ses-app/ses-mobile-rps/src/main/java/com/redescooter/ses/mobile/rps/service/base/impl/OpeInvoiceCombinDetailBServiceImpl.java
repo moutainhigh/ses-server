@@ -4,14 +4,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.mobile.rps.dao.base.OpeInvoiceCombinDetailBMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeInvoiceCombinDetailB;
 import com.redescooter.ses.mobile.rps.service.base.OpeInvoiceCombinDetailBService;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
-
 public class OpeInvoiceCombinDetailBServiceImpl extends ServiceImpl<OpeInvoiceCombinDetailBMapper, OpeInvoiceCombinDetailB> implements OpeInvoiceCombinDetailBService {
 
     @Override

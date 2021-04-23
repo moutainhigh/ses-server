@@ -15,11 +15,11 @@ import com.redescooter.ses.service.scooter.dao.base.ScoScooterActionTraceMapper;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooterActionTrace;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.map.MapUtil;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,7 +49,7 @@ public class ScooterRecordsImpl implements ScooterRecordService {
      *
      * @param enter
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void saveScooterRecords(List<SaveScooterRecordEnter<BaseScooterEnter>> enter) {
         if (CollectionUtils.isEmpty(enter)) {

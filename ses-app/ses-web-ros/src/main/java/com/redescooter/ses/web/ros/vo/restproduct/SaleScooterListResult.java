@@ -1,9 +1,9 @@
 package com.redescooter.ses.web.ros.vo.restproduct;
 
-import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @ClassNameSaleScooterListResult
@@ -12,6 +12,7 @@ import lombok.Data;
  * @Date2020/10/13 15:31
  * @Version V1.0
  **/
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class SaleScooterListResult extends GeneralResult {
 
@@ -47,5 +48,14 @@ public class SaleScooterListResult extends GeneralResult {
 
     @ApiModelProperty(value = "销售状态，0：不可销售，1：可销售")
     private Integer saleStutas;
+
+    @ApiModelProperty(value = "最少电池数")
+    private Integer minBatteryNum;
+
+    @ApiModelProperty(value = "产品参数 存储JSON")
+    private String productionParam = "";
+
+    @ApiModelProperty(value = "其他参数 存储JSON")
+    private String otherParam = "";
 
 }

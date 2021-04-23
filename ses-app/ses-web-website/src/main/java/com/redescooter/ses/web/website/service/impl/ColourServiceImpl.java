@@ -19,13 +19,13 @@ import com.redescooter.ses.web.website.service.base.SiteColourService;
 import com.redescooter.ses.web.website.vo.colour.AddColourEnter;
 import com.redescooter.ses.web.website.vo.colour.ModityColourEnter;
 import com.redescooter.ses.web.website.vo.product.ColourDetailsResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,7 +52,7 @@ public class ColourServiceImpl implements ColourService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult addColour(AddColourEnter enter) {
 
@@ -89,7 +89,7 @@ public class ColourServiceImpl implements ColourService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public Boolean modityColour(ModityColourEnter enter) {
 
@@ -105,7 +105,7 @@ public class ColourServiceImpl implements ColourService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult removeColour(IdEnter enter) {
         siteColourService.removeById(enter.getId());

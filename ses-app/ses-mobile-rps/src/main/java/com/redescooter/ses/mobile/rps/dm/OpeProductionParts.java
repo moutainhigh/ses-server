@@ -1,9 +1,6 @@
 package com.redescooter.ses.mobile.rps.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -23,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "operation.ope_production_parts")
+@TableName(value = "ope_production_parts")
 public class OpeProductionParts implements Serializable {
     /**
      * 主键id
@@ -37,6 +34,7 @@ public class OpeProductionParts implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除")
+    @TableLogic
     private Integer dr;
 
     /**
@@ -121,7 +119,7 @@ public class OpeProductionParts implements Serializable {
      */
     @TableField(value = "supplier_id")
     @ApiModelProperty(value = "供应商id")
-    private Integer supplierId;
+    private Long supplierId;
 
     /**
      * 采购周期

@@ -35,7 +35,7 @@ public class SaveOrUpdateScooterBEnter {
     private Long scooterBomId;
 
     @ApiModelProperty(value="组装数量")
-    private Integer combinQty;
+    private Integer combinQty = 0;
 
     @ApiModelProperty(value="可入库数量")
     private Integer ableInWhQty;

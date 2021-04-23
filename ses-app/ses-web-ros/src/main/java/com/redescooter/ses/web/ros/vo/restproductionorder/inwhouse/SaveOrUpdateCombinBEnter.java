@@ -25,7 +25,7 @@ public class SaveOrUpdateCombinBEnter {
     private Long productionCombinBomId;
 
     @ApiModelProperty(value="组装数量")
-    private Integer combinQty;
+    private Integer combinQty = 0;
 
     @ApiModelProperty(value="可入库数量")
     private Integer ableInWhQty;

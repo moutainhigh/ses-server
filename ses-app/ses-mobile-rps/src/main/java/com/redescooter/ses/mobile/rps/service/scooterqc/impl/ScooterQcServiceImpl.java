@@ -55,11 +55,11 @@ import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcOneResult;
 import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcPartResult;
 import com.redescooter.ses.mobile.rps.vo.scooterqc.ScooterQcResidueNumResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -125,7 +125,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
      * @Date 2020/4/14 14:37
      * @Param [enter]
      **/
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public PageResult<ScooterQcOneResult> scooterQcList(PageEnter enter) {
         int count = scooterQcServiceMapper.scooterQcListCount();
@@ -161,7 +161,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
      * @Date 2020/4/14 14:37
      * @Param [enter]
      **/
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public PageResult<ScooterQcPartResult> partListById(ScooterQcIdEnter enter) {
         int count = scooterQcServiceMapper.partListByIdCount();
@@ -198,7 +198,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
      * @Date 2020/4/14 14:37
      * @Param [enter]
      **/
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public List<ScooterQcItemResult> scooterQcItem(ScooterQcIdItemEnter enter) {
         // 先查询组组装单是否存在
@@ -249,7 +249,7 @@ public class ScooterQcServiceImpl implements ScooterQcService {
      * @Date 2020/4/14 14:37
      * @Param [enter]
      **/
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public ScooterQcResidueNumResult setScooterQcItem(ScooterQcItemEnter enter) {
         // 返回的结果集

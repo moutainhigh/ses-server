@@ -5,12 +5,10 @@ import com.redescooter.ses.mobile.rps.dao.base.OpePurchaseOrderMapper;
 import com.redescooter.ses.mobile.rps.dm.OpePurchaseOrder;
 import com.redescooter.ses.mobile.rps.service.base.OpePurchaseOrderService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
 public class OpePurchaseOrderServiceImpl extends ServiceImpl<OpePurchaseOrderMapper, OpePurchaseOrder> implements OpePurchaseOrderService {
 
     @Override

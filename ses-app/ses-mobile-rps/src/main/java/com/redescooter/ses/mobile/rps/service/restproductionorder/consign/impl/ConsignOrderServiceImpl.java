@@ -39,6 +39,7 @@ import com.redescooter.ses.mobile.rps.vo.restproductionorder.consign.UpdateConsi
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -46,7 +47,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -210,7 +210,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      * @desc: 出库
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult ship(ConsignShipEnter enter) {
 
         List<ConsignShipProductEnter> consignShipProductEnters = new ArrayList<>();
@@ -309,7 +309,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      * @Return: GeneralResult
      * @desc: 更新状态
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult updateStatus(UpdateConsignStatusEnter enter) {
         OpeEntrustOrder opeEntrustOrder = opeEntrustOrderService.getById(enter.getId());
@@ -345,7 +345,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
      * @Return: GeneralResult
      * @desc: 保存物流运输单
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveLogisticsOrder(SaveLogisticsOrderEnter enter) {
         OpeLogisticsOrder opeLogisticsOrder = new OpeLogisticsOrder();

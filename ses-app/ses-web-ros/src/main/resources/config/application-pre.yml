@@ -1,35 +1,34 @@
-#日志路径
 log:
   file:
     path: ${log.path}@profile-active@
     max-size: 128MB
     max-history: 180
-# DUBBO 配置
-dubbo: ##DUBBO配置
-  registry: #注册中心
+dubbo:
+  registry:
     address: zookeeper://172.31.6.101:2181
-spring: #spring config
-  http:                                                                                                                 #上传配置
+  metadata-report:
+    address: zookeeper://172.31.6.101:2181
+spring:
+  http:
   servlet:
     multipart:
       max-request-size: 1000MB
       max-file-size: 20MB
       enabled: true
-  datasource: #数据库连接
-    url: jdbc:mysql://172.31.6.136:2116/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
-    username: rede
-    password: 1qaz2wsx
+  datasource:
+    url: jdbc:mysql://172.31.6.136:2116/operation_pre?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    username: redpre
+    password: pre.1qaz2wsx
     druid:
       initial-size: 8
       min-idle: 1
       max-active: 20
       max-wait: 60000
-      stat-view-servlet: #监控页面的用户名和密码 以及页面地址
+      stat-view-servlet:
         login-username: rede
         login-password: admin
         enabled: true
         url-pattern: /druid/*
-  #REDIS集群配置
   redis:
     cluster:
       nodes:
@@ -41,68 +40,6 @@ spring: #spring config
         - 172.31.6.136:7005
   swagger:
     enabled: true
-    group:
-      Core-API:
-        group-name: Core API of official website
-        title: Signe OR Order
-        description: Signature management / Order management
-        base-package: com.redescooter.ses.web.ros.controller.website
-        path-regex: /website/.*
-        path-mapping: /
-        version: v1.2.1
-        license: RedE Circulation within the company
-        license-url: '#'
-        terms-of-service-url: https://pre.redelectric.fr/
-        contact:
-          name: Jerry
-          email: jerry@redescooter.com
-          url: https://github.com/mrjerryli
-      Payment-API:
-        group-name: Payment API
-        title: Payment Service Support
-        description: Provide three party payment service support
-        base-package: com.redescooter.ses.web.ros.controller.website
-        path-regex: /stripe/.*
-        path-mapping: /
-        version: v1.2.1
-        license: RedE Circulation within the company
-        license-url: '#'
-        terms-of-service-url: https://pre.redelectric.fr/
-        contact:
-          name: Jerry
-          email: jerry@redescooter.com
-          url: https://github.com/mrjerryli
-      DeliveryOpion-API:
-        group-name: DeliveryOpion API
-        title: DeliveryOpion Service Support
-        description: DeliveryOpion service support
-        base-package: com.redescooter.ses.web.ros.controller.website.DeliveryOpionController
-        path-regex: /deliveryopion/.*
-        path-mapping: /
-        version: v1.2.1
-        license: RedE Circulation within the company
-        license-url: '#'
-        terms-of-service-url: https://pre.redelectric.fr/
-        contact:
-          name: Jerry
-          email: jerry@redescooter.com
-          url: https://github.com/mrjerryli
-      WthdrawalSite-API:
-        group-name: WthdrawalSite API
-        title: WthdrawalSite Service Support
-        description: WthdrawalSite service support
-        base-package: com.redescooter.ses.web.ros.controller.website.WthdrawalSiteController
-        path-regex: /wthdrawalsite/.*
-        path-mapping: /
-        version: v1.2.1
-        license: RedE Circulation within the company
-        license-url: '#'
-        terms-of-service-url: https://pre.redelectric.fr/
-        contact:
-          name: Jerry
-          email: jerry@redescooter.com
-          url: https://github.com/mrjerryli
-## stripe pay
 stripe:
   currency: eur
   payment_method_types: card
@@ -110,17 +47,12 @@ stripe:
   publishable_key: pk_test_IsulbIcuGZ9e0z7K0EDECS5D00niQEDqL6
   secret_key: sk_test_8BOq2D5p1eS4pKyBbdjoWwgS00plcIG6cI
   receipt_email: etienne@redescooter.fr
-
-oss: #阿里oss上传
-  #调整最大文件大小为10M 默认单位为字节
-  #oss 使用HTTPS、HTTP请求方式
+oss:
   protocol: HTTPS
-
 excel:
   folder: ${log.path}@profile-active@/projectExcel
 sendinblue:
   listIds: 119
-
 monday:
   url: https://api.monday.com/v2
   authorization: eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjI5MjE5MzMxLCJ1aWQiOjUwODM2NTksImlhZCI6IjIwMTktMTItMzBUMTA6NTU6MTEuMDAwWiIsInBlciI6Im1lOndyaXRlIn0.Z_dXLUCgiEUoHQXzeFlOqeG2jfSeiyKIdBNdwaAOKrA
@@ -145,8 +77,29 @@ monday:
   #模板Id
   templeteId: 581923336
   load-template: false
-
 constant-us-email:
   sale-principal:
-    - etienne@redescooter.fr
     - jerry@redescooter.com
+
+seata:
+  enabled: true
+  enable-auto-data-source-proxy: true
+  tx-service-group: ses-web-ros-group
+  registry:
+    type: zk
+    zk:
+      server-addr: 172.31.6.101:2181
+      cluster: default
+      connect-timeout: 2000000
+  config:
+    type: zk
+    zk:
+      server-addr: 172.31.6.101:2181
+      connect-timeout: 2000000
+  service:
+    disable-global-transaction: false
+    vgroup-mapping:
+      ses-web-ros-group: default
+  client:
+    rm:
+      report-success-enable: false

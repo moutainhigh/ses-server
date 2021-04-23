@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.hub.source.website.dao.SiteProductColourMapper">
+  <resultMap id="BaseResultMap" type="com.redescooter.ses.service.hub.source.website.dm.SiteProductColour">
+    <!--@mbg.generated-->
+    <!--@Table site_product_colour-->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="colour_id" jdbcType="BIGINT" property="colourId" />
+    <result column="synchronize_flag" jdbcType="BOOLEAN" property="synchronizeFlag" />
+    <result column="revision" jdbcType="INTEGER" property="revision" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, product_id, colour_id, synchronize_flag, revision
+  </sql>
+</mapper>

@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.hub.source.operation.service.impl;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.redescooter.ses.api.hub.service.operation.SysUserService;
 import com.redescooter.ses.api.hub.vo.SysUserStaffDTO;
 import com.redescooter.ses.service.hub.source.operation.dao.SysUserMapper;
@@ -12,6 +13,7 @@ import javax.annotation.Resource;
  * @date 2020/12/10 11:19
  */
 @DubboService
+@DS("operation")
 public class SysUserServiceImpl implements SysUserService {
 
     @Resource

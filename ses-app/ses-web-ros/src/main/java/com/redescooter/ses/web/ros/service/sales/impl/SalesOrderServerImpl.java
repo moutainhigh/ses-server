@@ -16,10 +16,10 @@ import com.redescooter.ses.web.ros.vo.sales.ColorCountResult;
 import com.redescooter.ses.web.ros.vo.sales.SalesOrderDetailsResult;
 import com.redescooter.ses.web.ros.vo.sales.SalesOrderEnter;
 import com.redescooter.ses.web.ros.vo.sales.SalesOrderListResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -137,9 +137,7 @@ public class SalesOrderServerImpl implements SalesOrderServer {
      * @return
      */
     @Override
-    public SalesOrderDetailsResult details(IdEnter enter, Long id) {
-
-        enter.setId(id);
+    public SalesOrderDetailsResult details(IdEnter enter) {
         SalesOrderDetailsResult detailsResult = salesOrderServerMapper.details(enter);
 
         if (detailsResult == null) {
@@ -156,10 +154,8 @@ public class SalesOrderServerImpl implements SalesOrderServer {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public GeneralResult labels(IdEnter enter, Long id) {
-
-        enter.setId(id);
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult labels(IdEnter enter) {
         OpeCustomerInquiry inquiry = baseCustomerInquiryMapper.selectById(enter.getId());
         /*标签标记*/
         String labels = inquiry.getDef5();
@@ -181,9 +177,8 @@ public class SalesOrderServerImpl implements SalesOrderServer {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public GeneralResult cancelWarn(IdEnter enter, Long id) {
-        enter.setId(id);
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult cancelWarn(IdEnter enter) {
         OpeCustomerInquiry inquiry = baseCustomerInquiryMapper.selectById(enter.getId());
         /*提示标记*/
         Double warnDouble = inquiry.getDef6();

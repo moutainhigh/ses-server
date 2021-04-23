@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeSysRoleMenu">
     <!--@mbg.generated-->
     <!--@Table ope_sys_role_menu-->
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="role_id" jdbcType="BIGINT" property="roleId" />
     <result column="menu_id" jdbcType="BIGINT" property="menuId" />
   </resultMap>

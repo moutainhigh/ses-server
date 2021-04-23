@@ -31,5 +31,13 @@ public class SaleScooterSaveOrUpdateEnter extends GeneralEnter {
     @ApiModelProperty(value = "车辆所属颜色id")
     private Long colorId;
 
+    @ApiModelProperty("最低电池数")
+    private Integer minBatteryNum;
+
+    @ApiModelProperty(value = "产品参数 存储JSON")
+    private String productionParam;
+
+    @ApiModelProperty(value = "其他参数 存储JSON")
+    private String otherParam;
 
 }

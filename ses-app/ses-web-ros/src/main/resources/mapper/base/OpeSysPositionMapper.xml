@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeSysPositionMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeSysPosition">
     <!--@mbg.generated-->
-    <!--@Table operation.ope_sys_position-->
+    <!--@Tableope_sys_position-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
@@ -26,13 +26,13 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, tenant_id, position_name, position_code, dept_id, sort, position_status, 
-    remark, system_root, created_by, created_time, updated_by, updated_time, def1, def2, 
+    id, dr, tenant_id, position_name, position_code, dept_id, sort, position_status,
+    remark, system_root, created_by, created_time, updated_by, updated_time, def1, def2,
     def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update operation.ope_sys_position
+    updateope_sys_position
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -132,58 +132,58 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into operation.ope_sys_position
-    (id, dr, tenant_id, position_name, position_code, dept_id, sort, position_status, 
-      remark, system_root, created_by, created_time, updated_by, updated_time, def1, 
+    insert into ope_sys_position
+    (id, dr, tenant_id, position_name, position_code, dept_id, sort, position_status,
+      remark, system_root, created_by, created_time, updated_by, updated_time, def1,
       def2, def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
-        #{item.positionName,jdbcType=VARCHAR}, #{item.positionCode,jdbcType=VARCHAR}, #{item.deptId,jdbcType=BIGINT}, 
-        #{item.sort,jdbcType=INTEGER}, #{item.positionStatus,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, 
-        #{item.systemRoot,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, 
-        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, 
-        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=DECIMAL}, 
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
+        #{item.positionName,jdbcType=VARCHAR}, #{item.positionCode,jdbcType=VARCHAR}, #{item.deptId,jdbcType=BIGINT},
+        #{item.sort,jdbcType=INTEGER}, #{item.positionStatus,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR},
+        #{item.systemRoot,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP},
+        #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR},
+        #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=DECIMAL},
         #{item.def5,jdbcType=VARCHAR})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.web.ros.dm.OpeSysPosition">
     <!--@mbg.generated-->
-    insert into operation.ope_sys_position
-    (id, dr, tenant_id, position_name, position_code, dept_id, sort, position_status, 
-      remark, system_root, created_by, created_time, updated_by, updated_time, def1, 
+    insert into ope_sys_position
+    (id, dr, tenant_id, position_name, position_code, dept_id, sort, position_status,
+      remark, system_root, created_by, created_time, updated_by, updated_time, def1,
       def2, def3, def4, def5)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{positionName,jdbcType=VARCHAR}, 
-      #{positionCode,jdbcType=VARCHAR}, #{deptId,jdbcType=BIGINT}, #{sort,jdbcType=INTEGER}, 
-      #{positionStatus,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{systemRoot,jdbcType=VARCHAR}, 
-      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
-      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{positionName,jdbcType=VARCHAR},
+      #{positionCode,jdbcType=VARCHAR}, #{deptId,jdbcType=BIGINT}, #{sort,jdbcType=INTEGER},
+      #{positionStatus,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{systemRoot,jdbcType=VARCHAR},
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
+      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR},
       #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=DECIMAL}, #{def5,jdbcType=VARCHAR})
-    on duplicate key update 
-    id = #{id,jdbcType=BIGINT}, 
-    dr = #{dr,jdbcType=INTEGER}, 
-    tenant_id = #{tenantId,jdbcType=BIGINT}, 
-    position_name = #{positionName,jdbcType=VARCHAR}, 
-    position_code = #{positionCode,jdbcType=VARCHAR}, 
-    dept_id = #{deptId,jdbcType=BIGINT}, 
-    sort = #{sort,jdbcType=INTEGER}, 
-    position_status = #{positionStatus,jdbcType=INTEGER}, 
-    remark = #{remark,jdbcType=VARCHAR}, 
-    system_root = #{systemRoot,jdbcType=VARCHAR}, 
-    created_by = #{createdBy,jdbcType=BIGINT}, 
-    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
-    def1 = #{def1,jdbcType=VARCHAR}, 
-    def2 = #{def2,jdbcType=VARCHAR}, 
-    def3 = #{def3,jdbcType=VARCHAR}, 
-    def4 = #{def4,jdbcType=DECIMAL}, 
+    on duplicate key update
+    id = #{id,jdbcType=BIGINT},
+    dr = #{dr,jdbcType=INTEGER},
+    tenant_id = #{tenantId,jdbcType=BIGINT},
+    position_name = #{positionName,jdbcType=VARCHAR},
+    position_code = #{positionCode,jdbcType=VARCHAR},
+    dept_id = #{deptId,jdbcType=BIGINT},
+    sort = #{sort,jdbcType=INTEGER},
+    position_status = #{positionStatus,jdbcType=INTEGER},
+    remark = #{remark,jdbcType=VARCHAR},
+    system_root = #{systemRoot,jdbcType=VARCHAR},
+    created_by = #{createdBy,jdbcType=BIGINT},
+    created_time = #{createdTime,jdbcType=TIMESTAMP},
+    updated_by = #{updatedBy,jdbcType=BIGINT},
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+    def1 = #{def1,jdbcType=VARCHAR},
+    def2 = #{def2,jdbcType=VARCHAR},
+    def3 = #{def3,jdbcType=VARCHAR},
+    def4 = #{def4,jdbcType=DECIMAL},
     def5 = #{def5,jdbcType=VARCHAR}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.web.ros.dm.OpeSysPosition">
     <!--@mbg.generated-->
-    insert into operation.ope_sys_position
+    insert into ope_sys_position
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -303,7 +303,7 @@
         #{def5,jdbcType=VARCHAR},
       </if>
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},

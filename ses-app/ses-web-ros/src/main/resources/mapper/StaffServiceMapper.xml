@@ -174,4 +174,8 @@
             and full_name like concat('%', #{enter.keyword}, '%')
         </if>
     </select>
+
+    <delete id="deleUserRoleByStaffId">
+        delete from ope_sys_user_role where user_id = #{staffId}
+    </delete>
 </mapper>

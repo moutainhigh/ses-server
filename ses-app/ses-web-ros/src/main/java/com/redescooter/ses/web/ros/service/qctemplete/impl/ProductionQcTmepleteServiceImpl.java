@@ -29,12 +29,12 @@ import com.redescooter.ses.web.ros.vo.bom.QcTemplateDetailResult;
 import com.redescooter.ses.web.ros.vo.bom.SaveQcTemplateEnter;
 import com.redescooter.ses.web.ros.vo.qctemplete.QcTempleteDetailEnter;
 import com.redescooter.ses.web.ros.vo.qctemplete.SaveByCopyIdEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,7 +80,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveQcTemplateEnter enter) {
         // 数据解析集合
@@ -188,7 +188,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveByCopyId(SaveByCopyIdEnter enter) {
         List<OpeProductionQualityTempate> opeProductionQualityTempateList =

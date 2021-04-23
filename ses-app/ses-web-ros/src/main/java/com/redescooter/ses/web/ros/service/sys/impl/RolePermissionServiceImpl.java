@@ -11,11 +11,11 @@ import com.redescooter.ses.web.ros.service.base.OpeSysRoleDeptService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleMenuService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRoleSalesCidyService;
 import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     private OpeSysRoleDeptService roleDeptService;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void insertRoleSalesPermissions(long roleId, Set<Long> cidyId) {
 
         if (CollUtil.isNotEmpty(cidyId)) {
@@ -54,7 +54,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void deleteRoleSalesPermissions(long roleId, Set<Long> cidyId) {
         UpdateWrapper<OpeSysRoleSalesCidy> delete = new UpdateWrapper<>();
         delete.eq(OpeSysRoleSalesCidy.COL_ROLE_ID, roleId);
@@ -65,14 +65,14 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void insertRoleDeptPermissions(long roleId, long deptId) {
         OpeSysRoleDept save = new OpeSysRoleDept(roleId, deptId);
         roleDeptService.save(save);
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void deleteRoleDeptPermissions(long roleId, long deptId) {
 
         UpdateWrapper<OpeSysRoleDept> delete = new UpdateWrapper<>();
@@ -83,7 +83,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void insertRoleMenuPermissions(long roleId, Set<Long> menuId) {
         if (CollUtil.isNotEmpty(menuId)) {
             List<OpeSysRoleMenu> saveList = new ArrayList<>();
@@ -95,7 +95,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void deleteRoleMenuPermissions(long roleId, Set<Long> menuId) {
         UpdateWrapper<OpeSysRoleMenu> delete = new UpdateWrapper<>();
         delete.eq(OpeSysRoleMenu.COL_ROLE_ID, roleId);
@@ -106,7 +106,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void deleteRoleMeunByRoleId(IdEnter enter) {
         LambdaQueryWrapper<OpeSysRoleMenu> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeSysRoleMenu::getRoleId, enter.getId());
@@ -114,7 +114,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void deleteRoleDeptByRoleId(IdEnter enter) {
         LambdaQueryWrapper<OpeSysRoleDept> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeSysRoleDept::getRoleId, enter.getId());
@@ -127,7 +127,7 @@ public class RolePermissionServiceImpl implements RolePermissionService {
      * @param enter
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void deleteRoleSalesPermissionsByRoleId(IdEnter enter) {
         LambdaQueryWrapper<OpeSysRoleSalesCidy> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeSysRoleSalesCidy::getRoleId, enter.getId());

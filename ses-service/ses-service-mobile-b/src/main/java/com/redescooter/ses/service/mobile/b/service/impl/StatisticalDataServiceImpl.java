@@ -31,21 +31,15 @@ import com.redescooter.ses.service.mobile.b.dm.base.CorScooterRideStatDetail;
 import com.redescooter.ses.service.mobile.b.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.date.DateUtil;
+import io.seata.spring.annotation.GlobalTransactional;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @ClassName:StatisticalDataServiceImpl
@@ -54,6 +48,7 @@ import java.util.Objects;
  * @Version：1.3
  * @create: 2019/12/30 17:01
  */
+@Slf4j
 @DubboService
 public class StatisticalDataServiceImpl implements StatisticalDataService {
 
@@ -90,7 +85,7 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void saveDriverRideStat(List<SaveDeliveryStatEnter> enter) {
 
@@ -167,7 +162,7 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void saveScooterRideStat(List<SaveDeliveryStatEnter> enter) {
         List<CorScooterRideStatDetail> saveCorScooterRideStatDetailList = new ArrayList<>();
@@ -258,7 +253,10 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
         List<String> dayList = new LinkedList();
         // 获取指定日期格式向前N天时间集合
 //            dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
-        dayList = DateUtil.getBetweenDates(enter.getStartDateTime(), enter.getEndDateTime());
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(enter.getEndDateTime());
+        calendar.add(calendar.DATE,1); //把日期往后增加一天,整数  往后推,负数往前移动
+        dayList = DateUtil.getBetweenDates(enter.getStartDateTime(), calendar.getTime());
         List<MonthlyDeliveryChartResult> list = deliveryServiceMapper.mobileBDeliveryChart(enter);
 
         MonthlyDeliveryChartResult result = null;

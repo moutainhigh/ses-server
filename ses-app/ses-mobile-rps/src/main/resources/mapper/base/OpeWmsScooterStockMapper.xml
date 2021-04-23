@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.mobile.rps.dao.base.OpeWmsScooterStockMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock">
     <!--@mbg.generated-->
-    <!--@Table operation.ope_wms_scooter_stock-->
+    <!--@Tableope_wms_scooter_stock-->
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="stock_type" jdbcType="INTEGER" property="stockType" />
@@ -26,13 +26,13 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, stock_type, group_id, color_id, able_stock_qty, used_stock_qty, wait_in_stock_qty, 
-    wait_out_stock_qty, remark, created_by, created_time, updated_by, updated_time, def1, 
+    id, dr, stock_type, group_id, color_id, able_stock_qty, used_stock_qty, wait_in_stock_qty,
+    wait_out_stock_qty, remark, created_by, created_time, updated_by, updated_time, def1,
     def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update operation.ope_wms_scooter_stock
+    updateope_wms_scooter_stock
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -132,7 +132,7 @@
   </update>
   <update id="updateBatchSelective" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update operation.ope_wms_scooter_stock
+    updateope_wms_scooter_stock
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -268,58 +268,58 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into operation.ope_wms_scooter_stock
-    (id, dr, stock_type, group_id, color_id, able_stock_qty, used_stock_qty, wait_in_stock_qty, 
-      wait_out_stock_qty, remark, created_by, created_time, updated_by, updated_time, 
+    insert into ope_wms_scooter_stock
+    (id, dr, stock_type, group_id, color_id, able_stock_qty, used_stock_qty, wait_in_stock_qty,
+      wait_out_stock_qty, remark, created_by, created_time, updated_by, updated_time,
       def1, def2, def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=INTEGER}, #{item.dr,jdbcType=INTEGER}, #{item.stockType,jdbcType=INTEGER}, 
-        #{item.groupId,jdbcType=BIGINT}, #{item.colorId,jdbcType=BIGINT}, #{item.ableStockQty,jdbcType=INTEGER}, 
-        #{item.usedStockQty,jdbcType=INTEGER}, #{item.waitInStockQty,jdbcType=INTEGER}, 
-        #{item.waitOutStockQty,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
+      (#{item.id,jdbcType=INTEGER}, #{item.dr,jdbcType=INTEGER}, #{item.stockType,jdbcType=INTEGER},
+        #{item.groupId,jdbcType=BIGINT}, #{item.colorId,jdbcType=BIGINT}, #{item.ableStockQty,jdbcType=INTEGER},
+        #{item.usedStockQty,jdbcType=INTEGER}, #{item.waitInStockQty,jdbcType=INTEGER},
+        #{item.waitOutStockQty,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT},
+        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP},
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
         #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DOUBLE})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock">
     <!--@mbg.generated-->
-    insert into operation.ope_wms_scooter_stock
-    (id, dr, stock_type, group_id, color_id, able_stock_qty, used_stock_qty, wait_in_stock_qty, 
-      wait_out_stock_qty, remark, created_by, created_time, updated_by, updated_time, 
+    insert into ope_wms_scooter_stock
+    (id, dr, stock_type, group_id, color_id, able_stock_qty, used_stock_qty, wait_in_stock_qty,
+      wait_out_stock_qty, remark, created_by, created_time, updated_by, updated_time,
       def1, def2, def3, def4, def5)
     values
-    (#{id,jdbcType=INTEGER}, #{dr,jdbcType=INTEGER}, #{stockType,jdbcType=INTEGER}, #{groupId,jdbcType=BIGINT}, 
-      #{colorId,jdbcType=BIGINT}, #{ableStockQty,jdbcType=INTEGER}, #{usedStockQty,jdbcType=INTEGER}, 
-      #{waitInStockQty,jdbcType=INTEGER}, #{waitOutStockQty,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, 
-      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, 
-      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, 
+    (#{id,jdbcType=INTEGER}, #{dr,jdbcType=INTEGER}, #{stockType,jdbcType=INTEGER}, #{groupId,jdbcType=BIGINT},
+      #{colorId,jdbcType=BIGINT}, #{ableStockQty,jdbcType=INTEGER}, #{usedStockQty,jdbcType=INTEGER},
+      #{waitInStockQty,jdbcType=INTEGER}, #{waitOutStockQty,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR},
+      #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT},
+      #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR},
       #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DOUBLE})
-    on duplicate key update 
-    id = #{id,jdbcType=INTEGER}, 
-    dr = #{dr,jdbcType=INTEGER}, 
-    stock_type = #{stockType,jdbcType=INTEGER}, 
-    group_id = #{groupId,jdbcType=BIGINT}, 
-    color_id = #{colorId,jdbcType=BIGINT}, 
-    able_stock_qty = #{ableStockQty,jdbcType=INTEGER}, 
-    used_stock_qty = #{usedStockQty,jdbcType=INTEGER}, 
-    wait_in_stock_qty = #{waitInStockQty,jdbcType=INTEGER}, 
-    wait_out_stock_qty = #{waitOutStockQty,jdbcType=INTEGER}, 
-    remark = #{remark,jdbcType=VARCHAR}, 
-    created_by = #{createdBy,jdbcType=BIGINT}, 
-    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
-    def1 = #{def1,jdbcType=VARCHAR}, 
-    def2 = #{def2,jdbcType=VARCHAR}, 
-    def3 = #{def3,jdbcType=VARCHAR}, 
-    def4 = #{def4,jdbcType=VARCHAR}, 
+    on duplicate key update
+    id = #{id,jdbcType=INTEGER},
+    dr = #{dr,jdbcType=INTEGER},
+    stock_type = #{stockType,jdbcType=INTEGER},
+    group_id = #{groupId,jdbcType=BIGINT},
+    color_id = #{colorId,jdbcType=BIGINT},
+    able_stock_qty = #{ableStockQty,jdbcType=INTEGER},
+    used_stock_qty = #{usedStockQty,jdbcType=INTEGER},
+    wait_in_stock_qty = #{waitInStockQty,jdbcType=INTEGER},
+    wait_out_stock_qty = #{waitOutStockQty,jdbcType=INTEGER},
+    remark = #{remark,jdbcType=VARCHAR},
+    created_by = #{createdBy,jdbcType=BIGINT},
+    created_time = #{createdTime,jdbcType=TIMESTAMP},
+    updated_by = #{updatedBy,jdbcType=BIGINT},
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+    def1 = #{def1,jdbcType=VARCHAR},
+    def2 = #{def2,jdbcType=VARCHAR},
+    def3 = #{def3,jdbcType=VARCHAR},
+    def4 = #{def4,jdbcType=VARCHAR},
     def5 = #{def5,jdbcType=DOUBLE}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock">
     <!--@mbg.generated-->
-    insert into operation.ope_wms_scooter_stock
+    insert into ope_wms_scooter_stock
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -439,7 +439,7 @@
         #{def5,jdbcType=DOUBLE},
       </if>
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=INTEGER},

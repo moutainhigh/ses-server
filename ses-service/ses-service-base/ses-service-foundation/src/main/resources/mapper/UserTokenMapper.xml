@@ -25,7 +25,7 @@
         where a.dr = 0
         and a.USER_ID = #{userId}
         and a.SYSTEM_ID=#{systemId}
-        and a.app_id=#{appId}
+<!--        and a.app_id=#{appId}-->
     </select>
     <select id="checkAPPUser" resultType="com.redescooter.ses.api.foundation.vo.login.AccountsDto">
 
@@ -80,9 +80,9 @@
             and u.ID=#{userId}
         </if>
 
-        <if test="appId != null and appId != ''">
+        <!--<if test="appId != null and appId != ''">
             and u.app_id=#{appId}
-        </if>
+        </if>-->
 
         <if test="systemId != null and systemId != ''">
             and u.SYSTEM_ID=#{systemId}

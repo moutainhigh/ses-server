@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.mobile.rps.dao.base.OpeProductionPartsMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeProductionParts">
     <!--@mbg.generated-->
-    <!--@Table operation.ope_production_parts-->
+    <!--@Tableope_production_parts-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="tenant_id" jdbcType="BIGINT" property="tenantId" />
@@ -48,16 +48,16 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, tenant_id, dept_id, parts_no, parts_type, parts_sec, `disable`, sn_class, 
-    id_calss, parts_is_assembly, parts_is_for_assembly, parts_qty, supplier_id, procurement_cycle, 
-    dwg, qc_flag, remark, announ_user_id, op_announ_user_id, cn_name, en_name, fr_name, 
-    `level`, main_drawing, ecn_number, item, sell_calss, drawing_size, weight, supplier_id_2, 
-    rate_typ, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, 
+    id, dr, tenant_id, dept_id, parts_no, parts_type, parts_sec, `disable`, sn_class,
+    id_calss, parts_is_assembly, parts_is_for_assembly, parts_qty, supplier_id, procurement_cycle,
+    dwg, qc_flag, remark, announ_user_id, op_announ_user_id, cn_name, en_name, fr_name,
+    `level`, main_drawing, ecn_number, item, sell_calss, drawing_size, weight, supplier_id_2,
+    rate_typ, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4,
     def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update operation.ope_production_parts
+    updateope_production_parts
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -267,7 +267,7 @@
   </update>
   <update id="updateBatchSelective" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update operation.ope_production_parts
+    updateope_production_parts
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -557,101 +557,101 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into operation.ope_production_parts
-    (id, dr, tenant_id, dept_id, parts_no, parts_type, parts_sec, `disable`, sn_class, 
-      id_calss, parts_is_assembly, parts_is_for_assembly, parts_qty, supplier_id, procurement_cycle, 
-      dwg, qc_flag, remark, announ_user_id, op_announ_user_id, cn_name, en_name, fr_name, 
-      `level`, main_drawing, ecn_number, item, sell_calss, drawing_size, weight, supplier_id_2, 
-      rate_typ, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+    insert into ope_production_parts
+    (id, dr, tenant_id, dept_id, parts_no, parts_type, parts_sec, `disable`, sn_class,
+      id_calss, parts_is_assembly, parts_is_for_assembly, parts_qty, supplier_id, procurement_cycle,
+      dwg, qc_flag, remark, announ_user_id, op_announ_user_id, cn_name, en_name, fr_name,
+      `level`, main_drawing, ecn_number, item, sell_calss, drawing_size, weight, supplier_id_2,
+      rate_typ, created_by, created_time, updated_by, updated_time, def1, def2, def3,
       def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT}, 
-        #{item.deptId,jdbcType=BIGINT}, #{item.partsNo,jdbcType=VARCHAR}, #{item.partsType,jdbcType=INTEGER}, 
-        #{item.partsSec,jdbcType=BIGINT}, #{item.disable,jdbcType=INTEGER}, #{item.snClass,jdbcType=INTEGER}, 
-        #{item.idCalss,jdbcType=INTEGER}, #{item.partsIsAssembly,jdbcType=INTEGER}, #{item.partsIsForAssembly,jdbcType=INTEGER}, 
-        #{item.partsQty,jdbcType=INTEGER}, #{item.supplierId,jdbcType=INTEGER}, #{item.procurementCycle,jdbcType=INTEGER}, 
-        #{item.dwg,jdbcType=VARCHAR}, #{item.qcFlag,jdbcType=BOOLEAN}, #{item.remark,jdbcType=VARCHAR}, 
-        #{item.announUserId,jdbcType=BIGINT}, #{item.opAnnounUserId,jdbcType=BIGINT}, #{item.cnName,jdbcType=VARCHAR}, 
-        #{item.enName,jdbcType=VARCHAR}, #{item.frName,jdbcType=VARCHAR}, #{item.level,jdbcType=INTEGER}, 
-        #{item.mainDrawing,jdbcType=VARCHAR}, #{item.ecnNumber,jdbcType=VARCHAR}, #{item.item,jdbcType=VARCHAR}, 
-        #{item.sellCalss,jdbcType=VARCHAR}, #{item.drawingSize,jdbcType=VARCHAR}, #{item.weight,jdbcType=DOUBLE}, 
-        #{item.supplierId2,jdbcType=BIGINT}, #{item.rateTyp,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT}, 
-        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP}, 
-        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR}, 
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.tenantId,jdbcType=BIGINT},
+        #{item.deptId,jdbcType=BIGINT}, #{item.partsNo,jdbcType=VARCHAR}, #{item.partsType,jdbcType=INTEGER},
+        #{item.partsSec,jdbcType=BIGINT}, #{item.disable,jdbcType=INTEGER}, #{item.snClass,jdbcType=INTEGER},
+        #{item.idCalss,jdbcType=INTEGER}, #{item.partsIsAssembly,jdbcType=INTEGER}, #{item.partsIsForAssembly,jdbcType=INTEGER},
+        #{item.partsQty,jdbcType=INTEGER}, #{item.supplierId,jdbcType=INTEGER}, #{item.procurementCycle,jdbcType=INTEGER},
+        #{item.dwg,jdbcType=VARCHAR}, #{item.qcFlag,jdbcType=BOOLEAN}, #{item.remark,jdbcType=VARCHAR},
+        #{item.announUserId,jdbcType=BIGINT}, #{item.opAnnounUserId,jdbcType=BIGINT}, #{item.cnName,jdbcType=VARCHAR},
+        #{item.enName,jdbcType=VARCHAR}, #{item.frName,jdbcType=VARCHAR}, #{item.level,jdbcType=INTEGER},
+        #{item.mainDrawing,jdbcType=VARCHAR}, #{item.ecnNumber,jdbcType=VARCHAR}, #{item.item,jdbcType=VARCHAR},
+        #{item.sellCalss,jdbcType=VARCHAR}, #{item.drawingSize,jdbcType=VARCHAR}, #{item.weight,jdbcType=DOUBLE},
+        #{item.supplierId2,jdbcType=BIGINT}, #{item.rateTyp,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=BIGINT},
+        #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, #{item.updatedTime,jdbcType=TIMESTAMP},
+        #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, #{item.def3,jdbcType=VARCHAR},
         #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL})
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeProductionParts">
     <!--@mbg.generated-->
-    insert into operation.ope_production_parts
-    (id, dr, tenant_id, dept_id, parts_no, parts_type, parts_sec, `disable`, sn_class, 
-      id_calss, parts_is_assembly, parts_is_for_assembly, parts_qty, supplier_id, procurement_cycle, 
-      dwg, qc_flag, remark, announ_user_id, op_announ_user_id, cn_name, en_name, fr_name, 
-      `level`, main_drawing, ecn_number, item, sell_calss, drawing_size, weight, supplier_id_2, 
-      rate_typ, created_by, created_time, updated_by, updated_time, def1, def2, def3, 
+    insert into ope_production_parts
+    (id, dr, tenant_id, dept_id, parts_no, parts_type, parts_sec, `disable`, sn_class,
+      id_calss, parts_is_assembly, parts_is_for_assembly, parts_qty, supplier_id, procurement_cycle,
+      dwg, qc_flag, remark, announ_user_id, op_announ_user_id, cn_name, en_name, fr_name,
+      `level`, main_drawing, ecn_number, item, sell_calss, drawing_size, weight, supplier_id_2,
+      rate_typ, created_by, created_time, updated_by, updated_time, def1, def2, def3,
       def4, def5)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{deptId,jdbcType=BIGINT}, 
-      #{partsNo,jdbcType=VARCHAR}, #{partsType,jdbcType=INTEGER}, #{partsSec,jdbcType=BIGINT}, 
-      #{disable,jdbcType=INTEGER}, #{snClass,jdbcType=INTEGER}, #{idCalss,jdbcType=INTEGER}, 
-      #{partsIsAssembly,jdbcType=INTEGER}, #{partsIsForAssembly,jdbcType=INTEGER}, #{partsQty,jdbcType=INTEGER}, 
-      #{supplierId,jdbcType=INTEGER}, #{procurementCycle,jdbcType=INTEGER}, #{dwg,jdbcType=VARCHAR}, 
-      #{qcFlag,jdbcType=BOOLEAN}, #{remark,jdbcType=VARCHAR}, #{announUserId,jdbcType=BIGINT}, 
-      #{opAnnounUserId,jdbcType=BIGINT}, #{cnName,jdbcType=VARCHAR}, #{enName,jdbcType=VARCHAR}, 
-      #{frName,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, #{mainDrawing,jdbcType=VARCHAR}, 
-      #{ecnNumber,jdbcType=VARCHAR}, #{item,jdbcType=VARCHAR}, #{sellCalss,jdbcType=VARCHAR}, 
-      #{drawingSize,jdbcType=VARCHAR}, #{weight,jdbcType=DOUBLE}, #{supplierId2,jdbcType=BIGINT}, 
-      #{rateTyp,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP}, 
-      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{tenantId,jdbcType=BIGINT}, #{deptId,jdbcType=BIGINT},
+      #{partsNo,jdbcType=VARCHAR}, #{partsType,jdbcType=INTEGER}, #{partsSec,jdbcType=BIGINT},
+      #{disable,jdbcType=INTEGER}, #{snClass,jdbcType=INTEGER}, #{idCalss,jdbcType=INTEGER},
+      #{partsIsAssembly,jdbcType=INTEGER}, #{partsIsForAssembly,jdbcType=INTEGER}, #{partsQty,jdbcType=INTEGER},
+      #{supplierId,jdbcType=INTEGER}, #{procurementCycle,jdbcType=INTEGER}, #{dwg,jdbcType=VARCHAR},
+      #{qcFlag,jdbcType=BOOLEAN}, #{remark,jdbcType=VARCHAR}, #{announUserId,jdbcType=BIGINT},
+      #{opAnnounUserId,jdbcType=BIGINT}, #{cnName,jdbcType=VARCHAR}, #{enName,jdbcType=VARCHAR},
+      #{frName,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, #{mainDrawing,jdbcType=VARCHAR},
+      #{ecnNumber,jdbcType=VARCHAR}, #{item,jdbcType=VARCHAR}, #{sellCalss,jdbcType=VARCHAR},
+      #{drawingSize,jdbcType=VARCHAR}, #{weight,jdbcType=DOUBLE}, #{supplierId2,jdbcType=BIGINT},
+      #{rateTyp,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, #{createdTime,jdbcType=TIMESTAMP},
+      #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, #{def1,jdbcType=VARCHAR},
       #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, #{def5,jdbcType=DECIMAL}
       )
-    on duplicate key update 
-    id = #{id,jdbcType=BIGINT}, 
-    dr = #{dr,jdbcType=INTEGER}, 
-    tenant_id = #{tenantId,jdbcType=BIGINT}, 
-    dept_id = #{deptId,jdbcType=BIGINT}, 
-    parts_no = #{partsNo,jdbcType=VARCHAR}, 
-    parts_type = #{partsType,jdbcType=INTEGER}, 
-    parts_sec = #{partsSec,jdbcType=BIGINT}, 
-    `disable` = #{disable,jdbcType=INTEGER}, 
-    sn_class = #{snClass,jdbcType=INTEGER}, 
-    id_calss = #{idCalss,jdbcType=INTEGER}, 
-    parts_is_assembly = #{partsIsAssembly,jdbcType=INTEGER}, 
-    parts_is_for_assembly = #{partsIsForAssembly,jdbcType=INTEGER}, 
-    parts_qty = #{partsQty,jdbcType=INTEGER}, 
-    supplier_id = #{supplierId,jdbcType=INTEGER}, 
-    procurement_cycle = #{procurementCycle,jdbcType=INTEGER}, 
-    dwg = #{dwg,jdbcType=VARCHAR}, 
-    qc_flag = #{qcFlag,jdbcType=BOOLEAN}, 
-    remark = #{remark,jdbcType=VARCHAR}, 
-    announ_user_id = #{announUserId,jdbcType=BIGINT}, 
-    op_announ_user_id = #{opAnnounUserId,jdbcType=BIGINT}, 
-    cn_name = #{cnName,jdbcType=VARCHAR}, 
-    en_name = #{enName,jdbcType=VARCHAR}, 
-    fr_name = #{frName,jdbcType=VARCHAR}, 
-    `level` = #{level,jdbcType=INTEGER}, 
-    main_drawing = #{mainDrawing,jdbcType=VARCHAR}, 
-    ecn_number = #{ecnNumber,jdbcType=VARCHAR}, 
-    item = #{item,jdbcType=VARCHAR}, 
-    sell_calss = #{sellCalss,jdbcType=VARCHAR}, 
-    drawing_size = #{drawingSize,jdbcType=VARCHAR}, 
-    weight = #{weight,jdbcType=DOUBLE}, 
-    supplier_id_2 = #{supplierId2,jdbcType=BIGINT}, 
-    rate_typ = #{rateTyp,jdbcType=VARCHAR}, 
-    created_by = #{createdBy,jdbcType=BIGINT}, 
-    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
-    def1 = #{def1,jdbcType=VARCHAR}, 
-    def2 = #{def2,jdbcType=VARCHAR}, 
-    def3 = #{def3,jdbcType=VARCHAR}, 
-    def4 = #{def4,jdbcType=VARCHAR}, 
+    on duplicate key update
+    id = #{id,jdbcType=BIGINT},
+    dr = #{dr,jdbcType=INTEGER},
+    tenant_id = #{tenantId,jdbcType=BIGINT},
+    dept_id = #{deptId,jdbcType=BIGINT},
+    parts_no = #{partsNo,jdbcType=VARCHAR},
+    parts_type = #{partsType,jdbcType=INTEGER},
+    parts_sec = #{partsSec,jdbcType=BIGINT},
+    `disable` = #{disable,jdbcType=INTEGER},
+    sn_class = #{snClass,jdbcType=INTEGER},
+    id_calss = #{idCalss,jdbcType=INTEGER},
+    parts_is_assembly = #{partsIsAssembly,jdbcType=INTEGER},
+    parts_is_for_assembly = #{partsIsForAssembly,jdbcType=INTEGER},
+    parts_qty = #{partsQty,jdbcType=INTEGER},
+    supplier_id = #{supplierId,jdbcType=INTEGER},
+    procurement_cycle = #{procurementCycle,jdbcType=INTEGER},
+    dwg = #{dwg,jdbcType=VARCHAR},
+    qc_flag = #{qcFlag,jdbcType=BOOLEAN},
+    remark = #{remark,jdbcType=VARCHAR},
+    announ_user_id = #{announUserId,jdbcType=BIGINT},
+    op_announ_user_id = #{opAnnounUserId,jdbcType=BIGINT},
+    cn_name = #{cnName,jdbcType=VARCHAR},
+    en_name = #{enName,jdbcType=VARCHAR},
+    fr_name = #{frName,jdbcType=VARCHAR},
+    `level` = #{level,jdbcType=INTEGER},
+    main_drawing = #{mainDrawing,jdbcType=VARCHAR},
+    ecn_number = #{ecnNumber,jdbcType=VARCHAR},
+    item = #{item,jdbcType=VARCHAR},
+    sell_calss = #{sellCalss,jdbcType=VARCHAR},
+    drawing_size = #{drawingSize,jdbcType=VARCHAR},
+    weight = #{weight,jdbcType=DOUBLE},
+    supplier_id_2 = #{supplierId2,jdbcType=BIGINT},
+    rate_typ = #{rateTyp,jdbcType=VARCHAR},
+    created_by = #{createdBy,jdbcType=BIGINT},
+    created_time = #{createdTime,jdbcType=TIMESTAMP},
+    updated_by = #{updatedBy,jdbcType=BIGINT},
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+    def1 = #{def1,jdbcType=VARCHAR},
+    def2 = #{def2,jdbcType=VARCHAR},
+    def3 = #{def3,jdbcType=VARCHAR},
+    def4 = #{def4,jdbcType=VARCHAR},
     def5 = #{def5,jdbcType=DECIMAL}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeProductionParts">
     <!--@mbg.generated-->
-    insert into operation.ope_production_parts
+    insert into ope_production_parts
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -903,7 +903,7 @@
         #{def5,jdbcType=DECIMAL},
       </if>
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},

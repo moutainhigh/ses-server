@@ -11,11 +11,11 @@ import com.redescooter.ses.mobile.rps.service.base.OpeAllocateTraceService;
 import com.redescooter.ses.mobile.rps.service.base.OpeAssembiyOrderTraceService;
 import com.redescooter.ses.mobile.rps.service.base.OpePurchasTraceService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -46,7 +46,7 @@ public class ReceiptTraceServiceImpl implements ReceiptTraceService {
      *
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveAllocateNode(SaveNodeEnter enter) {
         opeAllocateTraceService.save(OpeAllocateTrace.builder()
@@ -73,7 +73,7 @@ public class ReceiptTraceServiceImpl implements ReceiptTraceService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveAssemblyNode(SaveNodeEnter enter) {
         opeAssembiyOrderTraceService.save(OpeAssembiyOrderTrace.builder()
@@ -99,7 +99,7 @@ public class ReceiptTraceServiceImpl implements ReceiptTraceService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult savePurchasingNode(SaveNodeEnter enter) {
         opePurchasTraceService.save(OpePurchasTrace.builder()

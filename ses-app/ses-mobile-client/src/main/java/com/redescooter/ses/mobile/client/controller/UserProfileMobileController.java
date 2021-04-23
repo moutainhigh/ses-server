@@ -13,12 +13,20 @@ import com.redescooter.ses.api.mobile.b.service.UserProfileMobileService;
 import com.redescooter.ses.api.mobile.b.vo.SaveUserProfileEnter;
 import com.redescooter.ses.api.mobile.b.vo.UserProfileResult;
 import com.redescooter.ses.mobile.client.config.UserComponent;
+import com.redescooter.ses.mobile.client.exception.ExceptionCodeEnums;
+import com.redescooter.ses.mobile.client.exception.SesMobileClientException;
+import com.redescooter.ses.tool.utils.ValidatorUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -72,6 +80,14 @@ public class UserProfileMobileController {
     @ApiOperation(value = "个人信息修改")
     @RequestMapping(value = "/updateUserProfile")
     public Response<GeneralResult> updateUserProfile(@ModelAttribute SaveUserProfileEnter enter) {
+        if (StringUtils.isNotBlank(enter.getTelNumber1())) {
+            // 电话号只能输入数字
+            boolean flag = ValidatorUtil.isNumber(enter.getTelNumber1());
+            if (!flag) {
+                throw new SesMobileClientException(ExceptionCodeEnums.PHONE_IS_WRONG.getCode(), ExceptionCodeEnums.PHONE_IS_WRONG.getMessage());
+            }
+        }
+
         Integer userServiceType = userComponent.getUserServiceTypeById(enter);
         if (UserServiceTypeEnum.B.getType().equals(userServiceType)) {
             log.info("用户类型为ToB");

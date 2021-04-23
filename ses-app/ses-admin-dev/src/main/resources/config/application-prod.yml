@@ -4,11 +4,11 @@ log:
     path: ${log.path}@profile-active@
     max-size: 128MB
     max-history: 180
-dubbo:                                                                                                                  ##DUBBO配置
-  registry:                                                                                                             #注册中心
-    address: zookeeper://192.168.2.200:42181
+dubbo:
+  registry:
+    address: zookeeper://10.1.1.142:2181?backup=10.1.1.142:2182,10.1.1.142:2183
   metadata-report:
-    address: zookeeper://192.168.2.200:42181
+    address: zookeeper://10.1.1.142:2181?backup=10.1.1.142:2182,10.1.1.142:2183
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
   servlet:
@@ -16,10 +16,10 @@ spring:                                                                         
       max-request-size: 1000MB
       max-file-size: 20MB
       enabled: true
-  datasource:                                                                                                           #数据库连接
-    url: jdbc:mysql://192.168.2.200:3306/admin-dev?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
-    username: root
-    password: 1qaz2wsx
+  datasource:
+    url: jdbc:mysql://10.1.2.53:2021/admin-dev?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    username: rede
+    password: rede1qaz2wsx
     druid:
       initial-size: 8
       min-idle: 1
@@ -34,12 +34,12 @@ spring:                                                                         
   redis:
     cluster:
       nodes:
-        - 192.168.2.200:7000
-        - 192.168.2.200:7001
-        - 192.168.2.200:7002
-        - 192.168.2.200:7003
-        - 192.168.2.200:7004
-        - 192.168.2.200:7005
+        - 10.1.2.53:7000
+        - 10.1.2.53:7001
+        - 10.1.2.53:7002
+        - 10.1.2.53:7003
+        - 10.1.2.53:7004
+        - 10.1.2.53:7005
   #rabbitmq配置
   rabbitmq:
     host: 127.0.0.1

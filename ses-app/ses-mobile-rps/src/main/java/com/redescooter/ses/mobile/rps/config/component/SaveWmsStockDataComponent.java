@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.rps.config.component;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.InWhTypeEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
@@ -28,13 +29,15 @@ import com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock;
 import com.redescooter.ses.mobile.rps.dm.OpeWmsStockRecord;
 import com.redescooter.ses.mobile.rps.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
+import com.redescooter.ses.mobile.rps.service.base.OpeInWhouseOrderSerialBindService;
 import com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -72,6 +75,9 @@ public class SaveWmsStockDataComponent {
     @Resource
     private WmsStockSerialNumberMapper wmsStockSerialNumberMapper;
 
+    @Autowired
+    private OpeInWhouseOrderSerialBindService opeInWhouseOrderSerialBindService;
+
 
     /**
      * 保存车辆成品库信息
@@ -82,7 +88,7 @@ public class SaveWmsStockDataComponent {
      * @param userId 用户id
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void saveWmsScooterStockData(Map<Long, List<InWhOrderProductDTO>> inWhOrderProductMap, List<OpeInWhouseOrderSerialBind> inWhouseOrderSerialBinds,
                                         Map<Long, List<OutWarehouseOrderProductDTO>> outWhOrderProductMap, String type, Long userId) {
         // 公共参数：新增车辆成品库集合、修改车辆成品库集合、出入库记录集合
@@ -132,21 +138,39 @@ public class SaveWmsStockDataComponent {
             /**
              * 保存车辆信息至scooter表, ecu表数据会通过车辆上报保存至数据库
              */
-            int count = scooterService.countByScooter();
+            //int count = scooterService.countByScooter();
             List<SyncScooterDataDTO> scooterDataDTOList = new ArrayList<>();
+            List<OpeInWhouseOrderSerialBind> serialBindList = new ArrayList<>();
             for (OpeInWhouseOrderSerialBind inWhSn : inWhouseOrderSerialBinds) {
-                count += 1;
+                //count += 1;
                 SyncScooterDataDTO syncScooterData = new SyncScooterDataDTO();
                 // 补充车辆生产流水号
-                syncScooterData.setScooterNo(inWhSn.getSerialNum() + count);
+                //syncScooterData.setScooterNo(inWhSn.getSerialNum() + count);
+                syncScooterData.setScooterNo(inWhSn.getSerialNum());
                 syncScooterData.setTabletSn(inWhSn.getTabletSn());
                 // 车辆入库默认型号是E50
                 syncScooterData.setModel(String.valueOf(ScooterModelEnum.SCOOTER_E50.getType()));
                 syncScooterData.setUserId(userId);
                 scooterDataDTOList.add(syncScooterData);
+
+                // 入库之后 将ope_in_whouse_order_serial_bind 的序列号和平板序列号 同步  2021 3 31
+                QueryWrapper<OpeInWhouseOrderSerialBind> qw = new QueryWrapper<>();
+                qw.eq(OpeInWhouseOrderSerialBind.COL_SERIAL_NUM,inWhSn.getSerialNum());
+                qw.last("limit 1");
+                OpeInWhouseOrderSerialBind orderSerialBind = opeInWhouseOrderSerialBindService.getOne(qw);
+                if (orderSerialBind != null) {
+                    //orderSerialBind.setSerialNum(inWhSn.getSerialNum() + count);
+                    orderSerialBind.setSerialNum(inWhSn.getSerialNum());
+                    orderSerialBind.setDefaultSerialNum(inWhSn.getTabletSn());
+                    serialBindList.add(orderSerialBind);
+                }
+                //inWhSn.setSerialNum(inWhSn.getSerialNum() + count);
+                inWhSn.setSerialNum(inWhSn.getSerialNum());
+                inWhSn.setLot(inWhSn.getLot());
+                inWhSn.setBluetoothMacAddress(inWhSn.getBluetoothMacAddress());
             }
             scooterService.syncScooterData(scooterDataDTOList);
-
+            opeInWhouseOrderSerialBindService.updateBatchById(serialBindList);
             /**
              * 保存库存产品序列号信息
              */

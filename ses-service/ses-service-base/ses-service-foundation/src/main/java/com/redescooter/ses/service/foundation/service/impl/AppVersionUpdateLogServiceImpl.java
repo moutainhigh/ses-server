@@ -6,9 +6,9 @@ import com.redescooter.ses.api.foundation.vo.app.AppVersionUpdateLogDetailDTO;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
 import com.redescooter.ses.service.foundation.dao.AppVersionUpdateLogMapper;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -27,7 +27,7 @@ public class AppVersionUpdateLogServiceImpl implements AppVersionUpdateLogServic
     @DubboReference
     private IdAppService idAppService;
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public int batchInsertAppVersionUpdateLog(List<AppVersionUpdateLogDTO> appVersionUpdateLogList) {
         // 设置id、createdTime、updatedTime
@@ -40,7 +40,7 @@ public class AppVersionUpdateLogServiceImpl implements AppVersionUpdateLogServic
         return appVersionUpdateLogMapper.batchInsertAppVersionUpdateLog(appVersionUpdateLogList);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public int batchUpdateAppVersionUpdateLogStatus(List<String> tabletSnList) {
         return appVersionUpdateLogMapper.batchUpdateAppVersionUpdateLogStatus(tabletSnList, new Date());

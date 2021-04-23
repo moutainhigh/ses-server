@@ -42,6 +42,7 @@ import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeListEnter;
 import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeResult;
 import com.redescooter.ses.web.ros.vo.sys.employee.SaveEmployeeEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -49,7 +50,6 @@ import org.apache.commons.lang3.RandomUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -193,7 +193,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param saveEmployeeEnter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveEmployee(SaveEmployeeEnter saveEmployeeEnter) {
 
@@ -357,7 +357,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult trushEmployee(IdEnter enter) {
         // 验证员工是否存在
@@ -495,7 +495,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         mailMultiTaskService.addCreateEmployeeMailTask(enter);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void disAbleUser(List<Long> userIds) {
         if(CollectionUtils.isNotEmpty(userIds)){

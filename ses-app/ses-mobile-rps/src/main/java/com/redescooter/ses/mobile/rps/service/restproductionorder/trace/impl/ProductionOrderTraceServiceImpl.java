@@ -16,12 +16,12 @@ import com.redescooter.ses.mobile.rps.vo.restproductionorder.optrace.ListByBussI
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.optrace.OpTraceResult;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -140,7 +140,7 @@ public class ProductionOrderTraceServiceImpl implements ProductionOrderTraceServ
      * @Return: OpeOpTrace
      * @desc: 保存操作记录
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveOpTraceEnter enter) {
         OpeOpTrace saveOpeOpTrace = new OpeOpTrace();

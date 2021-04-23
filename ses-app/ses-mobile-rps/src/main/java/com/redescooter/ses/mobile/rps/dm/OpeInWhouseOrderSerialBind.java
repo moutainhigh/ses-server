@@ -1,9 +1,6 @@
 package com.redescooter.ses.mobile.rps.dm;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
@@ -17,7 +14,7 @@ import lombok.Data;
  */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeInWhouseOrderSerialBind")
 @Data
-@TableName(value = "operation.ope_in_whouse_order_serial_bind")
+@TableName(value = "ope_in_whouse_order_serial_bind")
 public class OpeInWhouseOrderSerialBind implements Serializable {
     /**
      * 主键
@@ -31,6 +28,7 @@ public class OpeInWhouseOrderSerialBind implements Serializable {
      */
     @TableField(value = "dr")
     @ApiModelProperty(value = "逻辑删除")
+    @TableLogic
     private Integer dr;
 
     /**

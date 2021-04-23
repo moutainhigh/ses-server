@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -13,13 +14,13 @@ import com.redescooter.ses.web.ros.service.deliveryopion.DeliveryOpionService;
 import com.redescooter.ses.web.ros.vo.deliveryopion.DeliveryOptionEditEnter;
 import com.redescooter.ses.web.ros.vo.deliveryopion.DeliveryOptionSaveEnter;
 import com.redescooter.ses.web.ros.vo.deliveryopion.DeliveryOptionSaveResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,7 +42,7 @@ public class DeliveryOpionServiceImpl implements DeliveryOpionService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(DeliveryOptionSaveEnter enter) {
         OpeDeliveryOption saveVO = new OpeDeliveryOption();
@@ -102,14 +103,13 @@ public class DeliveryOpionServiceImpl implements DeliveryOpionService {
      * 编辑取货配置
      *
      * @param enter
-     * @param id
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
-    public GeneralResult edit(DeliveryOptionEditEnter enter, Long id) {
+    public GeneralResult edit(DeliveryOptionEditEnter enter) {
         OpeDeliveryOption editVO = new OpeDeliveryOption();
-        editVO.setId(id);
+        editVO.setId(enter.getId());
         editVO.setOptionNeme(enter.getOptionNeme());
         editVO.setPrice(enter.getPrice());
         editVO.setMemo(enter.getMemo());
@@ -124,16 +124,14 @@ public class DeliveryOpionServiceImpl implements DeliveryOpionService {
      * 获取取货配置详情
      *
      * @param enter
-     * @param id
      * @return
      */
     @Override
-    public DeliveryOptionSaveResult details(GeneralEnter enter, Long id) {
+    public DeliveryOptionSaveResult details(IdEnter enter) {
         DeliveryOptionSaveResult result = new DeliveryOptionSaveResult();
-
         OpeDeliveryOption deliveryOption = deliveryOptionService.getOne(new LambdaQueryWrapper<OpeDeliveryOption>()
                 .eq(OpeDeliveryOption::getDr, Constant.DR_FALSE)
-                .eq(OpeDeliveryOption::getId, id)
+                .eq(OpeDeliveryOption::getId, enter.getId())
                 .last("limit 1"));
 
         if (deliveryOption != null) {
@@ -146,7 +144,6 @@ public class DeliveryOpionServiceImpl implements DeliveryOpionService {
             result.setCreatedTime(deliveryOption.getCreatedTime());
             result.setRequestId(enter.getRequestId());
         }
-
         return result;
     }
 }

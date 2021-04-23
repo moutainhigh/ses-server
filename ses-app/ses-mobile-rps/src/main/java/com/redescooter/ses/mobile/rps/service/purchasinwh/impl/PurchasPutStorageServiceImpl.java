@@ -15,44 +15,21 @@ import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
 import com.redescooter.ses.mobile.rps.dao.purchasinwh.PurchasPutStorageMapper;
-import com.redescooter.ses.mobile.rps.dm.OpeProductionParts;
-import com.redescooter.ses.mobile.rps.dm.OpePurchas;
-import com.redescooter.ses.mobile.rps.dm.OpePurchasB;
-import com.redescooter.ses.mobile.rps.dm.OpePurchasBQcItem;
-import com.redescooter.ses.mobile.rps.dm.OpeStock;
-import com.redescooter.ses.mobile.rps.dm.OpeStockBill;
-import com.redescooter.ses.mobile.rps.dm.OpeStockPurchas;
-import com.redescooter.ses.mobile.rps.dm.OpeWhse;
+import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.exception.SesMobileRpsException;
 import com.redescooter.ses.mobile.rps.service.ReceiptTraceService;
-import com.redescooter.ses.mobile.rps.service.base.OpeProductionPartsService;
-import com.redescooter.ses.mobile.rps.service.base.OpePurchasBQcItemService;
-import com.redescooter.ses.mobile.rps.service.base.OpePurchasBQcService;
-import com.redescooter.ses.mobile.rps.service.base.OpePurchasBService;
-import com.redescooter.ses.mobile.rps.service.base.OpePurchasService;
-import com.redescooter.ses.mobile.rps.service.base.OpeStockBillService;
-import com.redescooter.ses.mobile.rps.service.base.OpeStockPurchasService;
-import com.redescooter.ses.mobile.rps.service.base.OpeStockService;
-import com.redescooter.ses.mobile.rps.service.base.OpeWhseService;
+import com.redescooter.ses.mobile.rps.service.base.*;
 import com.redescooter.ses.mobile.rps.service.purchasinwh.PurchasPutStroageService;
-import com.redescooter.ses.mobile.rps.vo.purchasinwh.HaveIdEnter;
-import com.redescooter.ses.mobile.rps.vo.purchasinwh.HaveIdPartsResult;
-import com.redescooter.ses.mobile.rps.vo.purchasinwh.NotIdDetailsEnter;
-import com.redescooter.ses.mobile.rps.vo.purchasinwh.NotIdEnter;
-import com.redescooter.ses.mobile.rps.vo.purchasinwh.NotIdPartsResult;
-import com.redescooter.ses.mobile.rps.vo.purchasinwh.NotIdPartsSucceedResult;
-import com.redescooter.ses.mobile.rps.vo.purchasinwh.PurchasDetailsEnter;
-import com.redescooter.ses.mobile.rps.vo.purchasinwh.PurchasDetailsListResult;
-import com.redescooter.ses.mobile.rps.vo.purchasinwh.PutStorageResult;
+import com.redescooter.ses.mobile.rps.vo.purchasinwh.*;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -92,9 +69,6 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
     private OpePurchasBQcItemService opePurchasBQcItemService;
 
     @Autowired
-    private OpePurchasBQcService opePurchasBQcService;
-
-    @Autowired
     private ReceiptTraceService receiptTraceService;
 
     /**
@@ -131,7 +105,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
         return PageResult.create(enter, count, purchasDetailsListResults);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public HaveIdPartsResult haveIdPartsResult(HaveIdEnter enter) {
 
@@ -230,7 +204,7 @@ public class PurchasPutStorageServiceImpl implements PurchasPutStroageService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public NotIdPartsSucceedResult notIdInWh(NotIdEnter enter) {
 

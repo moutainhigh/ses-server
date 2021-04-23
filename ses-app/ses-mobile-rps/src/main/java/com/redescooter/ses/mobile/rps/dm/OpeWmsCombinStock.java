@@ -16,7 +16,7 @@ import lombok.Data;
  */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeWmsCombinStock")
 @Data
-@TableName(value = "operation.ope_wms_combin_stock")
+@TableName(value = "ope_wms_combin_stock")
 public class OpeWmsCombinStock implements Serializable {
     /**
      * 主键

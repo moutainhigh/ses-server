@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.vo.customer;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -47,6 +46,9 @@ public class ContactUsListResult extends GeneralResult {
 
   @ApiModelProperty(value = "区域编码")
   private String districtName;
+
+  @ApiModelProperty(value = "城市名称+区域编码")
+  private String fullArea;
 
   @ApiModelProperty(value = "地址")
   private String address;

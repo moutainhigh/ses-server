@@ -12,11 +12,11 @@ import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.source.consumer.dm.HubConUserScooter;
 import com.redescooter.ses.service.hub.source.consumer.service.base.HubConUserScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -68,7 +68,7 @@ public class HubCustomerScooterServiceImpl implements CusotmerScooterService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult saveScooter(List<HubSaveScooterEnter> enter) {
         List<HubConUserScooter> saveHubConUserScooterList = new ArrayList<>();
         enter.forEach(item -> {

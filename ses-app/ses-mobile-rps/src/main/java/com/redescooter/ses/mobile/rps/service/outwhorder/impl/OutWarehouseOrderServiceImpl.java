@@ -15,27 +15,43 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.config.component.SaveWmsStockDataComponent;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
-import com.redescooter.ses.mobile.rps.dao.outwhorder.*;
+import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWarehouseOrderMapper;
+import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWhCombinBMapper;
+import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWhPartsBMapper;
+import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWhScooterBMapper;
+import com.redescooter.ses.mobile.rps.dao.outwhorder.OutWhouseOrderSerialBindMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
 import com.redescooter.ses.mobile.rps.dao.qcorder.QcOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper;
-import com.redescooter.ses.mobile.rps.dm.*;
+import com.redescooter.ses.mobile.rps.dm.OpeOutWhCombinB;
+import com.redescooter.ses.mobile.rps.dm.OpeOutWhPartsB;
+import com.redescooter.ses.mobile.rps.dm.OpeOutWhScooterB;
+import com.redescooter.ses.mobile.rps.dm.OpeOutWhouseOrder;
+import com.redescooter.ses.mobile.rps.dm.OpeOutWhouseOrderSerialBind;
+import com.redescooter.ses.mobile.rps.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.service.combinorder.CombinationOrderService;
 import com.redescooter.ses.mobile.rps.service.outwhorder.OutWarehouseOrderService;
 import com.redescooter.ses.mobile.rps.vo.common.SaveScanCodeResultParamDTO;
-import com.redescooter.ses.mobile.rps.vo.outwhorder.*;
+import com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderDetailDTO;
+import com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO;
+import com.redescooter.ses.mobile.rps.vo.outwhorder.OutWhOrderProductDetailDTO;
+import com.redescooter.ses.mobile.rps.vo.outwhorder.QueryOutWarehouseOrderParamDTO;
+import com.redescooter.ses.mobile.rps.vo.outwhorder.QueryOutWarehouseOrderResultDTO;
+import com.redescooter.ses.mobile.rps.vo.outwhorder.QueryProductDetailParamDTO;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.outbound.CountByOrderTypeParamDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -130,7 +146,7 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         return PageResult.create(paramDTO, count, outWarehouseOrderMapper.getOutWarehouseOrderList(paramDTO));
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult submitQc(IdEnter enter) {
         OpeOutWhouseOrder opeOutWhouseOrder = outWarehouseOrderMapper.getOutWarehouseById(enter.getId());
@@ -208,7 +224,7 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         return productDetail;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveScanCodeResult(SaveScanCodeResultParamDTO paramDTO) {
         // 无码产品不填写扫码数量时抛出异常
@@ -325,7 +341,7 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult outWarehouse(IdEnter enter) {
         OpeOutWhouseOrder opeOutWhouseOrder = outWarehouseOrderMapper.getOutWarehouseById(enter.getId());
 
@@ -335,10 +351,10 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         RpsAssert.isNull(opeOutWhouseOrder, ExceptionCodeEnums.OUT_WH_ORDER_IS_NOT_EXISTS.getCode(),
                 ExceptionCodeEnums.OUT_WH_ORDER_IS_NOT_EXISTS.getMessage());
 
-        if (!OutWhOrderTypeEnum.COMBINATION_OUT_OF_STOCK.getType().equals(opeOutWhouseOrder.getOutType())) {
+        /*if (!OutWhOrderTypeEnum.COMBINATION_OUT_OF_STOCK.getType().equals(opeOutWhouseOrder.getOutType())) {
             RpsAssert.isFalse(NewOutBoundOrderStatusEnums.BE_OUTBOUND.getValue().equals(opeOutWhouseOrder.getOutWhStatus()),
                     ExceptionCodeEnums.NOT_COMPLETED_QC.getCode(), ExceptionCodeEnums.NOT_COMPLETED_QC.getMessage());
-        }
+        }*/
 
         /**
          * 出库操作(仓库库存操作) 1车辆 2组装件 3部件
@@ -414,10 +430,18 @@ public class OutWarehouseOrderServiceImpl implements OutWarehouseOrderService {
         }
 
         /**
-         * 产品出库后将信息从库存产品序列号表中删除
+         * 产品出库后将信息从库存产品序列号表中删除(将库存状态改为不可用)
          */
         if (CollectionUtils.isNotEmpty(serialNumList)){
-            wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(serialNumList);
+            for (String obj : serialNumList) {
+                OpeWmsStockSerialNumber model = new OpeWmsStockSerialNumber();
+                model.setStockStatus(WmsStockStatusEnum.UNAVAILABLE.getStatus());
+                model.setRsn(obj);
+                model.setUpdatedBy(enter.getUserId());
+                model.setUpdatedTime(new Date());
+                wmsStockSerialNumberMapper.updateWmsStockSerialNumberByRSn(model);
+            }
+            //wmsStockSerialNumberMapper.batchDeleteWmsStockSerialNumberBySerialNum(serialNumList);
         }
 
         /**

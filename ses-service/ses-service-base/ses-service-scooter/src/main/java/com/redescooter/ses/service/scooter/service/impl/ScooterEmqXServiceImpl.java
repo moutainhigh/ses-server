@@ -41,13 +41,12 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
 import com.redescooter.ses.tool.utils.map.MapUtil;
 import com.redescooter.ses.tool.utils.thread.ThreadPoolExecutorUtil;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -84,10 +83,9 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
     private MqttClientUtil mqttClientUtil;
     @Resource
     private IdAppService idAppService;
-    @Resource
-    private TransactionTemplate transactionTemplate;
 
     @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult lock(ScooterLockDTO scooterLockDTO, Long scooterId) {
         /**
          * 检查车辆是否存在
@@ -104,54 +102,50 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
         /**
          * 车辆开关锁操作,后台只记录操作日志和发送EMQ X通知平板端进行锁操作
          */
-        transactionTemplate.execute(lockPublishStatus -> {
-            try {
-                String actionType = null;
+        try {
+            String actionType = null;
 
-                if (CommonEvent.START.getValue().equals(scooterLockDTO.getEvent())) {
-                    if (!ScooterLockStatusEnums.LOCK.getValue().equals(scooterResult.getStatus())) {
-                        scooterMapper.updateScooterStatusById(ScooterLockStatusEnums.LOCK.getValue(), scooterId, scooterLockDTO.getUserId());
-                        actionType = ScooterActionTypeEnums.LOCK.getValue();
-                        // set scooter lock type
-                        publishDTO.setType(Integer.valueOf(ScooterLockStatusEnums.LOCK.getValue()));
-                    }
-                } else {
-                    if (!ScooterLockStatusEnums.UNLOCK.getValue().equals(scooterResult.getStatus())) {
-                        scooterMapper.updateScooterStatusById(ScooterLockStatusEnums.UNLOCK.getValue(), scooterId, scooterLockDTO.getUserId());
-                        actionType = ScooterActionTypeEnums.UNLOCK.getValue();
-                        // set scooter lock type
-                        publishDTO.setType(Integer.valueOf(ScooterLockStatusEnums.UNLOCK.getValue()));
-                    }
+            if (CommonEvent.START.getValue().equals(scooterLockDTO.getEvent())) {
+                if (!ScooterLockStatusEnums.LOCK.getValue().equals(scooterResult.getStatus())) {
+                    scooterMapper.updateScooterStatusById(ScooterLockStatusEnums.LOCK.getValue(), scooterId, scooterLockDTO.getUserId());
+                    actionType = ScooterActionTypeEnums.LOCK.getValue();
+                    // set scooter lock type
+                    publishDTO.setType(Integer.valueOf(ScooterLockStatusEnums.LOCK.getValue()));
                 }
+            } else {
+                if (!ScooterLockStatusEnums.UNLOCK.getValue().equals(scooterResult.getStatus())) {
+                    scooterMapper.updateScooterStatusById(ScooterLockStatusEnums.UNLOCK.getValue(), scooterId, scooterLockDTO.getUserId());
+                    actionType = ScooterActionTypeEnums.UNLOCK.getValue();
+                    // set scooter lock type
+                    publishDTO.setType(Integer.valueOf(ScooterLockStatusEnums.UNLOCK.getValue()));
+                }
+            }
+
+            /**
+             * 添加车辆操作记录
+             */
+            if (null != actionType) {
+                ScoScooterActionTrace scooterActionTrace = buildScooterActionTraceData(scooterLockDTO, scooterResult, actionType);
+                scooterActionTraceMapper.insert(scooterActionTrace);
 
                 /**
-                 * 添加车辆操作记录
+                 * 消息通知下发,消息下发时需要根据车辆平板序列号(tabletSn)准确下发到指定车辆平板上面去
+                 * Topic：scooter-[车辆平板序列号]/device-lock
                  */
-                if (null != actionType) {
-                    ScoScooterActionTrace scooterActionTrace = buildScooterActionTraceData(scooterLockDTO, scooterResult, actionType);
-                    scooterActionTraceMapper.insert(scooterActionTrace);
-
-                    /**
-                     * 消息通知下发,消息下发时需要根据车辆平板序列号(tabletSn)准确下发到指定车辆平板上面去
-                     * Topic：scooter-[车辆平板序列号]/device-lock
-                     */
-                    ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
-                        mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_LOCK_TOPIC, scooterResult.getTabletSn()),
-                                JSONObject.toJSONString(publishDTO));
-                    });
-                }
-            } catch (Exception e) {
-                log.error("【车辆锁开关指令下发失败】----{}", ExceptionUtils.getStackTrace(e));
-                lockPublishStatus.setRollbackOnly();
+                ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
+                    mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_LOCK_TOPIC, scooterResult.getTabletSn()),
+                            JSONObject.toJSONString(publishDTO));
+                });
             }
-            return 1;
-        });
+        } catch (Exception e) {
+            log.error("【车辆锁开关指令下发失败】----{}", ExceptionUtils.getStackTrace(e));
+        }
 
         return new GeneralResult(scooterLockDTO.getRequestId());
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult scooterNavigation(ScooterNavigationDTO scooterNavigation, Long scooterId, Integer userServiceType) {
         BaseScooterResult scooterResult = scooterMapper.getScooterInfoById(scooterId);
         if (null == scooterResult) {
@@ -258,7 +252,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)  
     public void updateScooterTablet(ReleaseAppVersionParamDTO paramDTO) {
         // 查询车辆平板版本信息
         QueryAppVersionResultDTO appVersion = appVersionService.getAppVersionById(paramDTO.getId());

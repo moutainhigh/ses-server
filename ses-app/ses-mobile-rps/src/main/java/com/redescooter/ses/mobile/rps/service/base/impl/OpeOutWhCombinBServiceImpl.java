@@ -5,13 +5,10 @@ import com.redescooter.ses.mobile.rps.dao.base.OpeOutWhCombinBMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeOutWhCombinB;
 import com.redescooter.ses.mobile.rps.service.base.OpeOutWhCombinBService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
-
 public class OpeOutWhCombinBServiceImpl extends ServiceImpl<OpeOutWhCombinBMapper, OpeOutWhCombinB> implements OpeOutWhCombinBService {
 
     @Override

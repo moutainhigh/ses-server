@@ -251,4 +251,15 @@
         where dr = 0
         and status!=4
     </select>
+
+
+    <select id="getProductId" resultType="java.lang.Long">
+        select scooter.id
+        from ope_sale_scooter scooter
+        left join ope_specificat_type spe on scooter.specificat_id = spe.id
+        left join ope_color color on scooter.color_id = color.id
+        where color.dr = 0 and scooter.dr = 0 and spe.dr = 0
+        and spe.specificat_name = 'E50' and color.color_value = '#2D2926'
+        limit 1
+    </select>
 </mapper>

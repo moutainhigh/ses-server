@@ -19,7 +19,9 @@ public enum InquirySourceEnums {
     //询价单
     INQUIRY("INQUIRY", "INQUIRY", "1"),
     //预订单
-    ORDER_FORM("ORDER_FORM", "ORDER_FORM", "2");
+    ORDER_FORM("ORDER_FORM", "ORDER_FORM", "2"),
+    // 系统自动创建
+    SYS_FORM("SYS_FORM", "SYS_FORM", "3");
 
     private String code;
 

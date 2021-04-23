@@ -13,23 +13,25 @@ public class OpeSaleScooterServiceImpl extends ServiceImpl<OpeSaleScooterMapper,
 
     @Override
     public int updateBatch(List<OpeSaleScooter> list) {
-        return baseMapper.updateBatch(list);
+        return 0;
     }
 
     @Override
     public int batchInsert(List<OpeSaleScooter> list) {
-        return baseMapper.batchInsert(list);
+        return 0;
     }
 
     @Override
     public int insertOrUpdate(OpeSaleScooter record) {
-        return baseMapper.insertOrUpdate(record);
+        return 0;
     }
 
     @Override
     public int insertOrUpdateSelective(OpeSaleScooter record) {
-        return baseMapper.insertOrUpdateSelective(record);
+        return 0;
     }
 }
+
+
 
 

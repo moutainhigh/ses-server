@@ -9,9 +9,9 @@ import com.redescooter.ses.mobile.rps.service.base.OpeAllocateOrderService;
 import com.redescooter.ses.mobile.rps.service.restproductionorder.allocateorder.AllocateOrderService;
 import com.redescooter.ses.mobile.rps.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.mobile.rps.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @ClassNameAllocateOrderServiceImpl
@@ -30,7 +30,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     private OrderStatusFlowService orderStatusFlowService;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void allocateWaitSign(Long allocateId, Long userId) {
         // 调拨单状态变为待签收
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);

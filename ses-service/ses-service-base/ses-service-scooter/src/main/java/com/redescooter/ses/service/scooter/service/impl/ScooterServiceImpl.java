@@ -3,6 +3,8 @@ package com.redescooter.ses.service.scooter.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
@@ -13,6 +15,7 @@ import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
 import com.redescooter.ses.api.scooter.exception.ScooterException;
 import com.redescooter.ses.api.scooter.service.ScooterService;
+import com.redescooter.ses.api.scooter.vo.ScoScooterResult;
 import com.redescooter.ses.api.scooter.vo.UpdateStatusEnter;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterEcuDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterLockReportedDTO;
@@ -27,6 +30,7 @@ import com.redescooter.ses.service.scooter.service.base.ScoScooterService;
 import com.redescooter.ses.service.scooter.service.base.ScoScooterStatusService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.map.MapUtil;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -34,12 +38,12 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -81,7 +85,7 @@ public class ScooterServiceImpl implements ScooterService {
         return scooterResultList;
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveScooter(List<BaseScooterEnter> enter) {
         //目前只有车辆新建业务
@@ -165,7 +169,7 @@ public class ScooterServiceImpl implements ScooterService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult updateStatus(UpdateStatusEnter enter) {
         ScoScooter scoScooter = scoScooterService.query().eq(ScoScooter.COL_ID, enter.getId()).one();
         if (scoScooter == null) {
@@ -207,7 +211,7 @@ public class ScooterServiceImpl implements ScooterService {
         return scooterServiceMapper.scooterInfoByScooterNo(id,scooterNo);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public int updateScooterStatusByJson(ScooterLockReportedDTO scooterLock) {
         String lockStatus = scooterServiceMapper.getScooterStatusByTabletSn(scooterLock.getTabletSn());
@@ -230,7 +234,7 @@ public class ScooterServiceImpl implements ScooterService {
         return scooterServiceMapper.getScooterInfoById(scooterId);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public int syncScooterData(List<SyncScooterDataDTO> syncScooterDataList) {
         List<ScoScooter> scooterList = new ArrayList<>();
@@ -259,7 +263,7 @@ public class ScooterServiceImpl implements ScooterService {
         return scooterServiceMapper.countByScooter();
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public int syncScooterModel(String tabletSn, Integer scooterModel) {
         return scooterServiceMapper.updateScooterModelByTabletSn(tabletSn, scooterModel, new Date());
@@ -282,7 +286,7 @@ public class ScooterServiceImpl implements ScooterService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void deleteScooterData(String sn) {
         // 先删除车辆、
         QueryWrapper<ScoScooter> sc = new QueryWrapper<>();
@@ -302,6 +306,51 @@ public class ScooterServiceImpl implements ScooterService {
     @Override
     public List<String> getToDayScooterNos() {
         return scooterServiceMapper.getToDayScooterNos();
+    }
+
+    /**
+     * 根据scooterId找到最后一次的经纬度
+     */
+    @Override
+    public Map<String, BigDecimal> getPositionByScooterId(Long scooterId) {
+        Map<String, BigDecimal> result = Maps.newHashMap();
+        LambdaQueryWrapper<ScoScooterStatus> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ScoScooterStatus::getDr, 0);
+        wrapper.eq(ScoScooterStatus::getScooterId, scooterId);
+        wrapper.orderByDesc(ScoScooterStatus::getCreatedTime);
+        wrapper.last("limit 1");
+        ScoScooterStatus model = scoScooterStatusService.getOne(wrapper);
+        if (null != model) {
+            result.put("longitude", model.getLongitule());
+            result.put("latitude", model.getLatitude());
+        }
+        return result;
+    }
+
+    /**
+     * 根据tabletSn查询sco_scooter
+     */
+    @Override
+    public ScoScooterResult getScoScooterByTableSn(String rsn) {
+        ScoScooterResult result = new ScoScooterResult();
+        LambdaQueryWrapper<ScoScooter> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ScoScooter::getDr, Constant.DR_FALSE);
+        wrapper.eq(ScoScooter::getScooterNo, rsn);
+        wrapper.orderByDesc(ScoScooter::getCreatedTime);
+        wrapper.last("limit 1");
+        ScoScooter scooter = scoScooterService.getOne(wrapper);
+        BeanUtils.copyProperties(scooter, result);
+        return result;
+    }
+
+    /**
+     * 修改sco_scooter的scooter_no为整车rsn
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult updateScooterNo(Long id, String licensePlate) {
+        scooterServiceMapper.updateScooterNo(id, licensePlate);
+        return new GeneralResult();
     }
 
 }

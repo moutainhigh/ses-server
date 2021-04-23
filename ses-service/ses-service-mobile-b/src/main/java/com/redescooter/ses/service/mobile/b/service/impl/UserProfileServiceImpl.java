@@ -17,12 +17,12 @@ import com.redescooter.ses.api.mobile.b.vo.SaveUserProfileEnter;
 import com.redescooter.ses.api.mobile.b.vo.UserProfileResult;
 import com.redescooter.ses.service.mobile.b.dao.base.CorUserProfileMapper;
 import com.redescooter.ses.service.mobile.b.dm.base.CorUserProfile;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @ClassName:UserProfileServiceImpl
@@ -89,7 +89,7 @@ public class UserProfileServiceImpl implements UserProfileMobileService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult saveUserProfile(SaveUserProfileEnter enter) {
 
         QueryUserResult queryUserResult = userBaseService.queryUserById(enter);

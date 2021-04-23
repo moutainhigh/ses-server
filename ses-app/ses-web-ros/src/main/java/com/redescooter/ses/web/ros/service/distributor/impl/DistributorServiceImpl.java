@@ -40,6 +40,7 @@ import com.redescooter.ses.web.ros.vo.distributor.result.DistributorCityAndCPSel
 import com.redescooter.ses.web.ros.vo.distributor.result.DistributorDetailResult;
 import com.redescooter.ses.web.ros.vo.distributor.result.DistributorListResult;
 import com.redescooter.ses.web.ros.vo.distributor.result.DistributorSaleProductResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -48,7 +49,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
@@ -210,7 +210,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
      * 启用/停用门店
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public Response<GeneralResult> enableOrDisable(DistributorEnableOrDisableEnter enter) {
         logger.info("启用/停用门店的入参是:[{}]", enter);
         OpeDistributor model = new OpeDistributor();
@@ -218,10 +218,8 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
         model.setStatus(enter.getStatus());
         model.setUpdatedBy(enter.getUserId());
         model.setUpdatedTime(new Date());
-        int i = opeDistributorMapper.updateById(model);
-        if (i > 0) {
-            return new Response<>();
-        }
+        opeDistributorMapper.updateById(model);
+
         // 数据同步到官网的经销商模块
         try {
             OpeDistributor distributor = opeDistributorMapper.selectById(enter.getId());
@@ -234,10 +232,10 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
             parameter.setTel(distributor.getTel());
             parameter.setEmail(distributor.getEmail());
             parameter.setAddress(distributor.getAddress());
-            if (StringUtils.isNotBlank(distributor.getLongitude())){
+            if (StringUtils.isNotBlank(distributor.getLongitude())) {
                 parameter.setLongitude(new BigDecimal(distributor.getLongitude()));
             }
-            if (StringUtils.isNotBlank(distributor.getLatitude())){
+            if (StringUtils.isNotBlank(distributor.getLatitude())) {
                 parameter.setLatitude(new BigDecimal(distributor.getLatitude()));
             }
             parameter.setCp(distributor.getCp());
@@ -245,7 +243,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
             parameter.setArea(distributor.getArea());
             parameter.setContractUrl(distributor.getContractUrl());
             parameter.setRemark(distributor.getNote());
-            if (StringUtils.isNotBlank(distributor.getType())){
+            if (StringUtils.isNotBlank(distributor.getType())) {
                 parameter.setType(Integer.parseInt(distributor.getType()));
             }
             parameter.setCreatedBy(distributor.getCreatedBy());
@@ -253,17 +251,17 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
             parameter.setUpdatedBy(distributor.getUpdatedBy());
             parameter.setUpdatedTime(distributor.getUpdatedTime());
             webDistributorService.saveOrUpdateDistribut(parameter);
-        }catch (Exception e) {
+        } catch (Exception e) {
 
         }
-        throw new SesWebRosException(ExceptionCodeEnums.UPDATE_FAIL.getCode(), ExceptionCodeEnums.UPDATE_FAIL.getMessage());
+        return new Response<>();
     }
 
     /**
      * 新增门店
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)  
     public Response<GeneralResult> add(DistributorAddEnter enter) {
         logger.info("新增门店的入参是:[{}]", enter);
         if (enter.getEmail().indexOf("@") == -1) {
@@ -318,7 +316,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
      * 编辑门店
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)  
     public Response<GeneralResult> update(DistributorUpdateEnter enter) {
         logger.info("编辑门店的入参是:[{}]", enter);
         OpeDistributor model = new OpeDistributor();
@@ -336,7 +334,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
      * 删除门店
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)  
     public Response<GeneralResult> delete(IdEnter enter) {
         logger.info("删除门店的入参是:[{}]", enter);
         OpeDistributor distributor = opeDistributorMapper.selectById(enter.getId());

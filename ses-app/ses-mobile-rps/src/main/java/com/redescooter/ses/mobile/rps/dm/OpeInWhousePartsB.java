@@ -17,7 +17,7 @@ import lombok.Data;
  */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeInWhousePartsB")
 @Data
-@TableName(value = "operation.ope_in_whouse_parts_b")
+@TableName(value = "ope_in_whouse_parts_b")
 public class OpeInWhousePartsB implements Serializable {
     /**
      * 主键id

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -14,13 +15,13 @@ import com.redescooter.ses.web.ros.vo.wthdrawalsite.WthdrawalSiteEditEnter;
 import com.redescooter.ses.web.ros.vo.wthdrawalsite.WthdrawalSiteResult;
 import com.redescooter.ses.web.ros.vo.wthdrawalsite.WthdrawalSiteSaveEnter;
 import com.redescooter.ses.web.ros.vo.wthdrawalsite.isSwitchEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,7 +44,7 @@ public class WthdrawalSiteServerImpl implements WthdrawalSiteServer {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(WthdrawalSiteSaveEnter enter) {
         OpeWithdrawalSite saveVO = new OpeWithdrawalSite();
@@ -88,10 +89,11 @@ public class WthdrawalSiteServerImpl implements WthdrawalSiteServer {
      * @param id
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
-    public GeneralResult edit(WthdrawalSiteEditEnter enter, Long id) {
+    public GeneralResult edit(WthdrawalSiteEditEnter enter) {
         OpeWithdrawalSite editVO = new OpeWithdrawalSite();
+        editVO.setId(enter.getId());
         editVO.setBusinessStatus(enter.getBusinessStatus());
         editVO.setType(enter.getType());
         editVO.setStreetNumber(enter.getStreetNumber());
@@ -115,7 +117,6 @@ public class WthdrawalSiteServerImpl implements WthdrawalSiteServer {
         editVO.setUpdatedBy(enter.getUserId());
         editVO.setUpdatedTime(new Date());
         editVO.setDef1(enter.getDef1());
-
         withdrawalSiteService.updateById(editVO);
         return new GeneralResult(enter.getRequestId());
     }
@@ -128,13 +129,11 @@ public class WthdrawalSiteServerImpl implements WthdrawalSiteServer {
      * @return
      */
     @Override
-    public WthdrawalSiteResult details(GeneralEnter enter, Long id) {
-
+    public WthdrawalSiteResult details(IdEnter enter) {
         WthdrawalSiteResult result = new WthdrawalSiteResult();
-
         OpeWithdrawalSite withdrawalSite = withdrawalSiteService.getOne(new LambdaQueryWrapper<OpeWithdrawalSite>()
                 .eq(OpeWithdrawalSite::getDr, Constant.DR_FALSE)
-                .eq(OpeWithdrawalSite::getId, id)
+                .eq(OpeWithdrawalSite::getId, enter.getId())
                 .last("limit 1"));
 
         if (withdrawalSite != null) {
@@ -173,18 +172,15 @@ public class WthdrawalSiteServerImpl implements WthdrawalSiteServer {
      * 营业开关
      *
      * @param enter
-     * @param id
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
-    public GeneralResult isSwitch(isSwitchEnter enter, Long id) {
-
+    public GeneralResult isSwitch(isSwitchEnter enter) {
         OpeWithdrawalSite isSwitchVO = new OpeWithdrawalSite();
-        isSwitchVO.setId(id);
+        isSwitchVO.setId(enter.getId());
         isSwitchVO.setBusinessStatus(enter.getBusinessStatus());
         withdrawalSiteService.updateById(isSwitchVO);
-
         return new GeneralResult(enter.getRequestId());
     }
 }

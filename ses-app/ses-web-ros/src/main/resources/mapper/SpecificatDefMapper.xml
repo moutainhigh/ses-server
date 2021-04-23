@@ -4,7 +4,7 @@
 
     <!--新增规格自定义项-->
     <insert id="batchInsertSpecificatDef" parameterType="com.redescooter.ses.api.common.vo.specification.SpecificDefDTO">
-        insert into operation.ope_specificat_def(id, specificat_id, def_group_id,def_name, def_value,
+        insert into ope_specificat_def(id, specificat_id, def_group_id,def_name, def_value,
         created_by, created_time, updated_by,updated_time)
         <foreach collection="specificDefList" item="item" open="values" separator=",">
             (#{item.id}, #{item.specificatId}, #{item.specificDefGroupId},#{item.defName}, #{item.defValue}, #{item.createdBy},

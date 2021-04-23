@@ -68,8 +68,8 @@
             <id>prod</id>
             <properties>
                 <profile-active>prod</profile-active>
-                <log.path>/data/java_service/logs/</log.path>
-                <jar.path>/root/java_service/prod</jar.path>
+                <log.path>${project.build.directory}/logs/</log.path>
+                <jar.path>${project.build.directory}</jar.path>
             </properties>
         </profile>
         <profile>

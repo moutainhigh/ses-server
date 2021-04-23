@@ -4,11 +4,6 @@ log:
     path: ${log.path}@profile-active@
     max-size: 128MB
     max-history: 180
-# DUBBO 集群配置
-#dubbo:                                                                                                                  ##DUBBO配置
-#  registry:                                                                                                             #注册中心
-#    address: zookeeper://172.31.8.126:2181?backup=172.31.8.126:2182,172.31.8.126:2183
-## DUBBO 单节点配置
 dubbo:
   registry: #注册中心
     address: zookeeper://172.31.8.126:2181
@@ -172,3 +167,27 @@ spring:                                                                         
 oss:                                                                                                                    #阿里oss上传
   #oss 使用http、https请求方式
   protocol: HTTPS
+
+
+seata:
+  enabled: true
+  enable-auto-data-source-proxy: true
+  tx-service-group: ses-mobile-client-group
+  registry:
+    type: zk
+    zk:
+      server-addr: 172.31.8.126:2181
+      cluster: default
+      connect-timeout: 2000000
+  config:
+    type: zk
+    zk:
+      server-addr: 172.31.8.126:2181
+      connect-timeout: 2000000
+  service:
+    disable-global-transaction: false
+    vgroup-mapping:
+      ses-mobile-client-group: default
+  client:
+    rm:
+      report-success-enable: false

@@ -7,11 +7,11 @@ import com.redescooter.ses.api.common.vo.edorder.BaseExpressOrderTraceEnter;
 import com.redescooter.ses.web.delivery.dm.CorExpressOrderTrace;
 import com.redescooter.ses.web.delivery.service.base.CorExpressOrderTraceService;
 import com.redescooter.ses.web.delivery.service.express.EdOrderTraceService;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class EdOrderTraceServiceImpl implements EdOrderTraceService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void batchSaveExpressOrderTrace(List<BaseExpressOrderTraceEnter> enter) {
         List<CorExpressOrderTrace> corExpressOrderTraceList=new ArrayList<>();
         if (CollectionUtils.isNotEmpty(enter)) {
@@ -57,7 +57,7 @@ public class EdOrderTraceServiceImpl implements EdOrderTraceService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult saveExpressOrderTrace(BaseExpressOrderTraceEnter enter) {
         CorExpressOrderTrace corExpressOrderTrace = new CorExpressOrderTrace();
         BeanUtils.copyProperties(enter, corExpressOrderTrace);

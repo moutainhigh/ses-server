@@ -49,13 +49,13 @@ import com.redescooter.ses.web.ros.vo.sys.role.RoleResult;
 import com.redescooter.ses.web.ros.vo.sys.role.RoleSaveOrEditEnter;
 import com.redescooter.ses.web.ros.vo.tree.MenuTreeResult;
 import com.redescooter.ses.web.ros.vo.tree.SalesAreaTressResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.util.ArrayList;
@@ -121,7 +121,7 @@ public class RoleServiceImpl implements RoleService {
     private JedisCluster jedisCluster;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult save(RoleEnter enter) {
         //employeeListEnter参数值去空格
         RoleEnter roleEnter = SesStringUtils.objStringTrim(enter);
@@ -141,7 +141,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult edit(RoleEnter roleEnter) {
         if (roleEnter.getRoleName().length() < 2 || roleEnter.getRoleName().length() > 20) {
             throw new SesWebRosException(ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getCode(), ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getMessage());
@@ -157,7 +157,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult delete(IdEnter enter) {
 
         //验证该角色下是否有人员，如果有人员，那么选进行解绑人员
@@ -349,7 +349,7 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult roleSave(RoleSaveOrEditEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         if (enter.getSort() != null && enter.getSort() < 0) {
@@ -407,7 +407,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult roleEdit(RoleSaveOrEditEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         if (enter.getRoleName().length() < 2 || enter.getRoleName().length() > 20) {
@@ -516,7 +516,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void disableRole(List<Long> positionIds) {
         QueryWrapper<OpeSysRole> role = new QueryWrapper<>();
@@ -537,7 +537,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult roleMenuEdit(RoleMenuEditEnter enter) {
         // 先把当前角色已经有的菜单权限全部删除
         rolePermissionService.deleteRoleMeunByRoleId(new IdEnter(enter.getRoleId()));
@@ -548,6 +548,20 @@ public class RoleServiceImpl implements RoleService {
             }
             set.add(1008301L);
             rolePermissionService.insertRoleMenuPermissions(enter.getRoleId(), set);
+        }
+
+        // 根据角色id得到此角色的所有用户,如果用户在redis中存在接口权限,就清空
+        LambdaQueryWrapper<OpeSysUserRole> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeSysUserRole::getRoleId, enter.getRoleId());
+        List<OpeSysUserRole> list = sysUserRoleService.list(qw);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (OpeSysUserRole model : list) {
+                String key = JedisConstant.PERMISSION + model.getUserId();
+                Boolean flag = jedisCluster.exists(key);
+                if (flag) {
+                    jedisCluster.del(key);
+                }
+            }
         }
         return new GeneralResult(enter.getRequestId());
     }
@@ -560,7 +574,7 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult roleCityEdit(RoleCityEditEnter enter) {
         // 先删除当前角色原先的销售区域
         rolePermissionService.deleteRoleSalesPermissionsByRoleId(new IdEnter(enter.getRoleId()));
@@ -641,7 +655,7 @@ public class RoleServiceImpl implements RoleService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void deleRoleByPosIds(List<Long> posIds) {
         QueryWrapper<OpeSysRole> qw = new QueryWrapper<>();
         qw.in(OpeSysRole.COL_POSITION_ID, posIds);

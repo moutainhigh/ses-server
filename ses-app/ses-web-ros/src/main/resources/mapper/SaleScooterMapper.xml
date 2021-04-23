@@ -36,7 +36,10 @@
         scooter.color_id,
         color.color_name,
         color.color_value,
-        scooter.sale_stutas
+        scooter.sale_stutas,
+        scooter.min_battery_num,
+        scooter.production_param,
+        scooter.other_param
        from ope_sale_scooter scooter
        left join ope_specificat_type specificattype on scooter.specificat_id = specificattype.id
        left join ope_specificat_group specificatgroup on scooter.group_id = specificatgroup.id

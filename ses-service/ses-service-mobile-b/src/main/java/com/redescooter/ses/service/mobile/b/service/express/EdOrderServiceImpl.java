@@ -53,13 +53,13 @@ import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.co2.CO2MoneyConversionUtil;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.map.MapUtil;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -154,7 +154,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @Return: GeneralResult
      * @desc: 开始订单
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult start(StartEnter enter) {
         // 是否有正在进行的订单
@@ -270,7 +270,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @Return: GeneralResult
      * @desc: 拒绝订单
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult refuse(EdRfuseEnter enter) {
         try {
@@ -434,7 +434,7 @@ public class EdOrderServiceImpl implements EdOrderService {
      * @Return: CompleteResult
      * @desc: 完成订单
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public CompleteResult complete(CompleteEnter enter) {
         //验证订单是否存在

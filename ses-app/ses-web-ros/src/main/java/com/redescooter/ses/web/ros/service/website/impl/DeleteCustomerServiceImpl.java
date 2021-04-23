@@ -16,10 +16,10 @@ import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.website.DeleteService;
 import com.redescooter.ses.web.ros.vo.website.StorageEamilEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class DeleteCustomerServiceImpl implements DeleteService {
      * @param email
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult deleteCustomer(StorageEamilEnter email) {
         OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>()
@@ -106,7 +106,7 @@ public class DeleteCustomerServiceImpl implements DeleteService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult deleteInquiry(StorageEamilEnter enter) {
         OpeCustomerInquiry opeCustomerInquiry =
@@ -120,7 +120,7 @@ public class DeleteCustomerServiceImpl implements DeleteService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     private void deleteOrder(OpeCustomerInquiry inquiry) {
         /**先删除自订单，在删除主订单**/
         List<OpeCustomerInquiryB> list = opeCustomerInquiryBService.list(new LambdaQueryWrapper<OpeCustomerInquiryB>()

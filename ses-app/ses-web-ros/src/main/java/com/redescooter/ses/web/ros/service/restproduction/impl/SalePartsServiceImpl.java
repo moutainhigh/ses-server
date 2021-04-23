@@ -7,6 +7,8 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.hub.service.website.PartsService;
+import com.redescooter.ses.api.hub.vo.website.SyncSalePartsDataEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -24,12 +26,13 @@ import com.redescooter.ses.web.ros.vo.restproduct.PartsNoEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePartsListResult;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePartsSaveOrUpdateEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -60,8 +63,11 @@ public class SalePartsServiceImpl implements SalePartsService {
     @DubboReference
     private IdAppService idAppService;
 
+    @DubboReference
+    private PartsService partsService;
+
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult saveSaleParts(SalePartsSaveOrUpdateEnter enter) {
         // 去空格
         enter = SesStringUtils.objStringTrim(enter);
@@ -94,7 +100,7 @@ public class SalePartsServiceImpl implements SalePartsService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult editSaleParts(SalePartsSaveOrUpdateEnter enter) {
         // 去空格
         enter = SesStringUtils.objStringTrim(enter);
@@ -115,14 +121,20 @@ public class SalePartsServiceImpl implements SalePartsService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult deleteSaleParts(IdEnter enter) {
+        OpeSaleParts parts = opeSalePartsService.getById(enter.getId());
+        if (null == parts) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        }
         opeSalePartsService.removeById(enter.getId());
+        // ros删除配件后,需将官网已同步的配件同样删除
+        syncDeleteData(parts.getProductCode());
         return new GeneralResult(enter.getRequestId());
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult editSalePartsStatus(IdEnter enter) {
         // 编辑这玩意之前有个安全码的校验  并把结果放在Redis中  这里再次验证一下安全码校验是否通过
         String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
@@ -138,7 +150,31 @@ public class SalePartsServiceImpl implements SalePartsService {
         Integer saleStatus = saleParts.getSaleStutas();
         saleParts.setSaleStutas(saleStatus == 0 ? 1 : 0);
         opeSalePartsService.updateById(saleParts);
+
+        // 数据同步到官网的销售配件
+        OpeSaleParts opeSaleParts = opeSalePartsService.getById(enter.getId());
+        syncData(opeSaleParts);
         return new GeneralResult(enter.getRequestId());
+    }
+
+    @Async
+    void syncData(OpeSaleParts saleParts) {
+        SyncSalePartsDataEnter model = new SyncSalePartsDataEnter();
+        model.setStatus(saleParts.getSaleStutas() == 1 ? 1 : 2);
+        model.setPartsType(1);
+        model.setPartsNumber(saleParts.getProductName());
+        model.setEnName(saleParts.getPartsName());
+        model.setEffectiveTime(new Date());
+        model.setRemark(saleParts.getRemark());
+        model.setRevision(0);
+        model.setCreatedBy(0L);
+        model.setCreatedTime(new Date());
+        partsService.syncSalePartsData(model);
+    }
+
+    @Async
+    void syncDeleteData(String productCode) {
+        partsService.syncDeleteData(productCode);
     }
 
     @Override

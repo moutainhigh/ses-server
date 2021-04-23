@@ -17,7 +17,7 @@ import lombok.Data;
  */
 @ApiModel(value = "com-redescooter-ses-mobile-rps-dm-OpeOrderSerialBind")
 @Data
-@TableName(value = "operation.ope_order_serial_bind")
+@TableName(value = "ope_order_serial_bind")
 public class OpeOrderSerialBind implements Serializable {
     /**
      * 主键

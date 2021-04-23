@@ -25,10 +25,10 @@ import com.redescooter.ses.web.ros.service.specificat.ColorService;
 import com.redescooter.ses.web.ros.vo.specificat.ColorDataResult;
 import com.redescooter.ses.web.ros.vo.specificat.ColorListResult;
 import com.redescooter.ses.web.ros.vo.specificat.ColorSaveOrEditEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -62,7 +62,7 @@ public class ColorServiceImpl implements ColorService {
     private OpeProductionScooterBomDraftService opeProductionScooterBomDraftService;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult colorSave(ColorSaveOrEditEnter enter) {
         // 去空格
         SesStringUtils.objStringTrim(enter);
@@ -80,6 +80,18 @@ public class ColorServiceImpl implements ColorService {
         color.setDr(0);
         color.setId(idAppService.getId(SequenceName.OPE_COLOR));
         opeColorService.insertOrUpdate(color);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public GeneralResult colorEdit(ColorSaveOrEditEnter enter) {
+        OpeColor color = opeColorService.getById(enter.getId());
+        if (color == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.COLOR_VALUE_EXIST.getCode(), ExceptionCodeEnums.COLOR_VALUE_EXIST.getMessage());
+        }
+        color.setColorName(enter.getColorName());
+        color.setColorValue(enter.getColorValue());
+        opeColorService.saveOrUpdate(color);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -126,7 +138,7 @@ public class ColorServiceImpl implements ColorService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult colorDelete(IdEnter enter) {
         // todo 后期加校验  判断颜色是否被使用
         // 2020 10 14追加校验 判断颜色是否被使用（销售整车）

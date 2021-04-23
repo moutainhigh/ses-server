@@ -5,13 +5,10 @@ import com.redescooter.ses.mobile.rps.dao.base.OpeInvoiceScooterDetailBMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeInvoiceScooterDetailB;
 import com.redescooter.ses.mobile.rps.service.base.OpeInvoiceScooterDetailBService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
-
 public class OpeInvoiceScooterDetailBServiceImpl extends ServiceImpl<OpeInvoiceScooterDetailBMapper, OpeInvoiceScooterDetailB> implements OpeInvoiceScooterDetailBService {
 
     @Override

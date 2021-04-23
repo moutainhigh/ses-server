@@ -21,6 +21,7 @@ import com.redescooter.ses.service.foundation.dao.base.PlaMessageMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaMessage;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +29,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -114,7 +114,7 @@ public class MessageServiceImpl implements MessageService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult readMessage(ReadMessageEnter enter) {
         // enter 为空全部已读 不为空 指定读取
@@ -159,7 +159,7 @@ public class MessageServiceImpl implements MessageService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)  
     public void save(MessageSaveEnter enter) {
         PlaMessage record = new PlaMessage();
 

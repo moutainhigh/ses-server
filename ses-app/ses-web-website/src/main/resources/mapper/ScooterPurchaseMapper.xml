@@ -21,6 +21,7 @@
             <result column="colour_name" jdbcType="VARCHAR" property="colourName"/>
             <result column="colour_RGB" jdbcType="VARCHAR" property="colourRgb"/>
             <result column="colour_16" jdbcType="VARCHAR" property="colour16"/>
+            <result column="colour_code" jdbcType="VARCHAR" property="colourCode"/>
         </collection>
     </resultMap>
 
@@ -43,12 +44,12 @@
                sc.id as colourId,
                sc.colour_name,
                sc.colour_RGB,
-               sc.colour_16
+               sc.colour_16,
+               sc.colour_code
         from site_product sp
-                     left join site_product_colour spc on sp.id = spc.product_id
-                     left join site_colour sc on spc.colour_id = sc.id and sc.dr = 0
-        where sp.dr = 0
-          and sp.product_model_id = #{id}
+        left join site_product_colour spc on sp.product_model_id = spc.product_id
+        left join site_colour sc on spc.colour_id = sc.id and sc.dr = 0
+        where sp.dr = 0 and sp.product_model_id = #{id}
     </select>
 
     <select id="getPartsList" resultType="com.redescooter.ses.web.website.vo.parts.PartsDetailsResult">
@@ -92,16 +93,27 @@
     </select>
 
     <select id="modelAndPriceList" resultType="com.redescooter.ses.web.website.vo.product.ModelPriceResult">
-        select spm.id                 as modelid,
+        <!--select spm.id                 as modelid,
                spm.product_model_name as productModelName,
                spp.id                 as productPriceId,
                spp.price_type         as priceType,
                spp.price,
                spp.start_price        as startPrice
         from site_product_model spm
-                     left join site_product_price spp on spm.id = spp.product_model_id and spp.dr = 0
-        where spm.dr = 0
-          and spp.price_type = 0
+        left join site_product_price spp on spm.id = spp.product_model_id and spp.dr = 0
+        where spm.dr = 0 and spp.price_type = 0
+        group by modelid, productPriceId-->
+
+        select  spm.id                 as modelid,
+                spm.product_model_name as productModelName,
+                spp.id                 as productPriceId,
+                IFNULL(spp.price_type, 0) as priceType,
+                IFNULL(spp.price, 0) as price,
+                IFNULL(spp.start_price, 0) as startPrice
+        from site_product_model spm
+        left join site_product_price spp on spm.id = spp.product_model_id and spp.dr = 0
+        left join site_product sp on sp.product_model_id = spm.id and sp.dr = 0
+        where spm.dr = 0 and sp.status = 1
         group by modelid, productPriceId
     </select>
 </mapper>

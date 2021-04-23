@@ -1,12 +1,10 @@
 package com.redescooter.ses.web.delivery.service.base;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.redescooter.ses.web.delivery.dm.CorExpressDeliveryDetail;
+
 import java.util.List;
 
-import com.redescooter.ses.web.delivery.dm.CorExpressDeliveryDetail;
-import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.transaction.annotation.Transactional;
-
-@Transactional
 public interface CorExpressDeliveryDetailService extends IService<CorExpressDeliveryDetail> {
 
 

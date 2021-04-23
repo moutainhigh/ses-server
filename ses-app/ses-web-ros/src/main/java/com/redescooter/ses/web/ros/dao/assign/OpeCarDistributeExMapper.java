@@ -42,4 +42,5 @@ public interface OpeCarDistributeExMapper {
      * 根据客户id查询客户信息
      */
     ToBeAssignDetailCustomerInfoResult getCustomerInfo(@Param("customerId") Long customerId);
+
 }

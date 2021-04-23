@@ -3,7 +3,7 @@
 <mapper namespace="com.redescooter.ses.mobile.rps.dao.base.OpeInWhouseCombinBMapper">
   <resultMap id="BaseResultMap" type="com.redescooter.ses.mobile.rps.dm.OpeInWhouseCombinB">
     <!--@mbg.generated-->
-    <!--@Table operation.ope_in_whouse_combin_b-->
+    <!--@Tableope_in_whouse_combin_b-->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="dr" jdbcType="INTEGER" property="dr" />
     <result column="in_wh_id" jdbcType="BIGINT" property="inWhId" />
@@ -28,13 +28,13 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    id, dr, in_wh_id, combin_name, combin_no, production_combin_bom_id, combin_qty, able_in_wh_qty, 
-    in_wh_qty, act_in_wh_qty, unqualified_qty, remark, created_by, created_time, updated_by, 
+    id, dr, in_wh_id, combin_name, combin_no, production_combin_bom_id, combin_qty, able_in_wh_qty,
+    in_wh_qty, act_in_wh_qty, unqualified_qty, remark, created_by, created_time, updated_by,
     updated_time, def1, def2, def3, def4, def5
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update operation.ope_in_whouse_combin_b
+    updateope_in_whouse_combin_b
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -144,7 +144,7 @@
   </update>
   <update id="updateBatchSelective" parameterType="java.util.List">
     <!--@mbg.generated-->
-    update operation.ope_in_whouse_combin_b
+    updateope_in_whouse_combin_b
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -294,62 +294,62 @@
   </update>
   <insert id="batchInsert" parameterType="map">
     <!--@mbg.generated-->
-    insert into operation.ope_in_whouse_combin_b
-    (id, dr, in_wh_id, combin_name, combin_no, production_combin_bom_id, combin_qty, 
-      able_in_wh_qty, in_wh_qty, act_in_wh_qty, unqualified_qty, remark, created_by, 
+    insert into ope_in_whouse_combin_b
+    (id, dr, in_wh_id, combin_name, combin_no, production_combin_bom_id, combin_qty,
+      able_in_wh_qty, in_wh_qty, act_in_wh_qty, unqualified_qty, remark, created_by,
       created_time, updated_by, updated_time, def1, def2, def3, def4, def5)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.inWhId,jdbcType=BIGINT}, 
-        #{item.combinName,jdbcType=VARCHAR}, #{item.combinNo,jdbcType=VARCHAR}, #{item.productionCombinBomId,jdbcType=BIGINT}, 
-        #{item.combinQty,jdbcType=INTEGER}, #{item.ableInWhQty,jdbcType=INTEGER}, #{item.inWhQty,jdbcType=INTEGER}, 
-        #{item.actInWhQty,jdbcType=INTEGER}, #{item.unqualifiedQty,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR}, 
-        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT}, 
-        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR}, 
+      (#{item.id,jdbcType=BIGINT}, #{item.dr,jdbcType=INTEGER}, #{item.inWhId,jdbcType=BIGINT},
+        #{item.combinName,jdbcType=VARCHAR}, #{item.combinNo,jdbcType=VARCHAR}, #{item.productionCombinBomId,jdbcType=BIGINT},
+        #{item.combinQty,jdbcType=INTEGER}, #{item.ableInWhQty,jdbcType=INTEGER}, #{item.inWhQty,jdbcType=INTEGER},
+        #{item.actInWhQty,jdbcType=INTEGER}, #{item.unqualifiedQty,jdbcType=INTEGER}, #{item.remark,jdbcType=VARCHAR},
+        #{item.createdBy,jdbcType=BIGINT}, #{item.createdTime,jdbcType=TIMESTAMP}, #{item.updatedBy,jdbcType=BIGINT},
+        #{item.updatedTime,jdbcType=TIMESTAMP}, #{item.def1,jdbcType=VARCHAR}, #{item.def2,jdbcType=VARCHAR},
         #{item.def3,jdbcType=VARCHAR}, #{item.def4,jdbcType=VARCHAR}, #{item.def5,jdbcType=DECIMAL}
         )
     </foreach>
   </insert>
   <insert id="insertOrUpdate" parameterType="com.redescooter.ses.mobile.rps.dm.OpeInWhouseCombinB">
     <!--@mbg.generated-->
-    insert into operation.ope_in_whouse_combin_b
-    (id, dr, in_wh_id, combin_name, combin_no, production_combin_bom_id, combin_qty, 
-      able_in_wh_qty, in_wh_qty, act_in_wh_qty, unqualified_qty, remark, created_by, 
+    insert into ope_in_whouse_combin_b
+    (id, dr, in_wh_id, combin_name, combin_no, production_combin_bom_id, combin_qty,
+      able_in_wh_qty, in_wh_qty, act_in_wh_qty, unqualified_qty, remark, created_by,
       created_time, updated_by, updated_time, def1, def2, def3, def4, def5)
     values
-    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{inWhId,jdbcType=BIGINT}, #{combinName,jdbcType=VARCHAR}, 
-      #{combinNo,jdbcType=VARCHAR}, #{productionCombinBomId,jdbcType=BIGINT}, #{combinQty,jdbcType=INTEGER}, 
-      #{ableInWhQty,jdbcType=INTEGER}, #{inWhQty,jdbcType=INTEGER}, #{actInWhQty,jdbcType=INTEGER}, 
-      #{unqualifiedQty,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT}, 
-      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP}, 
-      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR}, 
+    (#{id,jdbcType=BIGINT}, #{dr,jdbcType=INTEGER}, #{inWhId,jdbcType=BIGINT}, #{combinName,jdbcType=VARCHAR},
+      #{combinNo,jdbcType=VARCHAR}, #{productionCombinBomId,jdbcType=BIGINT}, #{combinQty,jdbcType=INTEGER},
+      #{ableInWhQty,jdbcType=INTEGER}, #{inWhQty,jdbcType=INTEGER}, #{actInWhQty,jdbcType=INTEGER},
+      #{unqualifiedQty,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{createdBy,jdbcType=BIGINT},
+      #{createdTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=BIGINT}, #{updatedTime,jdbcType=TIMESTAMP},
+      #{def1,jdbcType=VARCHAR}, #{def2,jdbcType=VARCHAR}, #{def3,jdbcType=VARCHAR}, #{def4,jdbcType=VARCHAR},
       #{def5,jdbcType=DECIMAL})
-    on duplicate key update 
-    id = #{id,jdbcType=BIGINT}, 
-    dr = #{dr,jdbcType=INTEGER}, 
-    in_wh_id = #{inWhId,jdbcType=BIGINT}, 
-    combin_name = #{combinName,jdbcType=VARCHAR}, 
-    combin_no = #{combinNo,jdbcType=VARCHAR}, 
-    production_combin_bom_id = #{productionCombinBomId,jdbcType=BIGINT}, 
-    combin_qty = #{combinQty,jdbcType=INTEGER}, 
-    able_in_wh_qty = #{ableInWhQty,jdbcType=INTEGER}, 
-    in_wh_qty = #{inWhQty,jdbcType=INTEGER}, 
-    act_in_wh_qty = #{actInWhQty,jdbcType=INTEGER}, 
-    unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER}, 
-    remark = #{remark,jdbcType=VARCHAR}, 
-    created_by = #{createdBy,jdbcType=BIGINT}, 
-    created_time = #{createdTime,jdbcType=TIMESTAMP}, 
-    updated_by = #{updatedBy,jdbcType=BIGINT}, 
-    updated_time = #{updatedTime,jdbcType=TIMESTAMP}, 
-    def1 = #{def1,jdbcType=VARCHAR}, 
-    def2 = #{def2,jdbcType=VARCHAR}, 
-    def3 = #{def3,jdbcType=VARCHAR}, 
-    def4 = #{def4,jdbcType=VARCHAR}, 
+    on duplicate key update
+    id = #{id,jdbcType=BIGINT},
+    dr = #{dr,jdbcType=INTEGER},
+    in_wh_id = #{inWhId,jdbcType=BIGINT},
+    combin_name = #{combinName,jdbcType=VARCHAR},
+    combin_no = #{combinNo,jdbcType=VARCHAR},
+    production_combin_bom_id = #{productionCombinBomId,jdbcType=BIGINT},
+    combin_qty = #{combinQty,jdbcType=INTEGER},
+    able_in_wh_qty = #{ableInWhQty,jdbcType=INTEGER},
+    in_wh_qty = #{inWhQty,jdbcType=INTEGER},
+    act_in_wh_qty = #{actInWhQty,jdbcType=INTEGER},
+    unqualified_qty = #{unqualifiedQty,jdbcType=INTEGER},
+    remark = #{remark,jdbcType=VARCHAR},
+    created_by = #{createdBy,jdbcType=BIGINT},
+    created_time = #{createdTime,jdbcType=TIMESTAMP},
+    updated_by = #{updatedBy,jdbcType=BIGINT},
+    updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+    def1 = #{def1,jdbcType=VARCHAR},
+    def2 = #{def2,jdbcType=VARCHAR},
+    def3 = #{def3,jdbcType=VARCHAR},
+    def4 = #{def4,jdbcType=VARCHAR},
     def5 = #{def5,jdbcType=DECIMAL}
   </insert>
   <insert id="insertOrUpdateSelective" parameterType="com.redescooter.ses.mobile.rps.dm.OpeInWhouseCombinB">
     <!--@mbg.generated-->
-    insert into operation.ope_in_whouse_combin_b
+    insert into ope_in_whouse_combin_b
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -481,7 +481,7 @@
         #{def5,jdbcType=DECIMAL},
       </if>
     </trim>
-    on duplicate key update 
+    on duplicate key update
     <trim suffixOverrides=",">
       <if test="id != null">
         id = #{id,jdbcType=BIGINT},

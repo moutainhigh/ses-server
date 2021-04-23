@@ -49,6 +49,7 @@ import com.redescooter.ses.web.ros.vo.sys.dept.TypeListEnter;
 import com.redescooter.ses.web.ros.vo.sys.dept.UpdateDeptEnter;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeListResult;
 import com.redescooter.ses.web.ros.vo.tree.DeptTreeReslt;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -56,7 +57,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.JedisCluster;
 
 import java.util.ArrayList;
@@ -114,7 +114,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     @Autowired
     private StaffService staffService;
 
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(SaveDeptEnter enter) {
         //保存集合
@@ -165,7 +165,7 @@ public class SysDeptServiceImpl implements SysDeptService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult addSave(AddDeptEnter enter) {
         //校验上级部门是否被禁用
         if (enter.getPid() != null && enter.getPid() != -1) {
@@ -283,7 +283,7 @@ public class SysDeptServiceImpl implements SysDeptService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult deleteDept(IdEnter enter) {
         List<OpeSysDept> list = sysDeptService.list(new QueryWrapper<OpeSysDept>().eq(OpeSysDept.COL_P_ID, enter.getId()));
         if (CollectionUtils.isNotEmpty(list)) {
@@ -389,7 +389,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult edit(EditDeptEnter enter) {
         List<OpeSysDept> updateDeptList = new ArrayList<>();
         OpeSysDept checkDept = null;
@@ -477,7 +477,7 @@ public class SysDeptServiceImpl implements SysDeptService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult editDept(UpdateDeptEnter enter) {
         //校验上级部门是否被禁用
         if (enter.getPid() != null && enter.getPid() != -1) {
@@ -557,7 +557,7 @@ public class SysDeptServiceImpl implements SysDeptService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult delete(IdEnter enter) {
         //不可删除根基部门（公司）
         List<OpeSysDept> sysDeptList = opeSysDeptService.list();

@@ -37,6 +37,7 @@ import com.redescooter.ses.web.ros.vo.customer.ContactUsListEnter;
 import com.redescooter.ses.web.ros.vo.customer.ContactUsListResult;
 import com.redescooter.ses.web.ros.vo.customer.ContactUsMessageEnter;
 import com.redescooter.ses.web.ros.vo.website.SaveAboutUsEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -47,7 +48,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -105,7 +105,6 @@ public class ContactUsServiceImpl implements ContactUsService {
 
     @Override
     public PageResult<ContactUsListResult> list(ContactUsListEnter enter) {
-        ;
         if (enter.getKeyWord() != null && enter.getKeyWord().length() > 50) {
             return PageResult.createZeroRowResult(enter);
         }
@@ -176,7 +175,7 @@ public class ContactUsServiceImpl implements ContactUsService {
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void websiteContactUs(SaveAboutUsEnter enter) {
         // 先看这个邮箱是否已存在
         QueryWrapper<OpeContactUs> qw = new QueryWrapper<>();

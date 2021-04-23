@@ -1,11 +1,10 @@
 package com.redescooter.ses.web.ros.service.base;
 
-import java.util.List;
-import com.redescooter.ses.web.ros.dm.OpeSysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.transaction.annotation.Transactional;
+import com.redescooter.ses.web.ros.dm.OpeSysUser;
 
-@Transactional
+import java.util.List;
+
 public interface OpeSysUserService extends IService<OpeSysUser>{
 
 
@@ -18,5 +17,7 @@ public interface OpeSysUserService extends IService<OpeSysUser>{
     int insertOrUpdateSelective(OpeSysUser record);
 
     List<String> findPerms(Long userId);
+
+    List<String> findAllPerms();
 
 }

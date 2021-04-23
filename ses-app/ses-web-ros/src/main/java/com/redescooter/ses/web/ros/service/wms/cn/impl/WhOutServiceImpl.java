@@ -66,6 +66,7 @@ import com.redescooter.ses.web.ros.vo.wms.cn.WhOutProductListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.WhOutProductListResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.WhOutSaveEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.WhOutWhResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -73,7 +74,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -221,7 +221,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult cancel(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
@@ -253,7 +253,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult start(StartWhOutOrderEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
@@ -298,7 +298,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult prepareMaterial(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
@@ -335,7 +335,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult outwh(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
         if (opeOutwhOrder == null) {
@@ -396,7 +396,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult inWh(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
@@ -451,7 +451,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult save(WhOutSaveEnter enter) {
         List<SavePartProductEnter> savePartProductEnterList = new ArrayList<>();
@@ -654,7 +654,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @param enter
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult saveNode(SaveNodeEnter enter) {
         OpeOutwhTrace opeOutwhTrace = OpeOutwhTrace.builder()
@@ -681,7 +681,7 @@ public class WhOutServiceImpl implements WhOutService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void lockStock(List<Long> ids) {
 
         //查询子订单信息

@@ -459,4 +459,7 @@
         LEFT JOIN ope_sys_user_role ur on rm.role_id = ur.role_id
         where m.dr = 0 and  ur.user_id = #{userId}
     </select>
+    <select id="findAllPerms" resultType="java.lang.String">
+        select path from ope_sys_menu where dr = 0
+    </select>
 </mapper>
