@@ -133,13 +133,4 @@ public class SysStaffController {
         return new Response(staffService.userMsgEdit(enter));
     }
 
-
-
-    @PostMapping(value = "/testFrTranslate")
-    @ApiOperation(value = "测试法语翻译", response = GeneralResult.class)
-    public Response<GeneralResult> testFrTranslate(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
-        return new Response(staffService.testFrTranslate(enter));
-    }
-
-
 }
