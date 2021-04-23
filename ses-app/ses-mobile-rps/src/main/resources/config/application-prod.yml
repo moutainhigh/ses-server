@@ -1,70 +1,72 @@
-#日志路径
 log:
   file:
     path: ${log.path}@profile-active@
     max-size: 128MB
     max-history: 180
-
-dubbo:                                                                                                                  ##DUBBO配置
-  registry:                                                                                                             #注册中心
-    address: zookeeper://172.31.5.73:2181?backup=172.31.5.73:2182,172.31.5.73:2183
-
-# swagger配置
-
+dubbo:
+  registry:
+    address: zookeeper://10.1.1.142:2181?backup=10.1.1.142:2182,10.1.1.142:2183
+  metadata-report:
+    address: zookeeper://10.1.1.142:2181?backup=10.1.1.142:2182,10.1.1.142:2183
 jasypt:
   encryptor:
     property:
-      prefix: RedE(   # 加密前缀
-      suffix: )            # 加密后缀
+      prefix: RedE(
+      suffix: )
     ivGeneratorClassname: org.jasypt.salt.RandomIVGenerator
-
 spring:
-  #上传配置
   http:
   servlet:
     multipart:
       max-request-size: 1000MB
       max-file-size: 20MB
       enabled: true
-  #数据库连接
   datasource:
-    url: jdbc:mysql://172.31.5.73:4269/operation_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://10.1.2.238:2021/operation_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: rede
-    password: 5&oouy!s$i5XFkvQ7gToHHG7nCpN9oGJsZEe
+    password: rede1qaz2wsx
     druid:
       initial-size: 8
       min-idle: 1
       max-active: 20
       max-wait: 60000
-      # 监控页面的用户名和密码 以及页面地址
       stat-view-servlet:
         login-username: rede
         login-password: admin
         enabled: true
         url-pattern: /druid/*
-  #REDIS集群配置
   redis:
     cluster:
       nodes:
-        - 172.31.5.73:7000
-        - 172.31.5.73:7001
-        - 172.31.5.73:7002
-        - 172.31.5.73:7003
-        - 172.31.5.73:7004
-        - 172.31.5.73:7005
-  # swagger在线文档配置
+        - 10.1.2.238:7000
+        - 10.1.2.238:7001
+        - 10.1.2.238:7002
+        - 10.1.2.238:7003
+        - 10.1.2.238:7004
+        - 10.1.2.238:7005
   swagger:
-    enabled: false                                       # 是否启用swagger
- 
-
+    enabled: false
 oss:                                                                                                                    #阿里oss上传
-  #oss 使用http、https请求方式
   protocol: HTTPS
-
-
-
-# 多注册中心配置
-#    reg2:
-#      group: hdg2
-#      address: zookeeper://zk1.d.xqcx.com:32181?backup=zk2.d.xqcx.com:32181,zk3.d.xqcx.com:32181
-
+seata:
+  enabled: true
+  enable-auto-data-source-proxy: true
+  tx-service-group: ses-mobile-rps-group
+  registry:
+    type: zk
+    zk:
+      server-addr: 10.1.1.142:2181
+      cluster: default
+      connect-timeout: 2000000
+  config:
+    type: zk
+    zk:
+      server-addr: 10.1.1.142:2181
+      connect-timeout: 2000000
+  service:
+    disable-global-transaction: false
+    vgroup-mapping:
+      ses-admin-dev-group: default
+  client:
+    rm:
+      report-success-enable: false

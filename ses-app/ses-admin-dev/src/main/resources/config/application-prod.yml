@@ -1,4 +1,3 @@
-#日志路径
 log:
   file:
     path: ${log.path}@profile-active@
@@ -30,7 +29,6 @@ spring:                                                                         
         login-password: admin
         enabled: true
         url-pattern: /druid/*
-  #REDIS集群配置
   redis:
     cluster:
       nodes:
@@ -40,7 +38,6 @@ spring:                                                                         
         - 10.1.2.238:7003
         - 10.1.2.238:7004
         - 10.1.2.238:7005
-  #rabbitmq配置
   rabbitmq:
     host: 127.0.0.1
     port: 5672
@@ -54,15 +51,12 @@ spring:                                                                         
       simple:
         # 开启消息手动确认
         acknowledge-mode: MANUAL #（NONE：不确认 AUTO：自动确认 MANUAL：手动确认）#消息确认包含 发送确认、接受确认
-
   swagger:                                                                                                              #swagger在线文档配置
     enabled: false
-
 #应用更新包文件上传下载路径
 fileUpload:
   path: /opt/nginx/soft/download/
   download: https://redelectric.fr/ses/t/admin/w/dev/api/app/version/downLoadFile/
-
 seata:
   enabled: true
   enable-auto-data-source-proxy: true
