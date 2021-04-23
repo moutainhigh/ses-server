@@ -121,6 +121,7 @@
         left join sco_scooter_ecu ecu
         on s.tablet_sn = ecu.sn and ecu.dr = 0
         where s.id = #{id}  and s.dr = 0
+        limit 1
     </select>
 
     <!--根据scooterNo查询车辆锁状态-->
@@ -135,6 +136,8 @@
     <select id="getScooterNoByTabletSn" parameterType="java.lang.String" resultType="java.lang.String">
         select scooter_no from sco_scooter
 	    where tablet_sn = #{tabletSn} and dr = '0'
+        order by created_time desc
+        limit 1
     </select>
 
     <!--根据tabletSn更新车辆锁状态-->
