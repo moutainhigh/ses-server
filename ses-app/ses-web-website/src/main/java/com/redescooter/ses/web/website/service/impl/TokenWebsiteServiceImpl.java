@@ -497,7 +497,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         // redis存储新的access_token
         jedisCluster.hmset(token, map);
         //jedisCluster.expire(token, new Long(RedisExpireEnum.MINUTES_60.getSeconds()).intValue());
-        jedisCluster.expire(token, new Long(RedisExpireEnum.SECOND_5.getSeconds()).intValue());  // 测试使用
+        jedisCluster.expire(token, new Long(RedisExpireEnum.MINUTES_1.getSeconds()).intValue());  // 测试使用
         // 更新db
         SiteUser model = new SiteUser();
         Long userId = Long.valueOf(map.get("userId"));
@@ -553,7 +553,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
             map.remove("deptId");
             jedisCluster.hmset(token, map);
             //jedisCluster.expire(token, new Long(RedisExpireEnum.MINUTES_60.getSeconds()).intValue());
-            jedisCluster.expire(token, new Long(RedisExpireEnum.SECOND_5.getSeconds()).intValue());  //测试使用
+            jedisCluster.expire(token, new Long(RedisExpireEnum.MINUTES_1.getSeconds()).intValue());  //测试使用
             jedisCluster.hmset(refreshToken, map);
             //jedisCluster.expire(refreshToken, new Long(RedisExpireEnum.DAY_1.getSeconds()).intValue());
             jedisCluster.expire(refreshToken, new Long(RedisExpireEnum.MINUTES_3.getSeconds()).intValue());  // 测试使用
