@@ -66,6 +66,7 @@
         inquiry.company_name                               as companyName,
         inquiry.country_code                               as countryCode,
         inquiry.source                                     as source,
+        inquiry.pay_status                                 as payStatus,
         inquiry.address                                    as address,
         inquiry.def1                                       as countryName,
         inquiry.def2                                       as cityName,

@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.controller.sales.product;
 
 import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 import com.redescooter.ses.web.ros.service.restproduction.SaleScooterService;
 import com.redescooter.ses.web.ros.service.specificat.ColorService;
 import com.redescooter.ses.web.ros.service.specificat.SpecificatTypeService;
@@ -10,14 +11,17 @@ import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListResult;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterSaveOrUpdateEnter;
 import com.redescooter.ses.web.ros.vo.specificat.ColorDataResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeDataResult;
+import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @ClassNameSaleScooterService
@@ -62,6 +66,7 @@ public class SaleScooterController {
 
     @PostMapping(value = "/editSaleStatus")
     @ApiOperation(value = "销售状态的编辑", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> editSaleScooterStatus(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(saleScooterService.editSaleScooterStatus(enter));
     }
@@ -88,6 +93,24 @@ public class SaleScooterController {
     @ApiOperation(value = "列表统计", response = GeneralResult.class)
     public Response<Map<String, Integer>> listCount(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
         return new Response(saleScooterService.listCount(enter));
+    }
+
+    /**
+     *规格列表
+     */
+    @PostMapping(value = "/specificatTypeDataList")
+    @ApiOperation(value = "规格列表", response = SpecificatTypeDataResult.class)
+    public Response<List<SpecificatTypeResult>> specificatTypeDataList(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response(saleScooterService.specificatTypeDataList(enter));
+    }
+
+    /**
+     *规格和颜色的二级联动
+     */
+    @PostMapping(value = "/SpecificationsColorLinkage")
+    @ApiOperation(value = "规格和颜色的二级联动", response = GeneralResult.class)
+    public Response<List<ColorDataResult>> SpecificationsColorLinkage(@ModelAttribute @ApiParam("请求参数") IdResult idResult) {
+        return new Response(saleScooterService.SpecificationsColorLinkage(idResult.getId()));
     }
 
 }

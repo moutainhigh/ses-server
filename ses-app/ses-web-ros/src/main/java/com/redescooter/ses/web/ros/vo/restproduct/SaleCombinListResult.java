@@ -1,9 +1,10 @@
 package com.redescooter.ses.web.ros.vo.restproduct;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 /**
  * @Author Aleks
@@ -47,4 +48,11 @@ public class SaleCombinListResult extends GeneralResult {
      */
     @ApiModelProperty(value="销售状态，0：不可销售，1：可销售")
     private Integer saleStutas;
+
+    @ApiModelProperty(value = "图片")
+    private String picture;
+
+    @ApiModelProperty(value = "价格")
+    private BigDecimal price;
+
 }

@@ -1,8 +1,11 @@
 package com.redescooter.ses.web.website.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.DateConstant;
+import com.redescooter.ses.api.common.enums.restproductionorder.OrderNumberTypeEnums;
 import com.redescooter.ses.api.common.service.SiteWebInquiryService;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -10,6 +13,8 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.IdResult;
 import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dao.OrderMapper;
 import com.redescooter.ses.web.website.dm.SiteCustomer;
@@ -45,6 +50,8 @@ import com.redescooter.ses.web.website.vo.order.AddUpdateOrderEnter;
 import com.redescooter.ses.web.website.vo.order.OrderDetailsResult;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +64,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author jerry
@@ -123,13 +131,16 @@ public class OrderServiceImpl implements OrderService {
             throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
+
+        String email = user.getLoginName();
+
         //获取客户
         SiteCustomer customer = siteCustomerService.getById(user.getCustomerId());
         if (customer == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
-        if (enter.getOrderId() == null && enter.getOrderId() == 0L) {
+        if (enter.getOrderId() == null || enter.getOrderId() == 0L) {
             //创建订单
             //查询该用户是否有订单
             List<SiteOrder> orderSize = siteOrderService.list(new QueryWrapper<SiteOrder>()
@@ -145,8 +156,9 @@ public class OrderServiceImpl implements OrderService {
             Calendar calendar = Calendar.getInstance();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddss");
             String format = dateFormat.format(calendar.getTime());
-            String orderNo = new StringBuffer().append("RED").append(format).append(String.valueOf(idAppService.getId(SequenceName.SITE_ORDER)).substring(5)).toString();
-            addSiteOrderVO.setOrderNo(orderNo);
+//            String orderNo = new StringBuffer().append("RED").append(format).append(String.valueOf(idAppService.getId(SequenceName.SITE_ORDER)).substring(5)).toString();
+//            addSiteOrderVO.setOrderNo(orderNo);
+            addSiteOrderVO.setOrderNo(createOrderNo(OrderNumberTypeEnums.INQUIRY_ORDER.getValue()));
             addSiteOrderVO.setCustomerId(user.getCustomerId());
             addSiteOrderVO.setSalesId(0L);
             addSiteOrderVO.setDr(Constant.DR_FALSE);
@@ -172,7 +184,12 @@ public class OrderServiceImpl implements OrderService {
                     ExceptionCodeEnums.PAYMENTTYPE_NOT_EXIST_EXIST.getMessage());
         }
         //获取产品
-        SiteProduct product = siteProductService.getById(enter.getProductId());
+        //SiteProduct product = siteProductService.getById(enter.getProductId());
+        LambdaQueryWrapper<SiteProduct> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SiteProduct::getDr, Constant.DR_FALSE);
+        wrapper.eq(SiteProduct::getProductModelId, enter.getProductId());
+        wrapper.last("limit 1");
+        SiteProduct product = siteProductService.getOne(wrapper);
         if (product == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.PRODUCT_NOT_EXIST_EXIST.getCode(),
                     ExceptionCodeEnums.PRODUCT_NOT_EXIST_EXIST.getMessage());
@@ -190,10 +207,10 @@ public class OrderServiceImpl implements OrderService {
         SiteProductPrice productPrice = siteProductPriceService.getOne(new QueryWrapper<SiteProductPrice>()
                 .eq(SiteProductPrice.COL_DR, Constant.DR_FALSE)
                 .eq(SiteProductPrice.COL_PRODUCT_MODEL_ID, product.getProductModelId()));
-        if (productPrice == null) {
+        /*if (productPrice == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
                     ExceptionCodeEnums.PARAM_ERROR.getMessage());
-        }
+        }*/
 
         //获取所选车辆电池数量
         SiteProductParts scooterBatteryParts = siteProductPartsService.getById(enter.getProductPartsId());
@@ -214,7 +231,7 @@ public class OrderServiceImpl implements OrderService {
         addSiteOrderVO.setDealerId(enter.getDealerId());
 
         addSiteOrderVO.setProductId(productColour.getProductId());
-        addSiteOrderVO.setBatteryQty(scooterBatteryParts.getQty());
+        addSiteOrderVO.setBatteryQty(enter.getBatteryQty());
         addSiteOrderVO.setColourId(productColour.getColourId());
         addSiteOrderVO.setFullName(customer.getCustomerFullName());
         addSiteOrderVO.setCountryName(customer.getCountryName());
@@ -225,13 +242,15 @@ public class OrderServiceImpl implements OrderService {
         //运费
         addSiteOrderVO.setFreight(new BigDecimal("190"));
         //整车价格
-        addSiteOrderVO.setProductPrice(productPrice.getPrice());
+        //addSiteOrderVO.setProductPrice(productPrice.getPrice());
+        addSiteOrderVO.setProductPrice(new BigDecimal("4880"));
         //没有选着其他配件前，只是整车的价格+运费
-        BigDecimal totalPrice = new BigDecimal("190").add(productPrice.getPrice().multiply(new BigDecimal(enter.getScooterQuantity())));
+        //BigDecimal totalPrice = new BigDecimal("190").add(productPrice.getPrice().multiply(new BigDecimal(enter.getScooterQuantity())));
+        BigDecimal totalPrice = new BigDecimal("190").add(new BigDecimal("4880").multiply(new BigDecimal(enter.getScooterQuantity())));
         //实际付款电池数: 选配电池总数-产品最小电池数
         int paidBattery = scooterBatteryParts.getQty() - product.getMinBatteryNum();
         //加上选购电池的价格
-        totalPrice = totalPrice.add(battery.getPrice().multiply(new BigDecimal(String.valueOf(paidBattery))));
+        //totalPrice = totalPrice.add(battery.getPrice().multiply(new BigDecimal(String.valueOf(paidBattery))));
         //设置总价（未包含其他部件）
         addSiteOrderVO.setTotalPrice(totalPrice);
         //已付金额
@@ -246,8 +265,6 @@ public class OrderServiceImpl implements OrderService {
         addSiteOrderVO.setPaymentTypeId(enter.getPaymentTypeId());
         //支付状态
         addSiteOrderVO.setPayStatus(SiteOrderPaymentStatusEnums.UN_PAID.getValue());
-        //购买电池数
-        addSiteOrderVO.setBatteryQty(scooterBatteryParts.getQty());
         //购买车辆数
         addSiteOrderVO.setScooterQuantity(enter.getScooterQuantity());
         addSiteOrderVO.setSynchronizeFlag(false);
@@ -255,20 +272,45 @@ public class OrderServiceImpl implements OrderService {
         addSiteOrderVO.setRevision(0);
         addSiteOrderVO.setCreatedBy(enter.getUserId());
         addSiteOrderVO.setCreatedTime(new Date());
+        addSiteOrderVO.setCountryName(enter.getCountryName());
+        addSiteOrderVO.setCityName(enter.getCityName());
+        addSiteOrderVO.setPostcode(enter.getPostcode());
         addSiteOrderVO.setUpdatedBy(enter.getUserId());
 
         siteOrderService.saveOrUpdate(addSiteOrderVO);
         IdResult result = new IdResult();
         result.setId(addSiteOrderVO.getId());
         result.setRequestId(enter.getRequestId());
-        try {
-            // 官网的订单数据 要同步到ROS系统中
-            syncdataToRos(addSiteOrderVO);
-        } catch (Exception e) {
 
-        }
+        // 官网的订单数据 要同步到ROS系统中
+        syncdataToRos(addSiteOrderVO, email);
+
         return result;
     }
+
+
+    // 询价单号生成规则
+    public String createOrderNo(String orderNoEnum) {
+        String code = "";
+        // 先判断当前的日期有没有生成过单据号
+        QueryWrapper<SiteOrder> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(SiteOrder.COL_ORDER_NO, DateUtil.getSimpleDateStamp());
+        queryWrapper.orderByDesc(SiteOrder.COL_ORDER_NO);
+        queryWrapper.last("limit 1");
+        SiteOrder inquiry = siteOrderService.getOne(queryWrapper);
+        if(inquiry != null){
+            // 说明今天已经有过单据了  只需要流水号递增
+            code = OrderNoGenerateUtil.orderNoGenerate(inquiry.getOrderNo(),orderNoEnum);
+        }else {
+            // 说明今天还没有产生过单据号，给今天的第一个就好
+            code = orderNoEnum + DateUtil.getSimpleDateStamp() + "001";
+        }
+        //生成订单号之后 在流水号前面加上W（表示官网的数据）
+        String frond = code.substring(0,code.length()-3);
+        String back = code.substring(code.length()-3,code.length());
+        return frond +"W"+back;
+    }
+
 
     /**
      * 这个方法要使用异步请求
@@ -276,14 +318,20 @@ public class OrderServiceImpl implements OrderService {
      * @param addSiteOrderVO
      */
     @Async
-    void syncdataToRos(SiteOrder addSiteOrderVO) {
+    public void syncdataToRos(SiteOrder addSiteOrderVO, String email) {
         // 构造请求的参数
         SiteWebInquiryEnter enter = new SiteWebInquiryEnter();
         BeanUtils.copyProperties(addSiteOrderVO, enter);
         // 給productModel赋值
-        enter.setProductModel(orderMapper.getProductModelByOrderId(addSiteOrderVO.getId()));
+        String productModel = orderMapper.getProductModelByOrderId(addSiteOrderVO.getId());
+        if (StringUtils.isNotBlank(productModel)) {
+            enter.setProductModel(productModel);
+        }
+
         // 调方法 同步数据
-        siteWebInquiryService.siteWebOrderToRosInquiry(enter);
+        log.info("开始同步");
+        siteWebInquiryService.siteWebOrderToRosInquiry(enter, email);
+        log.info("结束同步");
 
         // 同步之后要把同步表示改为已同步
         addSiteOrderVO.setSynchronizeFlag(true);
@@ -300,62 +348,74 @@ public class OrderServiceImpl implements OrderService {
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult AddOrderParts(AddOrderPartsEnter enter) {
-
-        Long orderId = enter.getOrderId();
-        if (orderId == 0) {
-            throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(),
-                    ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
-        }
-        //获取订单
-        SiteOrder order = siteOrderService.getById(orderId);
-        //获取配件
-        List<AddPartListEnter> partslist = enter.getPartslist();
-        if (partslist.size() == 0) {
-            return new GeneralResult(enter.getRequestId());
-        }
-
-        //配件总金额计算
-        BigDecimal partAllTotalPrice = new BigDecimal("0");
-        SiteOrderB orderB = null;
-        List<SiteOrderB> list = new ArrayList<>();
-        for (AddPartListEnter p : partslist) {
-            //获取配件信息
-            SiteParts part = sitePartsService.getById(p.getPartsId());
-            //如果没有查到配件，直接直接跳过本次循环
-            if (part == null) {
-                continue;
+        if (null != enter && StringUtils.isNotBlank(enter.getPartslist()) && !"[]".equals(enter.getPartslist())) {
+            // 解析
+            List<AddPartListEnter> partslist;
+            try {
+                partslist = JSONArray.parseArray(enter.getPartslist(), AddPartListEnter.class);
+            } catch (Exception ex) {
+                throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
             }
-            orderB = new SiteOrderB();
-            orderB.setId(idAppService.getId(SequenceName.SITE_ORDER_B));
-            orderB.setDr(Constant.DR_FALSE);
-            orderB.setOrderId(orderId);
-            orderB.setProductId(order.getProductId());
-            orderB.setPartsId(p.getPartsId());
-            orderB.setPartsQty(p.getParts_qty());
-            //单个配件价格合
-            BigDecimal partPriceSun = part.getPrice().multiply(new BigDecimal(p.getParts_qty()));
-            orderB.setPartsPrice(partPriceSun);
-            orderB.setRevision(0);
-            orderB.setCreatedBy(enter.getUserId());
-            orderB.setCreatedTime(new Date());
-            orderB.setUpdatedBy(enter.getUserId());
-            orderB.setUpdatedTime(new Date());
-            list.add(orderB);
-            //价格累计
-            partAllTotalPrice = partAllTotalPrice.add(partPriceSun);
-        }
-        BigDecimal orderTotalPrice = order.getTotalPrice().add(partAllTotalPrice);
-        //更新总金额
-        order.setTotalPrice(orderTotalPrice);
-        //更新待付金额
-        order.setAmountObligation(orderTotalPrice);
-        //所选择配件总价格做备份记录
-        order.setDef1(partAllTotalPrice.toPlainString());
+            if (CollectionUtils.isEmpty(partslist)) {
+                throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
 
-        //更新主订单金额
-        siteOrderService.updateById(order);
-        //创建子订单
-        siteOrderBService.batchInsert(list);
+            Long orderId = enter.getOrderId();
+            if (orderId == 0) {
+                throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(),
+                        ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
+            }
+            //获取订单
+            SiteOrder order = siteOrderService.getById(orderId);
+            //获取配件
+            if (partslist.size() == 0) {
+                return new GeneralResult(enter.getRequestId());
+            }
+
+            //配件总金额计算
+            BigDecimal partAllTotalPrice = new BigDecimal("0");
+            SiteOrderB orderB = null;
+            List<SiteOrderB> list = new ArrayList<>();
+            for (AddPartListEnter p : partslist) {
+                //获取配件信息
+                SiteParts part = sitePartsService.getById(p.getPartsId());
+                //如果没有查到配件，直接直接跳过本次循环
+                if (part == null) {
+                    continue;
+                }
+                orderB = new SiteOrderB();
+                orderB.setId(idAppService.getId(SequenceName.SITE_ORDER_B));
+                orderB.setDr(Constant.DR_FALSE);
+                orderB.setOrderId(orderId);
+                orderB.setProductId(order.getProductId());
+                orderB.setPartsId(p.getPartsId());
+                orderB.setPartsQty(p.getParts_qty());
+                //单个配件价格合
+                //BigDecimal partPriceSun = part.getPrice().multiply(new BigDecimal(p.getParts_qty()));
+                BigDecimal partPriceSun = new BigDecimal("4880");
+                orderB.setPartsPrice(partPriceSun);
+                orderB.setRevision(0);
+                orderB.setCreatedBy(enter.getUserId());
+                orderB.setCreatedTime(new Date());
+                orderB.setUpdatedBy(enter.getUserId());
+                orderB.setUpdatedTime(new Date());
+                list.add(orderB);
+                //价格累计
+                partAllTotalPrice = partAllTotalPrice.add(partPriceSun);
+            }
+            BigDecimal orderTotalPrice = order.getTotalPrice().add(partAllTotalPrice);
+            //更新总金额
+            order.setTotalPrice(orderTotalPrice);
+            //更新待付金额
+            order.setAmountObligation(orderTotalPrice);
+            //所选择配件总价格做备份记录
+            order.setDef1(partAllTotalPrice.toPlainString());
+
+            //更新主订单金额
+            siteOrderService.updateById(order);
+            //创建子订单
+            siteOrderBService.batchInsert(list);
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -398,6 +458,51 @@ public class OrderServiceImpl implements OrderService {
         orderDetails.setRequestId(enter.getRequestId());
         return orderDetails;
     }
+
+
+    /**
+     * 删除订单
+     * @param enter
+     * @return
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult deleteOrder(IdEnter enter) {
+        SiteOrder siteOrder = siteOrderService.getById(enter.getId());
+        if (siteOrder == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
+        }
+        siteOrderService.removeById(enter.getId());
+        QueryWrapper<SiteOrderB> qw = new QueryWrapper<>();
+        qw.eq(SiteOrderB.COL_ORDER_ID,enter.getId());
+        List<SiteOrderB> orderBS = siteOrderBService.list(qw);
+        if (CollectionUtils.isNotEmpty(orderBS)){
+            siteOrderBService.removeByIds(orderBS.stream().map(SiteOrderB::getId).collect(Collectors.toList()));
+        }
+        // 官网数据删除  需要把ROS那边对应的订单删除
+        try {
+            deleRosOrder(siteOrder);
+        }catch (Exception e) {
+
+        }
+        return new GeneralResult(enter.getRequestId());
+    }
+
+
+    @Async
+    public void deleRosOrder(SiteOrder siteOrder){
+        QueryWrapper<SiteCustomer> qw = new QueryWrapper<>();
+        qw.eq(SiteCustomer.COL_ID,siteOrder.getCustomerId());
+        qw.last("limit 1");
+        SiteCustomer customer = siteCustomerService.getOne(qw);
+        if (customer == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
+                    ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        siteWebInquiryService.webDeleteOrderAsynRos(customer.getEmail());
+
+    }
+
 
 
     /**

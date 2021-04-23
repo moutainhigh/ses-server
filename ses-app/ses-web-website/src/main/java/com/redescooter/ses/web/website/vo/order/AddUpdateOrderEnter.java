@@ -8,6 +8,7 @@ import com.redescooter.ses.api.hub.exception.ValidationExceptionCode;
 import com.redescooter.ses.web.website.exception.SiteValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.models.auth.In;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -87,5 +88,25 @@ public class AddUpdateOrderEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "remarks")
     private String remarks;
+
+
+    /**
+     * 电池数量
+     */
+    @ApiModelProperty(value = "qty")
+    private Integer batteryQty;
+
+
+    @ApiModelProperty(value = "国家名称")
+    private String countryName;
+
+
+    @ApiModelProperty(value = "城市名称")
+    private String cityName;
+
+
+    @ApiModelProperty(value = "postcode")
+    private String postcode;
+
 
 }

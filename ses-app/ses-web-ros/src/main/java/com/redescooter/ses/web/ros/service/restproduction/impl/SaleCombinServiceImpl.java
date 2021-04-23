@@ -127,6 +127,8 @@ public class SaleCombinServiceImpl implements SaleCombinService {
         combin.setProductName(enter.getProductName());
         combin.setCombinName(enter.getCombinName());
         combin.setProductionCombinBomId(enter.getProductionCombinBomId());
+        combin.setPicture(enter.getPicture());
+        combin.setPrice(enter.getPrice());
         combin.setUpdatedBy(enter.getUserId());
         combin.setUpdatedTime(new Date());
         opeSaleCombinService.updateById(combin);
@@ -163,19 +165,20 @@ public class SaleCombinServiceImpl implements SaleCombinService {
         opeSaleCombinService.updateById(combin);
 
         // 数据同步到官网的销售配件
-        OpeSaleCombin opeSaleCombin = opeSaleCombinService.getById(enter.getId());
-        syncData(opeSaleCombin);
+        syncData(combin);
         return new GeneralResult(enter.getRequestId());
     }
 
     @Async
     void syncData(OpeSaleCombin combin) {
         SyncSalePartsDataEnter model = new SyncSalePartsDataEnter();
-        model.setStatus(combin.getSaleStutas() == 1 ? 1 : 2);
-        model.setPartsType(2);
+        model.setStatus(combin.getSaleStutas() == 1 ? 1 : -1);
+        model.setPartsType(5);
         model.setPartsNumber(combin.getProductName());
         model.setEnName(combin.getCombinName());
         model.setEffectiveTime(new Date());
+        model.setPicture(combin.getPicture());
+        model.setPrice(combin.getPrice());
         model.setRemark(combin.getRemark());
         model.setRevision(0);
         model.setCreatedBy(0L);

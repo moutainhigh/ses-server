@@ -51,6 +51,9 @@ public class OpeInWhouseOrderSerialBind {
     @ApiModelProperty(value = "部件本身序列号(厂商序列号)")
     private String defaultSerialNum;
 
+    @ApiModelProperty(value = "车辆平板序列号(整车时才会有值)")
+    private String tabletSn;
+
     @ApiModelProperty(value = "蓝牙mac地址")
     private String bluetoothMacAddress;
 

@@ -29,6 +29,10 @@ public class SalesOrderDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "订单支付状态")
     private String payStatus;
 
+    @ApiModelProperty(value = "订单来源")
+    private String source;
+
+
     @ApiModelProperty(value = "客户全名")
     private String customerFullName;
 
@@ -94,5 +98,14 @@ public class SalesOrderDetailsResult extends GeneralResult {
 
     @ApiModelProperty("预付定金")
     private Double prepaidDeposit;
+
+    @ApiModelProperty("规格类型id")
+    private Long specificatTypeId;
+
+    @ApiModelProperty("客户咨询管理id")
+    private Long customerInquiryId;
+
+    @ApiModelProperty("颜色id")
+    private Long colorId;
 
 }

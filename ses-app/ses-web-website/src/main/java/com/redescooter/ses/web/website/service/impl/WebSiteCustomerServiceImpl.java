@@ -2,8 +2,13 @@ package com.redescooter.ses.web.website.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.base.AppIDEnums;
+import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
+import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
+import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.hub.service.operation.CustomerService;
 import com.redescooter.ses.api.hub.vo.operation.SyncCustomerDataEnter;
@@ -66,6 +71,9 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
     @DubboReference
     private CustomerService customerService;
 
+    @DubboReference
+    private MailMultiTaskService mailMultiTaskService;
+
     /**
      * 创建客户
      *
@@ -89,7 +97,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
             }
             enter.setEmail(decryptEamil);
         }
-        if (StringUtils.isNotEmpty(enter.getEmail())) {
+        if (StringUtils.isNotEmpty(enter.getTelephone())) {
             try {
                 //手机号解密
                 phone = RsaUtils.decrypt(enter.getTelephone(), requestsKeyProperties.getPrivateKey());
@@ -120,6 +128,20 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         // 官网创建客户数据同步到ros
         syncData(enter);
 
+        // 官网创建客户后发送创建账号成功邮件
+        log.info("开始给客户发送邮件");
+        BaseMailTaskEnter mailTask = new BaseMailTaskEnter();
+        mailTask.setName(new StringBuffer().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
+        mailTask.setEvent(MailTemplateEventEnums.WEBSITE_SIGN_UP.getEvent());
+        mailTask.setSystemId(SystemIDEnums.REDE_SES.getSystemId());
+        mailTask.setAppId(AppIDEnums.SES_ROS.getValue());
+        mailTask.setEmail(enter.getEmail());
+        mailTask.setRequestId(enter.getRequestId());
+        mailTask.setUserId(0L);
+        log.info("封装发送邮件的参数是:[{}]", mailTask);
+        mailMultiTaskService.addMultiMailTask(mailTask);
+        log.info("给客户发送邮件完成");
+
         LoginEnter signUp = new LoginEnter();
         signUp.setLoginName(enter.getEmail());
         signUp.setPassword(enter.getCfmPassword().trim());
@@ -136,7 +158,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         model.setDef2(enter.getCityName());
         model.setDef3(enter.getPostcode());
         model.setCountryCode(enter.getCountryCode());
-        model.setStatus("1");
+        model.setStatus("4");
         model.setCustomerFirstName(enter.getCustomerFirstName());
         model.setCustomerLastName(enter.getCustomerLastName());
         if (StringUtils.isNoneBlank(enter.getCustomerFirstName(), enter.getCustomerLastName())) {
@@ -200,12 +222,42 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult editCustomer(EditSiteCustomerEnter enter) {
+        log.info("**********************开始编辑客户的信息*************************");
+        String phone = "";
+        String decryptEamil = "";
+        if (StringUtils.isNotEmpty(enter.getTelephone())) {
+            try {
+                //手机号解密
+                phone = RsaUtils.decrypt(enter.getTelephone(), requestsKeyProperties.getPrivateKey());
+            } catch (Exception e) {
+                throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+            enter.setTelephone(phone);
+        }
+        if (enter.getTelephone().length() > 20) {
+            throw new SesWebsiteException(ExceptionCodeEnums.PHONE_LENGTH_OUT.getCode(), ExceptionCodeEnums.PHONE_LENGTH_OUT.getMessage());
+        }
+
+        if (enter.getAddress().length() > 255) {
+            throw new SesWebsiteException(ExceptionCodeEnums.ADDRESS_LENGTH_OUT.getCode(), ExceptionCodeEnums.ADDRESS_LENGTH_OUT.getMessage());
+        }
+
+        if (StringUtils.isNotEmpty(enter.getEmail())) {
+            try {
+                //邮箱解密
+                decryptEamil = RsaUtils.decrypt(enter.getEmail(), requestsKeyProperties.getPrivateKey());
+            } catch (Exception e) {
+                throw new SesWebsiteException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+            enter.setEmail(decryptEamil);
+        }
 
         SiteCustomer edit = new SiteCustomer();
         BeanUtils.copyProperties(enter, edit);
         siteCustomerService.updateById(edit);
 
         // 官网编辑客户数据同步到ros
+        log.info("**********************准备把客户的信息同步到ROS中*************************");
         syncEditData(edit);
 
         return new GeneralResult(enter.getRequestId());
@@ -239,6 +291,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         model.setAccountFlag(String.valueOf(AccountFlagEnums.INACTIVATED.getValue()));
         model.setUpdatedBy(0L);
         model.setUpdatedTime(new Date());
+        log.info("**********************开始调用方法把客户的信息同步到ROS中*************************");
         customerService.syncCustomerData(model);
     }
 
@@ -297,6 +350,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         addCustomer.setCreatedTime(new Date());
         addCustomer.setUpdatedBy(0L);
         addCustomer.setUpdatedTime(new Date());
+        addCustomer.setCountryName(enter.getCountryName());
         siteCustomerService.save(addCustomer);
 
         return addCustomer.getId();

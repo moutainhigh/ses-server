@@ -526,11 +526,19 @@ public enum ExceptionCodeEnums {
 
     TABLE_SN_NOT_EXIST(10254, "tableSn不存在"),
 
-    SCOOTER_NOT_EXIST(10255, "车辆不存在")
+    SCOOTER_NOT_EXIST(10255, "车辆不存在"),
 
+    SPECIFICATION_CHANGE_ERRO(10256, "规格修改失败"),
 
+    COLOR_CHANGE_ERRO(10257, "颜色修改失败"),
 
+    COLOR_NOT_FOUND(10258, "颜色找不到"),
 
+    CUSTOMERINQUIRY_NOT_FOUND(10259,"客户咨询找不到"),
+
+    SPECIFICAT_NOT_FOUND(10260,"规格找不到"),
+
+    ORDER_NOT_FOUND(10261,"订单不存在")
     ;
 
     private int code;

@@ -6,8 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * 产品颜色关系表
@@ -37,6 +38,10 @@ public class SiteProductColour implements Serializable {
     @ApiModelProperty(value = "主键")
     private Long colourId;
 
+    @TableField(value = "picture")
+    @ApiModelProperty(value = "图片")
+    private String picture;
+
     /**
      * 是否同步
      */
@@ -58,6 +63,8 @@ public class SiteProductColour implements Serializable {
     public static final String COL_PRODUCT_ID = "product_id";
 
     public static final String COL_COLOUR_ID = "colour_id";
+
+    public static final String COL_PICTURE = "picture";
 
     public static final String COL_SYNCHRONIZE_FLAG = "synchronize_flag";
 

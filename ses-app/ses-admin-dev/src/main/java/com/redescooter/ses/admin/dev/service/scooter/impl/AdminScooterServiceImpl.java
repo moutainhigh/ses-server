@@ -15,6 +15,8 @@ import com.redescooter.ses.admin.dev.vo.scooter.AdminScooterPartsDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.InsertAdminScooterDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterParamDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.SetScooterModelParamDTO;
+import com.redescooter.ses.api.common.enums.date.DayCodeEnum;
+import com.redescooter.ses.api.common.enums.date.MonthCodeEnum;
 import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -167,22 +169,22 @@ public class AdminScooterServiceImpl implements AdminScooterService {
          * -这里的事务操作分成：1.自身(adm_scooter表新增数据) 2.scooter-service-scooter服务(sco_scooter、sco_scooter_ecu表新增数据)
          * -目前还没有集成分布式事务解决方案,所以这里可能会导致事务不一致的情况出现
          */
-        boolean flag = true;
         try {
             adminScooterMapper.insertAdminScooter(admScooter);
             adminScooterPartsMapper.batchInsertAdminScooterParts(newList);
 
-            // 需要把车辆数据同步到scooter数据库中去,scooter库中需要同步的表：sco_scooter、sco_scooter_ecu
-            String scooterNo = generateScooterNo();
-            scooterService.syncScooterData(buildSyncScooterData(id, admScooter.getSn(), admScooter.getScooterController(),
-                    userId, scooterNo));
-            scooterEcuService.syncScooterEcuData(buildSyncScooterEcuData(admScooter.getMacAddress(), admScooter.getMacName(),
-                    userId, scooterNo));
+            // 需要把车辆数据同步到scooter数据库中去,scooter库中需要同步的表：sco_scooter(根据sn查询,如果不存在才新增)、sco_scooter_ecu(不同步,代码已注释)
+            String sn = admScooter.getSn();
+            // 根据平板序列号(sn)查询在sco_scooter表是否存在 不存在返回true 存在返回false
+            Boolean flag = scooterService.getSnIsExist(sn);
+            if (flag) {
+                String scooterNo = generateScooterNo();
+                scooterService.syncScooterData(buildSyncScooterData(id, sn, admScooter.getScooterController(), userId, scooterNo));
+                /*scooterEcuService.syncScooterEcuData(buildSyncScooterEcuData(admScooter.getMacAddress(), admScooter.getMacName(), userId, scooterNo));*/
+            }
         } catch (Exception e) {
-            flag = false;
             log.error("【创建车辆信息失败】----{}", ExceptionUtils.getStackTrace(e));
-            throw new SesAdminDevException(ExceptionCodeEnums.CREATE_SCOOTER_ERROR.getCode(),
-                    ExceptionCodeEnums.CREATE_SCOOTER_ERROR.getMessage());
+            throw new SesAdminDevException(ExceptionCodeEnums.CREATE_SCOOTER_ERROR.getCode(), ExceptionCodeEnums.CREATE_SCOOTER_ERROR.getMessage());
         }
         return 0;
     }
@@ -326,9 +328,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         Calendar cal = Calendar.getInstance();
         String year = String.valueOf(cal.get(Calendar.YEAR));
         int month = cal.get(Calendar.MONTH) + 1;
-
-        // 查询当前数据库车辆数量
-        int count = scooterService.countByScooter();
+        int day = cal.get(Calendar.DAY_OF_MONTH);
 
         // 编号规则：区域 + 产品范围 + 结构类型 + 额定功率 + 生产地点 + 年份 + 月份 + 生产流水号(数量从1开始)
         StringBuilder sb = new StringBuilder();
@@ -336,10 +336,13 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         sb.append("ED");
         sb.append("D");
         sb.append("0");
-        sb.append("0");
-        sb.append(year.substring(2, 4)); // 年份,就这样截取吧,这样也能正常使用差不多八十年了
-        sb.append(month);
-        sb.append(count + 1);
+        sb.append(year.substring(2, 4));
+        sb.append(MonthCodeEnum.getMonthCodeByMonth(month));
+        // 获取当前时间戳,并截取最后6位拼接在编号最后
+        String timeStamp = String.valueOf(System.currentTimeMillis());
+        String sub = timeStamp.substring(timeStamp.length() - 6);
+        String number = String.format("%s%s%s", DayCodeEnum.getDayCodeByDay(day), "1", sub);
+        sb.append(number);
         return sb.toString();
     }
 

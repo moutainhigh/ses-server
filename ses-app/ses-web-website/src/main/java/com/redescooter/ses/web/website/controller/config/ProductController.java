@@ -30,7 +30,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @IgnoreLoginCheck
+        @IgnoreLoginCheck
     @PostMapping(value = "/add")
     @ApiOperation(value = "创建产品", response = GeneralResult.class)
     public Response<GeneralResult> add(@ModelAttribute @ApiParam("请求参数") AddProductEnter enter) {

@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.website.service;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PublicSecretResult;
-import com.redescooter.ses.api.common.vo.base.StringResult;
+import com.redescooter.ses.api.common.vo.base.*;
 
 /**
  * @Author jerry
@@ -52,4 +49,12 @@ public interface StripePaymentService {
      * @return
      **/
     PublicSecretResult publicSecret();
+
+    /**
+     * 在次支付校验
+     *
+     * @param enter
+     * @return
+     */
+    BooleanResult payAgainCheck(IdEnter enter);
 }

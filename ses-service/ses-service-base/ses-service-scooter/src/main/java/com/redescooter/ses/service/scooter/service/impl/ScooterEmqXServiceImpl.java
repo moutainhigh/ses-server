@@ -252,7 +252,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
     }
 
     @Override
-    @GlobalTransactional(rollbackFor = Exception.class)  
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void updateScooterTablet(ReleaseAppVersionParamDTO paramDTO) {
         // 查询车辆平板版本信息
         QueryAppVersionResultDTO appVersion = appVersionService.getAppVersionById(paramDTO.getId());
@@ -296,6 +296,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
         ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
             newTabletSns.forEach(sn -> {
                 tabletUpdatePublish.setTabletSn(sn);
+                log.info("消息通知下发,通知平板端进行升级操作 sn: "+sn);
                 mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_TABLET_UPDATE_TOPIC, sn),
                         JSONObject.toJSONString(tabletUpdatePublish));
             });

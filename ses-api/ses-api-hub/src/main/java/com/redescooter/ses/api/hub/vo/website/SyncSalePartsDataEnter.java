@@ -30,7 +30,7 @@ public class SyncSalePartsDataEnter extends GeneralEnter {
     @ApiModelProperty(value = "状态")
     private Integer status;
 
-    @ApiModelProperty(value = "类型,全部类型AllType，零部件Parts，配件Accessory，电池Battery")
+    @ApiModelProperty(value = "类型 1：Parts，2：Accessory，3：Battery，4：Scooter，5：Combination 6：ECU")
     private Integer partsType;
 
     @ApiModelProperty(value = "部品号")

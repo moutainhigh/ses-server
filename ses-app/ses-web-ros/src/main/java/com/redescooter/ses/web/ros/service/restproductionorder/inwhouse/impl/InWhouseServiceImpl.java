@@ -259,6 +259,8 @@ public class InWhouseServiceImpl implements InWhouseService {
                     scooterB.setCreatedTime(new Date());
                     scooterB.setUpdatedBy(enter.getUserId());
                     scooterB.setUpdatedTime(new Date());
+                    scooterB.setDef1(scooterEnter.getSn());
+                    scooterB.setDef2(scooterEnter.getBluetoothMacAddress());
                     scooterBList.add(scooterB);
                 }
                 opeInWhouseScooterBService.saveOrUpdateBatch(scooterBList);

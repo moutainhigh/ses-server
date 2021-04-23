@@ -4,25 +4,34 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.website.ContantUsMessageType;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.service.operation.CustomerService;
+import com.redescooter.ses.api.hub.vo.operation.SyncContactUsDataEnter;
 import com.redescooter.ses.api.hub.vo.operation.SyncCustomerDataEnter;
 import com.redescooter.ses.service.common.service.CityAppService;
 import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.hub.source.operation.dao.base.OpeCustomerMapper;
+import com.redescooter.ses.service.hub.source.operation.dm.OpeContactUs;
+import com.redescooter.ses.service.hub.source.operation.dm.OpeContactUsTrace;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
-import io.seata.spring.annotation.GlobalTransactional;
+import com.redescooter.ses.service.hub.source.operation.service.base.OpeContactUsService;
+import com.redescooter.ses.service.hub.source.operation.service.base.OpeContactUsTraceService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
 
 /**
  * @ClassName:CustomerServiceImpl
@@ -33,10 +42,17 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @DubboService
 @DS("operation")
+@Slf4j
 public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private OpeCustomerMapper opeCustomerMapper;
+
+    @Autowired
+    private OpeContactUsService opeContactUsService;
+
+    @Autowired
+    private OpeContactUsTraceService opeContactUsTraceService;
 
     @DubboReference
     private CityAppService cityAppService;
@@ -167,7 +183,9 @@ public class CustomerServiceImpl implements CustomerService {
      */
     @Override
     @DS("operation")
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult syncCustomerData(SyncCustomerDataEnter enter) {
+        log.info("**********************客户的信息准备同步到ROS中了哦*************************");
         LambdaQueryWrapper<OpeCustomer> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeCustomer::getDr, Constant.DR_FALSE);
         qw.eq(OpeCustomer::getEmail, enter.getEmail());
@@ -185,6 +203,61 @@ public class CustomerServiceImpl implements CustomerService {
             param.setId(customer.getId());
             opeCustomerMapper.updateById(param);
         }
+        return new GeneralResult();
+    }
+
+    /**
+     * 官网联系我们同步数据到ros
+     */
+    @Override
+    @DS("operation")
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult syncContactUsData(SyncContactUsDataEnter enter) {
+        // 先看这个邮箱是否已存在
+        QueryWrapper<OpeContactUs> qw = new QueryWrapper<>();
+        qw.eq("email", enter.getEmail());
+        qw.last("limit 1");
+        OpeContactUs opeContactUs = opeContactUsService.getOne(qw);
+        if (opeContactUs != null) {
+            // 说明这个邮箱已经存在
+            opeContactUs.setFrequency(opeContactUs.getFrequency() + 1);
+        } else {
+            // 说明这个邮箱是第一次联系我们
+            opeContactUs = new OpeContactUs();
+            opeContactUs.setId(idAppService.getId(SequenceName.OPE_CONTACT_US));
+            opeContactUs.setEmail(enter.getEmail());
+            opeContactUs.setFrequency(1);
+            opeContactUs.setCreatedTime(new Date());
+        }
+        opeContactUs.setFirstName(enter.getFirstName());
+        opeContactUs.setLastName(enter.getLastName());
+        opeContactUs.setFullName(opeContactUs.getFirstName() + " " + opeContactUs.getLastName());
+        opeContactUs.setTelephone(enter.getTelephone());
+        opeContactUs.setAddress(enter.getAddress());
+        opeContactUs.setRemark(enter.getRemark());
+        opeContactUs.setUpdatedTime(new Date());
+        opeContactUsService.saveOrUpdate(opeContactUs);
+
+        // 官网联系我们 数据同步还要往ope_contact_us_trace表查数据
+        OpeContactUsTrace opeContactUsTraceEntity = new OpeContactUsTrace();
+        opeContactUsTraceEntity.setId(idAppService.getId(SequenceName.OPE_CONTACT_US_TRACE));
+        opeContactUsTraceEntity.setCreatedBy(0L);
+        opeContactUsTraceEntity.setCreatedTime(new Date());
+        opeContactUsTraceEntity.setUpdatedBy(0L);
+        opeContactUsTraceEntity.setUpdatedTime(new Date());
+        opeContactUsTraceEntity.setContactUsId(opeContactUs.getId());
+        opeContactUsTraceEntity.setFirstName(opeContactUs.getFirstName());
+        opeContactUsTraceEntity.setLastName(opeContactUs.getLastName());
+        opeContactUsTraceEntity.setEmail(opeContactUs.getEmail());
+        opeContactUsTraceEntity.setFullName(opeContactUs.getFullName());
+        opeContactUsTraceEntity.setTelephone(opeContactUs.getTelephone());
+        opeContactUsTraceEntity.setCountryName(opeContactUs.getCountryName());
+        opeContactUsTraceEntity.setCityName(opeContactUs.getCityName());
+        opeContactUsTraceEntity.setDistrictName(opeContactUs.getDistrictName());
+        opeContactUsTraceEntity.setAddress(opeContactUs.getAddress());
+        opeContactUsTraceEntity.setRemark(opeContactUs.getRemark());
+        opeContactUsTraceEntity.setMessageType(ContantUsMessageType.LEAVE_MESSAGE.getValue());
+        opeContactUsTraceService.saveOrUpdate(opeContactUsTraceEntity);
         return new GeneralResult();
     }
 

@@ -2,7 +2,6 @@ package com.redescooter.ses.web.ros.vo.sales;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.redescooter.ses.api.common.constant.DateConstant;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -24,8 +23,8 @@ public class SalesOrderEnter extends PageEnter {
     @ApiModelProperty(value = "状态")
     private String status;
 
-    @ApiModelProperty(value = "颜色")
-    private String color;
+    @ApiModelProperty(value = "颜色id")
+    private Long color;
 
     @ApiModelProperty(value = "创建开始时间")
     @DateTimeFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)

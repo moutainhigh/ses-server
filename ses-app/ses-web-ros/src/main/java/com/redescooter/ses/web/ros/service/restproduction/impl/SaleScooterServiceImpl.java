@@ -27,6 +27,8 @@ import com.redescooter.ses.web.ros.vo.restproduct.SaleProductionParaEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListResult;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterSaveOrUpdateEnter;
+import com.redescooter.ses.web.ros.vo.specificat.ColorDataResult;
+import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeResult;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -34,8 +36,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import spark.utils.CollectionUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @ClassNameSaleScooterServiceImpl
@@ -119,6 +123,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         saleScooter.setMinBatteryNum(enter.getMinBatteryNum());
         saleScooter.setOtherParam(enter.getOtherParam());
         saleScooter.setProductionParam(enter.getProductionParam());
+        saleScooter.setPicture(enter.getPicture());
         opeSaleScooterService.saveOrUpdate(saleScooter);
         return new GeneralResult(enter.getRequestId());
     }
@@ -197,18 +202,22 @@ public class SaleScooterServiceImpl implements SaleScooterService {
     @Async
     void dataSyncToWebsite(OpeSaleScooter saleScooter){
         try {
-            // 这个要同步好几张表 先判断本次同步多少张表（1张或5张）
-            if(!productionService.syncByProductionCode(saleScooter.getProductCode(),saleScooter.getSaleStutas())){
+            if (0 == saleScooter.getSaleStutas()){
+                // 关闭的时候调
+                productionService.syncByProductionCode(saleScooter.getProductName(), saleScooter.getSaleStutas());
+            }else {
+                // 开启的时候调
+//            log.info("flag的结果是:[{}]", flag);
+//            if(!flag){
                 // 进入到这里  说明是第一次同步这条数据  需要同步5张表
+                log.info("是第一次同步数据");
                 SyncProductionDataEnter syncProductionDataEnter = new SyncProductionDataEnter();
                 // 下面开始给这个对象找数据赋值
                 // 首先是产品数据
                 syncProductionDataEnter.setProductCode(saleScooter.getProductCode());
-                syncProductionDataEnter.setCnName(saleScooter.getProductName());
-                syncProductionDataEnter.setFrName(saleScooter.getProductName());
-                syncProductionDataEnter.setEnName(saleScooter.getProductName());
                 syncProductionDataEnter.setProductType(1);
                 syncProductionDataEnter.setStatus(1);
+                syncProductionDataEnter.setPicture(saleScooter.getPicture());
                 syncProductionDataEnter.setOtherParameter(saleScooter.getOtherParam());
                 syncProductionDataEnter.setMaterParameter(saleScooter.getProductionParam());
                 syncProductionDataEnter.setMinBatteryNum(saleScooter.getMinBatteryNum());
@@ -216,6 +225,9 @@ public class SaleScooterServiceImpl implements SaleScooterService {
                 syncProductionDataEnter.setRemark(saleScooter.getRemark());
                 syncProductionDataEnter.setProductModelName(saleScooter.getProductName());
                 syncProductionDataEnter.setProductModelCode(saleScooter.getProductCode());
+                syncProductionDataEnter.setCnName(saleScooter.getProductName());
+                syncProductionDataEnter.setEnName(saleScooter.getProductName());
+                syncProductionDataEnter.setFrName(saleScooter.getProductName());
                 if (!Strings.isNullOrEmpty(saleScooter.getProductionParam())){
                     List<SaleProductionParaEnter> params;
                     try {
@@ -261,7 +273,6 @@ public class SaleScooterServiceImpl implements SaleScooterService {
                 log.info("组装好数据了，调用方法同步数据*******************");
                 productionService.syncProductionData(syncProductionDataEnter);
             }
-
         }catch (Exception ignored){}
     }
 
@@ -296,5 +307,48 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         map.put("2", opeSaleCombinService.count());
         map.put("3", opeSalePartsService.count());
         return map;
+    }
+
+    @Override
+    public List<SpecificatTypeResult> specificatTypeDataList(GeneralEnter enter) {
+       List<OpeSaleScooter> list = opeSaleScooterService.list(new QueryWrapper<OpeSaleScooter>().eq(OpeSaleScooter.COL_SALE_STUTAS,1));
+        List<SpecificatTypeResult> specificatTypeResults  = new ArrayList<>();;
+        if (CollectionUtils.isNotEmpty(list)){
+            QueryWrapper<OpeSpecificatType> wrapper = new QueryWrapper<OpeSpecificatType>()
+                    .in(OpeSpecificatType.COL_ID,list.stream().map(OpeSaleScooter::getSpecificatId).collect(Collectors.toList()));
+            List<OpeSpecificatType> opeSpecificatTypes = opeSpecificatTypeService.list(wrapper);
+            if (CollectionUtils.isNotEmpty(opeSpecificatTypes)){
+                for (OpeSpecificatType ope : opeSpecificatTypes){
+                    SpecificatTypeResult specificatTypeResult = new SpecificatTypeResult();
+                    specificatTypeResult.setSpecificatId(ope.getId());
+                    specificatTypeResult.setSpecificatName(ope.getSpecificatName());
+                    specificatTypeResults.add(specificatTypeResult);
+                }
+            }
+        }
+        return specificatTypeResults;
+    }
+
+    @Override
+    public List<ColorDataResult> SpecificationsColorLinkage(Long specificatId) {
+        QueryWrapper<OpeSaleScooter> wrapper = new QueryWrapper<OpeSaleScooter>()
+                .eq(OpeSaleScooter.COL_SPECIFICAT_ID,specificatId).eq(OpeSaleScooter.COL_SALE_STUTAS,1);
+        List<OpeSaleScooter> saleScooterList = opeSaleScooterService.list(wrapper);
+        List<ColorDataResult> resultList  = new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(saleScooterList)){
+             QueryWrapper<OpeColor> qw = new QueryWrapper<>();
+            qw.in(OpeColor.COL_ID,saleScooterList.stream().map(OpeSaleScooter::getColorId).collect(Collectors.toList()));
+            List<OpeColor> colorList = opeColorService.list(qw);
+            if (CollectionUtils.isNotEmpty(colorList)){
+                for (OpeColor opeColor : colorList) {
+                    ColorDataResult result = new ColorDataResult();
+                    result.setColorId(opeColor.getId());
+                    result.setColorName(opeColor.getColorName());
+                    result.setColorValue(opeColor.getColorValue());
+                    resultList.add(result);
+                }
+            }
+        }
+        return resultList;
     }
 }

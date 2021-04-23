@@ -55,6 +55,7 @@ public class SaleCombinController {
 
     @PostMapping(value = "/editSaleStatus")
     @ApiOperation(value = "销售状态的编辑", response = GeneralResult.class)
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> editSaleCombinStatus(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(saleCombinService.editSaleCombinStatus(enter));
     }

@@ -14,7 +14,7 @@ public interface SiteWebInquiryService {
      * 官网的预订单数据同步到ROS中的预订单
      * @param enter
      */
-    void siteWebOrderToRosInquiry(SiteWebInquiryEnter enter);
+    void siteWebOrderToRosInquiry(SiteWebInquiryEnter enter, String email);
 
 
     /**
@@ -23,4 +23,10 @@ public interface SiteWebInquiryService {
      */
     void siteWebInquiryPay(SiteWebInquiryPayEnter enter);
 
+
+    /**
+     * 官网订单删除 ROS这边的订单也删除
+     * @param email
+     */
+    void webDeleteOrderAsynRos(String email);
 }

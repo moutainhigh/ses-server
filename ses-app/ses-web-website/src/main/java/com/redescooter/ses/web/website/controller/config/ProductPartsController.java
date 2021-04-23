@@ -29,6 +29,7 @@ public class ProductPartsController {
     @PostMapping(value = "/add")
     @ApiOperation(value = "给产品添加配件", response = GeneralResult.class)
     public Response<GeneralResult> add(@ModelAttribute @ApiParam("请求参数") AddProductPartsEnter enter) {
+        System.out.println("进来》》》》》》》》》》》》》》》》》》》》》》");
         return new Response<>(productPartsService.addProductParts(enter));
     }
 

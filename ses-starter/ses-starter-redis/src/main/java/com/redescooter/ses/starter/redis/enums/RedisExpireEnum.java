@@ -26,6 +26,8 @@ public enum RedisExpireEnum {
     MINUTES_5("MINUTES_5", TimeUnit.SECONDS.convert(5L, TimeUnit.MINUTES), "5分钟"),
     MINUTES_3("MINUTES_3", TimeUnit.SECONDS.convert(3L, TimeUnit.MINUTES), "3分钟"),
     MINUTES_1("MINUTES_1", TimeUnit.SECONDS.convert(1L, TimeUnit.MINUTES), "1分钟"),
+    SECOND_5("SECOND_5", TimeUnit.SECONDS.convert(5L, TimeUnit.SECONDS), "5秒钟")
+
     ;
 
     /**

@@ -1,9 +1,6 @@
 package com.redescooter.ses.web.ros.service.customer;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
 import com.redescooter.ses.web.ros.vo.website.SaveAboutUsEnter;
@@ -90,4 +87,11 @@ public interface InquiryService {
      * @return
      */
     GeneralResult inquiryExport(InquiryListEnter enter);
+
+    /**
+     *
+     * @param enter
+     * @return
+     */
+    GeneralResult updateSaleOrder(UpdateInfoResult enter);
 }

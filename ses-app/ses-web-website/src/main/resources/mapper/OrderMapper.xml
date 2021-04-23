@@ -7,6 +7,7 @@
         <result column="status" jdbcType="VARCHAR" property="status"/>
         <result column="orderType" jdbcType="VARCHAR" property="orderType"/>
         <result column="productColour" jdbcType="VARCHAR" property="productColour"/>
+        <result column="productColourCode" jdbcType="VARCHAR" property="productColourCode"/>
         <result column="productName" jdbcType="VARCHAR" property="productName"/>
         <result column="deliveryType" jdbcType="VARCHAR" property="deliveryType"/>
         <result column="freight" jdbcType="DECIMAL" property="freight"/>
@@ -19,12 +20,19 @@
         <result column="batteryQty" jdbcType="INTEGER" property="batteryQty"/>
         <result column="etdDeliveryTime" jdbcType="TIMESTAMP" property="etdDeliveryTime"/>
         <result column="createdTime" jdbcType="TIMESTAMP" property="createdTime"/>
+
+        <result column="amountObligation" jdbcType="DECIMAL" property="amountObligation"/>
+
+        <result column="prepaidDeposit" jdbcType="DECIMAL" property="prepaidDeposit"/>
+
+        <result column="amountDiscount" jdbcType="DECIMAL" property="amountDiscount"/>
         <collection property="orderBlist" javaType="java.util.ArrayList"
                     ofType="com.redescooter.ses.web.website.vo.order.orderBlist">
             <id column="orderBId" jdbcType="BIGINT" property="orderBId"/>
             <result column="enName" jdbcType="VARCHAR" property="enName"/>
             <result column="partsPrice" jdbcType="VARCHAR" property="partsPrice"/>
             <result column="partsQty" jdbcType="INTEGER" property="partsQty"/>
+
         </collection>
     </resultMap>
     <select id="getOrderDetails" resultMap="getOrderDetailsMap">
@@ -36,6 +44,7 @@
                spt.en_name          as productName,
                so.freight,
                sc.colour_name       as productColour,
+               sc.colour_code       as productColourCode,
                so.delivery_type     as deliveryType,
                spte.payment_name    as paymentName,
                so.scooter_quantity  as scooterQuantity,
@@ -48,7 +57,10 @@
                sps.en_name          as enName,
                sob.parts_qty        as partsQty,
                sob.parts_price      as partsPrice,
-               sob.created_time     as createdTime
+               sob.created_time     as createdTime,
+               so.amount_obligation as amountObligation,
+               so.amount_discount as amountDiscount,
+               so.prepaid_deposit as prepaidDeposit
         from site_order so
                      left join site_order_b sob on so.id = sob.order_id and sob.dr = 0
                      left join site_parts sps on sob.parts_id = sps.id and sps.dr = 0
@@ -68,6 +80,7 @@
                spt.en_name          as productName,
                so.freight,
                sc.colour_name       as productColour,
+               sc.colour_code       as productColourCode,
                so.delivery_type     as deliveryType,
                spte.payment_name    as paymentName,
                so.scooter_quantity  as scooterQuantity,
@@ -93,12 +106,10 @@
 
 
     <select id="getProductModelByOrderId" resultType="java.lang.String">
-        select
-           product_model_name
-        from site_product_model model
-        left join site_product product on product.product_model_id = model.id
-        left join site_order order on order.product_id = product.id
-        where model.dr = 0 and product.dr = 0 and order.dr = 0 and order.id = #{orderId}
-
+        select a.product_model_name
+        from site_product_model a
+        left join site_product b on b.product_model_id = a.id
+        left join site_order c on c.product_id = b.id
+        where a.dr = 0 and b.dr = 0 and c.dr = 0 and c.id = #{orderId}
     </select>
 </mapper>

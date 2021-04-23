@@ -4,6 +4,7 @@ import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerResult;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.hub.vo.operation.SyncContactUsDataEnter;
 import com.redescooter.ses.api.hub.vo.operation.SyncCustomerDataEnter;
 
 /**
@@ -52,5 +53,10 @@ public interface CustomerService {
      * 官网创建客户时同步数据到ros
      */
     GeneralResult syncCustomerData(SyncCustomerDataEnter enter);
+
+    /**
+     * 官网联系我们同步数据到ros
+     */
+    GeneralResult syncContactUsData(SyncContactUsDataEnter enter);
 
 }

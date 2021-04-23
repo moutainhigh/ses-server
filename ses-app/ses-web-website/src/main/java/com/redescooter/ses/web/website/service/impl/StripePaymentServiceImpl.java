@@ -9,12 +9,16 @@ import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
+import com.redescooter.ses.api.hub.service.operation.CustomerInquiryService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.web.website.config.RequestsKeyProperties;
 import com.redescooter.ses.web.website.config.StripeConfigProperties;
 import com.redescooter.ses.web.website.constant.SequenceName;
-import com.redescooter.ses.web.website.dm.*;
+import com.redescooter.ses.web.website.dm.SiteCustomer;
+import com.redescooter.ses.web.website.dm.SiteOrder;
+import com.redescooter.ses.web.website.dm.SitePaymentRecords;
+import com.redescooter.ses.web.website.dm.SiteProductModel;
 import com.redescooter.ses.web.website.enums.CommonStatusEnums;
 import com.redescooter.ses.web.website.enums.PaymentStatusEnums;
 import com.redescooter.ses.web.website.enums.SiteOrderStatusEnums;
@@ -33,6 +37,8 @@ import com.stripe.param.PaymentIntentCreateParams;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -51,6 +57,21 @@ import java.util.UUID;
 public class StripePaymentServiceImpl implements StripePaymentService {
 
     private final String integrationCheck = "integration_check";
+
+    @Value("${rede.stripe.secret_key}")
+    private String API_SECRET_KEY;
+
+    @Value("${rede.stripe.receipt_email}")
+    private String ReceiptEmail;
+
+    @Value("${rede.stripe.currency}")
+    private String Currency;
+
+    @Value("${rede.stripe.payment_method_types}")
+    private String PaymentMethodType;
+
+    @Value("${rede.stripe.payment_event}")
+    private String PaymentEvent;
 
     @Autowired
     private StripeConfigProperties stripeConfigProperties;
@@ -79,6 +100,9 @@ public class StripePaymentServiceImpl implements StripePaymentService {
     @DubboReference
     private IdAppService idAppService;
 
+    @DubboReference
+    private CustomerInquiryService customerInquiryService;
+
     /**
      * 支付
      *
@@ -89,7 +113,8 @@ public class StripePaymentServiceImpl implements StripePaymentService {
     public StringResult paymentIntent(IdEnter enter) {
         StringResult result = new StringResult();
 
-        Stripe.apiKey = stripeConfigProperties.getSecretkey();
+        Stripe.apiKey = API_SECRET_KEY;
+        log.info(Stripe.apiKey+"{>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>}");
         SiteOrder order = siteOrderService.getById(enter.getId());
 
         if (order == null) {
@@ -97,23 +122,27 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                     ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getMessage());
         }
         Map<String, String> map = new HashMap<>();
-        map.put(integrationCheck, stripeConfigProperties.getPaymentEvent());
+        map.put(integrationCheck, PaymentEvent);
         map.put("order_id", String.valueOf(order.getId()));
         map.put("order_no", order.getOrderNo());
         map.put("product_id", String.valueOf(order.getProductId()));
-
+        BigDecimal amout = null;
+        if (order.getPayStatus() == PaymentStatusEnums.UNPAID_PAID.getValue()){
+            amout = order.getPrepaidDeposit();
+        }else if (order.getPayStatus() == PaymentStatusEnums.DEPOSIT_PAID.getValue()){
+            amout = order.getAmountObligation();
+        }
         try {
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-                    .setReceiptEmail(stripeConfigProperties.getReceiptEmail())
-                    .setCurrency(stripeConfigProperties.getCurrency()).addPaymentMethodType(stripeConfigProperties.getPaymentMethodTypes())
+                    .setReceiptEmail(ReceiptEmail)
+                    .setCurrency(Currency).addPaymentMethodType(PaymentMethodType)
                     /**欧元转换欧分**/
-                    .setAmount(order.getPrepaidDeposit().multiply(new BigDecimal("100")).longValue())
+                    .setAmount(amout.multiply(new BigDecimal("100")).longValue())
                     .putAllMetadata(map)
                     .build();
 
             PaymentIntent intent = PaymentIntent.create(params);
             String clientSecret = intent.getClientSecret();
-
             log.info("===========" + clientSecret);
             result.setValue(clientSecret);
 
@@ -208,6 +237,17 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         return result;
     }
 
+    /**
+     * 在次支付校验
+     *
+     * @param enter
+     * @return
+     */
+    @Override
+    public BooleanResult payAgainCheck(IdEnter enter) {
+       return customerInquiryService.payAgainCheck(enter);
+    }
+
     private PayResponseBody generateResponse(PaymentIntent intent, PayResponseBody response, String stripeJson) {
         switch (intent.getStatus()) {
             case "requires_action":
@@ -234,6 +274,12 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                 break;
             // 付款失败
             case "faild":
+                Map<String, String> metadata2 = intent.getMetadata();
+                metadata2.forEach((k, v) -> {
+                    log.info("====={}=================={}======", k, v);
+                });
+                //订单支付失败后，走后续业务
+                paymentFail(Long.valueOf(metadata2.get("order_id")));
                 break;
             // 取消付款
             case "canceled":
@@ -250,11 +296,25 @@ public class StripePaymentServiceImpl implements StripePaymentService {
      * @param id
      */
     private void paymentSuccess(Long id, String stripeJson) {
-
+        log.info(">>>>>>>>>>>>>>>>>>进入paymentSuccess");
         SiteOrder siteOrder = siteOrderService.getById(id);
         if (ObjectUtil.isNull(siteOrder)) {
             //TODO 邮件发送给我
             throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
+        }
+        // 判断是预定金支付 还是尾款支付
+        if (siteOrder.getPayStatus() == PaymentStatusEnums.UNPAID_PAID.getValue()){
+            // 这是预定金支付 只需要更改已付金额和待付款金额
+            siteOrder.setAmountPaid(siteOrder.getPrepaidDeposit());
+            siteOrder.setAmountObligation(siteOrder.getTotalPrice().subtract(siteOrder.getPrepaidDeposit()));
+            siteOrder.setPayStatus(PaymentStatusEnums.DEPOSIT_PAID.getValue());
+            siteOrder.setStatus(SiteOrderStatusEnums.IN_PROGRESS.getValue());
+        }else if(siteOrder.getPayStatus() == PaymentStatusEnums.DEPOSIT_PAID.getValue()){
+            // 这是尾款支付
+            siteOrder.setAmountPaid(siteOrder.getTotalPrice());
+            siteOrder.setAmountObligation(siteOrder.getAmountObligation().subtract(siteOrder.getAmountObligation()));
+            siteOrder.setPayStatus(PaymentStatusEnums.BALANCE_PAID.getValue());
+            siteOrder.setStatus(SiteOrderStatusEnums.COMPLETED.getValue());
         }
         //获取已付金额
         BigDecimal price = siteOrder.getPrepaidDeposit();
@@ -262,8 +322,6 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         siteOrder.setAmountPaid(siteOrder.getAmountPaid().add(price));
         //减少待付金额：代付金额=总金额-已付金额-优惠价
         siteOrder.setAmountObligation(siteOrder.getAmountObligation().subtract(price).subtract(siteOrder.getAmountDiscount()));
-        siteOrder.setPayStatus(PaymentStatusEnums.DEPOSIT_PAID.getValue());
-        siteOrder.setStatus(SiteOrderStatusEnums.IN_PROGRESS.getValue());
         siteOrder.setUpdatedTime(new Date());
         siteOrderService.updateById(siteOrder);
 
@@ -272,13 +330,54 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         sendmail(siteOrder);
         //保存支付记录
         savePaymentRecords(siteOrder, stripeJson);
+        //同步ros订单状态
+        IdEnter idEnter = new IdEnter();
+        idEnter.setId(siteOrder.getId());
+        synchronizationOfRosSuccess(idEnter);
+
+    }
+
+
+
+
+    /**
+     * 支付成功进行订单数据保存
+     *
+     * @param id
+     */
+    private void paymentFail(Long id) {
+
+        SiteOrder siteOrder = siteOrderService.getById(id);
+        if (ObjectUtil.isNull(siteOrder)) {
+            //TODO 邮件发送给我
+            throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
+        }
+        siteOrder.setPayStatus(PaymentStatusEnums.UNPAID_PAID.getValue());
+        siteOrder.setStatus(SiteOrderStatusEnums.TO_BE_PAID.getValue());
+        siteOrder.setUpdatedTime(new Date());
+        siteOrderService.updateById(siteOrder);
+        //同步ros订单状态
+        IdEnter idEnter = new IdEnter();
+        idEnter.setId(siteOrder.getId());
+        synchronizationOfRosFail(idEnter);
+    }
+
+
+    @Async
+    public void synchronizationOfRosSuccess(IdEnter idEnter){
+        customerInquiryService.synchronizationOfRosSuccess(idEnter);
+    }
+
+    @Async
+    public void synchronizationOfRosFail(IdEnter idEnter){
+        customerInquiryService.synchronizationOfRosFail(idEnter);
     }
 
     private void sendmail(SiteOrder order) {
 
         SiteCustomer customer = siteCustomerService.getById(order.getCustomerId());
-        SiteProduct product = siteProductService.getById(order.getProductId());
-        SiteProductModel productModel = siteProductModelService.getById(product.getProductModelId());
+//        SiteProduct product = siteProductService.getById(order.getProductId());
+        SiteProductModel productModel = siteProductModelService.getById(order.getProductId());
 
         String eamil = customer.getEmail();
         String name = eamil.substring(0, eamil.indexOf("@"));

@@ -50,7 +50,7 @@ public class WebsiteOrderController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/scooters")
-    @ApiOperation(value = "车辆裂帛啊", response = ProductResult.class)
+    @ApiOperation(value = "车辆列表", response = ProductResult.class)
     public Response<List<ProductResult>> scooters(@ModelAttribute @ApiParam("Parameter") ScootersEnter enter) {
         return new Response<>(websiteOrderFormService.scooters(enter));
     }

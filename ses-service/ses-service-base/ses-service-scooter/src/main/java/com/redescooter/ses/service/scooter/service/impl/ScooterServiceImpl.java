@@ -353,4 +353,19 @@ public class ScooterServiceImpl implements ScooterService {
         return new GeneralResult();
     }
 
+    /**
+     * 根据平板序列号(sn)查询在sco_scooter表是否存在
+     */
+    @Override
+    public Boolean getSnIsExist(String sn) {
+        LambdaQueryWrapper<ScoScooter> qw = new LambdaQueryWrapper<>();
+        qw.eq(ScoScooter::getDr, Constant.DR_FALSE);
+        qw.eq(ScoScooter::getTabletSn, sn);
+        int count = scoScooterService.count(qw);
+        if (count > 0) {
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
+    }
+
 }

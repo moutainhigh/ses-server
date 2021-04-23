@@ -66,7 +66,7 @@ public class CustomerController {
      */
     @PostMapping(value = "/edit")
     @ApiOperation(value = "Edit Customer", response = GeneralResult.class)
-    public Response<GeneralResult> edit(@RequestBody EditSiteCustomerEnter enter) {
+    public Response<GeneralResult> edit(@ModelAttribute EditSiteCustomerEnter enter) {
         return new Response<>(webSiteCustomerService.editCustomer(enter));
     }
 }

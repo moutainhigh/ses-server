@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.website.service.StripePaymentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class SiteStripeController {
 
     @PostMapping(value = "/paymentIntent")
     @ApiOperation(value = "Get [client_secret]", response = StringResult.class)
-    public Response<StringResult> paymentIntent(@RequestBody IdEnter enter) {
+    public Response<StringResult> paymentIntent(@ModelAttribute IdEnter enter) {
         return new Response<>(stripePaymentService.paymentIntent(enter));
     }
 
@@ -42,11 +43,19 @@ public class SiteStripeController {
     }
 
     @IgnoreLoginCheck
-    @PostMapping(value = "/canceledHooks")
+    @PostMapping(value = "/canceledHooksWebsite")
     @ApiOperation(value = "Canceled Hooks")
     @ResponseBody
     public Response<GeneralResult> canceledHooks(@RequestBody String enter) {
         return new Response<>(stripePaymentService.cancelledPaymentIntent(enter));
+    }
+
+
+    @IgnoreLoginCheck
+    @PostMapping(value = "/payAgainCheck")
+    @ApiOperation(value = "再次支付", response = BooleanResult.class)
+    public Response<BooleanResult> payAgainCheck(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+        return new Response<>(stripePaymentService.payAgainCheck(enter));
     }
 
 }

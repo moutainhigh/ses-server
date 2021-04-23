@@ -1,7 +1,5 @@
 package com.redescooter.ses.web.ros.vo.restproduct;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.redescooter.ses.api.common.annotation.NotNull;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -30,6 +28,9 @@ public class SaleScooterSaveOrUpdateEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "车辆所属颜色id")
     private Long colorId;
+
+    @ApiModelProperty(value = "图片")
+    private String picture;
 
     @ApiModelProperty("最低电池数")
     private Integer minBatteryNum;

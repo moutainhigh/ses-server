@@ -46,4 +46,12 @@ public interface OrderService {
      */
     OrderDetailsResult getOrderDetails(IdEnter enter);
 
+
+    /**
+     * 删除订单
+     * @param enter
+     * @return
+     */
+    GeneralResult deleteOrder(IdEnter enter);
+
 }

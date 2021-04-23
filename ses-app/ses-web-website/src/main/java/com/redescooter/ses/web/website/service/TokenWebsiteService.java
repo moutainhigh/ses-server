@@ -3,6 +3,7 @@ package com.redescooter.ses.web.website.service;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
+import com.redescooter.ses.web.website.vo.login.RefreshTokenEnter;
 import com.redescooter.ses.web.website.vo.login.SiteResetPassword;
 import com.redescooter.ses.web.website.vo.login.SiteSetPasswordEnter;
 
@@ -89,4 +90,10 @@ public interface TokenWebsiteService {
      * @return
      */
     GeneralResult emailSubscribe(CheckEmailEnter enter);
+
+    /**
+     * 刷新token
+     */
+    TokenResult refreshToken(RefreshTokenEnter enter);
+
 }

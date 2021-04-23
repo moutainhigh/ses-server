@@ -4,7 +4,6 @@ import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.website.service.ScooterPurchaseService;
 import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
@@ -14,7 +13,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -69,7 +72,7 @@ public class ScooterPurchaseController {
     @IgnoreLoginCheck
     @PostMapping(value = "/getpartslist")
     @ApiOperation(value = "获取配件列表", response = PartsDetailsResult.class)
-    public Response<List<PartsDetailsResult>> getPartsList(@ModelAttribute @ApiParam("请求参数") StringEnter enter) {
+    public Response<List<PartsDetailsResult>> getPartsList(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(scooterPurchaseService.getPartsList(enter));
     }
 

@@ -143,11 +143,17 @@ public class PartsServiceImpl implements PartsService {
     public List<PartsDetailsResult> getPartsList(GeneralEnter enter) {
 
         List<PartsDetailsResult> resultList = new ArrayList<>();
-        List<SiteParts> list = sitePartsService.list(new QueryWrapper<SiteParts>().eq(SiteParts.COL_DR, 0));
+        List<SiteParts> list = sitePartsService.list(new QueryWrapper<SiteParts>().eq(SiteParts.COL_DR, 0).eq(SiteParts.COL_STATUS, 1));
 
         if (list.size() > 0) {
             list.forEach(pc -> {
                 PartsDetailsResult result = new PartsDetailsResult();
+                result.setPartsId(pc.getId());
+                result.setPartsType(pc.getPartsType().toString());
+                result.setCnName(pc.getCnName());
+                result.setFrName(pc.getFrName());
+                result.setEnName(pc.getEnName());
+                result.setSources(pc.getSources());
                 BeanUtils.copyProperties(pc, result);
                 resultList.add(result);
             });

@@ -18,6 +18,8 @@ public class UserToken extends GeneralResult {
 
     private String token;
 
+    private String refreshToken;
+
     private String systemId;
 
     private String appId;

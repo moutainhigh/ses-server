@@ -321,7 +321,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             // 说明今天还没有产生过单据号，给今天的第一个就好
             code = orderNoEnum + DateUtil.getSimpleDateStamp() + "001";
         }
-        return code;
+        //生成订单号之后 在流水号前面加上W（表示ROS的数据）
+        String frond = code.substring(0,code.length()-3);
+        String back = code.substring(code.length()-3,code.length());
+        return frond +"R"+back;
     }
 
 

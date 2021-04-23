@@ -2,8 +2,8 @@ package com.redescooter.ses.web.website.controller.business;
 
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.website.service.OrderService;
-import com.redescooter.ses.web.website.vo.order.AddUpdateOrderEnter;
 import com.redescooter.ses.web.website.vo.order.AddOrderPartsEnter;
+import com.redescooter.ses.web.website.vo.order.AddUpdateOrderEnter;
 import com.redescooter.ses.web.website.vo.order.OrderDetailsResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,13 +31,16 @@ public class OrderController {
 
     @PostMapping(value = "/add")
     @ApiOperation(value = "Add", response = IdResult.class)
-    public Response<IdResult> add(@RequestBody AddUpdateOrderEnter enter) {
+    public Response<IdResult> add(@ModelAttribute AddUpdateOrderEnter enter) {
         return new Response<>(orderService.addOrder(enter));
     }
 
+
+
+
     @PostMapping(value = "/addOrderParts")
     @ApiOperation(value = "AddOrderParts", response = GeneralResult.class)
-    public Response<GeneralResult> AddOrderParts(@RequestBody AddOrderPartsEnter enter) {
+    public Response<GeneralResult> AddOrderParts(@ModelAttribute @ApiParam("请求参数") AddOrderPartsEnter enter) {
         return new Response<>(orderService.AddOrderParts(enter));
     }
 
@@ -51,5 +54,12 @@ public class OrderController {
     @ApiOperation(value = "Order Details", response = OrderDetailsResult.class)
     public Response<OrderDetailsResult> details(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(orderService.getOrderDetails(enter));
+    }
+
+
+    @PostMapping(value = "/delete")
+    @ApiOperation(value = "delete", response = GeneralResult.class)
+    public Response<GeneralResult> delete(@ModelAttribute IdEnter enter) {
+        return new Response<>(orderService.deleteOrder(enter));
     }
 }

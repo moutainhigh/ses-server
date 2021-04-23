@@ -10,12 +10,12 @@
     </select>
     <sql id="where_list">
         <where>
-            and opi.dr =0
+            and opi.dr = 0
             <if test="status != null and status != ''">
                 and opi.status = #{status}
             </if>
             <if test="color != null and color != ''">
-                and opp.color_name = #{color}
+                and opp.id = #{color}
             </if>
             <if test="startCreatedTime != null and endCreatedTime != null">
                 and (opi.created_time between #{startCreatedTime} and #{endCreatedTime})
@@ -46,11 +46,11 @@
 
     <sql id="list_column">
         opi.id,
-         opi.order_no                                    as orderNo,
+        opi.order_no                                    as orderNo,
         opi.status,
         IFNULL(OPI.pay_status, '1')                     as payStatus,
-        oc.customer_full_name                           as customerFullName,
-        oc.email,
+        IFNULL(opi.full_name, oc.company_name)          as customerFullName,
+        opi.email,
         opi.product_model                               as productModel,
         spe.specificat_name                             as enName,
         opp.color_name                                  as color,
@@ -84,15 +84,19 @@
         opi.order_no                                    as orderNo,
         opi.status,
         IFNULL(OPI.pay_status, '1')                     as payStatus,
+        opi.source,
         oc.customer_full_name                           as customerFullName,
         oc.email,
-        opi.product_model                               as productModel,
+        opi.product_model                            as productModel,
         spe.specificat_name                             as enName,
+        spe.id                                          as specificatTypeId,
         opp.color_name                                  as color,
         opp.color_name                                  as colorName,
         opp.color_value                                 as colorValue,
+        opp.id                                          as colorId,
         opi.scooter_quantity                            as qty,
         ocib.product_qty                                as batteryQty,
+        ocib.id                                         as customerInquiryId,
         opi.total_price                                 as amount,
         opi.amount_paid                                 as paid,
         opi.amount_obligation                           as balance,
