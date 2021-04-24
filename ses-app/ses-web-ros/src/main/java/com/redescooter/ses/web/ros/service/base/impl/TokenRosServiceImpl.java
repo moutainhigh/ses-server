@@ -685,15 +685,12 @@ public class TokenRosServiceImpl implements TokenRosService {
         userToken.setVersion(enter.getVersion());
         userToken.setDeptId(user.getDeptId());
         try {
-            Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);
+            Map<String, String> map = BeanUtils.describe(userToken);
             map.remove("requestId");
 
-            //TODO 临时处理，不是最终结局方案！！
-            map.forEach((k, v) -> {
-              if (StringUtils.isNoneBlank(k,v)){
-                  map.remove(k);
-              }
-            });
+            //TODO 临时处理解决方案
+            map.remove("refreshToken");
+
             jedisCluster.hmset(token, map);
             jedisCluster.expire(token, new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
         } catch (IllegalAccessException e) {
