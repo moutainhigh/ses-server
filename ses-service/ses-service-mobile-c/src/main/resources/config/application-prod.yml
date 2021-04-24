@@ -5,16 +5,15 @@ log:
     max-history: 180
 dubbo:
   registry:
-    address: zookeeper://10.1.1.142:2181?backup=10.1.1.142:2182,10.1.1.142:2183
+    address: zookeeper://10.1.1.142:2181
   metadata-report:
-    address: zookeeper://10.1.1.142:2181?backup=10.1.1.142:2182,10.1.1.142:2183
+    address: zookeeper://10.1.1.142:2181
 jasypt:
   encryptor:
     property:
       prefix: RedE(
       suffix: )
     ivGeneratorClassname: org.jasypt.salt.RandomIVGenerator
-
 spring:
   datasource:                                                                                                           #数据库连接
     url: jdbc:mysql://10.1.2.238:2021/consumer_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true

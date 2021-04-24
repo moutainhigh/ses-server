@@ -5,16 +5,15 @@ log:
     max-history: 180
 dubbo:
   registry:
-    address: zookeeper://10.1.1.142:2181?backup=10.1.1.142:2182,10.1.1.142:2183
+    address: zookeeper://10.1.1.142:2181
   metadata-report:
-    address: zookeeper://10.1.1.142:2181?backup=10.1.1.142:2182,10.1.1.142:2183
+    address: zookeeper://10.1.1.142:2181
 jasypt:
   encryptor:
     property:
       prefix: RedE(
       suffix: )
     ivGeneratorClassname: org.jasypt.salt.RandomIVGenerator
-
 spring:
   http:
   servlet:
@@ -47,7 +46,6 @@ spring:
         - 10.1.2.238:7005
   swagger:
     enabled: false
-## stripe pay
 stripe:
   currency: eur
   payment_method_types: card
@@ -55,7 +53,6 @@ stripe:
   publishable_key: pk_live_Pze51XBNr8tI4pThesU7DEHD00a8pjUbmi
   secret_key: rk_live_Ea5zybiHwnLnY7bn98jaoRJQ00OPG1gEBe
   receipt_email: etienne@redescooter.fr
-
 oss:                                                                                                                    #阿里oss上传
   protocol: HTTPS
 excel:
@@ -87,12 +84,10 @@ monday:
   #模板Id
   templeteId: 581923336
   load-template: true
-
 constant-us-email:
   sale-principal:
     - valentin@redescooter.fr
     - jerry@redescooter.com
-
 seata:
   enabled: true
   enable-auto-data-source-proxy: true

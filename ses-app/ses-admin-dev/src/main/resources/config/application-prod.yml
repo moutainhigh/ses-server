@@ -5,9 +5,9 @@ log:
     max-history: 180
 dubbo:
   registry:
-    address: zookeeper://10.1.1.142:2181?backup=10.1.1.142:2182,10.1.1.142:2183
+    address: zookeeper://10.1.1.142:2181
   metadata-report:
-    address: zookeeper://10.1.1.142:2181?backup=10.1.1.142:2182,10.1.1.142:2183
+    address: zookeeper://10.1.1.142:2181
 spring:                                                                                                                 #spring config
   http:                                                                                                                 #上传配置
   servlet:
@@ -45,15 +45,12 @@ spring:                                                                         
     password: guest
     virtual-host: /
     default-requeue-rejected: false
-    # 开启消息发送确认机制（生产者--》交换机）
     publisher-confirms: true
     listener:
       simple:
-        # 开启消息手动确认
-        acknowledge-mode: MANUAL #（NONE：不确认 AUTO：自动确认 MANUAL：手动确认）#消息确认包含 发送确认、接受确认
+        acknowledge-mode: MANUAL 
   swagger:                                                                                                              #swagger在线文档配置
     enabled: false
-#应用更新包文件上传下载路径
 fileUpload:
   path: /opt/nginx/soft/download/
   download: https://redelectric.fr/ses/t/admin/w/dev/api/app/version/downLoadFile/
