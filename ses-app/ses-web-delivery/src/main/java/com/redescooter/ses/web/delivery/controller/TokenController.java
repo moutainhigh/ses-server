@@ -4,8 +4,10 @@ import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.RefreshTokenEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.common.vo.workorder.WorkOrderSaveOrUpdateEnter;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.service.workorder.WorkOrderService;
@@ -95,4 +97,12 @@ public class TokenController {
     public Response<GeneralResult> workOrderSave(@ModelAttribute @ApiParam("请求参数") WorkOrderSaveOrUpdateEnter enter) {
         return new Response(workOrderService.workOrderSave(enter));
     }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "刷新token", response = TokenResult.class)
+    @PostMapping(value = "/refresh")
+    public Response<TokenResult> refreshToken(@ModelAttribute RefreshTokenEnter enter) {
+        return new Response<>(userTokenService.refreshToken(enter));
+    }
+
 }

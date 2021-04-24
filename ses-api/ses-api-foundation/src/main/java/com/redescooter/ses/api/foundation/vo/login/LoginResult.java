@@ -1,11 +1,14 @@
 package com.redescooter.ses.api.foundation.vo.login;
 
-import java.util.List;
-
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-
 import io.swagger.annotations.ApiModel;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * @description: LoginResult
@@ -21,6 +24,8 @@ import lombok.*;
 public class LoginResult extends GeneralResult {
     
     private String token;
+
+    private String refreshToken;
     
     private boolean noPassword;
     

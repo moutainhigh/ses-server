@@ -1,17 +1,19 @@
 package com.redescooter.ses.service.foundation.dm.base;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.io.Serializable;
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.io.Serializable;
+import java.util.Date;
 
 @ApiModel(value = "com-redescooter-ses-service-foundation-dm-base-PlaUser")
 @Data
@@ -97,6 +99,13 @@ public class PlaUser implements Serializable {
     @TableField(value = "LAST_LOGIN_TOKEN")
     @ApiModelProperty(value = "最后登录TOKEN")
     private String lastLoginToken;
+
+    /**
+     * 刷新token
+     */
+    @TableField(value = "REFRESH_TOKEN")
+    @ApiModelProperty(value = "刷新token")
+    private String refreshToken;
 
     /**
      * 生效时间
