@@ -85,7 +85,7 @@ public class TokenRosServiceImpl implements TokenRosService {
     @DubboReference
     private MailMultiTaskService mailMultiTaskService;
     @Value("${Request.privateKey}")
-    private  String privateKey;
+    private String privateKey;
 
     @Autowired
     private StaffService staffService;
@@ -108,7 +108,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         wrapper.eq(OpeSysUser.COL_DR, 0);
         wrapper.eq(OpeSysUser.COL_APP_ID, enter.getAppId());
         wrapper.eq(OpeSysUser.COL_SYSTEM_ID, enter.getSystemId());
-        wrapper.eq(OpeSysUser.COL_DEF1,SysUserSourceEnum.SYSTEM.getValue());
+        wrapper.eq(OpeSysUser.COL_DEF1, SysUserSourceEnum.SYSTEM.getValue());
         wrapper.last("limit 1");
         OpeSysUser sysUser = sysUserMapper.selectOne(wrapper);
         //用户名验证，及根据用户名未查到改用户，则该用户不存在
@@ -121,7 +121,7 @@ public class TokenRosServiceImpl implements TokenRosService {
                 throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
             }
         }
-        if(sysUser.getStatus().equals(SysUserStatusEnum.LOCK.getCode())){
+        if (sysUser.getStatus().equals(SysUserStatusEnum.LOCK.getCode())) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_DISABLED.getCode(), ExceptionCodeEnums.ACCOUNT_DISABLED.getMessage());
         }
         // 把密码的校验放到这里来  2020 7 17
@@ -130,26 +130,26 @@ public class TokenRosServiceImpl implements TokenRosService {
         //密码MD5 加密
         String password = DigestUtils.md5Hex(decryptPassword + sysUser.getSalt());
         String psdErrorKey = JedisConstant.LOGIN_PSD_ERROR_NUM + sysUser.getId();
-        if(jedisCluster.exists(psdErrorKey)){
+        if (jedisCluster.exists(psdErrorKey)) {
             Map<String, String> data = jedisCluster.hgetAll(psdErrorKey);
             String oldNum = data.get("num");
-            if(Integer.parseInt(oldNum) >= 5){
+            if (Integer.parseInt(oldNum) >= 5) {
                 throw new SesWebRosException(ExceptionCodeEnums.LOGIN_PSD_ERROER_NUM_MANY.getCode(), ExceptionCodeEnums.LOGIN_PSD_ERROER_NUM_MANY.getMessage());
             }
         }
         if (!password.equals(sysUser.getPassword())) {
             //连续输错3次密码，出现图片验证码，连续输错5次账号冻结1分钟
             Integer errorNum = passWordMistaken(psdErrorKey);
-            if(errorNum < 3){
+            if (errorNum < 3) {
                 throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
-            }else if(errorNum == 3 || errorNum == 4){
+            } else if (errorNum == 3 || errorNum == 4) {
                 throw new SesWebRosException(ExceptionCodeEnums.LOGIN_PSD_ERROER_NEED_CODE.getCode(), ExceptionCodeEnums.LOGIN_PSD_ERROER_NEED_CODE.getMessage());
-            }else {
+            } else {
                 throw new SesWebRosException(ExceptionCodeEnums.LOGIN_PSD_ERROER_NUM_MANY.getCode(), ExceptionCodeEnums.LOGIN_PSD_ERROER_NUM_MANY.getMessage());
             }
         }
         //密码校验通过之后，看看之前有没有输错过，有的话，从缓存清除
-        if(jedisCluster.exists(psdErrorKey)){
+        if (jedisCluster.exists(psdErrorKey)) {
             jedisCluster.del(psdErrorKey);
         }
         TokenResult result = getTokenResult(enter, sysUser);
@@ -180,11 +180,11 @@ public class TokenRosServiceImpl implements TokenRosService {
         }
         //将token及用户相关信息 放到Redis中
         UserToken userToken = setToken(enter, sysUser);
-        if(Strings.isNullOrEmpty(sysUser.getLastLoginToken()) && !sysUser.getLoginName().equals(Constant.ADMIN_USER_NAME)){
+        if (Strings.isNullOrEmpty(sysUser.getLastLoginToken()) && !sysUser.getLoginName().equals(Constant.ADMIN_USER_NAME)) {
             // 如果上次登陆的token为空  则需要重置密码 放在缓存里 在获取用户信息那个接口返回去(系统自动生成的账号排除在外)
             String key = JedisConstant.FIRST_LOGIN_RESET_PSD + sysUser.getId();
-            Map<String,String> map = new HashMap<>();
-            map.put("flag","1");
+            Map<String, String> map = new HashMap<>();
+            map.put("flag", "1");
             jedisCluster.hmset(key, map);
         }
         //获取用户角色,更新至缓存
@@ -210,10 +210,10 @@ public class TokenRosServiceImpl implements TokenRosService {
         // 先验证码输入的邮箱是否在系统中注册过
         OpeSysUser sysUser = getOpeSysUser(enter);
         // 生成随机的验证码  然后放在缓存里  再发给用户
-        String code = String.valueOf((int) ((Math.random()*9+1)*100000));
+        String code = String.valueOf((int) ((Math.random() * 9 + 1) * 100000));
         String key = JedisConstant.EMAIL_LOGIN_CODE + enter.getLoginName();
-        Map<String,String> map = new HashMap<>();
-        map.put("code",code);
+        Map<String, String> map = new HashMap<>();
+        map.put("code", code);
         jedisCluster.hmset(key, map);
         // 缓存时间暂定位5分钟
         jedisCluster.expire(key, Long.valueOf(RedisExpireEnum.MINUTES_5.getSeconds()).intValue());
@@ -238,19 +238,19 @@ public class TokenRosServiceImpl implements TokenRosService {
 
     @Override
     public TokenResult emailLogin(LoginEnter enter) {
-        if(Strings.isNullOrEmpty(enter.getCode())){
+        if (Strings.isNullOrEmpty(enter.getCode())) {
             throw new SesWebRosException(ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getCode(), ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getMessage());
         }
         String key = JedisConstant.EMAIL_LOGIN_CODE + enter.getLoginName();
-        if(!jedisCluster.exists(key)){
+        if (!jedisCluster.exists(key)) {
             throw new SesWebRosException(ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getCode(), ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getMessage());
         }
         Map<String, String> map = jedisCluster.hgetAll(key);
         String code = map.get("code");
-        if(Strings.isNullOrEmpty(code)){
+        if (Strings.isNullOrEmpty(code)) {
             throw new SesWebRosException(ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getCode(), ExceptionCodeEnums.EAMIL_CODE_TIME_OUT.getMessage());
         }
-        if(!code.equals(enter.getCode())){
+        if (!code.equals(enter.getCode())) {
             throw new SesWebRosException(ExceptionCodeEnums.CODE_IS_WRONG.getCode(), ExceptionCodeEnums.CODE_IS_WRONG.getMessage());
         }
         // 到这里 邮箱登陆的校验就差不多算是通过了 清除缓存 再下面就是登陆的逻辑
@@ -259,12 +259,12 @@ public class TokenRosServiceImpl implements TokenRosService {
         OpeSysUser sysUser = getOpeSysUser(enter);
 //        LoginEnter loginEnter = new LoginEnter();
 //        BeanUtil.copyProperties(enter,loginEnter);
-        TokenResult result =  getTokenResult(enter, sysUser);
+        TokenResult result = getTokenResult(enter, sysUser);
         return result;
     }
 
     private OpeSysUser getOpeSysUser(LoginEnter enter) {
-        if(enter.getLoginName().length() > 50 || enter.getLoginName().length() < 2){
+        if (enter.getLoginName().length() > 50 || enter.getLoginName().length() < 2) {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
         }
         QueryWrapper<OpeSysUser> wrapper = new QueryWrapper<>();
@@ -283,30 +283,29 @@ public class TokenRosServiceImpl implements TokenRosService {
     }
 
 
-    public Integer passWordMistaken(String key){
+    public Integer passWordMistaken(String key) {
         Integer num = 1;
-        Map<String,String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<>();
         // 先判断该用户有没有输错过密码
-        if(jedisCluster.exists(key)){
+        if (jedisCluster.exists(key)) {
             //缓存中能找到，说明已经输错过密码了
             Map<String, String> data = jedisCluster.hgetAll(key);
             String oldNum = data.get("num");
-            if(Integer.parseInt(oldNum) >= 5){
+            if (Integer.parseInt(oldNum) >= 5) {
                 return Integer.parseInt(oldNum);
             }
             num = Integer.parseInt(oldNum) + 1;
-            if(num == 5){
-                map.put("num",num.toString());
+            if (num == 5) {
+                map.put("num", num.toString());
                 jedisCluster.hmset(key, map);
                 jedisCluster.expire(key, Long.valueOf(RedisExpireEnum.MINUTES_1.getSeconds()).intValue());
                 return num;
             }
         }
-        map.put("num",num.toString());
+        map.put("num", num.toString());
         jedisCluster.hmset(key, map);
         return num;
     }
-
 
 
     /**
@@ -317,7 +316,7 @@ public class TokenRosServiceImpl implements TokenRosService {
      */
     private String checkPassWord(LoginEnter enter) {
         //密码解密 无法解密时 就是提示密码错误
-        if (StringUtils.isBlank(enter.getPassword())){
+        if (StringUtils.isBlank(enter.getPassword())) {
             throw new SesWebRosException(ExceptionCodeEnums.PASSWORD_EMPTY.getCode(), ExceptionCodeEnums.PASSWORD_EMPTY.getMessage());
         }
         enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
@@ -438,14 +437,14 @@ public class TokenRosServiceImpl implements TokenRosService {
         if (StringUtils.isNotBlank(enter.getToken())) {
             // 数据校验
             String code = jedisCluster.get(enter.getRequestId());
-            if(Strings.isNullOrEmpty(code)){
+            if (Strings.isNullOrEmpty(code)) {
                 throw new SesWebRosException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
                         ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
             }
             if (!StringUtils.equals(code, enter.getCode())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CODE_IS_WRONG.getCode(), ExceptionCodeEnums.CODE_IS_WRONG.getMessage());
             }
-             // 系统内部进行设置密码
+            // 系统内部进行设置密码
             UserToken userToken = getUserToken(enter.getToken());
             if (userToken.getUserId() == null || userToken.getUserId() == 0) {
                 throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
@@ -455,7 +454,7 @@ public class TokenRosServiceImpl implements TokenRosService {
             getUser.setAppId(enter.getAppId());
             getUser.setSystemId(enter.getSystemId());
         } else {
-             // 系统外部进行设置密码
+            // 系统外部进行设置密码
             Map<String, String> hash = jedisCluster.hgetAll(enter.getRequestId());
             if (hash == null || hash.isEmpty()) {
                 throw new SesWebRosException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
@@ -565,51 +564,51 @@ public class TokenRosServiceImpl implements TokenRosService {
         return new GeneralResult(enter.getRequestId());
     }
 
-  /**
-   * 发送忘记密码邮箱
-   *
-   * @param baseSendMailEnter
-   * @return
-   */
-  @Override
-  public GeneralResult sendForgetPasswordEmail(BaseSendMailEnter baseSendMailEnter) {
+    /**
+     * 发送忘记密码邮箱
+     *
+     * @param baseSendMailEnter
+     * @return
+     */
+    @Override
+    public GeneralResult sendForgetPasswordEmail(BaseSendMailEnter baseSendMailEnter) {
 
-      if (Strings.isNullOrEmpty(baseSendMailEnter.getMail())) {
-          throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
-      }
-      String decryptMail = null;
-      if (StringUtils.isNotEmpty(baseSendMailEnter.getMail())) {
-          try {
-              //邮箱解密
-              decryptMail = RsaUtils.decrypt(baseSendMailEnter.getMail(), privateKey);
-          } catch (Exception e) {
-              throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-          }
-          baseSendMailEnter.setMail(decryptMail);
+        if (Strings.isNullOrEmpty(baseSendMailEnter.getMail())) {
+            throw new SesWebRosException(ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.MAIL_NAME_CANNOT_EMPTY.getMessage());
+        }
+        String decryptMail = null;
+        if (StringUtils.isNotEmpty(baseSendMailEnter.getMail())) {
+            try {
+                //邮箱解密
+                decryptMail = RsaUtils.decrypt(baseSendMailEnter.getMail(), privateKey);
+            } catch (Exception e) {
+                throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            }
+            baseSendMailEnter.setMail(decryptMail);
 
-          //邮箱长度校验
-          checkString(baseSendMailEnter.getMail(), 2, 50);
-      }
-      //先判断邮箱是否存在、
-      OpeSysUser opeSysUser = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getDef1, SysUserSourceEnum.SYSTEM.getValue()).eq(OpeSysUser::getLoginName,
-              baseSendMailEnter.getMail()).last("limit 1"));
-      if (null == opeSysUser) {
-          throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
-      }
-      BaseMailTaskEnter enter = new BaseMailTaskEnter();
-      enter.setName(baseSendMailEnter.getMail().substring(0, baseSendMailEnter.getMail().indexOf("@")));
-      enter.setEvent(MailTemplateEventEnums.ROS_FORGET_PSD_SEND_MAIL.getEvent());
-      enter.setMailSystemId(SystemIDEnums.REDE_SES.getSystemId());
-      enter.setMailAppId(AppIDEnums.SES_ROS.getValue());
-      enter.setToMail(baseSendMailEnter.getMail());
-      enter.setRequestId(baseSendMailEnter.getRequestId());
-      enter.setUserRequestId(baseSendMailEnter.getRequestId());
-      enter.setToUserId(opeSysUser.getId());
-      mailMultiTaskService.addSetPasswordWebUserTask(enter);
-      return new GeneralResult(baseSendMailEnter.getRequestId());
-  }
+            //邮箱长度校验
+            checkString(baseSendMailEnter.getMail(), 2, 50);
+        }
+        //先判断邮箱是否存在、
+        OpeSysUser opeSysUser = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getDef1, SysUserSourceEnum.SYSTEM.getValue()).eq(OpeSysUser::getLoginName,
+                baseSendMailEnter.getMail()).last("limit 1"));
+        if (null == opeSysUser) {
+            throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        BaseMailTaskEnter enter = new BaseMailTaskEnter();
+        enter.setName(baseSendMailEnter.getMail().substring(0, baseSendMailEnter.getMail().indexOf("@")));
+        enter.setEvent(MailTemplateEventEnums.ROS_FORGET_PSD_SEND_MAIL.getEvent());
+        enter.setMailSystemId(SystemIDEnums.REDE_SES.getSystemId());
+        enter.setMailAppId(AppIDEnums.SES_ROS.getValue());
+        enter.setToMail(baseSendMailEnter.getMail());
+        enter.setRequestId(baseSendMailEnter.getRequestId());
+        enter.setUserRequestId(baseSendMailEnter.getRequestId());
+        enter.setToUserId(opeSysUser.getId());
+        mailMultiTaskService.addSetPasswordWebUserTask(enter);
+        return new GeneralResult(baseSendMailEnter.getRequestId());
+    }
 
-  private OpeSysUser buildSysUserSingle(AddSysUserEnter enter, String password) {
+    private OpeSysUser buildSysUserSingle(AddSysUserEnter enter, String password) {
         OpeSysUser sysUser = new OpeSysUser();
         int salt = RandomUtils.nextInt(10000, 99999);
         String savePassword = DigestUtils.md5Hex(password + salt);
@@ -688,6 +687,10 @@ public class TokenRosServiceImpl implements TokenRosService {
         try {
             Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);
             map.remove("requestId");
+
+            map.forEach((k, v) -> {
+                log.info("k==={},v==={}",k,v);
+            });
             jedisCluster.hmset(token, map);
             jedisCluster.expire(token, new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
         } catch (IllegalAccessException e) {
@@ -700,14 +703,14 @@ public class TokenRosServiceImpl implements TokenRosService {
         return userToken;
     }
 
-  private void checkString(String str, int min, int max) {
-    if (StringUtils.isEmpty(str)) {
-      throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+    private void checkString(String str, int min, int max) {
+        if (StringUtils.isEmpty(str)) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        if (str.length() < min || str.length() > max) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
     }
-    if (str.length() < min || str.length() > max) {
-      throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-    }
-  }
 
     private void setAuth(long roleId) {
 
