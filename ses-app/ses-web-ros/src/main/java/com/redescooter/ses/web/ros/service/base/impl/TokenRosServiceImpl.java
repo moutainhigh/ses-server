@@ -690,7 +690,7 @@ public class TokenRosServiceImpl implements TokenRosService {
 
             //TODO 临时处理，不是最终结局方案！！
             map.forEach((k, v) -> {
-              if (StringUtils.isAllBlank(k,v)){
+              if (StringUtils.isNoneBlank(k,v)){
                   map.remove(k);
               }
             });
