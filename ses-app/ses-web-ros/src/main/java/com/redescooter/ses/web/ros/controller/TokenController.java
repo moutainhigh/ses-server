@@ -99,5 +99,12 @@ public class TokenController {
         return new Response<>(tokenRosService.sendForgetPasswordEmail(enter));
     }
 
+    @IgnoreLoginCheck
+    @ApiOperation(value = "刷新token", response = TokenResult.class)
+    @PostMapping(value = "/refresh")
+    public Response<TokenResult> refreshToken(@ModelAttribute RefreshTokenEnter enter) {
+        return new Response<>(tokenRosService.refreshToken(enter));
+    }
+
 
 }

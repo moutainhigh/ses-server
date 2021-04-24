@@ -538,7 +538,16 @@ public enum ExceptionCodeEnums {
 
     SPECIFICAT_NOT_FOUND(10260,"规格找不到"),
 
-    ORDER_NOT_FOUND(10261,"订单不存在")
+    ORDER_NOT_FOUND(10261,"订单不存在"),
+
+    REFRESH_TOKEN_NOT_EXIST(10262, "刷新token不存在")
+
+
+
+
+
+
+
     ;
 
     private int code;
