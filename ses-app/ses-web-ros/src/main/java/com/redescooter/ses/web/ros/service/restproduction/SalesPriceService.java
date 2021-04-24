@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dm.OpeSalePrice;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePriceListEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.SalePriceSaveOrUpdateEnter;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public interface SalesPriceService {
     /**
      * 新建
      */
-    GeneralResult addSalePrice(OpeSalePrice enter);
+    GeneralResult addSalePrice(SalePriceSaveOrUpdateEnter enter);
 
     /**
      * 详情
@@ -39,7 +40,7 @@ public interface SalesPriceService {
     /**
      * 编辑
      */
-    GeneralResult editSalePrice(OpeSalePrice enter);
+    GeneralResult editSalePrice(SalePriceSaveOrUpdateEnter enter);
 
     /**
      * 开启或关闭状态

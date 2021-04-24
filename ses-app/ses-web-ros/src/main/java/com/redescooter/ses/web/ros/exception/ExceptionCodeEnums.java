@@ -538,7 +538,14 @@ public enum ExceptionCodeEnums {
 
     SPECIFICAT_NOT_FOUND(10260,"规格找不到"),
 
-    ORDER_NOT_FOUND(10261,"订单不存在")
+    ORDER_NOT_FOUND(10261,"订单不存在"),
+
+    SALE_PRICE_IS_EMPTY(10262, "销售价格为空")
+
+
+
+
+
     ;
 
     private int code;

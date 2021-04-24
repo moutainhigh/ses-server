@@ -26,4 +26,7 @@ public class SalePriceListEnter extends PageEnter {
     @ApiModelProperty(value = "车型")
     private String scooterBattery;
 
+    @ApiModelProperty(value = "类型 1租借车辆 2全款支付 3分期支付")
+    private Integer type;
+
 }

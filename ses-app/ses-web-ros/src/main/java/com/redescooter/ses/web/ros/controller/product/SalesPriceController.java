@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.product;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -8,6 +9,7 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.dm.OpeSalePrice;
 import com.redescooter.ses.web.ros.service.restproduction.SalesPriceService;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePriceListEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.SalePriceSaveOrUpdateEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +58,8 @@ public class SalesPriceController {
      */
     @PostMapping("/add")
     @ApiOperation(value = "新建", notes = "新建")
-    public Response<GeneralResult> addSalePrice(@ModelAttribute OpeSalePrice enter) {
+    @AvoidDuplicateSubmit
+    public Response<GeneralResult> addSalePrice(@ModelAttribute SalePriceSaveOrUpdateEnter enter) {
         return new Response<>(salesPriceService.addSalePrice(enter));
     }
 
@@ -74,7 +77,8 @@ public class SalesPriceController {
      */
     @PostMapping("/edit")
     @ApiOperation(value = "编辑", notes = "编辑")
-    public Response<GeneralResult> editSalePrice(@ModelAttribute OpeSalePrice enter) {
+    @AvoidDuplicateSubmit
+    public Response<GeneralResult> editSalePrice(@ModelAttribute SalePriceSaveOrUpdateEnter enter) {
         return new Response<>(salesPriceService.editSalePrice(enter));
     }
 
@@ -83,6 +87,7 @@ public class SalesPriceController {
      */
     @PostMapping("/status")
     @ApiOperation(value = "开启或关闭状态", notes = "开启或关闭状态")
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> editSalePriceStatus(@ModelAttribute IdEnter enter) {
         return new Response<>(salesPriceService.editSalePriceStatus(enter));
     }

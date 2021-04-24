@@ -271,5 +271,7 @@ public interface SequenceName {
 
     String OPE_SALE_SCOOTER_BATTERY_RELATION = "OPE_SALE_SCOOTER_BATTERY_RELATION";
 
+    String OPE_SALE_PRICE = "OPE_SALE_PRICE";
+
 
 }
