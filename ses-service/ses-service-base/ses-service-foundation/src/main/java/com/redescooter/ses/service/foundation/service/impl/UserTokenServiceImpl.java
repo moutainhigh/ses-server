@@ -17,7 +17,9 @@ import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.RefreshTokenEnter;
 import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.common.vo.base.ValidateCodeEnter;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
@@ -402,8 +404,10 @@ public class UserTokenServiceImpl implements UserTokenService {
         updateUser.setLastLoginIp(enter.getClientIp());
         updateUser.setLastLoginTime(new Date(enter.getTimestamp()));
         updateUser.setLastLoginToken(userToken.getToken());
+        updateUser.setRefreshToken(userToken.getRefreshToken());
         userMapper.updateById(updateUser);
         LoginResult result = LoginResult.builder().token(userToken.getToken()).noPassword(Boolean.FALSE).accountType(user.getUserType()).build();
+        result.setRefreshToken(userToken.getRefreshToken());
         result.setRequestId(enter.getRequestId());
         return result;
     }
@@ -688,6 +692,45 @@ public class UserTokenServiceImpl implements UserTokenService {
     }
 
     /**
+     * 刷新token
+     */
+    @Override
+    public TokenResult refreshToken(RefreshTokenEnter enter) {
+        if (null == enter || StringUtils.isBlank(enter.getRefreshToken())) {
+            throw new FoundationException(ExceptionCodeEnums.REFRESH_TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.REFRESH_TOKEN_NOT_EXIST.getMessage());
+        }
+        String refreshToken = enter.getRefreshToken();
+        Boolean flag = jedisCluster.exists(refreshToken);
+        // 刷新token在redis不存在,直接抛出异常,让前端返回登录页面
+        if (!flag) {
+            throw new FoundationException(ExceptionCodeEnums.REFRESH_TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.REFRESH_TOKEN_NOT_EXIST.getMessage());
+        }
+
+        // 生成新的access_token
+        String token = UUID.randomUUID().toString().replaceAll("-", "");
+        // 获得refresh_token的原来的值
+        Map<String, String> map = jedisCluster.hgetAll(refreshToken);
+        map.put("token", token);
+
+        // redis存储新的access_token
+        jedisCluster.hmset(token, map);
+        jedisCluster.expire(token, new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
+        //jedisCluster.expire(token, new Long(RedisExpireEnum.MINUTES_1.getSeconds()).intValue());  // 测试使用
+        // 更新db
+        PlaUser model = new PlaUser();
+        Long userId = Long.valueOf(map.get("userId"));
+        model.setId(userId);
+        model.setLastLoginToken(token);
+        model.setLastLoginTime(new Date());
+        plaUserService.updateById(model);
+
+        TokenResult result = new TokenResult();
+        result.setToken(token);
+        result.setRefreshToken(refreshToken);
+        return result;
+    }
+
+    /**
      * 设置token
      *
      * @param enter
@@ -697,8 +740,12 @@ public class UserTokenServiceImpl implements UserTokenService {
     @Override
     public UserToken setToken(LoginEnter enter, AccountsDto userDto) {
         String token = UUID.randomUUID().toString().replaceAll("-", "");
+        // 产生refresh_token
+        String refreshToken = UUID.randomUUID().toString().replaceAll("-", "");
+
         UserToken userToken = new UserToken();
         userToken.setToken(token);
+        userToken.setRefreshToken(refreshToken);
         userToken.setUserId(userDto.getUserId());
         userToken.setTenantId(userDto.getTenantId());
         userToken.setSystemId(enter.getSystemId());
@@ -718,6 +765,8 @@ public class UserTokenServiceImpl implements UserTokenService {
             map.remove("requestId");
             jedisCluster.hmset(token, map);
             jedisCluster.expire(token, new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
+            jedisCluster.hmset(refreshToken, map);
+            jedisCluster.expire(refreshToken, new Long(RedisExpireEnum.WEEK_1.getSeconds()).intValue());
         } catch (IllegalAccessException e) {
             log.error("setToken IllegalAccessException userSession:" + userToken, e);
         } catch (InvocationTargetException e) {

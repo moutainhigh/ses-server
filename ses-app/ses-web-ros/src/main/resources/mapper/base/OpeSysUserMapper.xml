@@ -16,6 +16,7 @@
         <result column="login_name" jdbcType="VARCHAR" property="loginName"/>
         <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime"/>
         <result column="last_login_token" jdbcType="VARCHAR" property="lastLoginToken"/>
+        <result column="refresh_token" jdbcType="VARCHAR" property="refreshToken"/>
         <result column="last_login_ip" jdbcType="VARCHAR" property="lastLoginIp"/>
         <result column="activation_time" jdbcType="DATE" property="activationTime"/>
         <result column="expire_date" jdbcType="DATE" property="expireDate"/>
@@ -33,7 +34,7 @@
         <!--@mbg.generated-->
         id, dr, dept_id, org_staff_id, app_id, system_id, `password`, salt, `status`, login_name,
         last_login_time, last_login_token, last_login_ip, activation_time, expire_date, created_by,
-        created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+        created_time, updated_by, updated_time, def1, def2, def3, def5, def6, refresh_token
     </sql>
     <update id="updateBatch" parameterType="java.util.List">
         <!--@mbg.generated-->

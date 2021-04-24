@@ -1,6 +1,5 @@
-package com.redescooter.ses.web.website.vo.login;
+package com.redescooter.ses.api.common.vo.base;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

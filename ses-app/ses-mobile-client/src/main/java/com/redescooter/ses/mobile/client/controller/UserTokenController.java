@@ -4,8 +4,10 @@ import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.RefreshTokenEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.service.LoginJPushProService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
 import com.redescooter.ses.api.foundation.vo.account.VerifyAccountEnter;
@@ -23,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -109,6 +112,13 @@ public class UserTokenController {
     @RequestMapping(value = "/verifyAccount")
     public Response<GeneralResult> verifyAccount(VerifyAccountEnter enter) {
         return new Response<>(userTokenService.verifyAccount(enter));
+    }
+
+    @IgnoreLoginCheck
+    @ApiOperation(value = "刷新token", response = TokenResult.class)
+    @PostMapping(value = "/refresh")
+    public Response<TokenResult> refreshToken(@ModelAttribute RefreshTokenEnter enter) {
+        return new Response<>(userTokenService.refreshToken(enter));
     }
 
 }

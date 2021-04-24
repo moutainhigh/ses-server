@@ -20,6 +20,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.GetAccountKeyResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.RefreshTokenEnter;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
@@ -191,6 +192,7 @@ public class TokenRosServiceImpl implements TokenRosService {
         //  setAuth(userRole.getRoleId());
 
         sysUser.setLastLoginToken(userToken.getToken());
+        sysUser.setRefreshToken(userToken.getRefreshToken());
         sysUser.setLastLoginTime(new Date(enter.getTimestamp()));
         sysUser.setLastLoginIp(enter.getClientIp());
         sysUser.setUpdatedBy(enter.getUserId());
@@ -199,6 +201,7 @@ public class TokenRosServiceImpl implements TokenRosService {
 
         TokenResult result = new TokenResult();
         result.setToken(userToken.getToken());
+        result.setRefreshToken(userToken.getRefreshToken());
         result.setRequestId(enter.getRequestId());
 //        result.setResetPsd(flag);
         return result;
@@ -669,10 +672,53 @@ public class TokenRosServiceImpl implements TokenRosService {
         return userToken;
     }
 
+    /**
+     * 刷新token
+     */
+    @Override
+    public TokenResult refreshToken(RefreshTokenEnter enter) {
+        if (null == enter || StringUtils.isBlank(enter.getRefreshToken())) {
+            throw new SesWebRosException(ExceptionCodeEnums.REFRESH_TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.REFRESH_TOKEN_NOT_EXIST.getMessage());
+        }
+        String refreshToken = enter.getRefreshToken();
+        Boolean flag = jedisCluster.exists(refreshToken);
+        // 刷新token在redis不存在,直接抛出异常,让前端返回登录页面
+        if (!flag) {
+            throw new SesWebRosException(ExceptionCodeEnums.REFRESH_TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.REFRESH_TOKEN_NOT_EXIST.getMessage());
+        }
+
+        // 生成新的access_token
+        String token = UUID.randomUUID().toString().replaceAll("-", "");
+        // 获得refresh_token的原来的值
+        Map<String, String> map = jedisCluster.hgetAll(refreshToken);
+        map.put("token", token);
+
+        // redis存储新的access_token
+        jedisCluster.hmset(token, map);
+        jedisCluster.expire(token, new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
+        //jedisCluster.expire(token, new Long(RedisExpireEnum.MINUTES_1.getSeconds()).intValue());  // 测试使用
+        // 更新db
+        OpeSysUser model = new OpeSysUser();
+        Long userId = Long.valueOf(map.get("userId"));
+        model.setId(userId);
+        model.setLastLoginToken(token);
+        model.setLastLoginTime(new Date());
+        opeSysUserService.updateById(model);
+
+        TokenResult result = new TokenResult();
+        result.setToken(token);
+        result.setRefreshToken(refreshToken);
+        return result;
+    }
+
     private UserToken setToken(LoginEnter enter, OpeSysUser user) {
         String token = UUID.randomUUID().toString().replaceAll("-", "");
+        // 产生refresh_token
+        String refreshToken = UUID.randomUUID().toString().replaceAll("-", "");
+
         UserToken userToken = new UserToken();
         userToken.setToken(token);
+        userToken.setRefreshToken(refreshToken);
         userToken.setUserId(user.getId());
         userToken.setTenantId(new Long("0"));
         userToken.setSystemId(enter.getSystemId());
@@ -690,6 +736,8 @@ public class TokenRosServiceImpl implements TokenRosService {
             map.remove("requestId");
             jedisCluster.hmset(token, map);
             jedisCluster.expire(token, new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
+            jedisCluster.hmset(refreshToken, map);
+            jedisCluster.expire(refreshToken, new Long(RedisExpireEnum.WEEK_1.getSeconds()).intValue());
         } catch (IllegalAccessException e) {
             log.error("setToken IllegalAccessException userSession:" + userToken, e);
         } catch (InvocationTargetException e) {
