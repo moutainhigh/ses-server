@@ -540,7 +540,13 @@ public enum ExceptionCodeEnums {
 
     ORDER_NOT_FOUND(10261,"订单不存在"),
 
-    REFRESH_TOKEN_NOT_EXIST(10262, "刷新token不存在")
+    REFRESH_TOKEN_NOT_EXIST(10262, "刷新token不存在"),
+
+    SALE_PRICE_IS_EMPTY(10263, "销售价格为空"),
+
+    SCOOTER_BATTERY_IS_EMPTY(10264, "车型为空"),
+
+    RULE_ALREADY_EXIST(10265, "规则已存在")
 
 
 

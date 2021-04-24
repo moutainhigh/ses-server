@@ -22,6 +22,7 @@ import com.redescooter.ses.web.ros.vo.restproduct.SalePriceListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePriceSaveOrUpdateEnter;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,7 +90,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
     public GeneralResult addSalePrice(SalePriceSaveOrUpdateEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         // 校验
-
+        check(enter);
 
         OpeSalePrice price = new OpeSalePrice();
         price.setId(idAppService.getId(SequenceName.OPE_SALE_PRICE));
@@ -127,7 +128,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
     public GeneralResult editSalePrice(SalePriceSaveOrUpdateEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         // 校验
-
+        check(enter);
 
         OpeSalePrice price = opeSalePriceService.getById(enter.getId());
         if (null == price) {
@@ -148,6 +149,26 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         }
         opeSalePriceService.updateById(price);
         return new GeneralResult(enter.getRequestId());
+    }
+
+    public void check(SalePriceSaveOrUpdateEnter enter) {
+        if (StringUtils.isBlank(enter.getScooterBattery())) {
+            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_BATTERY_IS_EMPTY.getCode(), ExceptionCodeEnums.SCOOTER_BATTERY_IS_EMPTY.getMessage());
+        }
+        LambdaQueryWrapper<OpeSalePrice> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeSalePrice::getDr, Constant.DR_FALSE);
+        qw.eq(OpeSalePrice::getType, enter.getType());
+        qw.eq(OpeSalePrice::getScooterBattery, enter.getScooterBattery());
+        if (enter.getType() == 1 || enter.getType() == 3) {
+            qw.eq(OpeSalePrice::getPeriod, enter.getPeriod());
+        }
+        if (null != enter.getId()) {
+            qw.ne(OpeSalePrice::getId, enter.getId());
+        }
+        int count = opeSalePriceService.count(qw);
+        if (count > 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.RULE_ALREADY_EXIST.getCode(), ExceptionCodeEnums.RULE_ALREADY_EXIST.getMessage());
+        }
     }
 
     /**
