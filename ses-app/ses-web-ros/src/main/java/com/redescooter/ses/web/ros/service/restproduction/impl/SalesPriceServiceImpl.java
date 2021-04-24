@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.base.OpeSalePriceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSalePrice;
 import com.redescooter.ses.web.ros.dm.OpeSaleScooterBatteryRelation;
 import com.redescooter.ses.web.ros.enums.distributor.StatusEnum;
@@ -43,6 +44,9 @@ public class SalesPriceServiceImpl implements SalesPriceService {
     private OpeSalePriceService opeSalePriceService;
 
     @Autowired
+    private OpeSalePriceMapper opeSalePriceMapper;
+
+    @Autowired
     private OpeSaleScooterBatteryRelationService opeSaleScooterBatteryRelationService;
 
     @DubboReference
@@ -68,20 +72,13 @@ public class SalesPriceServiceImpl implements SalesPriceService {
      */
     @Override
     public PageResult<OpeSalePrice> getSalePriceList(SalePriceListEnter enter) {
-
-
-
-
-
-
-
-
-
-
-
-
-
-        return null;
+        enter = SesStringUtils.objStringTrim(enter);
+        int count = opeSalePriceMapper.getSalePriceCount(enter);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<OpeSalePrice> list = opeSalePriceMapper.getSalePriceList(enter);
+        return PageResult.create(enter, count, list);
     }
 
     /**
@@ -115,7 +112,11 @@ public class SalesPriceServiceImpl implements SalesPriceService {
      */
     @Override
     public OpeSalePrice getSalePriceDetail(IdEnter enter) {
-        return null;
+        OpeSalePrice price = opeSalePriceService.getById(enter.getId());
+        if (null == price) {
+            throw new SesWebRosException(ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getCode(), ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getMessage());
+        }
+        return price;
     }
 
     /**
@@ -132,17 +133,21 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         if (null == price) {
             throw new SesWebRosException(ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getCode(), ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getMessage());
         }
-
-
-
-
-
-
+        price.setScooterBattery(enter.getScooterBattery());
+        price.setDeposit(enter.getDeposit());
+        price.setUpdatedBy(enter.getUserId());
+        price.setUpdatedTime(new Date());
+        if (null != enter.getPeriod()) {
+            price.setPeriod(enter.getPeriod());
+        }
+        if (null != enter.getShouldPayPeriod()) {
+            price.setShouldPayPeriod(enter.getShouldPayPeriod());
+        }
+        if (null != enter.getBalance()) {
+            price.setBalance(enter.getBalance());
+        }
         opeSalePriceService.updateById(price);
-
-
-
-        return null;
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -151,7 +156,18 @@ public class SalesPriceServiceImpl implements SalesPriceService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult editSalePriceStatus(IdEnter enter) {
-        return null;
+        OpeSalePrice price = opeSalePriceService.getById(enter.getId());
+        if (null == price) {
+            throw new SesWebRosException(ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getCode(), ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getMessage());
+        }
+        Integer status = price.getStatus();
+        price.setStatus(status == 1 ? 2 : 1);
+        opeSalePriceService.updateById(price);
+
+        // 数据同步
+
+
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -160,7 +176,16 @@ public class SalesPriceServiceImpl implements SalesPriceService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult deleteSalePrice(IdEnter enter) {
-        return null;
+        OpeSalePrice price = opeSalePriceService.getById(enter.getId());
+        if (null == price) {
+            throw new SesWebRosException(ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getCode(), ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getMessage());
+        }
+        opeSalePriceService.removeById(enter.getId());
+
+        // 数据同步
+
+
+        return new GeneralResult(enter.getRequestId());
     }
 
 }

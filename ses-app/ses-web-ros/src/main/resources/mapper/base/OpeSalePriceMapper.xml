@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.redescooter.ses.web.ros.dao.OpeSalePriceMapper">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeSalePriceMapper">
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeSalePrice">
         <id column="id" property="id"/>
@@ -22,8 +22,39 @@
         <result column="def4" property="def4"/>
         <result column="def5" property="def5"/>
     </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, dr, type, scooter_battery, deposit, period, should_pay_period, balance, status, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
     </sql>
+
+    <!-- 销售价格列表 -->
+    <select id="getSalePriceList" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" />
+        from ope_sale_price
+        where dr = 0 and type = #{enter.type}
+        <include refid="condition"/>
+        order by created_time desc
+    </select>
+
+    <!-- 销售价格列表count -->
+    <select id="getSalePriceCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_sale_price
+        where dr = 0 and type = #{enter.type}
+        <include refid="condition"/>
+    </select>
+
+    <sql id="condition">
+        <if test="enter.status != null and enter.status == 0">
+            and 1 = 1
+        </if>
+        <if test="enter.status != null and enter.status != 0">
+            and status = #{enter.status}
+        </if>
+        <if test="enter.scooterBattery != null and enter.scooterBattery != ''">
+            and scooter_battery = #{enter.scooterBattery}
+        </if>
+    </sql>
+
 </mapper>
