@@ -48,7 +48,7 @@ spring:                                                                         
     publisher-confirms: true
     listener:
       simple:
-        acknowledge-mode: MANUAL 
+        acknowledge-mode: MANUAL
   swagger:                                                                                                              #swagger在线文档配置
     enabled: false
 fileUpload:
