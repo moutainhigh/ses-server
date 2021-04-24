@@ -688,8 +688,11 @@ public class TokenRosServiceImpl implements TokenRosService {
             Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);
             map.remove("requestId");
 
+            //TODO 临时处理，不是最终结局方案！！
             map.forEach((k, v) -> {
-                log.info("k==={},v==={}",k,v);
+              if (StringUtils.isAllBlank(k,v)){
+                  map.remove(k);
+              }
             });
             jedisCluster.hmset(token, map);
             jedisCluster.expire(token, new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
