@@ -13,6 +13,7 @@ import com.redescooter.ses.mobile.client.config.UserComponent;
 import com.redescooter.ses.mobile.client.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.client.exception.SesMobileClientException;
 import com.redescooter.ses.mobile.client.service.ScooterService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +48,13 @@ public class ScooterServiceImpl implements ScooterService {
             scooterResult = scooterMobileBService.getScooterInfo(enter);
         } else if (UserServiceTypeEnum.C.getType().equals(userServiceType)) {
             scooterResult = scooterMobileCService.getScooterInfo(enter);
+        }
+
+        if (null == scooterResult) {
+            throw new SesMobileClientException(ExceptionCodeEnums.SCOOTER_INFO_NOT_FIND.getCode(), ExceptionCodeEnums.SCOOTER_INFO_NOT_FIND.getMessage());
+        }
+        if (StringUtils.isBlank(scooterResult.getBluetoothMacAddress())) {
+            throw new SesMobileClientException(ExceptionCodeEnums.BLUE_TOOTH_MAC_ADDRESS_IS_EMPTY.getCode(), ExceptionCodeEnums.BLUE_TOOTH_MAC_ADDRESS_IS_EMPTY.getMessage());
         }
         return scooterResult;
     }

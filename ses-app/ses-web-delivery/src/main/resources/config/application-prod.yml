@@ -18,7 +18,7 @@ spring:
       max-file-size: 20MB
       enabled: true
   datasource:
-    url: jdbc:mysql://10.1.2.53:2021/corporate_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://10.1.2.238:2021/corporate_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: rede
     password: rede1qaz2wsx
     druid:
@@ -36,17 +36,36 @@ spring:
   redis:
     cluster:
       nodes:
-        - 10.1.2.53:7000
-        - 10.1.2.53:7001
-        - 10.1.2.53:7002
-        - 10.1.2.53:7003
-        - 10.1.2.53:7004
-        - 10.1.2.53:7005
-  # swagger在线文档配置
+        - 10.1.2.238:7000
+        - 10.1.2.238:7001
+        - 10.1.2.238:7002
+        - 10.1.2.238:7003
+        - 10.1.2.238:7004
+        - 10.1.2.238:7005
   swagger:
-    enabled: false                                       # 是否启用swagger
-
+    enabled: false
 oss:                                                                                                                    #阿里oss上传
-  #oss 使用http、https请求方式
   protocol: HTTPS
 
+seata:
+  enabled: true
+  enable-auto-data-source-proxy: true
+  tx-service-group: ses-web-delivery-group
+  registry:
+    type: zk
+    zk:
+      server-addr: 10.1.1.142:2181
+      cluster: default
+      connect-timeout: 2000000
+  config:
+    type: zk
+    zk:
+      server-addr: 10.1.1.142:2181
+      connect-timeout: 2000000
+  service:
+    disable-global-transaction: false
+    vgroup-mapping:
+      ses-admin-dev-group: default
+  client:
+    rm:
+      report-success-enable: false

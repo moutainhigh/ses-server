@@ -75,4 +75,5 @@ public interface ToBeAssignService {
      */
     List<String> testGenerateVINCode(GeneralEnter enter);
 
+    String show(Long specificatId, String specificatName, Integer seatNumber, int i);
 }

@@ -10,8 +10,9 @@ import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooterStatus;
 import com.redescooter.ses.service.scooter.service.base.ScoScooterStatusService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import io.seata.spring.annotation.GlobalTransactional;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.map.MapUtil;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -19,7 +20,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
@@ -55,7 +55,7 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
         try {
             String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterEcu.getTabletSn());
             if (StringUtils.isBlank(scooterNo)) {
-                log.error("【车辆ECU控制器数据上报失败】----车辆不存在");
+                log.error("【车辆ECU控制器数据上报失败】----{}车辆不存在,请检查！！！", scooterEcu.getTabletSn());
                 return 0;
             }
 
@@ -64,6 +64,9 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
              */
             try {
                 ScooterEcuDTO scooterEcuDb = scooterEcuMapper.getScooterEcuBySerialNumber(scooterEcu.getTabletSn());
+
+                log.info("【车辆{}:::ECU控制器数据上报开始】----{}", scooterEcu.getTabletSn(), DateUtil.format(new Date(), DateUtil.DEFAULT_DATETIME_FORMAT));
+
                 if (null != scooterEcuDb) {
                     scooterEcu.setId(scooterEcuDb.getId());
                     scooterEcu.setUpdatedTime(new Date());
@@ -75,11 +78,9 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
                     scooterEcu.setUpdatedTime(new Date());
                     scooterEcuMapper.insertScooterEcu(scooterEcu);
                 }
-
                 // 同时更新scooter表车辆锁状态和车辆行驶总里程
                 updateScooterStatusAndTotalMilesByEcu(scooterEcu.getTabletSn(), scooterEcu.getScooterLock(),
                         scooterEcu.getTotalMiles());
-
                 // 新增scooter实时信息
                 ScoScooterStatus model = new ScoScooterStatus();
                 model.setId(idAppService.getId(SequenceName.SCO_SCOOTER));
@@ -97,12 +98,14 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
                 model.setCreatedBy(scooterEcu.getCreatedBy());
                 model.setCreatedTime(new Date());
                 scoScooterStatusService.save(model);
+                log.info("【车辆{}:::ECU控制器数据上报结束】----{}", scooterEcu.getTabletSn(), DateUtil.format(new Date(), DateUtil.DEFAULT_DATETIME_FORMAT));
+
             } catch (Exception e) {
-                log.error("【车辆ECU仪表信息数据上报失败】----{}", ExceptionUtils.getStackTrace(e));
+                log.error("【车辆ECU数据解析失败】----{}", ExceptionUtils.getStackTrace(e));
             }
         } catch (Exception e) {
             // 这里不要抛出异常,这里会往上抛到emq那边导致连接中断
-            log.error("【车辆ECU仪表信息数据上报失败】----{}", ExceptionUtils.getStackTrace(e));
+            log.error("【车辆ECU数据解析失败】----{}", ExceptionUtils.getStackTrace(e));
         }
         return 1;
     }
