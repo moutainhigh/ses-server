@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.scooter.dm.base;
 
+import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
 
@@ -8,7 +9,7 @@ import lombok.Data;
  * @date 2020/11/20 16:36
  */
 @Data
-public class ScoScooterBbiBatteryWare {
+public class ScoScooterBbiBatteryWare  implements Serializable {
     /**
      * 主键id
      */

@@ -12,7 +12,6 @@ import java.util.Date;
 @Data
 @TableName(value = "sco_scooter")
 public class ScoScooter implements Serializable {
-    public static final String COL_DEF1 = "def1";
     /**
      * ID
      */
@@ -24,7 +23,6 @@ public class ScoScooter implements Serializable {
      * 逻辑删除标识 0正常 1删除
      */
     @TableField(value = "dr")
-    @TableLogic
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
@@ -35,9 +33,19 @@ public class ScoScooter implements Serializable {
     @ApiModelProperty(value = "车辆编号")
     private String scooterNo;
 
+    /**
+     * 平板序列号
+     */
     @TableField(value = "tablet_sn")
-    @ApiModelProperty(value = "车辆平板序列号")
+    @ApiModelProperty(value = "平板序列号")
     private String tabletSn;
+
+    /**
+     * 平板蓝牙mac地址
+     */
+    @TableField(value = "bluetooth_mac_address")
+    @ApiModelProperty(value = "平板蓝牙mac地址")
+    private String bluetoothMacAddress;
 
     /**
      * 车辆图片
@@ -49,7 +57,7 @@ public class ScoScooter implements Serializable {
     /**
      * 状态:LOCKED;UNLOCKED
      */
-    @TableField(value = "status")
+    @TableField(value = "`status`")
     @ApiModelProperty(value = "状态:LOCKED;UNLOCKED")
     private String status;
 
@@ -75,10 +83,10 @@ public class ScoScooter implements Serializable {
     private String boxStatus;
 
     /**
-     * 型号
+     * 车辆型号 1：E25 2：E50 3：E100 4：E125
      */
     @TableField(value = "model")
-    @ApiModelProperty(value = "型号")
+    @ApiModelProperty(value = "车辆型号 1：E25 2：E50 3：E100 4：E125")
     private String model;
 
     /**
@@ -161,6 +169,13 @@ public class ScoScooter implements Serializable {
     /**
      * 冗余字段
      */
+    @TableField(value = "def1")
+    @ApiModelProperty(value = "冗余字段")
+    private String def1;
+
+    /**
+     * 冗余字段
+     */
     @TableField(value = "def2")
     @ApiModelProperty(value = "冗余字段")
     private String def2;
@@ -196,6 +211,8 @@ public class ScoScooter implements Serializable {
 
     public static final String COL_TABLET_SN = "tablet_sn";
 
+    public static final String COL_BLUETOOTH_MAC_ADDRESS = "bluetooth_mac_address";
+
     public static final String COL_PICTURE = "picture";
 
     public static final String COL_STATUS = "status";
@@ -229,6 +246,8 @@ public class ScoScooter implements Serializable {
     public static final String COL_UPDATED_BY = "updated_by";
 
     public static final String COL_UPDATED_TIME = "updated_time";
+
+    public static final String COL_DEF1 = "def1";
 
     public static final String COL_DEF2 = "def2";
 

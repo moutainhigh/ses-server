@@ -2,6 +2,7 @@ package com.redescooter.ses.service.scooter.dm.base;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Date;
  * @date 2020/11/20 14:32
  */
 @Data
-public class ScoScooterBbi {
+public class ScoScooterBbi  implements Serializable {
     /**
     * 主键id
     */

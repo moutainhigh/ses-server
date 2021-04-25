@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.scooter.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
 import com.redescooter.ses.api.common.vo.scooter.SyncScooterEcuDataDTO;
 import com.redescooter.ses.api.scooter.service.ScooterEcuService;
@@ -7,6 +8,8 @@ import com.redescooter.ses.api.scooter.vo.emqx.ScooterEcuDTO;
 import com.redescooter.ses.service.scooter.constant.SequenceName;
 import com.redescooter.ses.service.scooter.dao.ScooterEcuMapper;
 import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
+import com.redescooter.ses.service.scooter.dao.base.ScoScooterMapper;
+import com.redescooter.ses.service.scooter.dm.base.ScoScooter;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooterStatus;
 import com.redescooter.ses.service.scooter.service.base.ScoScooterStatusService;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -20,7 +23,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -36,25 +38,24 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
 
     @DubboReference
     private IdAppService idAppService;
-
     @Resource
     private ScooterEcuMapper scooterEcuMapper;
-
     @Resource
     private ScooterServiceMapper scooterServiceMapper;
-
-    @Resource
-    private TransactionTemplate transactionTemplate;
-
     @Autowired
     private ScoScooterStatusService scoScooterStatusService;
-
+    @Autowired
+    private ScoScooterMapper scoScooterMapper;
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public int insertScooterEcuByEmqX(ScooterEcuDTO scooterEcu) {
         try {
-            String scooterNo = scooterServiceMapper.getScooterNoByTabletSn(scooterEcu.getTabletSn());
-            if (StringUtils.isBlank(scooterNo)) {
+            ScoScooter scooter = scoScooterMapper.selectOne(
+                    new QueryWrapper<ScoScooter>()
+                            .eq(ScoScooter.COL_TABLET_SN, scooterEcu.getTabletSn())
+                            .eq(ScoScooter.COL_DR, 0)
+                            .last("limit 1"));
+            if (scooter == null || StringUtils.isBlank(scooter.getScooterNo())) {
                 log.error("【车辆ECU控制器数据上报失败】----{}车辆不存在,请检查！！！", scooterEcu.getTabletSn());
                 return 0;
             }
@@ -66,21 +67,27 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
                 ScooterEcuDTO scooterEcuDb = scooterEcuMapper.getScooterEcuBySerialNumber(scooterEcu.getTabletSn());
 
                 log.info("【车辆{}:::ECU控制器数据上报开始】----{}", scooterEcu.getTabletSn(), DateUtil.format(new Date(), DateUtil.DEFAULT_DATETIME_FORMAT));
-                log.info("ECU上报数据《《《《{}》》》》", scooterEcu.toString());
-                if (null != scooterEcuDb) {
+
+                if (scooterEcuDb == null) {
+                    scooterEcu.setId(idAppService.getId(SequenceName.SCO_SCOOTER_ECU));
+                    scooterEcu.setScooterNo(scooter.getScooterNo());
+                    if (StringUtils.isAnyBlank(scooterEcu.getBluetoothMacAddress())) {
+                        scooterEcu.setBluetoothMacAddress(scooter.getBluetoothMacAddress());
+                    }
+                    scooterEcu.setCreatedTime(new Date());
+                    scooterEcu.setCreatedBy(0L);
+                    scooterEcu.setUpdatedTime(new Date());
+                    scooterEcu.setUpdatedBy(0L);
+                    scooterEcuMapper.insertScooterEcu(scooterEcu);
+                } else {
                     scooterEcu.setId(scooterEcuDb.getId());
                     scooterEcu.setUpdatedTime(new Date());
+                    scooterEcu.setUpdatedBy(0L);
+                    log.info("ECU>>>>>update>>>>>{}", scooterEcu.toString());
                     scooterEcuMapper.updateScooterEcu(scooterEcu);
-                } else {
-                    scooterEcu.setId(idAppService.getId(SequenceName.SCO_SCOOTER_ECU));
-                    scooterEcu.setScooterNo(scooterNo);
-                    scooterEcu.setCreatedTime(new Date());
-                    scooterEcu.setUpdatedTime(new Date());
-                    scooterEcuMapper.insertScooterEcu(scooterEcu);
                 }
                 // 同时更新scooter表车辆锁状态和车辆行驶总里程
-                updateScooterStatusAndTotalMilesByEcu(scooterEcu.getTabletSn(), scooterEcu.getScooterLock(),
-                        scooterEcu.getTotalMiles());
+                updateScooterStatusAndTotalMilesByEcu(scooterEcu.getTabletSn(), scooterEcu.getScooterLock(), scooterEcu.getTotalMiles());
                 // 新增scooter实时信息
                 ScoScooterStatus model = new ScoScooterStatus();
                 model.setId(idAppService.getId(SequenceName.SCO_SCOOTER));
@@ -97,6 +104,8 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
                 model.setRevision(0);
                 model.setCreatedBy(scooterEcu.getCreatedBy());
                 model.setCreatedTime(new Date());
+                model.setDef1(scooterEcu.getTabletSn());
+                model.setDef2(scooterEcu.getBluetoothMacAddress());
                 scoScooterStatusService.save(model);
                 log.info("【车辆{}:::ECU控制器数据上报结束】----{}", scooterEcu.getTabletSn(), DateUtil.format(new Date(), DateUtil.DEFAULT_DATETIME_FORMAT));
 
