@@ -272,9 +272,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
         for (OpeInWhouseScooterB item : list) {
             // 为每一辆车生成一个RSN
             //String rsn = getProductSerialNum();
-
             String rsn = item.getDef1();
-
             // 新增sco_scooter表
             SyncScooterDataDTO syncData = new SyncScooterDataDTO();
             syncData.setScooterNo(rsn);
@@ -310,8 +308,8 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
                     bind.setOrderType(ProductTypeEnums.SCOOTER.getValue());
                     bind.setSerialNum(rsn);
                     bind.setDefaultSerialNum(item.getDef1());
-                    bind.setTabletSn(item.getDef1());
                     bind.setBluetoothMacAddress(item.getDef2());
+                    bind.setTabletSn(item.getDef3());
                     bind.setLot(lot);
                     bind.setProductId(bom.getId());
                     bind.setProductType(ProductTypeEnums.SCOOTER.getValue());
@@ -350,11 +348,12 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
                     number.setRelationType(ProductTypeEnums.SCOOTER.getValue());
                     number.setRelationId(stock.getId());
                     number.setStockType(WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
-                    number.setRsn(rsn);
                     number.setStockStatus(1);
                     number.setLotNum(lot);
+                    number.setRsn(rsn);
                     number.setSn(item.getDef1());
                     number.setBluetoothMacAddress(item.getDef2());
+                    number.setDef3(item.getDef3());
                     number.setCreatedBy(enter.getUserId());
                     number.setCreatedTime(new Date());
                     number.setUpdatedBy(enter.getUserId());
