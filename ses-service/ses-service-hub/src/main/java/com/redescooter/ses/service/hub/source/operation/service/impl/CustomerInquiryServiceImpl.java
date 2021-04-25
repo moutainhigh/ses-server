@@ -81,7 +81,6 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
             }
             opeCustomer.setStatus(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue());
             opeCustomer.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
-            opeCustomer.setCustomerType(null);
             opeCustomerService.updateById(opeCustomer);
         }
         log.info(inquiryResult + "{>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>inquiryResult}");
