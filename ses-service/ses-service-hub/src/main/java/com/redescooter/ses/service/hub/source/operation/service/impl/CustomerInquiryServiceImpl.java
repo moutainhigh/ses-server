@@ -78,7 +78,7 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
             if (opeCustomer==null){
                 throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
             }
-            opeCustomer.setStatus(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getCode());
+            opeCustomer.setStatus(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue());
             opeCustomerService.updateById(opeCustomer);
         }
         log.info(inquiryResult + "{>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>inquiryResult}");
