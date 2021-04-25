@@ -9,6 +9,7 @@ import com.redescooter.ses.web.ros.vo.restproduct.SalePriceListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePriceSaveOrUpdateEnter;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description 销售价格Service
@@ -51,5 +52,10 @@ public interface SalesPriceService {
      * 删除
      */
     GeneralResult deleteSalePrice(IdEnter enter);
+
+    /**
+     * 每个tab的count
+     */
+    Map<String, Integer> getTabCount(GeneralEnter enter);
 
 }

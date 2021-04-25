@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description 销售价格控制器
@@ -101,5 +102,13 @@ public class SalesPriceController {
         return new Response<>(salesPriceService.deleteSalePrice(enter));
     }
 
+    /**
+     * 每个tab的count
+     */
+    @PostMapping("/count")
+    @ApiOperation(value = "每个tab的count", notes = "每个tab的count")
+    public Response<Map<String, Integer>> getTabCount(@ModelAttribute GeneralEnter enter) {
+        return new Response<>(salesPriceService.getTabCount(enter));
+    }
 
 }

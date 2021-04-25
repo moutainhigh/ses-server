@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.restproduction.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -231,6 +233,24 @@ public class SalesPriceServiceImpl implements SalesPriceService {
 
 
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 每个tab的count
+     */
+    @Override
+    public Map<String, Integer> getTabCount(GeneralEnter enter) {
+        Map<String, Integer> result = Maps.newHashMapWithExpectedSize(3);
+        LambdaQueryWrapper<OpeSalePrice> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeSalePrice::getDr, Constant.DR_FALSE);
+        List<OpeSalePrice> list = opeSalePriceService.list(qw);
+        List<OpeSalePrice> borrowList = list.stream().filter(o -> o.getType() == 1).collect(Collectors.toList());
+        List<OpeSalePrice> fullList = list.stream().filter(o -> o.getType() == 2).collect(Collectors.toList());
+        List<OpeSalePrice> partList = list.stream().filter(o -> o.getType() == 3).collect(Collectors.toList());
+        result.put("1", borrowList.size());
+        result.put("2", fullList.size());
+        result.put("3", partList.size());
+        return result;
     }
 
 }
