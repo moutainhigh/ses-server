@@ -325,15 +325,17 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         siteOrder.setUpdatedTime(new Date());
         siteOrderService.updateById(siteOrder);
 
+        //同步ros订单状态
+        IdEnter idEnter = new IdEnter();
+        idEnter.setId(siteOrder.getId());
+        synchronizationOfRosSuccess(idEnter);
+
         //TODO 将潜在客户预定客户转化为潜在客户
         //邮件发送
         sendmail(siteOrder);
         //保存支付记录
         savePaymentRecords(siteOrder, stripeJson);
-        //同步ros订单状态
-        IdEnter idEnter = new IdEnter();
-        idEnter.setId(siteOrder.getId());
-        synchronizationOfRosSuccess(idEnter);
+
 
     }
 
