@@ -66,7 +66,7 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
                 ScooterEcuDTO scooterEcuDb = scooterEcuMapper.getScooterEcuBySerialNumber(scooterEcu.getTabletSn());
 
                 log.info("【车辆{}:::ECU控制器数据上报开始】----{}", scooterEcu.getTabletSn(), DateUtil.format(new Date(), DateUtil.DEFAULT_DATETIME_FORMAT));
-
+                log.info("ECU上报数据《《《《{}》》》》", scooterEcu.toString());
                 if (null != scooterEcuDb) {
                     scooterEcu.setId(scooterEcuDb.getId());
                     scooterEcu.setUpdatedTime(new Date());

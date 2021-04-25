@@ -136,7 +136,7 @@ public class SaveWmsStockDataComponent {
             }
 
             /**
-             * 保存车辆信息至scooter表, ecu表数据会通过车辆上报保存至数据库
+             * todo 保存车辆信息至scooter表, ecu表数据会通过车辆上报保存至数据库
              */
             //int count = scooterService.countByScooter();
             List<SyncScooterDataDTO> scooterDataDTOList = new ArrayList<>();

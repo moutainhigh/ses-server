@@ -9,7 +9,6 @@ import com.redescooter.ses.service.scooter.dm.base.ScoScooterEcu;
  */
 public interface ScoScooterEcuService{
 
-
     int deleteByPrimaryKey(Long id);
 
     int insert(ScoScooterEcu record);
