@@ -199,9 +199,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
     public void syncSalePrice(OpeSalePrice price) {
         if (2 == price.getStatus()) {
             // 关闭的时候调
-
-
-            productionService.syncSalePriceWhenClose();
+            productionService.syncSalePriceWhenClose(price.getScooterBattery(), price.getType(), price.getPeriod());
         } else {
             // 开启的时候调
             SyncSalePriceDataEnter model = new SyncSalePriceDataEnter();
@@ -215,10 +213,6 @@ public class SalesPriceServiceImpl implements SalesPriceService {
             model.setStatus(price.getStatus());
             productionService.syncSalePrice(model);
         }
-
-
-
-
     }
 
     /**

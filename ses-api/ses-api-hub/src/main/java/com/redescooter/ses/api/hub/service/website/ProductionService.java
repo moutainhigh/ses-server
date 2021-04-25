@@ -27,7 +27,7 @@ public interface ProductionService {
     /**
      * 同步销售价格,关闭的时候调
      */
-    void syncSalePriceWhenClose();
+    void syncSalePriceWhenClose(String scooterBattery, Integer type, Integer period);
 
     /**
      * 同步销售价格,开启的时候调

@@ -393,7 +393,9 @@ public class ProductionServiceImpl implements ProductionService {
      * 同步销售价格,关闭的时候调
      */
     @Override
-    public void syncSalePriceWhenClose() {
+    @GlobalTransactional(rollbackFor = Exception.class)
+    @DS("website")
+    public void syncSalePriceWhenClose(String scooterBattery, Integer type, Integer period) {
 
     }
 
@@ -401,7 +403,15 @@ public class ProductionServiceImpl implements ProductionService {
      * 同步销售价格,开启的时候调
      */
     @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    @DS("website")
     public void syncSalePrice(SyncSalePriceDataEnter enter) {
+
+
+
+
+
+
 
     }
 
@@ -409,6 +419,8 @@ public class ProductionServiceImpl implements ProductionService {
      * 删除销售价格
      */
     @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    @DS("website")
     public void syncDeleteSalePrice() {
 
     }
