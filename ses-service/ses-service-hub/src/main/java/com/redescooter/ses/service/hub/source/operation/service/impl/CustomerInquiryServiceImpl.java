@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.hub.source.operation.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
+import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
@@ -79,6 +80,8 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
                 throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
             }
             opeCustomer.setStatus(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue());
+            opeCustomer.setCustomerSource(CustomerSourceEnum.WEBSITE.getValue());
+            opeCustomer.setCustomerType(null);
             opeCustomerService.updateById(opeCustomer);
         }
         log.info(inquiryResult + "{>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>inquiryResult}");
