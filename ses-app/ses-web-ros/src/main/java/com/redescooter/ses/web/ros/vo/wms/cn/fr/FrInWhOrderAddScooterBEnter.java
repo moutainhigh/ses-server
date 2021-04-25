@@ -29,10 +29,7 @@ public class FrInWhOrderAddScooterBEnter extends GeneralEnter {
     @ApiModelProperty(value = "平板序列号", required = true)
     private String sn;
 
-    @ApiModelProperty(value = "仪表蓝牙地址", required = true)
+    @ApiModelProperty(value = "蓝牙地址", required = true)
     private String bluetoothMacAddress;
-
-    @ApiModelProperty(value = "仪表序列号", required = true)
-    private String tabletSn;
 
 }
