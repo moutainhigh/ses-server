@@ -12,6 +12,7 @@
         <result column="deliveryType" jdbcType="VARCHAR" property="deliveryType"/>
         <result column="freight" jdbcType="DECIMAL" property="freight"/>
         <result column="productPrice" jdbcType="DECIMAL" property="productPrice"/>
+        <result column="picture" jdbcType="VARCHAR" property="picture"/>
         <result column="totalPrice" jdbcType="DECIMAL" property="totalPrice"/>
         <result column="amountPaid" jdbcType="DECIMAL" property="amountPaid"/>
         <result column="paymentName" jdbcType="VARCHAR" property="paymentName"/>
@@ -60,7 +61,8 @@
                sob.created_time     as createdTime,
                so.amount_obligation as amountObligation,
                so.amount_discount as amountDiscount,
-               so.prepaid_deposit as prepaidDeposit
+               so.prepaid_deposit as prepaidDeposit,
+               spt.picture
         from site_order so
                      left join site_order_b sob on so.id = sob.order_id and sob.dr = 0
                      left join site_parts sps on sob.parts_id = sps.id and sps.dr = 0
@@ -93,7 +95,8 @@
                sps.en_name          as enName,
                sob.parts_qty        as partsQty,
                sob.parts_price      as partsPrice,
-               sob.created_time     as createdTime
+               sob.created_time     as createdTime,
+               spt.picture
         from site_order so
                      left join site_order_b sob on so.id = sob.order_id and sob.dr = 0
                      left join site_parts sps on sob.parts_id = sps.id and sps.dr = 0

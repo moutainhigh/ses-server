@@ -716,6 +716,7 @@ public class UserTokenServiceImpl implements UserTokenService {
             Map<String, String> map = org.apache.commons.beanutils.BeanUtils.describe(userToken);
             log.info("这个map里面的东西是： " + JSON.toJSONString(map));
             map.remove("requestId");
+            map.remove("refreshToken");
             jedisCluster.hmset(token, map);
             jedisCluster.expire(token, new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
         } catch (IllegalAccessException e) {
