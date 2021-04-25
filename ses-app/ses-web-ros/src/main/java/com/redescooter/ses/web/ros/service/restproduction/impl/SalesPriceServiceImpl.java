@@ -205,14 +205,12 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         } else {
             // 开启的时候调
             SyncSalePriceDataEnter model = new SyncSalePriceDataEnter();
-            model.setDr(Constant.DR_FALSE);
             model.setType(price.getType());
             model.setScooterBattery(price.getScooterBattery());
             model.setDeposit(price.getDeposit());
             model.setPeriod(price.getPeriod());
             model.setShouldPayPeriod(price.getShouldPayPeriod());
             model.setBalance(price.getBalance());
-            model.setStatus(price.getStatus());
             productionService.syncSalePrice(model);
         }
     }

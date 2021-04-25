@@ -24,9 +24,6 @@ import java.math.BigDecimal;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class SyncSalePriceDataEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "逻辑删除")
-    private Integer dr;
-
     @ApiModelProperty(value = "类型 1租借车辆 2全款支付 3分期支付")
     private Integer type;
 
@@ -44,8 +41,5 @@ public class SyncSalePriceDataEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "尾款(当类型为全款支付时才有值)")
     private BigDecimal balance;
-
-    @ApiModelProperty(value = "状态 1开启(可用) 2关闭(不可用)")
-    private Integer status;
 
 }

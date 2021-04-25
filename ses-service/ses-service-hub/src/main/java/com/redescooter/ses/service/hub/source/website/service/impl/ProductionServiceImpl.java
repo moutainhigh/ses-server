@@ -4,14 +4,25 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Maps;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.service.website.ProductionService;
 import com.redescooter.ses.api.hub.vo.website.SyncProductionDataEnter;
 import com.redescooter.ses.api.hub.vo.website.SyncSalePriceDataEnter;
 import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
-import com.redescooter.ses.service.hub.source.website.dm.*;
-import com.redescooter.ses.service.hub.source.website.service.base.*;
+import com.redescooter.ses.service.hub.source.website.dm.SiteColour;
+import com.redescooter.ses.service.hub.source.website.dm.SiteProduct;
+import com.redescooter.ses.service.hub.source.website.dm.SiteProductClass;
+import com.redescooter.ses.service.hub.source.website.dm.SiteProductColour;
+import com.redescooter.ses.service.hub.source.website.dm.SiteProductModel;
+import com.redescooter.ses.service.hub.source.website.dm.SiteProductPrice;
+import com.redescooter.ses.service.hub.source.website.service.base.SiteColourService;
+import com.redescooter.ses.service.hub.source.website.service.base.SiteProductClassService;
+import com.redescooter.ses.service.hub.source.website.service.base.SiteProductColourService;
+import com.redescooter.ses.service.hub.source.website.service.base.SiteProductModelService;
+import com.redescooter.ses.service.hub.source.website.service.base.SiteProductPriceService;
+import com.redescooter.ses.service.hub.source.website.service.base.SiteProductService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.common.util.CollectionUtils;
 import io.seata.spring.annotation.GlobalTransactional;
@@ -21,6 +32,7 @@ import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +61,9 @@ public class ProductionServiceImpl implements ProductionService {
 
     @Autowired
     private SiteProductModelService siteProductModelService;
+
+    @Autowired
+    private SiteProductPriceService siteProductPriceService;
 
     @DubboReference
     private IdAppService idAppService;
@@ -406,13 +421,64 @@ public class ProductionServiceImpl implements ProductionService {
     @GlobalTransactional(rollbackFor = Exception.class)
     @DS("website")
     public void syncSalePrice(SyncSalePriceDataEnter enter) {
+        String scooterBattery = enter.getScooterBattery();
+        Long modelId = null;
 
+        LambdaQueryWrapper<SiteProductModel> qw = new LambdaQueryWrapper<>();
+        qw.eq(SiteProductModel::getDr, Constant.DR_FALSE);
+        qw.eq(SiteProductModel::getStatus, 1);
+        List<SiteProductModel> list = siteProductModelService.list(qw);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (SiteProductModel o : list) {
+                if (scooterBattery.contains(o.getProductModelName())) {
+                    modelId = o.getId();
+                    break;
+                }
+            }
+        }
 
+        if (null != modelId) {
+            SiteProductPrice model = new SiteProductPrice();
+            model.setId(idAppService.getId(SequenceName.SITE_PRODUCT_PRICE));
+            model.setDr(Constant.DR_FALSE);
+            model.setStatus(1);
+            model.setProductModelId(modelId);
 
+            // 租借车辆和分期支付
+            if (enter.getType() == 1 || enter.getType() == 3) {
+                model.setPriceType(1);
+            } else if (enter.getType() == 2) {
+                model.setPriceType(0);
+            }
+            if (null != enter.getPeriod()) {
+                model.setInstallmentTime(String.valueOf(enter.getPeriod()));
+            }
 
-
-
-
+            // 租借车辆和分期支付
+            if (enter.getType() == 1 || enter.getType() == 3) {
+                // 定金
+                BigDecimal deposit = enter.getDeposit();
+                // 期数(期数-定金的1个月)
+                Integer period = enter.getPeriod() - 1;
+                // 每期应付*期数
+                BigDecimal balance = enter.getShouldPayPeriod().multiply(new BigDecimal(String.valueOf(period)));
+                BigDecimal price = deposit.add(balance);
+                model.setPrice(price);
+            } else if (enter.getType() == 2) {
+                BigDecimal deposit = enter.getDeposit();
+                BigDecimal balance = enter.getBalance();
+                BigDecimal price = deposit.add(balance);
+                model.setPrice(price);
+            }
+            model.setEffectiveTime(new Date());
+            model.setPrepaidDeposit(enter.getDeposit());
+            model.setCountryCode("33");
+            model.setCountryCity("fr");
+            model.setCountryLanguage("fr");
+            model.setCreatedBy(0L);
+            model.setCreatedTime(new Date());
+            siteProductPriceService.save(model);
+        }
     }
 
     /**
