@@ -185,7 +185,7 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         }
         //发送数据到Monday
         mondayData(product.getColor(), enter.getBatteryQty(), product.getProductModel(), inquiry);*/
-        mondayData("5", enter.getBatteryQty(), enter.getProductModel(), inquiry);
+        //mondayData("5", enter.getBatteryQty(), enter.getProductModel(), inquiry);
     }
 
 
