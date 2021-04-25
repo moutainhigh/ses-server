@@ -6,6 +6,8 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.hub.service.website.ProductionService;
+import com.redescooter.ses.api.hub.vo.website.SyncSalePriceDataEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -25,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -53,6 +56,9 @@ public class SalesPriceServiceImpl implements SalesPriceService {
     @DubboReference
     private IdAppService idAppService;
 
+    @DubboReference
+    private ProductionService productionService;
+
     /**
      * 车型下拉数据源
      */
@@ -73,7 +79,6 @@ public class SalesPriceServiceImpl implements SalesPriceService {
      */
     @Override
     public PageResult<OpeSalePrice> getSalePriceList(SalePriceListEnter enter) {
-        enter = SesStringUtils.objStringTrim(enter);
         int count = opeSalePriceMapper.getSalePriceCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
@@ -186,9 +191,34 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         opeSalePriceService.updateById(price);
 
         // 数据同步
-
-
+        syncSalePrice(price);
         return new GeneralResult(enter.getRequestId());
+    }
+
+    @Async
+    public void syncSalePrice(OpeSalePrice price) {
+        if (2 == price.getStatus()) {
+            // 关闭的时候调
+
+
+            productionService.syncSalePriceWhenClose();
+        } else {
+            // 开启的时候调
+            SyncSalePriceDataEnter model = new SyncSalePriceDataEnter();
+            model.setDr(Constant.DR_FALSE);
+            model.setType(price.getType());
+            model.setScooterBattery(price.getScooterBattery());
+            model.setDeposit(price.getDeposit());
+            model.setPeriod(price.getPeriod());
+            model.setShouldPayPeriod(price.getShouldPayPeriod());
+            model.setBalance(price.getBalance());
+            model.setStatus(price.getStatus());
+            productionService.syncSalePrice(model);
+        }
+
+
+
+
     }
 
     /**

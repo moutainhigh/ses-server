@@ -1,6 +1,7 @@
 package com.redescooter.ses.api.hub.service.website;
 
 import com.redescooter.ses.api.hub.vo.website.SyncProductionDataEnter;
+import com.redescooter.ses.api.hub.vo.website.SyncSalePriceDataEnter;
 
 import java.util.Map;
 
@@ -22,5 +23,20 @@ public interface ProductionService {
 
     // 根据site_product_model表的主键找到名字,颜色,型号
     Map<String, String> getProductInfoByModelId(Long id);
+
+    /**
+     * 同步销售价格,关闭的时候调
+     */
+    void syncSalePriceWhenClose();
+
+    /**
+     * 同步销售价格,开启的时候调
+     */
+    void syncSalePrice(SyncSalePriceDataEnter enter);
+
+    /**
+     * 删除销售价格
+     */
+    void syncDeleteSalePrice();
 
 }

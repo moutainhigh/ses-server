@@ -7,6 +7,7 @@ import com.google.common.collect.Maps;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.service.website.ProductionService;
 import com.redescooter.ses.api.hub.vo.website.SyncProductionDataEnter;
+import com.redescooter.ses.api.hub.vo.website.SyncSalePriceDataEnter;
 import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.hub.source.website.dm.*;
@@ -386,6 +387,30 @@ public class ProductionServiceImpl implements ProductionService {
         result.put("code", code);
         result.put("name", name);
         return result;
+    }
+
+    /**
+     * 同步销售价格,关闭的时候调
+     */
+    @Override
+    public void syncSalePriceWhenClose() {
+
+    }
+
+    /**
+     * 同步销售价格,开启的时候调
+     */
+    @Override
+    public void syncSalePrice(SyncSalePriceDataEnter enter) {
+
+    }
+
+    /**
+     * 删除销售价格
+     */
+    @Override
+    public void syncDeleteSalePrice() {
+
     }
 
 }
