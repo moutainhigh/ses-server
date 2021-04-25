@@ -171,6 +171,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             scooterB.setUpdatedTime(new Date());
             scooterB.setDef1(item.getSn());
             scooterB.setDef2(item.getBluetoothMacAddress());
+            scooterB.setDef3(item.getTabletSn());
             scooterBList.add(scooterB);
         }
         opeInWhouseScooterBService.saveBatch(scooterBList);
@@ -270,12 +271,15 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
         // 循环入库单车辆子表,拿到每辆要入库的车的信息
         for (OpeInWhouseScooterB item : list) {
             // 为每一辆车生成一个RSN
-            String rsn = getProductSerialNum();
+            //String rsn = getProductSerialNum();
+
+            String rsn = item.getDef1();
 
             // 新增sco_scooter表
             SyncScooterDataDTO syncData = new SyncScooterDataDTO();
             syncData.setScooterNo(rsn);
-            syncData.setTabletSn(item.getDef1());
+            syncData.setBluetoothMacAddress(item.getDef2());
+            syncData.setTabletSn(item.getDef3());
             // 车辆入库默认型号是E50
             syncData.setModel(String.valueOf(ScooterModelEnum.SCOOTER_E50.getType()));
             syncData.setUserId(enter.getUserId());
