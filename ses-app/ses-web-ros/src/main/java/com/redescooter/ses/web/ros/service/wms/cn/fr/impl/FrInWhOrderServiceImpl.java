@@ -169,8 +169,12 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             scooterB.setCreatedTime(new Date());
             scooterB.setUpdatedBy(enter.getUserId());
             scooterB.setUpdatedTime(new Date());
+            //整车序列号
             scooterB.setDef1(item.getSn());
+            //蓝牙mac地址
             scooterB.setDef2(item.getBluetoothMacAddress());
+            //仪表序列号
+            scooterB.setDef3(item.getTabletSn());
             scooterBList.add(scooterB);
         }
         opeInWhouseScooterBService.saveBatch(scooterBList);
@@ -270,12 +274,15 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
         // 循环入库单车辆子表,拿到每辆要入库的车的信息
         for (OpeInWhouseScooterB item : list) {
             // 为每一辆车生成一个RSN
-            String rsn = getProductSerialNum();
-
+            //String rsn = getProductSerialNum();
             // 新增sco_scooter表
             SyncScooterDataDTO syncData = new SyncScooterDataDTO();
-            syncData.setScooterNo(rsn);
-            syncData.setTabletSn(item.getDef1());
+            //整车序列号
+            syncData.setScooterNo(item.getDef1());
+            //仪表蓝牙Mac地址
+            syncData.setBluetoothMacAddress(item.getDef2());
+            //仪表序列号
+            syncData.setTabletSn(item.getDef3());
             // 车辆入库默认型号是E50
             syncData.setModel(String.valueOf(ScooterModelEnum.SCOOTER_E50.getType()));
             syncData.setUserId(enter.getUserId());
@@ -284,7 +291,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             // 新增ope_in_whouse_order_serial_bind表
             LambdaQueryWrapper<OpeInWhouseOrderSerialBind> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(OpeInWhouseOrderSerialBind::getDr, Constant.DR_FALSE);
-            wrapper.eq(OpeInWhouseOrderSerialBind::getSerialNum, rsn);
+            wrapper.eq(OpeInWhouseOrderSerialBind::getSerialNum, item.getDef1());
             wrapper.last("limit 1");
             OpeInWhouseOrderSerialBind inSerialBind = opeInWhouseOrderSerialBindService.getOne(wrapper);
             if (null == inSerialBind) {
@@ -304,10 +311,13 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
                     bind.setDr(Constant.DR_FALSE);
                     bind.setOrderBId(item.getId());
                     bind.setOrderType(ProductTypeEnums.SCOOTER.getValue());
-                    bind.setSerialNum(rsn);
+                    //整车序列号
+                    bind.setSerialNum(item.getDef1());
                     bind.setDefaultSerialNum(item.getDef1());
-                    bind.setTabletSn(item.getDef1());
+                    //仪表蓝牙mac地址
                     bind.setBluetoothMacAddress(item.getDef2());
+                    //仪表序列号
+                    bind.setTabletSn(item.getDef3());
                     bind.setLot(lot);
                     bind.setProductId(bom.getId());
                     bind.setProductType(ProductTypeEnums.SCOOTER.getValue());
@@ -323,7 +333,8 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             // 新增ope_wms_stock_serial_number表
             LambdaQueryWrapper<OpeWmsStockSerialNumber> wmsWrapper = new LambdaQueryWrapper<>();
             wmsWrapper.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
-            wmsWrapper.eq(OpeWmsStockSerialNumber::getRsn, rsn);
+            //整车序列号
+            wmsWrapper.eq(OpeWmsStockSerialNumber::getRsn, item.getDef1());
             wmsWrapper.last("limit 1");
             OpeWmsStockSerialNumber serialNumber = opeWmsStockSerialNumberService.getOne(wmsWrapper);
             if (null == serialNumber) {
@@ -346,11 +357,15 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
                     number.setRelationType(ProductTypeEnums.SCOOTER.getValue());
                     number.setRelationId(stock.getId());
                     number.setStockType(WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
-                    number.setRsn(rsn);
+                    //整车序列号
+                    number.setRsn(item.getDef1());
+                    number.setSn(item.getDef1());
+                    //蓝牙mac地址
+                    number.setBluetoothMacAddress(item.getDef2());
+                    //仪表序列号
+                    number.setDef3(item.getDef3());
                     number.setStockStatus(1);
                     number.setLotNum(lot);
-                    number.setSn(item.getDef1());
-                    number.setBluetoothMacAddress(item.getDef2());
                     number.setCreatedBy(enter.getUserId());
                     number.setCreatedTime(new Date());
                     number.setUpdatedBy(enter.getUserId());
