@@ -376,6 +376,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
     }
 
     private void sendmail(SiteOrder order) {
+        log.info(order+"{>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>sendEmail order}");
 
         SiteCustomer customer = siteCustomerService.getById(order.getCustomerId());
         log.info(customer+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>customer");

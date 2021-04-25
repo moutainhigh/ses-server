@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.hub.source.operation.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
+import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryPayStatusEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
@@ -8,8 +9,10 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.service.operation.CustomerInquiryService;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
+import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomerInquiry;
 import com.redescooter.ses.service.hub.source.operation.service.base.OpeCustomerInquiryService;
+import com.redescooter.ses.service.hub.source.operation.service.base.OpeCustomerService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -22,6 +25,8 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
 
     @Autowired
     private OpeCustomerInquiryService opeCustomerInquiryService;
+    @Autowired
+    private OpeCustomerService opeCustomerService;
 
     @Override
     @DS("operation")
@@ -67,6 +72,15 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
             opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_LAST_PARAGRAPH.getValue());
         }
         boolean inquiryResult = opeCustomerInquiryService.updateById(opeCustomerInquiry);
+        if (inquiryResult){
+            //订单同步完成之后，就同步customer的状态变为潜在用户
+            OpeCustomer opeCustomer = opeCustomerService.getById(opeCustomerInquiry.getCustomerId());
+            if (opeCustomer==null){
+                throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
+            }
+            opeCustomer.setStatus(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getCode());
+            opeCustomerService.updateById(opeCustomer);
+        }
         log.info(inquiryResult + "{>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>inquiryResult}");
         return new BooleanResult(inquiryResult);
     }
