@@ -410,8 +410,37 @@ public class ProductionServiceImpl implements ProductionService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     @DS("website")
-    public void syncSalePriceWhenClose(String scooterBattery, Integer type, Integer period) {
+    public void syncDeleteSalePrice(String scooterBattery, Integer type, Integer period) {
+        Long modelId = null;
+        LambdaQueryWrapper<SiteProductModel> qw = new LambdaQueryWrapper<>();
+        qw.eq(SiteProductModel::getDr, Constant.DR_FALSE);
+        qw.eq(SiteProductModel::getStatus, 1);
+        List<SiteProductModel> list = siteProductModelService.list(qw);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (SiteProductModel o : list) {
+                if (scooterBattery.contains(o.getProductModelName())) {
+                    modelId = o.getId();
+                    break;
+                }
+            }
+        }
 
+        if (null != modelId) {
+            LambdaQueryWrapper<SiteProductPrice> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(SiteProductPrice::getDr, Constant.DR_FALSE);
+            wrapper.eq(SiteProductPrice::getProductModelId, modelId);
+            if (type == 1 || type == 3) {
+                wrapper.eq(SiteProductPrice::getPriceType, 1);
+                wrapper.eq(SiteProductPrice::getInstallmentTime, String.valueOf(period));
+            } else if (type == 2) {
+                wrapper.eq(SiteProductPrice::getPriceType, 0);
+            }
+            wrapper.last("limit 1");
+            SiteProductPrice productPrice = siteProductPriceService.getOne(wrapper);
+            if (null != productPrice) {
+                siteProductPriceService.removeById(productPrice.getId());
+            }
+        }
     }
 
     /**
@@ -447,15 +476,8 @@ public class ProductionServiceImpl implements ProductionService {
             // 租借车辆和分期支付
             if (enter.getType() == 1 || enter.getType() == 3) {
                 model.setPriceType(1);
-            } else if (enter.getType() == 2) {
-                model.setPriceType(0);
-            }
-            if (null != enter.getPeriod()) {
                 model.setInstallmentTime(String.valueOf(enter.getPeriod()));
-            }
 
-            // 租借车辆和分期支付
-            if (enter.getType() == 1 || enter.getType() == 3) {
                 // 定金
                 BigDecimal deposit = enter.getDeposit();
                 // 期数(期数-定金的1个月)
@@ -465,6 +487,8 @@ public class ProductionServiceImpl implements ProductionService {
                 BigDecimal price = deposit.add(balance);
                 model.setPrice(price);
             } else if (enter.getType() == 2) {
+                model.setPriceType(0);
+
                 BigDecimal deposit = enter.getDeposit();
                 BigDecimal balance = enter.getBalance();
                 BigDecimal price = deposit.add(balance);
@@ -479,16 +503,6 @@ public class ProductionServiceImpl implements ProductionService {
             model.setCreatedTime(new Date());
             siteProductPriceService.save(model);
         }
-    }
-
-    /**
-     * 删除销售价格
-     */
-    @Override
-    @GlobalTransactional(rollbackFor = Exception.class)
-    @DS("website")
-    public void syncDeleteSalePrice() {
-
     }
 
 }

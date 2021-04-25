@@ -201,7 +201,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
     public void syncSalePrice(OpeSalePrice price) {
         if (2 == price.getStatus()) {
             // 关闭的时候调
-            productionService.syncSalePriceWhenClose(price.getScooterBattery(), price.getType(), price.getPeriod());
+            productionService.syncDeleteSalePrice(price.getScooterBattery(), price.getType(), price.getPeriod());
         } else {
             // 开启的时候调
             SyncSalePriceDataEnter model = new SyncSalePriceDataEnter();
@@ -228,9 +228,13 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         opeSalePriceService.removeById(enter.getId());
 
         // 数据同步
-
-
+        syncDeleteSalePrice(price);
         return new GeneralResult(enter.getRequestId());
+    }
+
+    @Async
+    public void syncDeleteSalePrice(OpeSalePrice price) {
+        productionService.syncDeleteSalePrice(price.getScooterBattery(), price.getType(), price.getPeriod());
     }
 
     /**

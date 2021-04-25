@@ -25,18 +25,13 @@ public interface ProductionService {
     Map<String, String> getProductInfoByModelId(Long id);
 
     /**
-     * 同步销售价格,关闭的时候调
+     * 同步销售价格,关闭的时候和删除的时候调
      */
-    void syncSalePriceWhenClose(String scooterBattery, Integer type, Integer period);
+    void syncDeleteSalePrice(String scooterBattery, Integer type, Integer period);
 
     /**
      * 同步销售价格,开启的时候调
      */
     void syncSalePrice(SyncSalePriceDataEnter enter);
-
-    /**
-     * 删除销售价格
-     */
-    void syncDeleteSalePrice();
 
 }
