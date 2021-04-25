@@ -191,5 +191,10 @@ class orderBlist extends GeneralResult {
     @ApiModelProperty(value = "parts_qty")
     private Integer partsQty;
 
+    /**
+     * 配件图片
+     */
+    @ApiModelProperty(value = "配件图片")
+    private String partsPicture;
 
 }

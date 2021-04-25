@@ -33,6 +33,7 @@
             <result column="enName" jdbcType="VARCHAR" property="enName"/>
             <result column="partsPrice" jdbcType="VARCHAR" property="partsPrice"/>
             <result column="partsQty" jdbcType="INTEGER" property="partsQty"/>
+            <result column="partsPicture" jdbcType="VARCHAR" property="partsPicture"/>
 
         </collection>
     </resultMap>
@@ -62,7 +63,8 @@
                so.amount_obligation as amountObligation,
                so.amount_discount as amountDiscount,
                so.prepaid_deposit as prepaidDeposit,
-               spt.picture
+               spt.picture,
+               sps.picture as partsPicture
         from site_order so
         left join site_order_b sob on so.id = sob.order_id and sob.dr = 0
         left join site_parts sps on sob.parts_id = sps.id and sps.dr = 0
