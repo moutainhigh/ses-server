@@ -276,7 +276,9 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             // 新增sco_scooter表
             SyncScooterDataDTO syncData = new SyncScooterDataDTO();
             syncData.setScooterNo(rsn);
+            // 仪表蓝牙地址
             syncData.setBluetoothMacAddress(item.getDef2());
+            // 仪表序列号
             syncData.setTabletSn(item.getDef3());
             // 车辆入库默认型号是E50
             syncData.setModel(String.valueOf(ScooterModelEnum.SCOOTER_E50.getType()));
@@ -306,9 +308,12 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
                     bind.setDr(Constant.DR_FALSE);
                     bind.setOrderBId(item.getId());
                     bind.setOrderType(ProductTypeEnums.SCOOTER.getValue());
+                    // 整车序列号
                     bind.setSerialNum(rsn);
-                    bind.setDefaultSerialNum(item.getDef1());
+                    bind.setDefaultSerialNum(rsn);
+                    // 蓝牙地址
                     bind.setBluetoothMacAddress(item.getDef2());
+                    // 仪表序列号
                     bind.setTabletSn(item.getDef3());
                     bind.setLot(lot);
                     bind.setProductId(bom.getId());
@@ -350,9 +355,12 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
                     number.setStockType(WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
                     number.setStockStatus(1);
                     number.setLotNum(lot);
+                    // 整车序列号
                     number.setRsn(rsn);
                     number.setSn(item.getDef1());
+                    // 蓝牙地址
                     number.setBluetoothMacAddress(item.getDef2());
+                    // 仪表序列号
                     number.setDef3(item.getDef3());
                     number.setCreatedBy(enter.getUserId());
                     number.setCreatedTime(new Date());
