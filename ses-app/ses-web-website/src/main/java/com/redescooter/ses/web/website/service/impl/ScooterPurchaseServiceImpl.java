@@ -1,15 +1,23 @@
 package com.redescooter.ses.web.website.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.google.common.collect.Lists;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.dao.ScooterPurchaseMapper;
+import com.redescooter.ses.web.website.dm.SiteProductModel;
+import com.redescooter.ses.web.website.dm.SiteProductPrice;
 import com.redescooter.ses.web.website.service.ScooterPurchaseService;
+import com.redescooter.ses.web.website.service.base.SiteProductModelService;
+import com.redescooter.ses.web.website.service.base.SiteProductPriceService;
 import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
 import com.redescooter.ses.web.website.vo.product.ProductPartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ProductsResult;
 import com.redescooter.ses.web.website.vo.product.ScooterPriceListResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +34,12 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
 
     @Autowired
     private ScooterPurchaseMapper scooterPurchaseMapper;
+
+    @Autowired
+    private SiteProductPriceService siteProductPriceService;
+
+    @Autowired
+    private SiteProductModelService siteProductModelService;
 
     /**
      * 车辆价格列表
@@ -77,17 +91,28 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
      */
     @Override
     public List<ScooterPriceListResult> getScooterPriceList(GeneralEnter enter) {
+        List<ScooterPriceListResult> resultList = Lists.newArrayList();
+        LambdaQueryWrapper<SiteProductPrice> qw = new LambdaQueryWrapper<>();
+        qw.eq(SiteProductPrice::getDr, Constant.DR_FALSE);
+        qw.eq(SiteProductPrice::getStatus, 1);
+        qw.eq(SiteProductPrice::getPriceType, 1);
+        List<SiteProductPrice> list = siteProductPriceService.list(qw);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (SiteProductPrice price : list) {
+                // 根据产品型号id获得产品型号name
+                SiteProductModel productModel = siteProductModelService.getById(price.getProductModelId());
+                String modelName = productModel.getProductModelName();
 
-
-
-
-
-
-
-
-
-
-        return null;
+                ScooterPriceListResult model = new ScooterPriceListResult();
+                model.setScooterBattery(modelName + "-" + price.getBattery());
+                model.setInstallmentTime(price.getInstallmentTime());
+                model.setShouldPayPeriod(price.getShouldPayPeriod());
+                model.setTax(price.getTax());
+                model.setPrepaidDeposit(price.getPrepaidDeposit());
+                resultList.add(model);
+            }
+        }
+        return resultList;
     }
 
 }

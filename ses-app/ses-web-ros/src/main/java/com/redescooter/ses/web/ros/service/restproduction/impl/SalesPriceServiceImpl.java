@@ -3,7 +3,6 @@ package com.redescooter.ses.web.ros.service.restproduction.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
-import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -191,13 +190,6 @@ public class SalesPriceServiceImpl implements SalesPriceService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult editSalePriceStatus(IdEnter enter) {
-        String key = JedisConstant.CHECK_SAFE_CODE_RESULT + enter.getRequestId();
-        String checkResult = jedisService.get(key);
-        if (!Boolean.parseBoolean(checkResult)) {
-            throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_FAILURE.getCode(), ExceptionCodeEnums.SAFE_CODE_FAILURE.getMessage());
-        }
-        jedisService.delKey(key);
-
         OpeSalePrice price = opeSalePriceService.getById(enter.getId());
         if (null == price) {
             throw new SesWebRosException(ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getCode(), ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getMessage());
