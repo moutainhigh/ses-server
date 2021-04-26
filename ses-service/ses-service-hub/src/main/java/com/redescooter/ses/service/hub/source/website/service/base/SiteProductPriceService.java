@@ -1,25 +1,16 @@
 package com.redescooter.ses.service.hub.source.website.service.base;
 
-import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProductPrice;
 
-import java.util.List;
-
-@DS("website")
+/**
+ * <p>
+ * 产品报价表 服务类
+ * </p>
+ * @author chris
+ * @since 2021-04-26
+ */
 public interface SiteProductPriceService extends IService<SiteProductPrice> {
 
 
-    int updateBatch(List<SiteProductPrice> list);
-
-    int updateBatchSelective(List<SiteProductPrice> list);
-
-    int batchInsert(List<SiteProductPrice> list);
-
-    int insertOrUpdate(SiteProductPrice record);
-
-    int insertOrUpdateSelective(SiteProductPrice record);
-
 }
-
-
