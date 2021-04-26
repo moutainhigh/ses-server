@@ -100,6 +100,7 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         inquiry.setDef2(enter.getCityName());
         inquiry.setPostCode(enter.getPostcode());
         inquiry.setDef3(enter.getPostcode());
+        inquiry.setBankCardName(enter.getBankCardName());
         // 1快递 2餐厅 3自由行业
         inquiry.setIndustry("3");
         // 2表示个人
