@@ -430,11 +430,9 @@ public class ProductionServiceImpl implements ProductionService {
             LambdaQueryWrapper<SiteProductPrice> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(SiteProductPrice::getDr, Constant.DR_FALSE);
             wrapper.eq(SiteProductPrice::getProductModelId, modelId);
-            if (type == 1 || type == 3) {
-                wrapper.eq(SiteProductPrice::getPriceType, 1);
+            wrapper.eq(SiteProductPrice::getPriceType, type);
+            if (null != period) {
                 wrapper.eq(SiteProductPrice::getInstallmentTime, String.valueOf(period));
-            } else if (type == 2) {
-                wrapper.eq(SiteProductPrice::getPriceType, 0);
             }
             wrapper.last("limit 1");
             SiteProductPrice productPrice = siteProductPriceService.getOne(wrapper);
@@ -475,10 +473,10 @@ public class ProductionServiceImpl implements ProductionService {
             model.setStatus(1);
             model.setProductModelId(modelId);
             model.setBattery(scooterBattery.substring(scooterBattery.indexOf("+") + 1));
+            model.setPriceType(enter.getType());
 
             // 租借车辆和分期支付
             if (enter.getType() == 1 || enter.getType() == 3) {
-                model.setPriceType(1);
                 model.setInstallmentTime(String.valueOf(enter.getPeriod()));
                 model.setShouldPayPeriod(enter.getShouldPayPeriod());
 
@@ -491,8 +489,7 @@ public class ProductionServiceImpl implements ProductionService {
                 BigDecimal price = deposit.add(balance);
                 model.setPrice(price);
             } else if (enter.getType() == 2) {
-                model.setPriceType(0);
-
+                // 全款支付
                 BigDecimal deposit = enter.getDeposit();
                 BigDecimal balance = enter.getBalance();
                 BigDecimal price = deposit.add(balance);
