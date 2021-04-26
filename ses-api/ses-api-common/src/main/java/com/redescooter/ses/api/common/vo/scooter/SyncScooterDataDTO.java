@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 /**
  * 同步车辆数据 DTO
+ *
  * @author assert
  * @date 2020/12/10 20:35
  */
@@ -27,6 +28,10 @@ public class SyncScooterDataDTO implements Serializable {
      */
     private String tabletSn;
 
+    /**
+     * 车载平板Mac蓝牙地址
+     */
+    private String bluetoothMacAddress;
     /**
      * 车辆型号 1-E25 2-E50 3-E100 4-E125
      */

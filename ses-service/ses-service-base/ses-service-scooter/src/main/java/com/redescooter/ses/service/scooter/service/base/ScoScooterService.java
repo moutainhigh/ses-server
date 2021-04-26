@@ -7,15 +7,14 @@ import java.util.List;
 
 public interface ScoScooterService extends IService<ScoScooter> {
 
-
     int updateBatch(List<ScoScooter> list);
+
+    int updateBatchSelective(List<ScoScooter> list);
 
     int batchInsert(List<ScoScooter> list);
 
     int insertOrUpdate(ScoScooter record);
 
     int insertOrUpdateSelective(ScoScooter record);
-
-    int updateBatchSelective(List<ScoScooter> list);
 }
 

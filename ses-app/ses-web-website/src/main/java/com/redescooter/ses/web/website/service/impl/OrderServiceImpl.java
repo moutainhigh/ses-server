@@ -279,9 +279,9 @@ public class OrderServiceImpl implements OrderService {
         IdResult result = new IdResult();
         result.setId(addSiteOrderVO.getId());
         result.setRequestId(enter.getRequestId());
-
+        String bankCardName = customer.getCardholder();
         // 官网的订单数据 要同步到ROS系统中
-        syncdataToRos(addSiteOrderVO, email);
+        syncdataToRos(addSiteOrderVO, email , bankCardName);
 
         return result;
     }
@@ -316,16 +316,17 @@ public class OrderServiceImpl implements OrderService {
      * @param addSiteOrderVO
      */
     @Async
-    public void syncdataToRos(SiteOrder addSiteOrderVO, String email) {
+    public void syncdataToRos(SiteOrder addSiteOrderVO, String email ,String bankCardName) {
         // 构造请求的参数
         SiteWebInquiryEnter enter = new SiteWebInquiryEnter();
         BeanUtils.copyProperties(addSiteOrderVO, enter);
+        enter.setBankCardName(bankCardName);
+        enter.setBatteryQty(addSiteOrderVO.getBatteryQty());
         // 給productModel赋值
         String productModel = orderMapper.getProductModelByOrderId(addSiteOrderVO.getId());
         if (StringUtils.isNotBlank(productModel)) {
             enter.setProductModel(productModel);
         }
-
         // 调方法 同步数据
         log.info("开始同步");
         siteWebInquiryService.siteWebOrderToRosInquiry(enter, email);

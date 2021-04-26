@@ -95,10 +95,10 @@ public class ScooterServiceImpl implements ScooterService {
             throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_ALREADY_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_ALREADY_EXIST.getMessage());
         }
 
-        List<ScoScooter> saveScooterList= Lists.newArrayList();
-        List<ScoScooterStatus> saveScoScooterStatusList = new ArrayList<> ();
+        List<ScoScooter> saveScooterList = Lists.newArrayList();
+        List<ScoScooterStatus> saveScoScooterStatusList = new ArrayList<>();
 
-        enter.forEach(item->{
+        enter.forEach(item -> {
             //保存车辆信息
             ScoScooter saveScooter = buildScooterSingle(item);
             //保存车辆状态
@@ -106,10 +106,10 @@ public class ScooterServiceImpl implements ScooterService {
             saveScooterList.add(saveScooter);
             saveScoScooterStatusList.add(saveScooterStatus);
         });
-        if (CollectionUtils.isNotEmpty(saveScoScooterStatusList)){
+        if (CollectionUtils.isNotEmpty(saveScoScooterStatusList)) {
             scoScooterStatusService.saveBatch(saveScoScooterStatusList);
         }
-        if (CollectionUtils.isNotEmpty(saveScooterList)){
+        if (CollectionUtils.isNotEmpty(saveScooterList)) {
             //保存车辆信息
             scoScooterService.saveBatch(saveScooterList);
         }
@@ -197,18 +197,18 @@ public class ScooterServiceImpl implements ScooterService {
     }
 
     /**
+     * @param id
+     * @param scooterNo
      * @Description
      * @Author: alex
      * @Date: 2020/11/16 6:01 下午
      * @Param: id, scooterNo
      * @Return: BaseScooterResult
      * @desc: 车辆基本信息
-     * @param id
-     * @param scooterNo
      */
     @Override
     public BaseScooterResult scooterInfoByScooterNo(Long id, String scooterNo) {
-        return scooterServiceMapper.scooterInfoByScooterNo(id,scooterNo);
+        return scooterServiceMapper.scooterInfoByScooterNo(id, scooterNo);
     }
 
     @GlobalTransactional(rollbackFor = Exception.class)
@@ -243,6 +243,13 @@ public class ScooterServiceImpl implements ScooterService {
             ScoScooter scooter = new ScoScooter();
             BeanUtils.copyProperties(scooterData, scooter);
             scooter.setId(idAppService.getId(SequenceName.SCO_SCOOTER));
+            scooter.setDr(Constant.DR_FALSE);
+            scooter.setScooterNo(scooterData.getScooterNo());
+            //TODO 担心copyProperties出问题，所以在将部分值赋值一下
+            scooter.setTabletSn(scooterData.getTabletSn());
+            //TODO 新增保存蓝牙mac地址
+            scooter.setBluetoothMacAddress(scooterData.getBluetoothMacAddress());
+            scooter.setModel(scooterData.getModel());
             scooter.setStatus(ScooterLockStatusEnums.LOCK.getValue());
             scooter.setTotalMileage(0L);
             scooter.setAvailableStatus(ScooterStatusEnums.AVAILABLE.getValue());
@@ -290,7 +297,7 @@ public class ScooterServiceImpl implements ScooterService {
     public void deleteScooterData(String sn) {
         // 先删除车辆、
         QueryWrapper<ScoScooter> sc = new QueryWrapper<>();
-        sc.eq(ScoScooter.COL_TABLET_SN,sn);
+        sc.eq(ScoScooter.COL_TABLET_SN, sn);
         sc.last("limit 1");
         ScoScooter scooter = scoScooterService.getOne(sc);
         if (scooter != null) {

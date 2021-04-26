@@ -2,13 +2,15 @@ package com.redescooter.ses.api.scooter.vo.emqx;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * EMQ X向车辆平板端下发锁操作消息 DTO
  * @author assert
  * @date 2020/11/19 11:44
  */
 @Data
-public class ScooterLockPublishDTO {
+public class ScooterLockPublishDTO implements Serializable {
 
     /**
      * 车辆平板序列号

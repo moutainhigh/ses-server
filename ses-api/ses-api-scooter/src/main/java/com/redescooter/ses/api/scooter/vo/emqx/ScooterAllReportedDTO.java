@@ -2,13 +2,15 @@ package com.redescooter.ses.api.scooter.vo.emqx;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 车辆上报整车数据 DTO
  * @author assert
  * @date 2020/11/23 14:23
  */
 @Data
-public class ScooterAllReportedDTO {
+public class ScooterAllReportedDTO implements Serializable {
 
     /**
      * ECU仪表数据
