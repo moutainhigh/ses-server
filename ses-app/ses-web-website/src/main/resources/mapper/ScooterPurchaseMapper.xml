@@ -114,4 +114,29 @@
         where spm.dr = 0 and sp.status = 1
         group by modelid, productPriceId
     </select>
+
+    <!-- 官网车型价格列表 -->
+    <select id="getScooterPriceList" resultMap="scooterPriceMap">
+        select
+                CONCAT(model.product_model_name, '-' ,price.battery) as scooterBattery,
+                price.tax,
+                price.prepaid_deposit,
+                price.installment_time,
+                price.should_pay_period
+        from site_product_price price
+        left join site_product_model model on price.product_model_id = model.id and model.dr = 0
+        where price.dr = 0 and price.`status` = 1 and price.price_type = 1
+    </select>
+
+    <!-- 官网车型价格列表的返回结果 -->
+    <resultMap id="scooterPriceMap" type="com.redescooter.ses.web.website.vo.product.ScooterPriceListResult">
+        <result column="scooterBattery" jdbcType="VARCHAR" property="scooterBattery"/>
+        <result column="tax" jdbcType="DECIMAL" property="tax"/>
+        <result column="prepaid_deposit" jdbcType="DECIMAL" property="prepaidDeposit"/>
+        <collection property="list" ofType="com.redescooter.ses.web.website.vo.product.ScooterPriceDetailResult" javaType="java.util.ArrayList">
+            <result column="installment_time" jdbcType="VARCHAR" property="installmentTime"/>
+            <result column="should_pay_period" jdbcType="DECIMAL" property="shouldPayPeriod"/>
+        </collection>
+    </resultMap>
+
 </mapper>

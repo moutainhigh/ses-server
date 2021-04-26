@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Description 官网车型价格列表出参
@@ -21,11 +23,8 @@ public class ScooterPriceListResult extends GeneralResult {
     @ApiModelProperty(value = "车型和电池数")
     private String scooterBattery;
 
-    @ApiModelProperty(value = "分期付款时间数")
-    private String installmentTime;
-
-    @ApiModelProperty(value = "每期应付")
-    private BigDecimal shouldPayPeriod;
+    @ApiModelProperty(value = "期数和每期应付")
+    private List<ScooterPriceDetailResult> list = new ArrayList<>();
 
     @ApiModelProperty(value = "税")
     private BigDecimal tax;

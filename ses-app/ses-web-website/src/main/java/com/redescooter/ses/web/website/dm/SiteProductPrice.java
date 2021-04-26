@@ -54,10 +54,10 @@ public class SiteProductPrice implements Serializable {
     private String battery;
 
     /**
-     * 状态,0全额付款，1分期付款
+     * 类型 1租借车辆 2全款支付 3分期支付
      */
     @TableField(value = "price_type")
-    @ApiModelProperty(value = "状态,0全额付款，1分期付款")
+    @ApiModelProperty(value = "类型 1租借车辆 2全款支付 3分期支付")
     private Integer priceType;
 
     /**
