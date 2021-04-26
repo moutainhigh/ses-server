@@ -95,7 +95,7 @@ public class ScooterPurchaseController {
      */
     @IgnoreLoginCheck
     @PostMapping(value = "/scooterPriceList")
-    @ApiOperation(value = "官网车型价格列表", response = ProductPartsDetailsResult.class)
+    @ApiOperation(value = "官网车型价格列表", response = ScooterPriceListResult.class)
     public Response<List<ScooterPriceListResult>> getScooterPriceList(@ModelAttribute GeneralEnter enter) {
         return new Response<>(scooterPurchaseService.getScooterPriceList(enter));
     }
