@@ -43,4 +43,7 @@ public class SalePriceSaveOrUpdateEnter extends GeneralEnter {
     @ApiModelProperty(value = "尾款(当类型为全款支付时才有值)")
     private BigDecimal balance;
 
+    @ApiModelProperty(value = "税")
+    private BigDecimal tax;
+
 }

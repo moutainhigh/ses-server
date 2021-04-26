@@ -60,6 +60,9 @@ public class OpeSalePrice implements Serializable {
     @ApiModelProperty(value = "尾款(当类型为全款支付时才有值)")
     private BigDecimal balance;
 
+    @ApiModelProperty(value = "税")
+    private BigDecimal tax;
+
     @ApiModelProperty(value = "状态 1开启(可用) 2关闭(不可用)")
     private Integer status;
 

@@ -113,6 +113,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         price.setPeriod(enter.getPeriod());
         price.setShouldPayPeriod(enter.getShouldPayPeriod());
         price.setBalance(enter.getBalance());
+        price.setTax(enter.getTax());
         price.setStatus(StatusEnum.DISABLE.getCode());
         price.setCreatedBy(enter.getUserId());
         price.setCreatedTime(new Date());
@@ -150,6 +151,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         price.setDeposit(enter.getDeposit());
         price.setUpdatedBy(enter.getUserId());
         price.setUpdatedTime(new Date());
+        price.setTax(enter.getTax());
         if (null != enter.getPeriod()) {
             price.setPeriod(enter.getPeriod());
         }
@@ -223,6 +225,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
             model.setPeriod(price.getPeriod());
             model.setShouldPayPeriod(price.getShouldPayPeriod());
             model.setBalance(price.getBalance());
+            model.setTax(price.getTax());
             productionService.syncSalePrice(model);
         }
     }

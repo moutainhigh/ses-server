@@ -503,6 +503,7 @@ public class ProductionServiceImpl implements ProductionService {
             model.setCountryLanguage("fr");
             model.setCreatedBy(0L);
             model.setCreatedTime(new Date());
+            model.setDef6(enter.getTax());
             siteProductPriceService.save(model);
         }
     }

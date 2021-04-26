@@ -11,6 +11,7 @@
         <result column="period" property="period"/>
         <result column="should_pay_period" property="shouldPayPeriod"/>
         <result column="balance" property="balance"/>
+        <result column="tax" property="tax"/>
         <result column="status" property="status"/>
         <result column="created_by" property="createdBy"/>
         <result column="created_time" property="createdTime"/>
@@ -25,7 +26,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, dr, type, scooter_battery, deposit, period, should_pay_period, balance, status, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+        id, dr, type, scooter_battery, deposit, period, should_pay_period, balance, tax, status, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
     </sql>
 
     <!-- 销售价格列表 -->
