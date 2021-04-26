@@ -405,7 +405,7 @@ public class ProductionServiceImpl implements ProductionService {
     }
 
     /**
-     * 同步销售价格,关闭的时候调
+     * 同步销售价格,关闭的时候和删除的时候调
      */
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
@@ -419,6 +419,7 @@ public class ProductionServiceImpl implements ProductionService {
         if (CollectionUtils.isNotEmpty(list)) {
             for (SiteProductModel o : list) {
                 if (scooterBattery.contains(o.getProductModelName())) {
+                    log.info("关闭时,通过modelName找到了modelId");
                     modelId = o.getId();
                     break;
                 }
@@ -460,6 +461,7 @@ public class ProductionServiceImpl implements ProductionService {
         if (CollectionUtils.isNotEmpty(list)) {
             for (SiteProductModel o : list) {
                 if (scooterBattery.contains(o.getProductModelName())) {
+                    log.info("开启时,通过modelName找到了modelId");
                     modelId = o.getId();
                     break;
                 }
