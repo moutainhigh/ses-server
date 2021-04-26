@@ -210,6 +210,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
             productionService.syncDeleteSalePrice(price.getScooterBattery(), price.getType(), price.getPeriod());
         } else {
             // 开启的时候调
+            log.info("准备开始同步价格");
             SyncSalePriceDataEnter model = new SyncSalePriceDataEnter();
             model.setType(price.getType());
             model.setScooterBattery(price.getScooterBattery());
@@ -219,6 +220,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
             model.setBalance(price.getBalance());
             model.setTax(price.getTax());
             productionService.syncSalePrice(model);
+            log.info("同步价格完成");
         }
     }
 

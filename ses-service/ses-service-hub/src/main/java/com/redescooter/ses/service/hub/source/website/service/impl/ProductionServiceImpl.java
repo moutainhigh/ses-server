@@ -411,6 +411,7 @@ public class ProductionServiceImpl implements ProductionService {
     @GlobalTransactional(rollbackFor = Exception.class)
     @DS("website")
     public void syncDeleteSalePrice(String scooterBattery, Integer type, Integer period) {
+        log.info("进入hub开始同步价格删除");
         Long modelId = null;
         LambdaQueryWrapper<SiteProductModel> qw = new LambdaQueryWrapper<>();
         qw.eq(SiteProductModel::getDr, Constant.DR_FALSE);
@@ -449,6 +450,7 @@ public class ProductionServiceImpl implements ProductionService {
     @GlobalTransactional(rollbackFor = Exception.class)
     @DS("website")
     public void syncSalePrice(SyncSalePriceDataEnter enter) {
+        log.info("进入hub开始同步价格");
         String scooterBattery = enter.getScooterBattery();
         Long modelId = null;
 
