@@ -173,7 +173,7 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         inquiryB.setProductPrice(inquiry.getProductPrice());
         // 这个不知道是啥
         // inquiryB.setProductType(inquiry.);
-        inquiryB.setProductQty(1);
+        inquiryB.setProductQty(enter.getBatteryQty() );
         inquiryB.setCreatedTime(new Date());
         inquiryB.setCreatedBy(0L);
         inquiryB.setUpdatedTime(new Date());

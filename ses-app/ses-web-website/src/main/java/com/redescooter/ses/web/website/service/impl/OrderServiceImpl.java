@@ -323,6 +323,7 @@ public class OrderServiceImpl implements OrderService {
         SiteWebInquiryEnter enter = new SiteWebInquiryEnter();
         BeanUtils.copyProperties(addSiteOrderVO, enter);
         enter.setBankCardName(bankCardName);
+        enter.setBatteryQty(addSiteOrderVO.getBatteryQty());
         // 給productModel赋值
         String productModel = orderMapper.getProductModelByOrderId(addSiteOrderVO.getId());
         if (StringUtils.isNotBlank(productModel)) {
