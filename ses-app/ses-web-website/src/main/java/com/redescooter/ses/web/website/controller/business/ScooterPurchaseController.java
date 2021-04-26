@@ -9,6 +9,7 @@ import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
 import com.redescooter.ses.web.website.vo.product.ProductPartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ProductsResult;
+import com.redescooter.ses.web.website.vo.product.ScooterPriceListResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -87,6 +88,16 @@ public class ScooterPurchaseController {
     @ApiOperation(value = "获取车辆电池配置列表", response = ProductPartsDetailsResult.class)
     public Response<List<ProductPartsDetailsResult>> getScooterBatterys(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(scooterPurchaseService.getScooterBatterysByProductId(enter));
+    }
+
+    /**
+     * 官网车型价格列表
+     */
+    @IgnoreLoginCheck
+    @PostMapping(value = "/scooterPriceList")
+    @ApiOperation(value = "官网车型价格列表", response = ProductPartsDetailsResult.class)
+    public Response<List<ScooterPriceListResult>> getScooterPriceList(@ModelAttribute GeneralEnter enter) {
+        return new Response<>(scooterPurchaseService.getScooterPriceList(enter));
     }
 
 }

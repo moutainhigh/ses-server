@@ -8,6 +8,7 @@ import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
 import com.redescooter.ses.web.website.vo.product.ProductPartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ProductsResult;
+import com.redescooter.ses.web.website.vo.product.ScooterPriceListResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,6 +70,24 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
     @Override
     public List<ProductPartsDetailsResult> getScooterBatterysByProductId(IdEnter enter) {
         return scooterPurchaseMapper.getScooterConfigList(enter);
+    }
+
+    /**
+     * 官网车型价格列表
+     */
+    @Override
+    public List<ScooterPriceListResult> getScooterPriceList(GeneralEnter enter) {
+
+
+
+
+
+
+
+
+
+
+        return null;
     }
 
 }

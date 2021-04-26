@@ -48,17 +48,26 @@ public class SiteProductPrice implements Serializable {
     @ApiModelProperty(value = "产品型号Id")
     private Long productModelId;
 
+    @ApiModelProperty(value = "电池")
+    private String battery;
+
     @ApiModelProperty(value = "状态,0全额付款，1分期付款")
     private Integer priceType;
 
     @ApiModelProperty(value = "分期付款时间数，单位month")
     private String installmentTime;
 
+    @ApiModelProperty(value = "每期应付(除首期)")
+    private BigDecimal shouldPayPeriod;
+
     @ApiModelProperty(value = "销售价格 浮点型价格")
     private BigDecimal price;
 
     @ApiModelProperty(value = "起步价")
     private BigDecimal startPrice;
+
+    @ApiModelProperty(value = "税")
+    private BigDecimal tax;
 
     @ApiModelProperty(value = "生效时间 默认当前生效")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")

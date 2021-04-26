@@ -474,11 +474,13 @@ public class ProductionServiceImpl implements ProductionService {
             model.setDr(Constant.DR_FALSE);
             model.setStatus(1);
             model.setProductModelId(modelId);
+            model.setBattery(scooterBattery.substring(scooterBattery.indexOf("+") + 1));
 
             // 租借车辆和分期支付
             if (enter.getType() == 1 || enter.getType() == 3) {
                 model.setPriceType(1);
                 model.setInstallmentTime(String.valueOf(enter.getPeriod()));
+                model.setShouldPayPeriod(enter.getShouldPayPeriod());
 
                 // 定金
                 BigDecimal deposit = enter.getDeposit();
@@ -496,14 +498,16 @@ public class ProductionServiceImpl implements ProductionService {
                 BigDecimal price = deposit.add(balance);
                 model.setPrice(price);
             }
+            model.setTax(enter.getTax());
             model.setEffectiveTime(new Date());
+            model.setCurrencyType("欧元");
+            model.setCurrencyUnit("€");
             model.setPrepaidDeposit(enter.getDeposit());
             model.setCountryCode("33");
             model.setCountryCity("fr");
             model.setCountryLanguage("fr");
             model.setCreatedBy(0L);
             model.setCreatedTime(new Date());
-            model.setDef6(enter.getTax());
             siteProductPriceService.save(model);
         }
     }
