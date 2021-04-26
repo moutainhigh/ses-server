@@ -175,8 +175,9 @@ public class SaleScooterServiceImpl implements SaleScooterService {
             List<OpeSaleScooterBatteryRelation> list = Lists.newArrayList();
             Integer maxBatteryNum = 4;
             // 要生成的条数  比如:E50生成4条 E100生成3条 E125生成1条
-            Integer count = maxBatteryNum - saleScooter.getMinBatteryNum() + 1;
-            for (int i = 1; i <= count; i++) {
+            Integer minBatteryNum = saleScooter.getMinBatteryNum();
+            Integer count = maxBatteryNum - minBatteryNum + 1;
+            for (int i = minBatteryNum; i <= count; i++) {
                 OpeSaleScooterBatteryRelation relation = new OpeSaleScooterBatteryRelation();
                 relation.setId(idAppService.getId(SequenceName.OPE_SALE_SCOOTER_BATTERY_RELATION));
                 relation.setDr(Constant.DR_FALSE);
