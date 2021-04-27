@@ -118,7 +118,7 @@
     <!-- 官网车型价格列表 -->
     <select id="getScooterPriceList" resultMap="scooterPriceMap">
         select
-                CONCAT(model.product_model_name, '-' ,price.battery) as scooterBattery,
+                CONCAT(model.product_model_name, '-' , price.battery) as scooterBattery,
                 price.tax,
                 price.prepaid_deposit,
                 price.installment_time,

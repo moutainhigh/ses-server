@@ -1,11 +1,11 @@
 package com.redescooter.ses.web.website.vo.product;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -15,8 +15,8 @@ import java.math.BigDecimal;
  */
 @ApiModel(value = "官网车型价格详情出参", description = "官网车型价格详情出参")
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class ScooterPriceDetailResult extends GeneralEnter {
+@EqualsAndHashCode
+public class ScooterPriceDetailResult implements Serializable {
 
     @ApiModelProperty(value = "分期付款时间数")
     private String installmentTime;
