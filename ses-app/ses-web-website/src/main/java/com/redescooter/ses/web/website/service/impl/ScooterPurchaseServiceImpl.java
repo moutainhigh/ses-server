@@ -122,6 +122,9 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
                 }
             }
         }
+        if (CollectionUtils.isEmpty(resultList)) {
+            resultList.addAll(list);
+        }
         return resultList;
     }
 

@@ -7,7 +7,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.hub.service.website.ProductionService;
+import com.redescooter.ses.api.hub.service.website.SyncPriceService;
 import com.redescooter.ses.api.hub.vo.website.SyncSalePriceDataEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
@@ -29,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -63,7 +62,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
     private IdAppService idAppService;
 
     @DubboReference
-    private ProductionService productionService;
+    private SyncPriceService syncPriceService;
 
     /**
      * 车型下拉数据源
@@ -203,11 +202,10 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    @Async
     public void syncSalePrice(OpeSalePrice price) {
-        if (2 == price.getStatus()) {
+        if (price.getStatus() == 2) {
             // 关闭的时候调
-            productionService.syncDeleteSalePrice(price.getScooterBattery(), price.getType(), price.getPeriod());
+            syncPriceService.syncDeleteSalePrice(price.getScooterBattery(), price.getType(), price.getPeriod());
         } else {
             // 开启的时候调
             log.info("准备开始同步价格");
@@ -219,7 +217,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
             model.setShouldPayPeriod(price.getShouldPayPeriod());
             model.setBalance(price.getBalance());
             model.setTax(price.getTax());
-            productionService.syncSalePrice(model);
+            syncPriceService.syncSalePrice(model);
             log.info("同步价格完成");
         }
     }
@@ -241,9 +239,8 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    @Async
     public void syncDeleteSalePrice(OpeSalePrice price) {
-        productionService.syncDeleteSalePrice(price.getScooterBattery(), price.getType(), price.getPeriod());
+        syncPriceService.syncDeleteSalePrice(price.getScooterBattery(), price.getType(), price.getPeriod());
     }
 
     /**
