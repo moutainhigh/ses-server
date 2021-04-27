@@ -69,13 +69,13 @@ spring:                                                                         
 # DUBBO 集群配置
 #dubbo:                                                                                                                  ##DUBBO配置
 #  registry:                                                                                                             #注册中心
-#    address: zookeeper://172.31.8.126:2181?backup=172.31.8.126:2182,172.31.8.126:2183
+#    address: zookeeper://172.28.193.225:2181?backup=172.28.193.225:2182,172.28.193.225:2183
 ## DUBBO 单节点配置
 dubbo:
   registry: #注册中心
-    address: zookeeper://172.31.8.126:2181
+    address: zookeeper://172.28.193.225:2181
   metadata-report:
-    address: zookeeper://172.31.8.126:2181
+    address: zookeeper://172.28.193.225:2181
 # 多注册中心配置
 #    reg2:
 #      group: hdg2

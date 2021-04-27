@@ -7,13 +7,13 @@ log:
 # DUBBO 集群配置
 #dubbo:                                                                                                                  ##DUBBO配置
 #  registry:                                                                                                             #注册中心
-#    address: zookeeper://172.31.8.126:2181?backup=172.31.8.126:2182,172.31.8.126:2183
+#    address: zookeeper://172.28.193.225:2181?backup=172.28.193.225:2182,172.28.193.225:2183
 ## DUBBO 单节点配置
 dubbo:
   registry: #注册中心
-    address: zookeeper://172.31.8.126:2181
+    address: zookeeper://172.28.193.225:2181
   metadata-report:
-    address: zookeeper://172.31.8.126:2181
+    address: zookeeper://172.28.193.225:2181
 spring:
   datasource:
     dynamic:
@@ -23,34 +23,34 @@ spring:
       datasource:
         corporate:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://172.31.8.126:3306/corporate?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-          username: root
-          password: rede,1qaz2wsx
+          url: jdbc:mysql://172.28.193.225:3306/corporate_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          username: rede
+          password: test.1qaz2wsx
         operation:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://172.31.8.126:3306/operation?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-          username: root
-          password: rede,1qaz2wsx
+          url: jdbc:mysql://172.28.193.225:3306/operation_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          username: rede
+          password: test.1qaz2wsx
         consumer:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://172.31.8.126:3306/consumer?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-          username: root
-          password: rede,1qaz2wsx
+          url: jdbc:mysql://172.28.193.225:3306/consumer_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          username: rede
+          password: test.1qaz2wsx
         website:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://172.31.8.126:3306/website?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
-          username: root
-          password: rede,1qaz2wsx
+          url: jdbc:mysql://172.28.193.225:3306/website_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          username: rede
+          password: test.1qaz2wsx
   #REDIS集群配置
   redis:
     cluster:
       nodes:
-        - 172.31.8.126:7000
-        - 172.31.8.126:7001
-        - 172.31.8.126:7002
-        - 172.31.8.126:7003
-        - 172.31.8.126:7004
-        - 172.31.8.126:7005
+        - 172.28.193.225:7000
+        - 172.28.193.225:7001
+        - 172.28.193.225:7002
+        - 172.28.193.225:7003
+        - 172.28.193.225:7004
+        - 172.28.193.225:7005
 
 
 seata:
@@ -60,13 +60,13 @@ seata:
   registry:
     type: zk
     zk:
-      server-addr: 172.31.8.126:2181
+      server-addr: 172.28.193.225:2181
       cluster: default
       connect-timeout: 2000000
   config:
     type: zk
     zk:
-      server-addr: 172.31.8.126:2181
+      server-addr: 172.28.193.225:2181
       connect-timeout: 2000000
   service:
     disable-global-transaction: false
