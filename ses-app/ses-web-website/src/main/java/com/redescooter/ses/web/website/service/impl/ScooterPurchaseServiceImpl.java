@@ -48,7 +48,24 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
      */
     @Override
     public List<ModelPriceResult> modelAndPriceList(GeneralEnter enter) {
-        return scooterPurchaseMapper.modelAndPriceList(enter);
+        List<ModelPriceResult> resultList = Lists.newArrayList();
+
+        List<ModelPriceResult> modelPriceList = scooterPurchaseMapper.modelAndPriceList(enter);
+        if (CollectionUtils.isNotEmpty(modelPriceList)) {
+            Map<Long, List<ModelPriceResult>> collect = modelPriceList.stream().collect(Collectors.groupingBy(o -> o.getModelid()));
+            for (Map.Entry<Long, List<ModelPriceResult>> map : collect.entrySet()) {
+                Long modelId = map.getKey();
+                List<ModelPriceResult> list = map.getValue();
+
+                for (ModelPriceResult item : list) {
+                    if (modelId.equals(item.getModelid())) {
+                        resultList.add(item);
+                        break;
+                    }
+                }
+            }
+        }
+        return resultList;
     }
 
     /**

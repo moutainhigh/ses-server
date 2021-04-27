@@ -104,6 +104,7 @@
 
         select  spm.id                 as modelid,
                 spm.product_model_name as productModelName,
+                spp.battery,
                 spp.id                 as productPriceId,
                 IFNULL(spp.price_type, 0) as priceType,
                 IFNULL(spp.price, 0) as price,
@@ -113,6 +114,7 @@
         left join site_product sp on sp.product_model_id = spm.id and sp.dr = 0
         where spm.dr = 0 and sp.status = 1
         group by modelid, productPriceId
+        order by battery, price
     </select>
 
     <!-- 官网车型价格列表 -->

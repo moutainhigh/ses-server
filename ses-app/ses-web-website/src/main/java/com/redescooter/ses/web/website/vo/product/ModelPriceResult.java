@@ -40,4 +40,11 @@ public class ModelPriceResult extends ProductModelDetailsResult {
      */
     @ApiModelProperty(value = "Starting price")
     private BigDecimal startPrice;
+
+    /**
+     * 电池数
+     */
+    @ApiModelProperty(value = "battery")
+    private String battery;
+
 }
