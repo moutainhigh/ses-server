@@ -54,7 +54,7 @@
             and status = #{enter.status}
         </if>
         <if test="enter.scooterBattery != null and enter.scooterBattery != ''">
-            and scooter_battery = #{enter.scooterBattery}
+            and scooter_battery like concat('%', #{enter.scooterBattery}, '%')
         </if>
     </sql>
 
