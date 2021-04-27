@@ -108,7 +108,8 @@
                 spp.id                 as productPriceId,
                 IFNULL(spp.price_type, 0) as priceType,
                 IFNULL(spp.price, 0) as price,
-                IFNULL(spp.start_price, 0) as startPrice
+                IFNULL(spp.start_price, 0) as startPrice,
+                spp.should_pay_period
         from site_product_model spm
         left join site_product_price spp on spm.id = spp.product_model_id and spp.dr = 0
         left join site_product sp on sp.product_model_id = spm.id and sp.dr = 0
@@ -128,7 +129,7 @@
         from site_product_price price
         left join site_product_model model on price.product_model_id = model.id and model.dr = 0
         where price.dr = 0 and price.`status` = 1 and price.price_type = 1
-        order by price.created_time
+        order by scooterBattery, installment_time
     </select>
 
     <!-- 官网车型价格列表的返回结果 -->

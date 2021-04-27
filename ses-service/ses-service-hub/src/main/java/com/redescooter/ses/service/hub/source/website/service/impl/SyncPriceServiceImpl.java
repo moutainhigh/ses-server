@@ -121,13 +121,13 @@ public class SyncPriceServiceImpl implements SyncPriceService {
                 model.setShouldPayPeriod(enter.getShouldPayPeriod());
 
                 // 定金
-                BigDecimal deposit = enter.getDeposit();
+                /*BigDecimal deposit = enter.getDeposit();
                 // 期数(期数-定金的1个月)
                 Integer period = enter.getPeriod() - 1;
                 // 每期应付*期数
                 BigDecimal balance = enter.getShouldPayPeriod().multiply(new BigDecimal(String.valueOf(period)));
                 BigDecimal price = deposit.add(balance);
-                model.setPrice(price);
+                model.setPrice(price);*/
             } else if (enter.getType() == 2) {
                 // 全款支付
                 BigDecimal deposit = enter.getDeposit();
