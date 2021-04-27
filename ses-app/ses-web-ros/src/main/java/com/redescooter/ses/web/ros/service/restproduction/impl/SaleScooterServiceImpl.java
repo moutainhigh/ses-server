@@ -44,7 +44,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import spark.utils.CollectionUtils;
 
@@ -248,7 +247,6 @@ public class SaleScooterServiceImpl implements SaleScooterService {
     }
 
 
-    @Async
     void syncDeleteData(String productionName){
         productionService.syncDeleteData(productionName);
     }
@@ -278,7 +276,6 @@ public class SaleScooterServiceImpl implements SaleScooterService {
     }
 
     // 这个方法要写成异步的
-    @Async
     void dataSyncToWebsite(OpeSaleScooter saleScooter){
         try {
             if (0 == saleScooter.getSaleStutas()){

@@ -31,7 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -169,7 +168,6 @@ public class SaleCombinServiceImpl implements SaleCombinService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    @Async
     void syncData(OpeSaleCombin combin) {
         SyncSalePartsDataEnter model = new SyncSalePartsDataEnter();
         model.setStatus(combin.getSaleStutas() == 1 ? 1 : -1);
@@ -186,7 +184,6 @@ public class SaleCombinServiceImpl implements SaleCombinService {
         partsService.syncSalePartsData(model);
     }
 
-    @Async
     void syncDeleteData(String productCode) {
         partsService.syncDeleteData(productCode);
     }
