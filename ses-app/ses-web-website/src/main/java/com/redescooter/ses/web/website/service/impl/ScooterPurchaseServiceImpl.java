@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Author jerry
@@ -90,40 +92,34 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
     public List<ScooterPriceListResult> getScooterPriceList(GeneralEnter enter) {
         // 返回结果
         List<ScooterPriceListResult> resultList = Lists.newArrayList();
-        // 返回结果的详情
-        List<ScooterPriceDetailResult> detailList = Lists.newArrayList();
 
-        List<ScooterPriceListResult> list = scooterPurchaseMapper.getScooterPriceList();
-        if (CollectionUtils.isNotEmpty(list)) {
-            for (int i = 0; i < list.size(); i++) {
-                for (int j = i + 1; j < list.size(); j++) {
-                    ScooterPriceListResult first = list.get(i);
-                    ScooterPriceListResult second = list.get(j);
-                    // list对象的车型字段两两对比
-                    if (first.getScooterBattery().equals(second.getScooterBattery())) {
-                        ScooterPriceListResult result = new ScooterPriceListResult();
+        List<ScooterPriceListResult> priceList = scooterPurchaseMapper.getScooterPriceList();
+        if (CollectionUtils.isNotEmpty(priceList)) {
+            // 根据车型进行分组
+            Map<String, List<ScooterPriceListResult>> collect = priceList.stream().collect(Collectors.groupingBy(o -> o.getScooterBattery()));
+            for (Map.Entry<String, List<ScooterPriceListResult>> map : collect.entrySet()) {
+                String key = map.getKey();
+                List<ScooterPriceListResult> list = map.getValue();
 
-                        ScooterPriceDetailResult firstDetail = new ScooterPriceDetailResult();
-                        firstDetail.setInstallmentTime(first.getList().get(0).getInstallmentTime());
-                        firstDetail.setShouldPayPeriod(first.getList().get(0).getShouldPayPeriod());
-                        detailList.add(firstDetail);
+                ScooterPriceListResult result = new ScooterPriceListResult();
+                // 返回结果的详情
+                List<ScooterPriceDetailResult> detailList = Lists.newArrayList();
 
-                        ScooterPriceDetailResult secondDetail = new ScooterPriceDetailResult();
-                        secondDetail.setInstallmentTime(second.getList().get(0).getInstallmentTime());
-                        secondDetail.setShouldPayPeriod(second.getList().get(0).getShouldPayPeriod());
-                        detailList.add(secondDetail);
-
-                        result.setScooterBattery(first.getScooterBattery());
-                        result.setList(detailList);
-                        result.setTax(first.getTax());
-                        result.setPrepaidDeposit(first.getPrepaidDeposit());
-                        resultList.add(result);
+                for (ScooterPriceListResult item : list) {
+                    if (key.equals(item.getScooterBattery())) {
+                        ScooterPriceDetailResult detail = new ScooterPriceDetailResult();
+                        detail.setInstallmentTime(item.getList().get(0).getInstallmentTime());
+                        detail.setShouldPayPeriod(item.getList().get(0).getShouldPayPeriod());
+                        detailList.add(detail);
                     }
                 }
+
+                result.setTax(list.get(0).getTax());
+                result.setPrepaidDeposit(list.get(0).getPrepaidDeposit());
+                result.setScooterBattery(key);
+                result.setList(detailList);
+                resultList.add(result);
             }
-        }
-        if (CollectionUtils.isEmpty(resultList)) {
-            resultList.addAll(list);
         }
         return resultList;
     }

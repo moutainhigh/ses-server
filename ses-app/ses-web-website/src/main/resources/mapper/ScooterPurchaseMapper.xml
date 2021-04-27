@@ -126,6 +126,7 @@
         from site_product_price price
         left join site_product_model model on price.product_model_id = model.id and model.dr = 0
         where price.dr = 0 and price.`status` = 1 and price.price_type = 1
+        order by price.created_time
     </select>
 
     <!-- 官网车型价格列表的返回结果 -->

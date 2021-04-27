@@ -62,8 +62,8 @@ public class ControllerAspect {
             for (Object obj : objs) {
                 if (obj instanceof GeneralEnter) {
                     GeneralEnter enter = (GeneralEnter) obj;
-                    checkEnterParameter(enter, request);
-                    checkToken(point, enter);
+                    //checkEnterParameter(enter, request);
+                    //checkToken(point, enter);
                 }
                 ValidationUtil.validation(obj);
             }
