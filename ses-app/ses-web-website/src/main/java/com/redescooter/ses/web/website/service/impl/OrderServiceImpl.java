@@ -205,9 +205,11 @@ public class OrderServiceImpl implements OrderService {
         }
         //获取产品价格
         Long id;
+        String installmentTime = null;
         String paymentTypeId = enter.getPaymentTypeId();
         if (paymentTypeId.contains("+")) {
             id = Long.valueOf(paymentTypeId.substring(0, paymentTypeId.indexOf("+")));
+            installmentTime = paymentTypeId.substring(paymentTypeId.indexOf("+") + 1);
         } else {
             id = Long.valueOf(paymentTypeId);
         }
@@ -219,6 +221,9 @@ public class OrderServiceImpl implements OrderService {
         qw.eq(SiteProductPrice.COL_PRODUCT_MODEL_ID, product.getProductModelId());
         qw.like(SiteProductPrice.COL_BATTERY, enter.getBatteryQty());
         qw.eq(SiteProductPrice.COL_PRICE_TYPE, code);
+        if (null != installmentTime) {
+            qw.eq(SiteProductPrice.COL_INSTALLMENT_TIME, installmentTime);
+        }
         SiteProductPrice productPrice = siteProductPriceService.getOne(qw);
         if (productPrice == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
