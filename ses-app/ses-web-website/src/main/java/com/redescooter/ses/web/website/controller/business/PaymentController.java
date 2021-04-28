@@ -3,7 +3,6 @@ package com.redescooter.ses.web.website.controller.business;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.website.service.PaymentTypeService;
-import com.redescooter.ses.web.website.vo.payment.PaymentTypeDetailsResult;
 import com.redescooter.ses.web.website.vo.payment.PaymentTypeEnter;
 import com.redescooter.ses.web.website.vo.payment.PaymentTypeResult;
 import io.swagger.annotations.Api;
@@ -34,7 +33,7 @@ public class PaymentController {
 
     @IgnoreLoginCheck
     @PostMapping(value = "/list")
-    @ApiOperation(value = "Payment method list", response = PaymentTypeDetailsResult.class)
+    @ApiOperation(value = "Payment method list", response = PaymentTypeResult.class)
     public Response<PaymentTypeResult> list(@ModelAttribute @ApiParam("请求参数") PaymentTypeEnter enter) {
         return new Response<>(paymentTypeService.getPaymentTypeList(enter));
     }
