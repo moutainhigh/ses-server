@@ -245,6 +245,8 @@ public class SiteProductPrice implements Serializable {
 
     public static final String COL_PRICE = "price";
 
+    public static final String COL_BATTERY = "battery";
+
     public static final String COL_START_PRICE = "start_price";
 
     public static final String COL_EFFECTIVE_TIME = "effective_time";

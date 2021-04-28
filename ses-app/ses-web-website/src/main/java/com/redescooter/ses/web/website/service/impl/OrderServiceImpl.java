@@ -206,7 +206,9 @@ public class OrderServiceImpl implements OrderService {
         //获取产品价格
         SiteProductPrice productPrice = siteProductPriceService.getOne(new QueryWrapper<SiteProductPrice>()
                 .eq(SiteProductPrice.COL_DR, Constant.DR_FALSE)
-                .eq(SiteProductPrice.COL_PRODUCT_MODEL_ID, product.getProductModelId()));
+                .eq(SiteProductPrice.COL_PRODUCT_MODEL_ID, product.getProductModelId())
+                .eq(SiteProductPrice.COL_PRICE_TYPE, 2)
+                .like(SiteProductPrice.COL_BATTERY, enter.getBatteryQty()));
         if (productPrice == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
                     ExceptionCodeEnums.PARAM_ERROR.getMessage());
@@ -256,11 +258,12 @@ public class OrderServiceImpl implements OrderService {
         //代付款金额
         addSiteOrderVO.setAmountObligation(addSiteOrderVO.getTotalPrice());
         //预付定金
-        addSiteOrderVO.setPrepaidDeposit(new BigDecimal("590"));
+        //addSiteOrderVO.setPrepaidDeposit(new BigDecimal("590"));
+        addSiteOrderVO.setPrepaidDeposit(productPrice.getPrepaidDeposit());
         //优惠抵扣金额
         addSiteOrderVO.setAmountDiscount(new BigDecimal("0"));
         //支付类型
-        addSiteOrderVO.setPaymentTypeId(enter.getPaymentTypeId());
+        addSiteOrderVO.setPaymentTypeId(Long.valueOf(enter.getPaymentTypeId().substring(0, enter.getPaymentTypeId().indexOf("+"))));
         //支付状态
         addSiteOrderVO.setPayStatus(SiteOrderPaymentStatusEnums.UN_PAID.getValue());
         //购买车辆数
