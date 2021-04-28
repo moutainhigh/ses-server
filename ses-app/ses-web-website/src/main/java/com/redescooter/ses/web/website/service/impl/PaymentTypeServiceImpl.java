@@ -118,11 +118,20 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
         qw.like(SiteProductPrice::getBattery, enter.getBattery());
         List<SiteProductPrice> list = siteProductPriceService.list(qw);
         if (CollectionUtils.isNotEmpty(list)) {
+            // 租赁的支付方式
+            LambdaQueryWrapper<SitePaymentType> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(SitePaymentType::getDr, Constant.DR_FALSE);
+            wrapper.eq(SitePaymentType::getStatus, 1);
+            wrapper.eq(SitePaymentType::getPaymentCode, 1);
+            wrapper.last("limit 1");
+            SitePaymentType paymentType = sitePaymentTypeService.getOne(wrapper);
+
             for (SiteProductPrice price : list) {
                 LeaseResult lease = new LeaseResult();
                 lease.setInstallmentTime(price.getInstallmentTime());
                 lease.setPrepaidDeposit(price.getPrepaidDeposit());
                 lease.setShouldPayPeriod(price.getShouldPayPeriod());
+                lease.setPaymentTypeId(paymentType.getId());
                 leaseList.add(lease);
             }
         }
@@ -138,9 +147,18 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
         lqw.last("limit 1");
         SiteProductPrice price = siteProductPriceService.getOne(lqw);
         if (null != price) {
+            // 全款支付的支付方式
+            LambdaQueryWrapper<SitePaymentType> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(SitePaymentType::getDr, Constant.DR_FALSE);
+            wrapper.eq(SitePaymentType::getStatus, 1);
+            wrapper.eq(SitePaymentType::getPaymentCode, 2);
+            wrapper.last("limit 1");
+            SitePaymentType paymentType = sitePaymentTypeService.getOne(wrapper);
+
             fullPay.setPrepaidDeposit(price.getPrepaidDeposit());
             BigDecimal balance = price.getPrice().subtract(price.getPrepaidDeposit());
             fullPay.setBalance(balance);
+            fullPay.setPaymentTypeId(paymentType.getId());
         }
 
         // 分期支付的集合
@@ -153,10 +171,19 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
         wrapper.like(SiteProductPrice::getBattery, enter.getBattery());
         List<SiteProductPrice> priceList = siteProductPriceService.list(wrapper);
         if (CollectionUtils.isNotEmpty(priceList)) {
+            // 分期支付的支付方式
+            LambdaQueryWrapper<SitePaymentType> paymentTypeWrapper = new LambdaQueryWrapper<>();
+            paymentTypeWrapper.eq(SitePaymentType::getDr, Constant.DR_FALSE);
+            paymentTypeWrapper.eq(SitePaymentType::getStatus, 1);
+            paymentTypeWrapper.eq(SitePaymentType::getPaymentCode, 3);
+            paymentTypeWrapper.last("limit 1");
+            SitePaymentType paymentType = sitePaymentTypeService.getOne(paymentTypeWrapper);
+
             for (SiteProductPrice model : priceList) {
                 InstallmentPayResult instance = new InstallmentPayResult();
                 instance.setInstallmentTime(model.getInstallmentTime());
                 instance.setPrepaidDeposit(model.getPrepaidDeposit());
+                instance.setPaymentTypeId(paymentType.getId());
                 installmentPayList.add(instance);
             }
         }

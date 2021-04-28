@@ -2,19 +2,22 @@ package com.redescooter.ses.service.hub.source.website.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.hub.service.website.SyncPriceService;
 import com.redescooter.ses.api.hub.vo.website.SyncSalePriceDataEnter;
 import com.redescooter.ses.service.hub.constant.SequenceName;
+import com.redescooter.ses.service.hub.source.website.dm.SitePaymentType;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProductModel;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProductPrice;
+import com.redescooter.ses.service.hub.source.website.service.base.SitePaymentTypeService;
 import com.redescooter.ses.service.hub.source.website.service.base.SiteProductModelService;
 import com.redescooter.ses.service.hub.source.website.service.base.SiteProductPriceService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import io.seata.common.util.CollectionUtils;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +40,9 @@ public class SyncPriceServiceImpl implements SyncPriceService {
     
     @Autowired
     private SiteProductModelService siteProductModelService;
+
+    @Autowired
+    private SitePaymentTypeService sitePaymentTypeService;
 
     @DubboReference
     private IdAppService idAppService;
@@ -146,6 +152,40 @@ public class SyncPriceServiceImpl implements SyncPriceService {
             model.setCreatedBy(0L);
             model.setCreatedTime(new Date());
             siteProductPriceService.save(model);
+        }
+
+        // 同步支付方式
+        LambdaQueryWrapper<SitePaymentType> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SitePaymentType::getDr, Constant.DR_FALSE);
+        wrapper.eq(SitePaymentType::getStatus, 1);
+        List<SitePaymentType> paymentTypeList = sitePaymentTypeService.list(wrapper);
+        if (CollectionUtils.isEmpty(paymentTypeList)) {
+
+            List<SitePaymentType> modelList = Lists.newArrayList();
+
+            // 循环3次
+            for (int i = 1; i <= 3; i++) {
+                SitePaymentType model = new SitePaymentType();
+                model.setId(idAppService.getId(SequenceName.SITE_PAYMENT_TYPE));
+                model.setDr(Constant.DR_FALSE);
+                model.setStatus(1);
+
+                if (i == 1) {
+                    model.setPaymentName("租借车辆");
+                } else if (i == 2) {
+                    model.setPaymentName("全款支付");
+                } else if (i == 3) {
+                    model.setPaymentName("分期支付");
+                }
+
+                model.setPaymentCode(String.valueOf(i));
+                model.setRemark(model.getPaymentName());
+                model.setRevision(0);
+                model.setCreatedBy(0L);
+                model.setCreatedTime(new Date());
+                modelList.add(model);
+            }
+            sitePaymentTypeService.saveBatch(modelList);
         }
         return new GeneralResult();
     }

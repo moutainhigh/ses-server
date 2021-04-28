@@ -22,4 +22,7 @@ public class FullPayResult implements Serializable {
     @ApiModelProperty(value = "尾款")
     private BigDecimal balance;
 
+    @ApiModelProperty(value = "全款的支付方式id")
+    private Long paymentTypeId;
+
 }

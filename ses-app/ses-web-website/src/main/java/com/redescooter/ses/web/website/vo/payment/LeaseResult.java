@@ -25,4 +25,7 @@ public class LeaseResult implements Serializable {
     @ApiModelProperty(value = "每期应付")
     private BigDecimal shouldPayPeriod;
 
+    @ApiModelProperty(value = "租赁的支付方式id")
+    private Long paymentTypeId;
+
 }

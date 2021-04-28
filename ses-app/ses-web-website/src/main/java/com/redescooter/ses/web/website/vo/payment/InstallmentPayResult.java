@@ -22,4 +22,7 @@ public class InstallmentPayResult implements Serializable {
     @ApiModelProperty(value = "预付定金")
     private BigDecimal prepaidDeposit;
 
+    @ApiModelProperty(value = "分期的支付方式id")
+    private Long paymentTypeId;
+
 }

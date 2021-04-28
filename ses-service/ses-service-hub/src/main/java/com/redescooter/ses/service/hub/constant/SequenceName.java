@@ -39,4 +39,6 @@ public interface SequenceName {
 
     String SITE_PRODUCT_PRICE = "SITE_PRODUCT_PRICE";
 
+    String SITE_PAYMENT_TYPE = "SITE_PAYMENT_TYPE";
+
 }
