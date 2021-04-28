@@ -18,6 +18,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -137,6 +138,14 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
                 result.setList(detailList);
                 resultList.add(result);
             }
+        }
+
+        // 列表根据车型和电池数排序
+        if (CollectionUtils.isNotEmpty(resultList)) {
+            Collections.sort(resultList, (o1, o2) -> {
+                int i = o1.getScooterBattery().compareTo(o2.getScooterBattery());
+                return i;
+            });
         }
         return resultList;
     }
