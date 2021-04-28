@@ -204,11 +204,22 @@ public class OrderServiceImpl implements OrderService {
                     ExceptionCodeEnums.COLOR_NOT_EXIST_EXIST.getMessage());
         }
         //获取产品价格
-        SiteProductPrice productPrice = siteProductPriceService.getOne(new QueryWrapper<SiteProductPrice>()
-                .eq(SiteProductPrice.COL_DR, Constant.DR_FALSE)
-                .eq(SiteProductPrice.COL_PRODUCT_MODEL_ID, product.getProductModelId())
-                .eq(SiteProductPrice.COL_PRICE_TYPE, 2)
-                .like(SiteProductPrice.COL_BATTERY, enter.getBatteryQty()));
+        Long id;
+        String paymentTypeId = enter.getPaymentTypeId();
+        if (paymentTypeId.contains("+")) {
+            id = Long.valueOf(paymentTypeId.substring(0, paymentTypeId.indexOf("+")));
+        } else {
+            id = Long.valueOf(paymentTypeId);
+        }
+        SitePaymentType type = sitePaymentTypeService.getById(id);
+        String code = type.getPaymentCode();
+
+        QueryWrapper<SiteProductPrice> qw = new QueryWrapper<>();
+        qw.eq(SiteProductPrice.COL_DR, Constant.DR_FALSE);
+        qw.eq(SiteProductPrice.COL_PRODUCT_MODEL_ID, product.getProductModelId());
+        qw.like(SiteProductPrice.COL_BATTERY, enter.getBatteryQty());
+        qw.eq(SiteProductPrice.COL_PRICE_TYPE, code);
+        SiteProductPrice productPrice = siteProductPriceService.getOne(qw);
         if (productPrice == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
                     ExceptionCodeEnums.PARAM_ERROR.getMessage());
