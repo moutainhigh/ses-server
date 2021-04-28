@@ -10,9 +10,9 @@ dubbo:
     address: zookeeper://172.28.193.226:2181
 spring:
   datasource:
-    url: jdbc:mysql://172.28.193.226:3306/scooter?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
-    username: root
-    password: rede,1qaz2wsx
+    url: jdbc:mysql://172.28.193.226:3306/scooter_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    username: rede
+    password: test.1qaz2wsx
     druid:
       initial-size: 8
       min-idle: 1
