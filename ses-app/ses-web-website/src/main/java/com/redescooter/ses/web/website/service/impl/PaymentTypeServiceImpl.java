@@ -115,7 +115,7 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
         qw.eq(SiteProductPrice::getStatus, 1);
         qw.eq(SiteProductPrice::getPriceType, 1);
         qw.eq(SiteProductPrice::getProductModelId, enter.getModelId());
-        qw.likeLeft(SiteProductPrice::getBattery, enter.getBattery());
+        qw.like(SiteProductPrice::getBattery, enter.getBattery());
         List<SiteProductPrice> list = siteProductPriceService.list(qw);
         if (CollectionUtils.isNotEmpty(list)) {
             for (SiteProductPrice price : list) {
@@ -134,7 +134,7 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
         lqw.eq(SiteProductPrice::getStatus, 1);
         lqw.eq(SiteProductPrice::getPriceType, 2);
         lqw.eq(SiteProductPrice::getProductModelId, enter.getModelId());
-        lqw.likeLeft(SiteProductPrice::getBattery, enter.getBattery());
+        lqw.like(SiteProductPrice::getBattery, enter.getBattery());
         lqw.last("limit 1");
         SiteProductPrice price = siteProductPriceService.getOne(lqw);
         if (null != price) {
@@ -150,7 +150,7 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
         wrapper.eq(SiteProductPrice::getStatus, 1);
         wrapper.eq(SiteProductPrice::getPriceType, 3);
         wrapper.eq(SiteProductPrice::getProductModelId, enter.getModelId());
-        wrapper.likeLeft(SiteProductPrice::getBattery, enter.getBattery());
+        wrapper.like(SiteProductPrice::getBattery, enter.getBattery());
         List<SiteProductPrice> priceList = siteProductPriceService.list(wrapper);
         if (CollectionUtils.isNotEmpty(priceList)) {
             for (SiteProductPrice model : priceList) {
