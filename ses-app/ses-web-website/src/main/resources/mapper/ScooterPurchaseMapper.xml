@@ -15,8 +15,7 @@
         <result column="power" jdbcType="VARCHAR" property="power"/>
         <result column="mileage" jdbcType="VARCHAR" property="mileage"/>
         <result column="charge_cycle" jdbcType="VARCHAR" property="chargeCycle"/>
-        <collection property="colourDetailslist" javaType="java.util.ArrayList"
-                    ofType="com.redescooter.ses.web.website.vo.product.ColourDetailsResult">
+        <collection property="colourDetailslist" javaType="java.util.ArrayList" ofType="com.redescooter.ses.web.website.vo.product.ColourDetailsResult">
             <id column="colourId" jdbcType="BIGINT" property="id"/>
             <result column="colour_name" jdbcType="VARCHAR" property="colourName"/>
             <result column="colour_RGB" jdbcType="VARCHAR" property="colourRgb"/>
@@ -83,8 +82,8 @@
                sp.en_name,
                sp.price * spp.qty as price
         from site_product_parts spp
-                     left join site_parts sp on spp.parts_id = sp.id and sp.dr = 0
-                where spp.dr = 0 and parts_type = 3
+        left join site_parts sp on spp.parts_id = sp.id and sp.dr = 0
+        where spp.dr = 0 and parts_type = 3
         <if test="id != null">
             and spp.product_id = #{id}
         </if>
@@ -128,7 +127,7 @@
                 price.should_pay_period
         from site_product_price price
         left join site_product_model model on price.product_model_id = model.id and model.dr = 0
-        where price.dr = 0 and price.`status` = 1 and price.price_type = 1
+        where price.dr = 0 and price.`status` = 1
         order by scooterBattery, installment_time
     </select>
 
