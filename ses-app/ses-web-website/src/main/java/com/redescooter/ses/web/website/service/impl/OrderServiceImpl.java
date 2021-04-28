@@ -363,7 +363,7 @@ public class OrderServiceImpl implements OrderService {
             }
 
             Long orderId = enter.getOrderId();
-            if (orderId == 0) {
+            if (null == orderId || orderId == 0L) {
                 throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(),
                         ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
             }
@@ -393,8 +393,7 @@ public class OrderServiceImpl implements OrderService {
                 orderB.setPartsId(p.getPartsId());
                 orderB.setPartsQty(p.getParts_qty());
                 //单个配件价格合
-                //BigDecimal partPriceSun = part.getPrice().multiply(new BigDecimal(p.getParts_qty()));
-                BigDecimal partPriceSun = new BigDecimal("4880");
+                BigDecimal partPriceSun = part.getPrice().multiply(new BigDecimal(p.getParts_qty()));
                 orderB.setPartsPrice(partPriceSun);
                 orderB.setRevision(0);
                 orderB.setCreatedBy(enter.getUserId());
