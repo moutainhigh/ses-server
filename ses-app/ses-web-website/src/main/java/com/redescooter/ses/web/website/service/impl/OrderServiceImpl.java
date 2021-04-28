@@ -263,7 +263,11 @@ public class OrderServiceImpl implements OrderService {
         //优惠抵扣金额
         addSiteOrderVO.setAmountDiscount(new BigDecimal("0"));
         //支付类型
-        addSiteOrderVO.setPaymentTypeId(Long.valueOf(enter.getPaymentTypeId().substring(0, enter.getPaymentTypeId().indexOf("+"))));
+        if (enter.getPaymentTypeId().contains("+")) {
+            addSiteOrderVO.setPaymentTypeId(Long.valueOf(enter.getPaymentTypeId().substring(0, enter.getPaymentTypeId().indexOf("+"))));
+        } else {
+            addSiteOrderVO.setPaymentTypeId(Long.valueOf(enter.getPaymentTypeId()));
+        }
         //支付状态
         addSiteOrderVO.setPayStatus(SiteOrderPaymentStatusEnums.UN_PAID.getValue());
         //购买车辆数

@@ -107,8 +107,8 @@
                 spp.battery,
                 spp.id                 as productPriceId,
                 IFNULL(spp.price_type, 0) as priceType,
-                (select price from site_product_price where product_model_id = spm.id and price_type = 2) as price,
-                (select should_pay_period from site_product_price where product_model_id = spm.id and price_type = 3) as shouldPayPeriod,
+                (select price from site_product_price where dr = 0 and product_model_id = spm.id and price_type = 2 limit 1) as price,
+                (select should_pay_period from site_product_price where dr = 0 and product_model_id = spm.id and price_type = 3 limit 1) as shouldPayPeriod,
                 IFNULL(spp.start_price, 0) as startPrice
         from site_product_model spm
         left join site_product_price spp on spm.id = spp.product_model_id and spp.dr = 0 and spp.price_type in (2, 3)
