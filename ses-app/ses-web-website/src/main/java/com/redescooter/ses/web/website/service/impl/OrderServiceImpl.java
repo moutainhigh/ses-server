@@ -423,14 +423,31 @@ public class OrderServiceImpl implements OrderService {
                 //价格累计
                 partAllTotalPrice = partAllTotalPrice.add(partPriceSun);
             }
+
+            // 说明是分期支付
+            BigDecimal shouldPayPeriod = new BigDecimal("0");
+            if (enter.getPaymentTypeId().contains("+")) {
+                // 得到分期期数
+                String installmentTime = enter.getPaymentTypeId().substring(enter.getPaymentTypeId().indexOf("+") + 1);
+                if (StringUtils.isNotBlank(installmentTime)) {
+                    Integer count = Integer.valueOf(installmentTime) - 1;
+                    // 配件总额 /（分期-1）  平均分到每期
+                    shouldPayPeriod = shouldPayPeriod.add(partAllTotalPrice.divide(new BigDecimal(String.valueOf(count))).setScale(2, BigDecimal.ROUND_DOWN));
+                }
+            }
+            if (shouldPayPeriod.compareTo(new BigDecimal("0")) == 0) {
+                log.info("没进预想的逻辑,此时配件应付金额等于全额");
+                shouldPayPeriod = shouldPayPeriod.add(partAllTotalPrice);
+            }
+
             BigDecimal orderTotalPrice = order.getTotalPrice().add(partAllTotalPrice);
             //更新总金额
             order.setTotalPrice(orderTotalPrice);
             //更新待付金额
-            order.setAmountObligation(orderTotalPrice);
+            BigDecimal amountObligation = order.getTotalPrice().add(shouldPayPeriod);
+            order.setAmountObligation(amountObligation);
             //所选择配件总价格做备份记录
             order.setDef1(partAllTotalPrice.toPlainString());
-
             //更新主订单金额
             siteOrderService.updateById(order);
             //创建子订单
