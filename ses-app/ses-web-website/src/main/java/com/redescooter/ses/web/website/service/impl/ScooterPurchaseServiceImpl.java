@@ -126,13 +126,13 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
                 for (ScooterPriceListResult item : list) {
                     if (key.equals(item.getScooterBattery())) {
                         ScooterPriceDetailResult detail = new ScooterPriceDetailResult();
-                        if (null == item.getList() || null == item.getList().get(0).getInstallmentTime()) {
+                        if (null == item || CollectionUtils.isEmpty(item.getList()) || null == item.getList().get(0).getInstallmentTime()) {
                             detail.setInstallmentTime(null);
                         } else {
                             detail.setInstallmentTime(item.getList().get(0).getInstallmentTime());
                         }
 
-                        if (null == item.getList() || null == item.getList().get(0).getShouldPayPeriod()) {
+                        if (null == item || CollectionUtils.isEmpty(item.getList()) || null == item.getList().get(0).getShouldPayPeriod()) {
                             detail.setShouldPayPeriod(null);
                         } else {
                             detail.setShouldPayPeriod(item.getList().get(0).getShouldPayPeriod());
