@@ -258,11 +258,11 @@ public class OrderServiceImpl implements OrderService {
         //这里是送货地址
         addSiteOrderVO.setAddress(enter.getDeliveryAddress());
         //运费
-        addSiteOrderVO.setFreight(new BigDecimal("190"));
+        addSiteOrderVO.setFreight(new BigDecimal("199"));
         //整车价格
         addSiteOrderVO.setProductPrice(productPrice.getPrice());
         //没有选着其他配件前，只是整车的价格+运费
-        BigDecimal totalPrice = new BigDecimal("190").add(productPrice.getPrice().multiply(new BigDecimal(enter.getScooterQuantity())));
+        BigDecimal totalPrice = new BigDecimal("199").add(productPrice.getPrice().multiply(new BigDecimal(enter.getScooterQuantity())));
         //实际付款电池数: 选配电池总数-产品最小电池数
         int paidBattery = scooterBatteryParts.getQty() - product.getMinBatteryNum();
         //加上选购电池的价格
