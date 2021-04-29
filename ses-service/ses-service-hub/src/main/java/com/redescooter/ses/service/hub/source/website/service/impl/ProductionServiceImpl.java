@@ -14,7 +14,6 @@ import com.redescooter.ses.service.hub.source.website.dm.SiteProduct;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProductClass;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProductColour;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProductModel;
-import com.redescooter.ses.service.hub.source.website.dm.SiteProductPrice;
 import com.redescooter.ses.service.hub.source.website.service.base.SiteColourService;
 import com.redescooter.ses.service.hub.source.website.service.base.SiteProductClassService;
 import com.redescooter.ses.service.hub.source.website.service.base.SiteProductColourService;
@@ -362,15 +361,6 @@ public class ProductionServiceImpl implements ProductionService {
             List<SiteProductColour> colourList = siteProductColourService.list(colourQueryWrapper);
             if (CollectionUtils.isNotEmpty(colourList)) {
                 siteProductColourService.removeByIds(colourList.stream().map(SiteProductColour::getId).collect(Collectors.toList()));
-            }
-
-            // 删除site_product_price
-            LambdaQueryWrapper<SiteProductPrice> wrapper = new LambdaQueryWrapper<>();
-            wrapper.eq(SiteProductPrice::getProductModelId, product.getId());
-            List<SiteProductPrice> list = siteProductPriceService.list(wrapper);
-            if (CollectionUtils.isNotEmpty(list)) {
-                List<Long> ids = list.stream().map(o -> o.getId()).collect(Collectors.toList());
-                siteProductPriceService.removeByIds(ids);
             }
         }
     }

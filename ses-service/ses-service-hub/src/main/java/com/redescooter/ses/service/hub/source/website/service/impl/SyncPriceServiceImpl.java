@@ -57,8 +57,6 @@ public class SyncPriceServiceImpl implements SyncPriceService {
         log.info("进入hub开始同步价格删除");
         Long modelId = null;
         LambdaQueryWrapper<SiteProductModel> qw = new LambdaQueryWrapper<>();
-        qw.eq(SiteProductModel::getDr, Constant.DR_FALSE);
-        qw.eq(SiteProductModel::getStatus, 1);
         List<SiteProductModel> list = siteProductModelService.list(qw);
         if (CollectionUtils.isNotEmpty(list)) {
             for (SiteProductModel o : list) {
