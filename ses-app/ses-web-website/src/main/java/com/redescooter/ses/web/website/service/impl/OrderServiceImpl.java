@@ -384,8 +384,7 @@ public class OrderServiceImpl implements OrderService {
 
             Long orderId = enter.getOrderId();
             if (null == orderId || orderId == 0L) {
-                throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(),
-                        ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
+                throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
             }
             //获取订单
             SiteOrder order = siteOrderService.getById(orderId);
