@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 车辆设备数据上报组件
+ *
  * @author assert
  * @date 2020/11/19 17:48
  */
@@ -39,10 +40,14 @@ public class ScooterDataReportedComponent {
 
     /**
      * 车辆数据保存到数据库
+     *
      * @param data
      * @param topic
      */
     public void insertScooterData(String data, String topic) {
+
+        log.info("上报主题：【{}】", topic);
+        log.info("上报数据：{}", data);
         /**
          * 根据Topic进行业务分发
          */

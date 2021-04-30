@@ -235,4 +235,11 @@ public class SiteWebInquiryEnter implements Serializable {
      */
     @ApiModelProperty("产品型号")
     private String productModel;
+
+    /**
+     * 产品型号
+     */
+    @ApiModelProperty("银行卡上面名字")
+    private String bankCardName;
+
 }

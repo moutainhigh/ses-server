@@ -6,6 +6,7 @@ import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
 import com.redescooter.ses.web.website.vo.product.ProductPartsDetailsResult;
 import com.redescooter.ses.web.website.vo.product.ProductsResult;
+import com.redescooter.ses.web.website.vo.product.ScooterPriceListResult;
 
 import java.util.List;
 
@@ -47,4 +48,10 @@ public interface ScooterPurchaseService {
      * @return
      */
     List<ProductPartsDetailsResult> getScooterBatterysByProductId(IdEnter enter);
+
+    /**
+     * 官网车型价格列表
+     */
+    List<ScooterPriceListResult> getScooterPriceList(GeneralEnter enter);
+
 }

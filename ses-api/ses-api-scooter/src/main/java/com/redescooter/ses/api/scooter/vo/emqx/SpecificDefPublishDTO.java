@@ -3,6 +3,8 @@ package com.redescooter.ses.api.scooter.vo.emqx;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 规格自定义项 -- 用于EMQ X指令下发时使用
  * @author assert
@@ -10,7 +12,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class SpecificDefPublishDTO {
+public class SpecificDefPublishDTO implements Serializable {
 
     /**
      * 自定义名称

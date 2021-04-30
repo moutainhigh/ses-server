@@ -1,7 +1,12 @@
 package com.redescooter.ses.web.ros.service.base;
 
-import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.api.foundation.vo.login.EmailLoginEnter;
+import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.GetAccountKeyResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.RefreshTokenEnter;
+import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.user.ModifyPasswordEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
@@ -105,5 +110,12 @@ public interface TokenRosService {
      * @return
      */
     GeneralResult sendForgetPasswordEmail(BaseSendMailEnter enter);
+
+    /**
+     * 刷新token
+     * @param enter
+     * @return
+     */
+    TokenResult refreshToken(RefreshTokenEnter enter);
 
 }

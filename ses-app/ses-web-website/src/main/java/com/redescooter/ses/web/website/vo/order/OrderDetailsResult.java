@@ -76,6 +76,11 @@ public class OrderDetailsResult extends GeneralResult {
     @ApiModelProperty(value = "product_colour_code ")
     private String productColourCode;
 
+    /**
+     * 图片
+     */
+    @ApiModelProperty(value = "picture")
+    private String picture;
 
     /**
      * 提货方式
@@ -186,5 +191,10 @@ class orderBlist extends GeneralResult {
     @ApiModelProperty(value = "parts_qty")
     private Integer partsQty;
 
+    /**
+     * 配件图片
+     */
+    @ApiModelProperty(value = "配件图片")
+    private String partsPicture;
 
 }

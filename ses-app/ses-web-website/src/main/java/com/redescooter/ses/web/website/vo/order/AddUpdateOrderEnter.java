@@ -2,13 +2,10 @@ package com.redescooter.ses.web.website.vo.order;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.redescooter.ses.api.common.annotation.NotNull;
-import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.hub.exception.ValidationExceptionCode;
 import com.redescooter.ses.web.website.exception.SiteValidationExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.models.auth.In;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -65,11 +62,11 @@ public class AddUpdateOrderEnter extends GeneralEnter {
     private Long dealerId;
 
     /**
-     * 支付方式
+     * 支付方式+期数
      */
     @ApiModelProperty(value = "payment_type_id", notes = "The ID in the response result of the interface calling the payment type")
     @NotNull(code = SiteValidationExceptionCode.PAY_TYPE_IS_EMPTY, message = "支付方式为空")
-    private Long paymentTypeId;
+    private String paymentTypeId;
 
     /**
      * 需求车辆数

@@ -140,7 +140,10 @@ public enum ExceptionCodeEnums {
 
     LENGTH_IS_TOO_LONG(10064, "长度过长"),
 
-    GROUP_NOT_ENABLE(10065, "此分组未启用")
+    GROUP_NOT_ENABLE(10065, "此分组未启用"),
+
+    REFRESH_TOKEN_NOT_EXIST(10066, "刷新token不存在")
+
 
     ;
 

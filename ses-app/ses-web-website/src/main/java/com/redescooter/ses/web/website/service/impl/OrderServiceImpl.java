@@ -204,13 +204,31 @@ public class OrderServiceImpl implements OrderService {
                     ExceptionCodeEnums.COLOR_NOT_EXIST_EXIST.getMessage());
         }
         //获取产品价格
-        SiteProductPrice productPrice = siteProductPriceService.getOne(new QueryWrapper<SiteProductPrice>()
-                .eq(SiteProductPrice.COL_DR, Constant.DR_FALSE)
-                .eq(SiteProductPrice.COL_PRODUCT_MODEL_ID, product.getProductModelId()));
-        /*if (productPrice == null) {
+        Long id;
+        String installmentTime = null;
+        String paymentTypeId = enter.getPaymentTypeId();
+        if (paymentTypeId.contains("+")) {
+            id = Long.valueOf(paymentTypeId.substring(0, paymentTypeId.indexOf("+")));
+            installmentTime = paymentTypeId.substring(paymentTypeId.indexOf("+") + 1);
+        } else {
+            id = Long.valueOf(paymentTypeId);
+        }
+        SitePaymentType type = sitePaymentTypeService.getById(id);
+        String code = type.getPaymentCode();
+
+        QueryWrapper<SiteProductPrice> qw = new QueryWrapper<>();
+        qw.eq(SiteProductPrice.COL_DR, Constant.DR_FALSE);
+        qw.eq(SiteProductPrice.COL_PRODUCT_MODEL_ID, product.getProductModelId());
+        qw.like(SiteProductPrice.COL_BATTERY, enter.getBatteryQty());
+        qw.eq(SiteProductPrice.COL_PRICE_TYPE, code);
+        if (null != installmentTime) {
+            qw.eq(SiteProductPrice.COL_INSTALLMENT_TIME, installmentTime);
+        }
+        SiteProductPrice productPrice = siteProductPriceService.getOne(qw);
+        if (productPrice == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.PARAM_ERROR.getCode(),
                     ExceptionCodeEnums.PARAM_ERROR.getMessage());
-        }*/
+        }
 
         //获取所选车辆电池数量
         SiteProductParts scooterBatteryParts = siteProductPartsService.getById(enter.getProductPartsId());
@@ -240,17 +258,15 @@ public class OrderServiceImpl implements OrderService {
         //这里是送货地址
         addSiteOrderVO.setAddress(enter.getDeliveryAddress());
         //运费
-        addSiteOrderVO.setFreight(new BigDecimal("190"));
+        addSiteOrderVO.setFreight(new BigDecimal("199"));
         //整车价格
-        //addSiteOrderVO.setProductPrice(productPrice.getPrice());
-        addSiteOrderVO.setProductPrice(new BigDecimal("4880"));
+        addSiteOrderVO.setProductPrice(productPrice.getPrice());
         //没有选着其他配件前，只是整车的价格+运费
-        //BigDecimal totalPrice = new BigDecimal("190").add(productPrice.getPrice().multiply(new BigDecimal(enter.getScooterQuantity())));
-        BigDecimal totalPrice = new BigDecimal("190").add(new BigDecimal("4880").multiply(new BigDecimal(enter.getScooterQuantity())));
+        BigDecimal totalPrice = new BigDecimal("199").add(productPrice.getPrice().multiply(new BigDecimal(enter.getScooterQuantity())));
         //实际付款电池数: 选配电池总数-产品最小电池数
         int paidBattery = scooterBatteryParts.getQty() - product.getMinBatteryNum();
         //加上选购电池的价格
-        //totalPrice = totalPrice.add(battery.getPrice().multiply(new BigDecimal(String.valueOf(paidBattery))));
+        totalPrice = totalPrice.add(battery.getPrice().multiply(new BigDecimal(String.valueOf(paidBattery))));
         //设置总价（未包含其他部件）
         addSiteOrderVO.setTotalPrice(totalPrice);
         //已付金额
@@ -258,11 +274,16 @@ public class OrderServiceImpl implements OrderService {
         //代付款金额
         addSiteOrderVO.setAmountObligation(addSiteOrderVO.getTotalPrice());
         //预付定金
-        addSiteOrderVO.setPrepaidDeposit(new BigDecimal("590"));
+        //addSiteOrderVO.setPrepaidDeposit(new BigDecimal("590"));
+        addSiteOrderVO.setPrepaidDeposit(productPrice.getPrepaidDeposit());
         //优惠抵扣金额
         addSiteOrderVO.setAmountDiscount(new BigDecimal("0"));
         //支付类型
-        addSiteOrderVO.setPaymentTypeId(enter.getPaymentTypeId());
+        if (enter.getPaymentTypeId().contains("+")) {
+            addSiteOrderVO.setPaymentTypeId(Long.valueOf(enter.getPaymentTypeId().substring(0, enter.getPaymentTypeId().indexOf("+"))));
+        } else {
+            addSiteOrderVO.setPaymentTypeId(Long.valueOf(enter.getPaymentTypeId()));
+        }
         //支付状态
         addSiteOrderVO.setPayStatus(SiteOrderPaymentStatusEnums.UN_PAID.getValue());
         //购买车辆数
@@ -281,9 +302,9 @@ public class OrderServiceImpl implements OrderService {
         IdResult result = new IdResult();
         result.setId(addSiteOrderVO.getId());
         result.setRequestId(enter.getRequestId());
-
+        String bankCardName = customer.getCardholder();
         // 官网的订单数据 要同步到ROS系统中
-        syncdataToRos(addSiteOrderVO, email);
+        syncdataToRos(addSiteOrderVO, email , bankCardName);
 
         return result;
     }
@@ -318,16 +339,17 @@ public class OrderServiceImpl implements OrderService {
      * @param addSiteOrderVO
      */
     @Async
-    public void syncdataToRos(SiteOrder addSiteOrderVO, String email) {
+    public void syncdataToRos(SiteOrder addSiteOrderVO, String email ,String bankCardName) {
         // 构造请求的参数
         SiteWebInquiryEnter enter = new SiteWebInquiryEnter();
         BeanUtils.copyProperties(addSiteOrderVO, enter);
+        enter.setBankCardName(bankCardName);
+        enter.setBatteryQty(addSiteOrderVO.getBatteryQty());
         // 給productModel赋值
         String productModel = orderMapper.getProductModelByOrderId(addSiteOrderVO.getId());
         if (StringUtils.isNotBlank(productModel)) {
             enter.setProductModel(productModel);
         }
-
         // 调方法 同步数据
         log.info("开始同步");
         siteWebInquiryService.siteWebOrderToRosInquiry(enter, email);
@@ -361,9 +383,8 @@ public class OrderServiceImpl implements OrderService {
             }
 
             Long orderId = enter.getOrderId();
-            if (orderId == 0) {
-                throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(),
-                        ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
+            if (null == orderId || orderId == 0L) {
+                throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
             }
             //获取订单
             SiteOrder order = siteOrderService.getById(orderId);
@@ -391,8 +412,7 @@ public class OrderServiceImpl implements OrderService {
                 orderB.setPartsId(p.getPartsId());
                 orderB.setPartsQty(p.getParts_qty());
                 //单个配件价格合
-                //BigDecimal partPriceSun = part.getPrice().multiply(new BigDecimal(p.getParts_qty()));
-                BigDecimal partPriceSun = new BigDecimal("4880");
+                BigDecimal partPriceSun = part.getPrice().multiply(new BigDecimal(p.getParts_qty()));
                 orderB.setPartsPrice(partPriceSun);
                 orderB.setRevision(0);
                 orderB.setCreatedBy(enter.getUserId());
@@ -403,14 +423,31 @@ public class OrderServiceImpl implements OrderService {
                 //价格累计
                 partAllTotalPrice = partAllTotalPrice.add(partPriceSun);
             }
+
+            // 说明是分期支付
+            BigDecimal shouldPayPeriod = new BigDecimal("0");
+            if (enter.getPaymentTypeId().contains("+")) {
+                // 得到分期期数
+                String installmentTime = enter.getPaymentTypeId().substring(enter.getPaymentTypeId().indexOf("+") + 1);
+                if (StringUtils.isNotBlank(installmentTime)) {
+                    Integer count = Integer.valueOf(installmentTime) - 1;
+                    // 配件总额 /（分期-1）  平均分到每期
+                    shouldPayPeriod = shouldPayPeriod.add(partAllTotalPrice.divide(new BigDecimal(String.valueOf(count))).setScale(2, BigDecimal.ROUND_DOWN));
+                }
+            }
+            if (shouldPayPeriod.compareTo(new BigDecimal("0")) == 0) {
+                log.info("没进预想的逻辑,此时配件应付金额等于全额");
+                shouldPayPeriod = shouldPayPeriod.add(partAllTotalPrice);
+            }
+
             BigDecimal orderTotalPrice = order.getTotalPrice().add(partAllTotalPrice);
             //更新总金额
             order.setTotalPrice(orderTotalPrice);
             //更新待付金额
-            order.setAmountObligation(orderTotalPrice);
+            BigDecimal amountObligation = order.getTotalPrice().add(shouldPayPeriod);
+            order.setAmountObligation(amountObligation);
             //所选择配件总价格做备份记录
             order.setDef1(partAllTotalPrice.toPlainString());
-
             //更新主订单金额
             siteOrderService.updateById(order);
             //创建子订单

@@ -9,8 +9,17 @@ import com.redescooter.ses.api.hub.service.website.ProductionService;
 import com.redescooter.ses.api.hub.vo.website.SyncProductionDataEnter;
 import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
-import com.redescooter.ses.service.hub.source.website.dm.*;
-import com.redescooter.ses.service.hub.source.website.service.base.*;
+import com.redescooter.ses.service.hub.source.website.dm.SiteColour;
+import com.redescooter.ses.service.hub.source.website.dm.SiteProduct;
+import com.redescooter.ses.service.hub.source.website.dm.SiteProductClass;
+import com.redescooter.ses.service.hub.source.website.dm.SiteProductColour;
+import com.redescooter.ses.service.hub.source.website.dm.SiteProductModel;
+import com.redescooter.ses.service.hub.source.website.service.base.SiteColourService;
+import com.redescooter.ses.service.hub.source.website.service.base.SiteProductClassService;
+import com.redescooter.ses.service.hub.source.website.service.base.SiteProductColourService;
+import com.redescooter.ses.service.hub.source.website.service.base.SiteProductModelService;
+import com.redescooter.ses.service.hub.source.website.service.base.SiteProductPriceService;
+import com.redescooter.ses.service.hub.source.website.service.base.SiteProductService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.common.util.CollectionUtils;
 import io.seata.spring.annotation.GlobalTransactional;
@@ -48,6 +57,9 @@ public class ProductionServiceImpl implements ProductionService {
 
     @Autowired
     private SiteProductModelService siteProductModelService;
+
+    @Autowired
+    private SiteProductPriceService siteProductPriceService;
 
     @DubboReference
     private IdAppService idAppService;
@@ -332,6 +344,7 @@ public class ProductionServiceImpl implements ProductionService {
         qw.last("limit 1");
         SiteProductModel product = siteProductModelService.getOne(qw);
         if (product != null) {
+            // 删除site_product_model
             siteProductModelService.removeById(product.getId());
 
             // 删除site_product

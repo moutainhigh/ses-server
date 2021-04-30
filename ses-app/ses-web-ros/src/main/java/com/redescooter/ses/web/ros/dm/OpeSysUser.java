@@ -1,13 +1,18 @@
 package com.redescooter.ses.web.ros.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 @ApiModel(value="com-redescooter-ses-web-ros-dm-OpeSysUser")
 @Data
@@ -100,6 +105,13 @@ public class OpeSysUser {
     @TableField(value = "last_login_token")
     @ApiModelProperty(value="最后登录TOKEN")
     private String lastLoginToken;
+
+    /**
+     * 刷新token
+     */
+    @TableField(value = "refresh_token")
+    @ApiModelProperty(value = "刷新token")
+    private String refreshToken;
 
     /**
      * 最后登录IP地址

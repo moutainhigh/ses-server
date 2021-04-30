@@ -37,4 +37,8 @@ public interface SequenceName {
 
     String OPE_CONTACT_US_TRACE = "OPE_CONTACT_US_TRACE";
 
+    String SITE_PRODUCT_PRICE = "SITE_PRODUCT_PRICE";
+
+    String SITE_PAYMENT_TYPE = "SITE_PAYMENT_TYPE";
+
 }

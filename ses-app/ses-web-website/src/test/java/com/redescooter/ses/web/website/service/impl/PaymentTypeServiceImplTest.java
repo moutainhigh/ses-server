@@ -1,15 +1,13 @@
 package com.redescooter.ses.web.website.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.SesWebsiteApplicationTests;
 import com.redescooter.ses.web.website.service.PaymentTypeService;
 import com.redescooter.ses.web.website.vo.payment.AddPaymentTypeEnter;
+import com.redescooter.ses.web.website.vo.payment.PaymentTypeEnter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class PaymentTypeServiceImplTest extends SesWebsiteApplicationTests {
 
@@ -33,7 +31,7 @@ public class PaymentTypeServiceImplTest extends SesWebsiteApplicationTests {
 
     @Test
     void getPaymentTypeList() {
-        System.out.println(JSON.toJSONString(paymentTypeService.getPaymentTypeList(new GeneralEnter())));
+        System.out.println(JSON.toJSONString(paymentTypeService.getPaymentTypeList(new PaymentTypeEnter())));
 
     }
 }

@@ -33,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -163,7 +162,6 @@ public class SalePartsServiceImpl implements SalePartsService {
         return new GeneralResult(enter.getRequestId());
     }
 
-    @Async
     void syncData(OpeSaleParts saleParts) {
         Long partsId = saleParts.getPartsId();
         OpeProductionParts parts = opeProductionPartsService.getById(partsId);
@@ -184,7 +182,6 @@ public class SalePartsServiceImpl implements SalePartsService {
         }
     }
 
-    @Async
     void syncDeleteData(String productCode) {
         partsService.syncDeleteData(productCode);
     }

@@ -21,6 +21,7 @@
             <groupId>com.redescooter.ses</groupId>
             <artifactId>ses-starter-stripe</artifactId>
         </dependency>
+
     </dependencies>
 
     <!--环境配置-->

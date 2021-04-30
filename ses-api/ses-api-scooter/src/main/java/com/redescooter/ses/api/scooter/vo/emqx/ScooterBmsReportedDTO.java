@@ -3,6 +3,7 @@ package com.redescooter.ses.api.scooter.vo.emqx;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -11,7 +12,7 @@ import java.util.Date;
  * @date 2020/11/20 15:44
  */
 @Data
-public class ScooterBmsReportedDTO {
+public class ScooterBmsReportedDTO implements Serializable {
 
     /**
      * 主键id

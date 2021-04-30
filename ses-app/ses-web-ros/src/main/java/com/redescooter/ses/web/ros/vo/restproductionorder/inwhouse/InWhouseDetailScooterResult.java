@@ -51,4 +51,7 @@ public class InWhouseDetailScooterResult {
     @ApiModelProperty(value = "蓝牙地址")
     private String bluetoothMacAddress;
 
+    @ApiModelProperty(value = "仪表序列号")
+    private String tabletSn;
+
 }

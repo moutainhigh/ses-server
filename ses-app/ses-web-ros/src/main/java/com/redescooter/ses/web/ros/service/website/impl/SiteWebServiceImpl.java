@@ -100,6 +100,7 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         inquiry.setDef2(enter.getCityName());
         inquiry.setPostCode(enter.getPostcode());
         inquiry.setDef3(enter.getPostcode());
+        inquiry.setBankCardName(enter.getBankCardName());
         // 1快递 2餐厅 3自由行业
         inquiry.setIndustry("3");
         // 2表示个人
@@ -172,7 +173,7 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         inquiryB.setProductPrice(inquiry.getProductPrice());
         // 这个不知道是啥
         // inquiryB.setProductType(inquiry.);
-        inquiryB.setProductQty(1);
+        inquiryB.setProductQty(enter.getBatteryQty() );
         inquiryB.setCreatedTime(new Date());
         inquiryB.setCreatedBy(0L);
         inquiryB.setUpdatedTime(new Date());
@@ -185,7 +186,7 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         }
         //发送数据到Monday
         mondayData(product.getColor(), enter.getBatteryQty(), product.getProductModel(), inquiry);*/
-        mondayData("5", enter.getBatteryQty(), enter.getProductModel(), inquiry);
+        //mondayData("5", enter.getBatteryQty(), enter.getProductModel(), inquiry);
     }
 
 
