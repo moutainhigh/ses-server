@@ -71,12 +71,16 @@ public enum ExceptionCodeEnums {
 
     CODE_IS_WRONG(10027, "验证码错误"),
 
-
     EMAIL_IS_EMPTY(10031, "邮件为空"),
 
     EVENT_ERROR(10032, "事件有误"),
 
-    PHONE_IS_WRONG(10034, "电话号不正确")
+    PHONE_IS_WRONG(10034, "电话号不正确"),
+
+    SCOOTER_INFO_NOT_FIND(10035, "没有查到车辆信息"),
+
+    BLUE_TOOTH_MAC_ADDRESS_IS_EMPTY(10036, "蓝牙地址为空")
+
 
     ;
 

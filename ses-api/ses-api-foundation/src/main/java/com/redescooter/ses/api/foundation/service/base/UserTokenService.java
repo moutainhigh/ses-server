@@ -198,4 +198,11 @@ public interface UserTokenService {
      */
     Integer activeCount(List<Integer> list,String dateStr);
 
+    /**
+     * 刷新token
+     * @param enter
+     * @return
+     */
+    TokenResult refreshToken(RefreshTokenEnter enter);
+
 }

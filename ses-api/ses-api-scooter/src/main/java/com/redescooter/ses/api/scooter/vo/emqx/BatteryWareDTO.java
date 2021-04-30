@@ -2,6 +2,7 @@ package com.redescooter.ses.api.scooter.vo.emqx;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 
@@ -11,7 +12,7 @@ import java.util.Date;
  * @date 2020/11/20 15:27
  */
 @Data
-public class BatteryWareDTO {
+public class BatteryWareDTO implements Serializable {
 
     /**
      * 主键id

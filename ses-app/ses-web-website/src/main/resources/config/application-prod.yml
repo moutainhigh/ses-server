@@ -1,3 +1,4 @@
+#日志路径
 log:
   file:
     path: ${log.path}@profile-active@
@@ -47,7 +48,8 @@ rede:
     payment_event: payment_intent.succeeded
     publishable_key: pk_live_Pze51XBNr8tI4pThesU7DEHD00a8pjUbmi
     secret_key: rk_live_Ea5zybiHwnLnY7bn98jaoRJQ00OPG1gEBe
-    receipt_email: etienne@redescooter.fr
+    receipt_email: valentin@redescooter.fr
+
 oss:                                                                                                                    #阿里oss上传
   protocol: HTTPS
 excel:
@@ -79,10 +81,10 @@ monday:
   #模板Id
   templeteId: 581923336
   load-template: true
+
 constant-us-email:
   sale-principal:
     - valentin@redescooter.fr
-    - jerry@redescooter.com
 seata:
   enabled: true
   enable-auto-data-source-proxy: true

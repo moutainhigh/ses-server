@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.hub.source.website.dao.SiteProductPriceMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.service.hub.source.website.dm.SiteProductPrice">
+        <id column="id" property="id"/>
+        <result column="dr" property="dr"/>
+        <result column="status" property="status"/>
+        <result column="product_model_id" property="productModelId"/>
+        <result column="price_type" property="priceType"/>
+        <result column="installment_time" property="installmentTime"/>
+        <result column="price" property="price"/>
+        <result column="start_price" property="startPrice"/>
+        <result column="effective_time" property="effectiveTime"/>
+        <result column="currency_type" property="currencyType"/>
+        <result column="currency_unit" property="currencyUnit"/>
+        <result column="standard_currency" property="standardCurrency"/>
+        <result column="prepaid_deposit" property="prepaidDeposit"/>
+        <result column="amount_discount" property="amountDiscount"/>
+        <result column="country_code" property="countryCode"/>
+        <result column="country_city" property="countryCity"/>
+        <result column="country_language" property="countryLanguage"/>
+        <result column="synchronize_flag" property="synchronizeFlag"/>
+        <result column="revision" property="revision"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_time" property="updatedTime"/>
+        <result column="def1" property="def1"/>
+        <result column="def2" property="def2"/>
+        <result column="def3" property="def3"/>
+        <result column="def5" property="def5"/>
+        <result column="def6" property="def6"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, dr, status, product_model_id, price_type, installment_time, price, start_price, effective_time, currency_type, currency_unit, standard_currency, prepaid_deposit, amount_discount, country_code, country_city, country_language, synchronize_flag, revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+    </sql>
+</mapper>

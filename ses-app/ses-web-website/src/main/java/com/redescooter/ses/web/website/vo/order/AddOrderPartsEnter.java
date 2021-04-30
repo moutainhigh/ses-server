@@ -8,9 +8,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @Author jerry
  * @Date 2021/1/6 3:41 上午
@@ -33,5 +30,23 @@ public class AddOrderPartsEnter extends GeneralEnter {
      */
     @ApiModelProperty(value = "parts list")
     private String partslist;
+
+    /**
+     * 支付方式id+期数
+     */
+    @ApiModelProperty(value = "支付方式id+期数")
+    private String paymentTypeId;
+
+    /**
+     * 车型id
+     */
+    @ApiModelProperty(value = "车型id")
+    private Long modelId;
+
+    /**
+     * 电池数
+     */
+    @ApiModelProperty(value = "电池数")
+    private Integer battery;
 
 }

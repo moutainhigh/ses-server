@@ -81,7 +81,7 @@ public class MqttClientUtil {
                     @Override
                     public void deliveryComplete(IMqttDeliveryToken token) {
                         // 消息发送成功会进入这个方法
-//                        log.info("deliveryComplete---------" + token.isComplete());
+                        log.info("deliveryComplete---------" + token.isComplete());
                     }
                 });
 

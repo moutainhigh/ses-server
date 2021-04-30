@@ -1,12 +1,11 @@
 package com.redescooter.ses.web.website.service;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.vo.payment.AddPaymentTypeEnter;
 import com.redescooter.ses.web.website.vo.payment.PaymentTypeDetailsResult;
-
-import java.util.List;
+import com.redescooter.ses.web.website.vo.payment.PaymentTypeEnter;
+import com.redescooter.ses.web.website.vo.payment.PaymentTypeResult;
 
 /**
  * @Author jerry
@@ -35,5 +34,6 @@ public interface PaymentTypeService {
      *
      * @param enter
      */
-    List<PaymentTypeDetailsResult> getPaymentTypeList(GeneralEnter enter);
+    PaymentTypeResult getPaymentTypeList(PaymentTypeEnter enter);
+
 }

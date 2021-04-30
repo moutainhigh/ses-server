@@ -1,12 +1,17 @@
 package com.redescooter.ses.web.website.dm;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 产品报价表
@@ -44,11 +49,15 @@ public class SiteProductPrice implements Serializable {
     @ApiModelProperty(value = "产品型号Id")
     private Long productModelId;
 
+    @TableField(value = "battery")
+    @ApiModelProperty(value = "电池")
+    private String battery;
+
     /**
-     * 状态,0全额付款，1分期付款
+     * 类型 1租借车辆 2全款支付 3分期支付
      */
     @TableField(value = "price_type")
-    @ApiModelProperty(value = "状态,0全额付款，1分期付款")
+    @ApiModelProperty(value = "类型 1租借车辆 2全款支付 3分期支付")
     private Integer priceType;
 
     /**
@@ -57,6 +66,10 @@ public class SiteProductPrice implements Serializable {
     @TableField(value = "installment_time")
     @ApiModelProperty(value = "分期付款时间数，单位month")
     private String installmentTime;
+
+    @TableField(value = "should_pay_period")
+    @ApiModelProperty(value = "每期应付(除首期)")
+    private BigDecimal shouldPayPeriod;
 
     /**
      * 销售价格 浮点型价格
@@ -71,6 +84,10 @@ public class SiteProductPrice implements Serializable {
     @TableField(value = "start_price")
     @ApiModelProperty(value = "起步价")
     private BigDecimal startPrice;
+
+    @TableField(value = "tax")
+    @ApiModelProperty(value = "税")
+    private BigDecimal tax;
 
     /**
      * 生效时间 默认当前生效
@@ -227,6 +244,8 @@ public class SiteProductPrice implements Serializable {
     public static final String COL_INSTALLMENT_TIME = "installment_time";
 
     public static final String COL_PRICE = "price";
+
+    public static final String COL_BATTERY = "battery";
 
     public static final String COL_START_PRICE = "start_price";
 

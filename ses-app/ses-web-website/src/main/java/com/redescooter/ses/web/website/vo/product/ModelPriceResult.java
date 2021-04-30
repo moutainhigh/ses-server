@@ -40,4 +40,17 @@ public class ModelPriceResult extends ProductModelDetailsResult {
      */
     @ApiModelProperty(value = "Starting price")
     private BigDecimal startPrice;
+
+    /**
+     * 电池数
+     */
+    @ApiModelProperty(value = "battery")
+    private String battery;
+
+    /**
+     * 每期应付
+     */
+    @ApiModelProperty(value = "每期应付")
+    private BigDecimal shouldPayPeriod;
+
 }

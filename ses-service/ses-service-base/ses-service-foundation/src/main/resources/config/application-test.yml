@@ -8,18 +8,18 @@ log:                                                                            
 # DUBBO 集群配置
 #dubbo:                                                                                                                  ##DUBBO配置
 #  registry:                                                                                                             #注册中心
-#    address: zookeeper://172.31.8.126:2181?backup=172.31.8.126:2182,172.31.8.126:2183
+#    address: zookeeper://172.28.193.226:2181?backup=172.28.193.226:2182,172.28.193.226:2183
 ## DUBBO 单节点配置
 dubbo:
   registry: #注册中心
-    address: zookeeper://172.31.8.126:2181
+    address: zookeeper://172.28.193.226:2181
   metadata-report:
-    address: zookeeper://172.31.8.126:2181
+    address: zookeeper://172.28.193.226:2181
 spring:                                                                                                                 #spring config
   datasource:                                                                                                           #数据库连接
-    url: jdbc:mysql://172.31.8.126:3306/platform?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
-    username: root
-    password: rede,1qaz2wsx
+    url: jdbc:mysql://172.28.193.226:3306/platform_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    username: rede
+    password: test.1qaz2wsx
     druid:
       initial-size: 8
       min-idle: 1
@@ -29,12 +29,12 @@ spring:                                                                         
   redis:
     cluster:
       nodes:
-        - 172.31.8.126:7000
-        - 172.31.8.126:7001
-        - 172.31.8.126:7002
-        - 172.31.8.126:7003
-        - 172.31.8.126:7004
-        - 172.31.8.126:7005
+        - 172.28.193.226:7000
+        - 172.28.193.226:7001
+        - 172.28.193.226:7002
+        - 172.28.193.226:7003
+        - 172.28.193.226:7004
+        - 172.28.193.226:7005
 saas-login-extreme-experience:
     web: true
     app-android: false
@@ -47,13 +47,13 @@ seata:
   registry:
     type: zk
     zk:
-      server-addr: 172.31.8.126:2181
+      server-addr: 172.28.193.226:2181
       cluster: default
       connect-timeout: 2000000
   config:
     type: zk
     zk:
-      server-addr: 172.31.8.126:2181
+      server-addr: 172.28.193.226:2181
       connect-timeout: 2000000
   service:
     disable-global-transaction: false

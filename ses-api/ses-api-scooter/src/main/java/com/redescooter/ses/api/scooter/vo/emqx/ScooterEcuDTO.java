@@ -2,6 +2,7 @@ package com.redescooter.ses.api.scooter.vo.emqx;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -10,7 +11,7 @@ import java.util.Date;
  * @date 2020/11/20 14:32
  */
 @Data
-public class ScooterEcuDTO {
+public class ScooterEcuDTO implements Serializable {
     /**
     * 主键id
     */

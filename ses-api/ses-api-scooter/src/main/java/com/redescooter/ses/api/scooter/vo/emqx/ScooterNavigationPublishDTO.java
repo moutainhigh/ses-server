@@ -2,6 +2,7 @@ package com.redescooter.ses.api.scooter.vo.emqx;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -10,7 +11,7 @@ import java.math.BigDecimal;
  * @date 2020/11/25 15:52
  */
 @Data
-public class ScooterNavigationPublishDTO {
+public class ScooterNavigationPublishDTO implements Serializable {
 
     /**
      * 车辆平板序列号
