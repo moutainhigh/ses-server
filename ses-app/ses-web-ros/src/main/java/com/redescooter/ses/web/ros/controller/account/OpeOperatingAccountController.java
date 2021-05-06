@@ -38,8 +38,8 @@ private OpeOperatingAccountService opeOperatingAccountService;
  */
 @ApiOperation(value = "分页列表", notes = "分页列表", response = ColorDataResult.class)
 @PostMapping("/list")
-public PageResult<OperatingAccountListResult> list(@ModelAttribute @ApiParam("请求参数") OperatingEnter enter){
-    return opeOperatingAccountService.list(enter);
+public Response<PageResult<OperatingAccountListResult>> list(@ModelAttribute @ApiParam("请求参数") OperatingEnter enter){
+    return new Response(opeOperatingAccountService.list(enter));
     }
 
 
