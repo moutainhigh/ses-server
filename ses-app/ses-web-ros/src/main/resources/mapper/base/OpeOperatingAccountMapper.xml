@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.ros.dao.base.OpeOperatingAccountMapper">
+
+        <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.web.ros.dm.OpeOperatingAccount">
+                            <id column="id" property="id" />
+                                        <result column="operating_email" property="operatingEmail" />                                                                                  <result column="operating_user" property="operatingUser" />
+                                        <result column="operating_department" property="operatingDepartment" />
+                                        <result column="status" property="status" />
+                                        <result column="create_time" property="createTime" />
+                                        <result column="dr" property="dr" />
+                                        <result column="operating_password" property="operatingPassword" />
+                        </resultMap>
+        <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, operating_user, operating_department, status, create_time,dr,operating_email,operatingPassword
+    </sql>
+
+    <select id="listNum" resultType="int">
+        select count(*) from ope_operating_account where dr = 0 and status = 0
+    </select>
+
+    <select id="accountList" resultType="com.redescooter.ses.web.ros.vo.account.OperatingAccountListResult">
+        select
+            id,
+            operating_user,
+            operating_department,
+            status,
+            create_time,
+            operating_email,
+            operating_password
+        from ope_operating_account
+        where dr = 0 and status = 0
+        order by create_time desc limit #{enter.startRow},#{enter.pageSize}
+    </select>
+    </mapper>
