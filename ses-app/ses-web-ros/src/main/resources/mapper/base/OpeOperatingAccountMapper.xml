@@ -21,6 +21,16 @@
         select count(*) from ope_operating_account where dr = 0
     </select>
 
+
+    <select id="accountTotal" resultType="int">
+        select count(*) from ope_operating_account where dr = 0
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and ( operating_email like concat('%', #{enter.keyword}, '%') or
+            operating_department like concat('%', #{enter.keyword}, '%') or
+            operating_user like concat('%', #{enter.keyword}, '%')
+            )
+        </if>
+    </select>
     <select id="accountList" resultType="com.redescooter.ses.web.ros.vo.account.OperatingAccountListResult">
         select
             id,
@@ -32,19 +42,13 @@
             operating_password
         from ope_operating_account
         where dr = 0
-        <if test="operatingUser != null and operatingUser != ''">
-            and operating_user = #{operatingUser}
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and ( operating_email like concat('%', #{enter.keyword}, '%') or
+            operating_department like concat('%', #{enter.keyword}, '%') or
+            operating_user like concat('%', #{enter.keyword}, '%')
+            )
         </if>
-        <if test="operatingDepartment != null and operatingDepartment != ''">
-            and operating_department = #{operatingDepartment}
-        </if>
-        <if test="operatingEmail != null and operatingEmail != ''">
-            and operating_email = #{operatingEmail}
-        </if>
-        <if test="status != null">
-            and status = #{status}
-        </if>
-        order by create_time desc limit #{startRow},#{pageSize}
+        order by create_time desc limit #{enter.startRow},#{enter.pageSize}
     </select>
 
     </mapper>

@@ -7,12 +7,14 @@ import javax.annotation.Resource;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.dao.base.OpeOperatingAccountMapper;
 import com.redescooter.ses.web.ros.dm.OpeOperatingAccount;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeOperatingAccountService;
 import com.redescooter.ses.web.ros.vo.account.OperatingAccountListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateOrderListResult;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,12 +70,13 @@ public class OpeOperatingAccountServiceImpl extends ServiceImpl<OpeOperatingAcco
 
     @Override
     public PageResult<OperatingAccountListResult> list(OperatingEnter enter) {
-        int num = opeOperatingAccountMapper.listNum();
-        if (num == 0) {
+        enter = SesStringUtils.objStringTrim(enter);
+        int totalNum = opeOperatingAccountMapper.accountTotal(enter);
+        if (totalNum == 0) {
             return PageResult.createZeroRowResult(enter);
         }
         List<OperatingAccountListResult> list = opeOperatingAccountMapper.accountList(enter);
-        return PageResult.create(enter, num, list);
+        return PageResult.create(enter, totalNum, list);
     }
 
     @Override
