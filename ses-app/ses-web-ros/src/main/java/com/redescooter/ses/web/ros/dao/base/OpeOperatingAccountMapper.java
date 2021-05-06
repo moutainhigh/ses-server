@@ -26,5 +26,5 @@ public interface OpeOperatingAccountMapper extends BaseMapper<OpeOperatingAccoun
 
     List<OperatingAccountListResult> accountList( OperatingEnter enter);
 
-    int updateStatus(@Param("status")Integer status , @Param("operatingEmail") String operating_email);
+
     }

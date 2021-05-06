@@ -13,6 +13,7 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeOperatingAccountService;
 import com.redescooter.ses.web.ros.vo.account.OperatingAccountListResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ public class OpeOperatingAccountServiceImpl extends ServiceImpl<OpeOperatingAcco
 
 
     @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
     public int saveOpeOperatingAccount(OpeOperatingAccount opeOperatingAccount) {
         QueryWrapper<OpeOperatingAccount> wrapper = new QueryWrapper<>();
         wrapper.eq("operating_email",opeOperatingAccount.getOperatingEmail());
@@ -49,11 +51,13 @@ public class OpeOperatingAccountServiceImpl extends ServiceImpl<OpeOperatingAcco
     }
 
     @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
     public int updateByPk(OpeOperatingAccount opeOperatingAccount) {
         return opeOperatingAccountMapper.updateById(opeOperatingAccount);
     }
 
     @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
     public boolean deleteByPk(IdEnter enter) {
         OpeOperatingAccount opeOperatingAccount = opeOperatingAccountMapper.selectById(enter.getId());
         if(opeOperatingAccount==null){
@@ -78,6 +82,7 @@ public class OpeOperatingAccountServiceImpl extends ServiceImpl<OpeOperatingAcco
     }
 
     @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult updateStatus(IdEnter idEnter) {
         OpeOperatingAccount opeOperatingAccounts = opeOperatingAccountMapper.selectById(idEnter.getId());
         if(opeOperatingAccounts==null){

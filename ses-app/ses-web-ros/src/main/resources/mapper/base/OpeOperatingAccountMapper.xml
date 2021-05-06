@@ -31,7 +31,7 @@
             operating_email,
             operating_password
         from ope_operating_account
-        where dr = 0 and status = 0
+        where dr = 0
         <if test="operatingUser != null and operatingUser != ''">
             and operating_user = #{operatingUser}
         </if>
@@ -47,8 +47,4 @@
         order by create_time desc limit #{startRow},#{pageSize}
     </select>
 
-
-    <update id="updateStatus" parameterType="com.redescooter.ses.web.ros.vo.account.OperatingAccountListResult">
-        update ope_operating_account set status = #{status} where operating_email = #{operatingEmail}
-    </update>
     </mapper>

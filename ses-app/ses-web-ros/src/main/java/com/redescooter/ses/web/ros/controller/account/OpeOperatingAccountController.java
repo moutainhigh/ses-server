@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.controller.account;
 
+import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.dm.OpeOperatingAccount;
 import com.redescooter.ses.web.ros.service.base.OpeOperatingAccountService;
@@ -26,6 +27,7 @@ import javax.validation.Valid;
  */
 @Log4j2
 @RestController
+@CrossOrigin
 @RequestMapping("/opeOperatingAccount")
 @Api( tags = {"运营账号管理"})
 public class OpeOperatingAccountController {
@@ -48,6 +50,7 @@ public Response<PageResult<OperatingAccountListResult>> list(@ModelAttribute @Ap
      */
 @ApiOperation(value = "新增", notes = "新增", response = ColorDataResult.class)
 @PostMapping("/save")
+@AvoidDuplicateSubmit
 public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") OpeOperatingAccount opeOperatingAccount){
     return new Response(opeOperatingAccountService.saveOpeOperatingAccount(opeOperatingAccount));
     }
@@ -57,6 +60,7 @@ public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") Op
      */
     @ApiOperation(value = "修改", notes = "修改", response = ColorDataResult.class)
     @PostMapping("/update")
+    @AvoidDuplicateSubmit
     public Response<GeneralResult> update(@ModelAttribute @ApiParam("请求参数") OpeOperatingAccount opeOperatingAccount){
         return new Response(opeOperatingAccountService.updateByPk(opeOperatingAccount));
         }
@@ -83,6 +87,7 @@ public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") Op
     }
 
     @PostMapping(value = "/updateStatus")
+    @AvoidDuplicateSubmit
     @ApiOperation(value = "修改状态", response = AccountDeatilResult.class)
     public Response<AccountDeatilResult> updateStatus(@ModelAttribute @ApiParam("请求参数") IdEnter idEnter) {
         return new Response(opeOperatingAccountService.updateStatus(idEnter));
