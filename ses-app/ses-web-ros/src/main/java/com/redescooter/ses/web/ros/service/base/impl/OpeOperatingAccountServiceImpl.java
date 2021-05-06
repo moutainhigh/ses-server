@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.base.impl;
 
+import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 
@@ -47,17 +48,12 @@ public class OpeOperatingAccountServiceImpl extends ServiceImpl<OpeOperatingAcco
         if(opeOperatingAccounts!=null){
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
+        opeOperatingAccount.setCreateTime(new Date());
         return opeOperatingAccountMapper.insert(opeOperatingAccount);
     }
 
     @Override
     public int updateByPk(OpeOperatingAccount opeOperatingAccount) {
-        QueryWrapper<OpeOperatingAccount> wrapper = new QueryWrapper<>();
-        wrapper.eq("operating_email",opeOperatingAccount.getOperatingEmail());
-        OpeOperatingAccount opeOperatingAccounts = opeOperatingAccountMapper.selectOne(wrapper);
-        if(opeOperatingAccounts!=null){
-            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
-        }
         return opeOperatingAccountMapper.updateById(opeOperatingAccount);
     }
 
