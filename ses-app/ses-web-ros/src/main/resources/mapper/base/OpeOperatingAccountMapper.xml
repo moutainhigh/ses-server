@@ -42,6 +42,9 @@
             operating_password
         from ope_operating_account
         where dr = 0
+        <if test="enter.status != null">
+          and status = #{enter.status}
+        </if>
         <if test="enter.keyword != null and enter.keyword != ''">
             and ( operating_email like concat('%', #{enter.keyword}, '%') or
             operating_department like concat('%', #{enter.keyword}, '%') or
