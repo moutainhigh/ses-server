@@ -345,6 +345,9 @@ public class OrderServiceImpl implements OrderService {
         BeanUtils.copyProperties(addSiteOrderVO, enter);
         enter.setBankCardName(bankCardName);
         enter.setBatteryQty(addSiteOrderVO.getBatteryQty());
+        enter.setAmountPaid(addSiteOrderVO.getAmountPaid());
+        enter.setTotalPrice(addSiteOrderVO.getTotalPrice());
+        enter.setAmountObligation(addSiteOrderVO.getAmountObligation());
         // 給productModel赋值
         String productModel = orderMapper.getProductModelByOrderId(addSiteOrderVO.getId());
         if (StringUtils.isNotBlank(productModel)) {
