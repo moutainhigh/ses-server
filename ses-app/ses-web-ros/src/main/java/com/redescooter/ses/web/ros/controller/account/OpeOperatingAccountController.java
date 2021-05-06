@@ -84,7 +84,7 @@ public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") Op
 
     @PostMapping(value = "/updateStatus")
     @ApiOperation(value = "修改状态", response = AccountDeatilResult.class)
-    public Response<AccountDeatilResult> updateStatus(@ModelAttribute @ApiParam("请求参数") OperatingUpdateStatus operatingUpdateStatus) {
-        return new Response(opeOperatingAccountService.updateStatus(operatingUpdateStatus));
+    public Response<AccountDeatilResult> updateStatus(@ModelAttribute @ApiParam("请求参数") IdEnter idEnter) {
+        return new Response(opeOperatingAccountService.updateStatus(idEnter));
     }
 }

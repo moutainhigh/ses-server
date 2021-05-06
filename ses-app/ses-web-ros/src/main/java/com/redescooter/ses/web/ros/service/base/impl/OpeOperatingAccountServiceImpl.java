@@ -6,7 +6,6 @@ import javax.annotation.Resource;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.web.ros.dao.base.OpeOperatingAccountMapper;
 import com.redescooter.ses.web.ros.dm.OpeOperatingAccount;
@@ -14,10 +13,7 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeOperatingAccountService;
 import com.redescooter.ses.web.ros.vo.account.OperatingAccountListResult;
-import com.redescooter.ses.web.ros.vo.account.OperatingUpdateStatus;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.zookeeper.Op;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -82,15 +78,15 @@ public class OpeOperatingAccountServiceImpl extends ServiceImpl<OpeOperatingAcco
     }
 
     @Override
-    public OpeOperatingAccount updateStatus(OperatingUpdateStatus operatingUpdateStatus) {
-        QueryWrapper<OpeOperatingAccount> wrapper = new QueryWrapper<>();
-        wrapper.eq("operating_email",operatingUpdateStatus.getOperatingEmail());
-        OpeOperatingAccount opeOperatingAccounts = opeOperatingAccountMapper.selectOne(wrapper);
+    public GeneralResult updateStatus(IdEnter idEnter) {
+        OpeOperatingAccount opeOperatingAccounts = opeOperatingAccountMapper.selectById(idEnter.getId());
         if(opeOperatingAccounts==null){
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
-        int result = opeOperatingAccountMapper.updateStatus(operatingUpdateStatus.getStatus(),operatingUpdateStatus.getOperatingEmail());
-        return null;
+        Integer status = opeOperatingAccounts.getStatus();
+        opeOperatingAccounts.setStatus(status == 0 ? 1 : 0);
+        int result = opeOperatingAccountMapper.updateById(opeOperatingAccounts);
+        return new GeneralResult(idEnter.getRequestId());
     }
 
 }

@@ -66,8 +66,6 @@ public class OpeOperatingAccount {
 
    @ApiModelProperty(value = "创建时间")
    @TableField(value = "create_time")
-   @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
   private Date createTime;
 
 }
