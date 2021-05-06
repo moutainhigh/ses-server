@@ -18,7 +18,7 @@
     </sql>
 
     <select id="listNum" resultType="int">
-        select count(*) from ope_operating_account where dr = 0 and status = 0
+        select count(*) from ope_operating_account where dr = 0
     </select>
 
     <select id="accountList" resultType="com.redescooter.ses.web.ros.vo.account.OperatingAccountListResult">
