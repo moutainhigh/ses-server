@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.dao.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.redescooter.ses.api.common.vo.base.OperatingEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.web.ros.dm.OpeOperatingAccount;
 import com.redescooter.ses.web.ros.vo.account.OperatingAccountListResult;
@@ -23,5 +24,7 @@ public interface OpeOperatingAccountMapper extends BaseMapper<OpeOperatingAccoun
 
     int listNum();
 
-    List<OperatingAccountListResult> accountList(@Param("enter") PageEnter enter);
+    List<OperatingAccountListResult> accountList( OperatingEnter enter);
+
+    int updateStatus(@Param("status")Integer status , @Param("operatingEmail") String operating_email);
     }

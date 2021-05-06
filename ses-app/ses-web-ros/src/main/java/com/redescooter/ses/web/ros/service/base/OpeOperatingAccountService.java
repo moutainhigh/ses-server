@@ -2,11 +2,13 @@ package com.redescooter.ses.web.ros.service.base;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.OperatingEnter;
 import com.redescooter.ses.api.common.vo.base.PageEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dm.OpeOperatingAccount;
 import com.redescooter.ses.web.ros.vo.account.AccountDeatilResult;
 import com.redescooter.ses.web.ros.vo.account.OperatingAccountListResult;
+import com.redescooter.ses.web.ros.vo.account.OperatingUpdateStatus;
 import org.apache.zookeeper.data.Id;
 
 import java.util.List;
@@ -40,7 +42,7 @@ public interface OpeOperatingAccountService extends IService<OpeOperatingAccount
     /**
      * 分页查询
      */
-    PageResult<OperatingAccountListResult> list(PageEnter enter);
+    PageResult<OperatingAccountListResult> list(OperatingEnter enter);
 
 
     /**
@@ -50,4 +52,5 @@ public interface OpeOperatingAccountService extends IService<OpeOperatingAccount
      */
     OpeOperatingAccount accountDeatil(IdEnter enter);
 
+    OpeOperatingAccount updateStatus(OperatingUpdateStatus operatingUpdateStatus);
 }

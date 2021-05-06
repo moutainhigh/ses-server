@@ -32,6 +32,23 @@
             operating_password
         from ope_operating_account
         where dr = 0 and status = 0
-        order by create_time desc limit #{enter.startRow},#{enter.pageSize}
+        <if test="operatingUser != null and operatingUser != ''">
+            and operating_user = #{operatingUser}
+        </if>
+        <if test="operatingDepartment != null and operatingDepartment != ''">
+            and operating_department = #{operatingDepartment}
+        </if>
+        <if test="operatingEmail != null and operatingEmail != ''">
+            and operating_email = #{operatingEmail}
+        </if>
+        <if test="status != null">
+            and status = #{status}
+        </if>
+        order by create_time desc limit #{startRow},#{pageSize}
     </select>
+
+
+    <update id="updateStatus" parameterType="com.redescooter.ses.web.ros.vo.account.OperatingAccountListResult">
+        update ope_operating_account set status = #{status} where operating_email = #{operatingEmail}
+    </update>
     </mapper>

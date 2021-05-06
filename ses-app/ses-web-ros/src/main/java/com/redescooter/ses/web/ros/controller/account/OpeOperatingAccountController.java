@@ -5,6 +5,7 @@ import com.redescooter.ses.web.ros.dm.OpeOperatingAccount;
 import com.redescooter.ses.web.ros.service.base.OpeOperatingAccountService;
 import com.redescooter.ses.web.ros.vo.account.AccountDeatilResult;
 import com.redescooter.ses.web.ros.vo.account.OperatingAccountListResult;
+import com.redescooter.ses.web.ros.vo.account.OperatingUpdateStatus;
 import com.redescooter.ses.web.ros.vo.specificat.ColorDataResult;
 import io.swagger.annotations.*;
 
@@ -37,14 +38,14 @@ private OpeOperatingAccountService opeOperatingAccountService;
  */
 @ApiOperation(value = "分页列表", notes = "分页列表", response = ColorDataResult.class)
 @PostMapping("/list")
-public PageResult<OperatingAccountListResult> list(@ModelAttribute @ApiParam("请求参数") PageEnter enter){
+public PageResult<OperatingAccountListResult> list(@ModelAttribute @ApiParam("请求参数") OperatingEnter enter){
     return opeOperatingAccountService.list(enter);
     }
 
 
-/**
- * 新增
- */
+    /**
+     * 新增
+     */
 @ApiOperation(value = "新增", notes = "新增", response = ColorDataResult.class)
 @PostMapping("/save")
 public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") OpeOperatingAccount opeOperatingAccount){
@@ -60,9 +61,9 @@ public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") Op
         return new Response(opeOperatingAccountService.updateByPk(opeOperatingAccount));
         }
 
-/**
- * 删除
- */
+    /**
+     * 删除
+     */
     @ApiOperation(value = "删除", notes = "删除", response = ColorDataResult.class)
     @PostMapping("/delete")
     public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter){
@@ -70,10 +71,20 @@ public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") Op
         }
 
 
-
+    /**
+     * 详情
+     * @param enter
+     * @return
+     */
     @PostMapping(value = "/Deatil")
     @ApiOperation(value = "详情", response = AccountDeatilResult.class)
     public Response<AccountDeatilResult> accountDeatil(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response(opeOperatingAccountService.accountDeatil(enter));
     }
+
+    @PostMapping(value = "/updateStatus")
+    @ApiOperation(value = "修改状态", response = AccountDeatilResult.class)
+    public Response<AccountDeatilResult> updateStatus(@ModelAttribute @ApiParam("请求参数") OperatingUpdateStatus operatingUpdateStatus) {
+        return new Response(opeOperatingAccountService.updateStatus(operatingUpdateStatus));
     }
+}
