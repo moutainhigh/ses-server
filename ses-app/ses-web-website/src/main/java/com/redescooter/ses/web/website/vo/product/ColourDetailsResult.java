@@ -42,4 +42,10 @@ public class ColourDetailsResult extends GeneralResult {
 
     private String colourCode;
 
+    /**
+     * 图片
+     */
+    @ApiModelProperty(value = "picture")
+    private String picture;
+
 }
