@@ -345,6 +345,9 @@ public class OrderServiceImpl implements OrderService {
         BeanUtils.copyProperties(addSiteOrderVO, enter);
         enter.setBankCardName(bankCardName);
         enter.setBatteryQty(addSiteOrderVO.getBatteryQty());
+        enter.setAmountPaid(addSiteOrderVO.getAmountPaid());
+        enter.setTotalPrice(addSiteOrderVO.getTotalPrice());
+        enter.setAmountObligation(addSiteOrderVO.getAmountObligation());
         // 給productModel赋值
         String productModel = orderMapper.getProductModelByOrderId(addSiteOrderVO.getId());
         if (StringUtils.isNotBlank(productModel)) {
@@ -424,15 +427,27 @@ public class OrderServiceImpl implements OrderService {
                 partAllTotalPrice = partAllTotalPrice.add(partPriceSun);
             }
 
-            // 说明是分期支付
+            // 不包含+,说明是分期支付
             BigDecimal shouldPayPeriod = new BigDecimal("0");
-            if (enter.getPaymentTypeId().contains("+")) {
-                // 得到分期期数
-                String installmentTime = enter.getPaymentTypeId().substring(enter.getPaymentTypeId().indexOf("+") + 1);
-                if (StringUtils.isNotBlank(installmentTime)) {
-                    Integer count = Integer.valueOf(installmentTime) - 1;
-                    // 配件总额 /（分期-1）  平均分到每期
-                    shouldPayPeriod = shouldPayPeriod.add(partAllTotalPrice.divide(new BigDecimal(String.valueOf(count))).setScale(2, BigDecimal.ROUND_DOWN));
+            if (!enter.getPaymentTypeId().contains("+")) {
+                SitePaymentType paymentType = sitePaymentTypeService.getById(enter.getPaymentTypeId());
+                if ("3".equals(paymentType.getPaymentCode())) {
+                    LambdaQueryWrapper<SiteProductPrice> qw = new LambdaQueryWrapper<>();
+                    qw.eq(SiteProductPrice::getDr, Constant.DR_FALSE);
+                    qw.eq(SiteProductPrice::getStatus, 1);
+                    qw.eq(SiteProductPrice::getPriceType, Integer.valueOf(paymentType.getPaymentCode()));
+                    qw.eq(SiteProductPrice::getProductModelId, enter.getModelId());
+                    qw.like(SiteProductPrice::getBattery, enter.getBattery());
+                    qw.orderByDesc(SiteProductPrice::getInstallmentTime);
+                    qw.last("limit 1");
+                    SiteProductPrice productPrice = siteProductPriceService.getOne(qw);
+                    if (null != productPrice) {
+                        String installmentTime = productPrice.getInstallmentTime();
+                        Integer count = Integer.valueOf(installmentTime) - 1;
+                        // 配件总额 /（分期-1）  平均分到每期
+                        shouldPayPeriod = shouldPayPeriod.add(partAllTotalPrice.divide(new BigDecimal(String.valueOf(count)), 2, BigDecimal.ROUND_DOWN));
+                        //shouldPayPeriod = shouldPayPeriod.add(partAllTotalPrice.divide(new BigDecimal(String.valueOf(count))).setScale(2, BigDecimal.ROUND_DOWN));
+                    }
                 }
             }
             if (shouldPayPeriod.compareTo(new BigDecimal("0")) == 0) {

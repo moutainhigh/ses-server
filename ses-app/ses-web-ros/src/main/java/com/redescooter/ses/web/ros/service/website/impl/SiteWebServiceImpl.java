@@ -128,6 +128,9 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         inquiry.setContantFullName(customer.getContactFullName());
         inquiry.setSource(InquirySourceEnums.ORDER_FORM.getValue());
         inquiry.setProductModel(enter.getProductModel());
+        inquiry.setAmountPaid(enter.getAmountPaid());
+        inquiry.setAmountObligation(enter.getAmountObligation());
+        inquiry.setTotalPrice(enter.getTotalPrice());
 
         // 将productId转为销售车辆id,根据名字,颜色,型号,开启状态进行匹配
         Long productId = inquiry.getProductId();

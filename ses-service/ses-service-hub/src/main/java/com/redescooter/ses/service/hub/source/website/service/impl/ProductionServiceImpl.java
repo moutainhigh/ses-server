@@ -14,6 +14,7 @@ import com.redescooter.ses.service.hub.source.website.dm.SiteProduct;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProductClass;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProductColour;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProductModel;
+import com.redescooter.ses.service.hub.source.website.dm.SiteProductPrice;
 import com.redescooter.ses.service.hub.source.website.service.base.SiteColourService;
 import com.redescooter.ses.service.hub.source.website.service.base.SiteProductClassService;
 import com.redescooter.ses.service.hub.source.website.service.base.SiteProductColourService;
@@ -76,8 +77,8 @@ public class ProductionServiceImpl implements ProductionService {
         qw.last("limit 1");
         SiteProductModel product = siteProductModelService.getOne(qw);
         if (product != null) {
-            // 到这里说明同步过数据了  ，这次只要修改一下数据的状态就好了
             // 这里表示这里是关闭销售状态 直接把之前的数据删除
+            // 删除site_product_model
             siteProductModelService.removeById(product.getId());
 
             // 删除site_product
@@ -94,6 +95,15 @@ public class ProductionServiceImpl implements ProductionService {
             List<SiteProductColour> colourList = siteProductColourService.list(colourQueryWrapper);
             if (CollectionUtils.isNotEmpty(colourList)) {
                 siteProductColourService.removeByIds(colourList.stream().map(SiteProductColour::getId).collect(Collectors.toList()));
+            }
+
+            // 删除site_product_price
+            LambdaQueryWrapper<SiteProductPrice> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(SiteProductPrice::getProductModelId, product.getId());
+            List<SiteProductPrice> list = siteProductPriceService.list(wrapper);
+            if (CollectionUtils.isNotEmpty(list)) {
+                List<Long> ids = list.stream().map(o -> o.getId()).collect(Collectors.toList());
+                siteProductPriceService.removeByIds(ids);
             }
 
 //            product.setStatus(saleStatus == 1 ? 1 : -1);
@@ -361,6 +371,15 @@ public class ProductionServiceImpl implements ProductionService {
             List<SiteProductColour> colourList = siteProductColourService.list(colourQueryWrapper);
             if (CollectionUtils.isNotEmpty(colourList)) {
                 siteProductColourService.removeByIds(colourList.stream().map(SiteProductColour::getId).collect(Collectors.toList()));
+            }
+
+            // 删除site_product_price
+            LambdaQueryWrapper<SiteProductPrice> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(SiteProductPrice::getProductModelId, product.getId());
+            List<SiteProductPrice> list = siteProductPriceService.list(wrapper);
+            if (CollectionUtils.isNotEmpty(list)) {
+                List<Long> ids = list.stream().map(o -> o.getId()).collect(Collectors.toList());
+                siteProductPriceService.removeByIds(ids);
             }
         }
     }

@@ -317,11 +317,11 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             siteOrder.setStatus(SiteOrderStatusEnums.COMPLETED.getValue());
         }
         //获取已付金额
-        BigDecimal price = siteOrder.getPrepaidDeposit();
+        //BigDecimal price = siteOrder.getPrepaidDeposit();
         //更新已付金额
-        siteOrder.setAmountPaid(siteOrder.getAmountPaid().add(price));
+       // siteOrder.setAmountPaid(siteOrder.getAmountPaid().add(price));
         //减少待付金额：代付金额=总金额-已付金额-优惠价
-        siteOrder.setAmountObligation(siteOrder.getAmountObligation().subtract(price).subtract(siteOrder.getAmountDiscount()));
+        //siteOrder.setAmountObligation(siteOrder.getAmountObligation().subtract(price).subtract(siteOrder.getAmountDiscount()));
         siteOrder.setUpdatedTime(new Date());
         siteOrderService.updateById(siteOrder);
 

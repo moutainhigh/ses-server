@@ -23,12 +23,6 @@ public class ProductDetailsResult extends GeneralResult {
     private Long productId;
 
     /**
-     * 图片
-     */
-    @ApiModelProperty(value = "picture")
-    private String picture;
-
-    /**
      * 中文名称
      */
     @ApiModelProperty(value = "Chinese name")
