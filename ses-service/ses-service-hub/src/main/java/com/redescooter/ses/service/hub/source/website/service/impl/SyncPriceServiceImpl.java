@@ -55,18 +55,21 @@ public class SyncPriceServiceImpl implements SyncPriceService {
     @DS("website")
     public GeneralResult syncDeleteSalePrice(String scooterBattery, Integer type, Integer period) {
         log.info("进入hub开始同步价格删除");
+        String modelName = scooterBattery.substring(0, scooterBattery.indexOf("+"));
         Long modelId = null;
+
         LambdaQueryWrapper<SiteProductModel> qw = new LambdaQueryWrapper<>();
         List<SiteProductModel> list = siteProductModelService.list(qw);
         if (CollectionUtils.isNotEmpty(list)) {
             for (SiteProductModel o : list) {
-                if (scooterBattery.contains(o.getProductModelName())) {
+                if (modelName.equals(o.getProductModelName())) {
                     log.info("关闭时,通过modelName找到了modelId");
                     modelId = o.getId();
                     break;
                 }
             }
         }
+        log.info("modelId为:[{}]", modelId);
 
         if (null != modelId) {
             LambdaQueryWrapper<SiteProductPrice> wrapper = new LambdaQueryWrapper<>();
@@ -94,6 +97,7 @@ public class SyncPriceServiceImpl implements SyncPriceService {
     public GeneralResult syncSalePrice(SyncSalePriceDataEnter enter) {
         log.info("进入hub开始同步价格");
         String scooterBattery = enter.getScooterBattery();
+        String modelName = scooterBattery.substring(0, scooterBattery.indexOf("+"));
         Long modelId = null;
 
         LambdaQueryWrapper<SiteProductModel> qw = new LambdaQueryWrapper<>();
@@ -102,13 +106,14 @@ public class SyncPriceServiceImpl implements SyncPriceService {
         List<SiteProductModel> list = siteProductModelService.list(qw);
         if (CollectionUtils.isNotEmpty(list)) {
             for (SiteProductModel o : list) {
-                if (scooterBattery.contains(o.getProductModelName())) {
+                if (modelName.equals(o.getProductModelName())) {
                     log.info("开启时,通过modelName找到了modelId");
                     modelId = o.getId();
                     break;
                 }
             }
         }
+        log.info("modelId为:[{}]", modelId);
 
         if (null != modelId) {
             SiteProductPrice model = new SiteProductPrice();
