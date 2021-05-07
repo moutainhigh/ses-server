@@ -281,10 +281,8 @@ public class SaleScooterServiceImpl implements SaleScooterService {
             if (0 == saleScooter.getSaleStutas()){
                 // 关闭的时候调
                 productionService.syncByProductionCode(saleScooter.getProductName(), saleScooter.getSaleStutas());
-            }else {
+            } else {
                 // 开启的时候调
-//            log.info("flag的结果是:[{}]", flag);
-//            if(!flag){
                 // 进入到这里  说明是第一次同步这条数据  需要同步5张表
                 log.info("是第一次同步数据");
                 SyncProductionDataEnter syncProductionDataEnter = new SyncProductionDataEnter();
