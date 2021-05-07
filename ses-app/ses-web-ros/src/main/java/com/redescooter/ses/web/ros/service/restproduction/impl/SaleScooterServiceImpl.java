@@ -166,7 +166,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
                 msg = "块电池";
             } else if (j == 1) {
                 language = "en";
-                msg = "Batteries";
+                msg = "Batterie";
             } else {
                 language = "fr";
                 msg = "Batterie";
