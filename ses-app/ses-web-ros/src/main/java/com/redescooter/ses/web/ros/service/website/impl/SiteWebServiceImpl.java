@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
 import com.redescooter.ses.api.common.service.SiteWebInquiryService;
 import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryEnter;
 import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryPayEnter;
+import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryPriceEnter;
 import com.redescooter.ses.api.hub.service.website.ProductionService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
@@ -192,6 +193,36 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         //mondayData("5", enter.getBatteryQty(), enter.getProductModel(), inquiry);
     }
 
+    /**
+     * 修改ROS预订单的金额
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public void updateRosInquiryPrice(SiteWebInquiryPriceEnter enter, String email) {
+        LambdaQueryWrapper<OpeCustomer> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeCustomer::getDr, Constant.DR_FALSE);
+        qw.eq(OpeCustomer::getEmail, email);
+        qw.last("limit 1");
+        OpeCustomer customer = opeCustomerService.getOne(qw);
+        if (customer == null) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+
+        // 要修改的字段
+        OpeCustomerInquiry inquiry = new OpeCustomerInquiry();
+        inquiry.setTotalPrice(enter.getTotalPrice());
+        inquiry.setAmountObligation(enter.getAmountObligation());
+
+        // 修改条件
+        LambdaQueryWrapper<OpeCustomerInquiry> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeCustomerInquiry::getDr, Constant.DR_FALSE);
+        wrapper.eq(OpeCustomerInquiry::getCustomerId, customer.getId());
+        wrapper.eq(OpeCustomerInquiry::getCustomerSource, CustomerSourceEnum.WEBSITE.getValue());
+        wrapper.eq(OpeCustomerInquiry::getTelephone, customer.getTelephone());
+        wrapper.eq(OpeCustomerInquiry::getEmail, customer.getEmail());
+        wrapper.eq(OpeCustomerInquiry::getSource, InquirySourceEnums.ORDER_FORM.getValue());
+        opeCustomerInquiryService.update(inquiry, wrapper);
+    }
 
     /**
      * 发送数据到Monday
