@@ -75,7 +75,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         qw.eq(OpeSaleScooterBatteryRelation::getDr, Constant.DR_FALSE);
         qw.eq(OpeSaleScooterBatteryRelation::getLanguage, language);
         List<OpeSaleScooterBatteryRelation> list = opeSaleScooterBatteryRelationService.list(qw);
-        List<String> result = list.stream().sorted(Comparator.comparing(OpeSaleScooterBatteryRelation::getCreatedTime)).map(o -> o.getContent()).collect(Collectors.toList());
+        List<String> result = list.stream().sorted(Comparator.comparing(OpeSaleScooterBatteryRelation::getCreatedTime)).map(o -> o.getContent()).distinct().collect(Collectors.toList());
         return result;
     }
 
