@@ -30,7 +30,7 @@
                sp.fr_name,
                sp.en_name,
                sp.product_model_id,
-               sp.picture,
+               spc.picture,
                sp.min_battery_num,
                sp.after_sales_flag,
                sp.added_services_flag,
