@@ -56,22 +56,20 @@ public class SyncPriceServiceImpl implements SyncPriceService {
     public GeneralResult syncDeleteSalePrice(String scooterBattery, Integer type, Integer period) {
         log.info("进入hub开始同步价格删除");
         String modelName = scooterBattery.substring(0, scooterBattery.indexOf("+"));
-        Long modelId = null;
+        Long modelId;
 
         LambdaQueryWrapper<SiteProductModel> qw = new LambdaQueryWrapper<>();
-        List<SiteProductModel> list = siteProductModelService.list(qw);
-        if (CollectionUtils.isNotEmpty(list)) {
-            for (SiteProductModel o : list) {
-                if (modelName.equals(o.getProductModelName())) {
-                    log.info("关闭时,通过modelName找到了modelId");
-                    modelId = o.getId();
-                    break;
-                }
-            }
-        }
-        log.info("modelId为:[{}]", modelId);
+        qw.eq(SiteProductModel::getDr, Constant.DR_FALSE);
+        qw.eq(SiteProductModel::getStatus, 1);
+        qw.eq(SiteProductModel::getProductModelName, modelName);
+        qw.orderByDesc(SiteProductModel::getCreatedTime);
+        qw.last("limit 1");
+        SiteProductModel productModel = siteProductModelService.getOne(qw);
+        if (null != productModel) {
+            log.info("关闭时,通过modelName找到了modelId");
+            modelId = productModel.getId();
+            log.info("modelId为:[{}]", modelId);
 
-        if (null != modelId) {
             LambdaQueryWrapper<SiteProductPrice> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(SiteProductPrice::getDr, Constant.DR_FALSE);
             wrapper.eq(SiteProductPrice::getProductModelId, modelId);
@@ -103,15 +101,13 @@ public class SyncPriceServiceImpl implements SyncPriceService {
         LambdaQueryWrapper<SiteProductModel> qw = new LambdaQueryWrapper<>();
         qw.eq(SiteProductModel::getDr, Constant.DR_FALSE);
         qw.eq(SiteProductModel::getStatus, 1);
-        List<SiteProductModel> list = siteProductModelService.list(qw);
-        if (CollectionUtils.isNotEmpty(list)) {
-            for (SiteProductModel o : list) {
-                if (modelName.equals(o.getProductModelName())) {
-                    log.info("开启时,通过modelName找到了modelId");
-                    modelId = o.getId();
-                    break;
-                }
-            }
+        qw.eq(SiteProductModel::getProductModelName, modelName);
+        qw.orderByDesc(SiteProductModel::getCreatedTime);
+        qw.last("limit 1");
+        SiteProductModel productModel = siteProductModelService.getOne(qw);
+        if (null != productModel) {
+            log.info("开启时,通过modelName找到了modelId");
+            modelId = productModel.getId();
         }
         log.info("modelId为:[{}]", modelId);
 
