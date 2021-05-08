@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.hub.source.admin.dao.AdmSysUserMapper">
+
+        <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.api.hub.vo.admin.AdmSysUser">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="dr" jdbcType="INTEGER" property="dr" />
+        <result column="dept_id" jdbcType="BIGINT" property="deptId" />
+        <result column="org_staff_id" jdbcType="BIGINT" property="orgStaffId" />
+        <result column="app_id" jdbcType="VARCHAR" property="appId" />
+        <result column="system_id" jdbcType="VARCHAR" property="systemId" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="salt" jdbcType="VARCHAR" property="salt" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+        <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
+        <result column="last_login_token" jdbcType="VARCHAR" property="lastLoginToken" />
+        <result column="last_login_ip" jdbcType="VARCHAR" property="lastLoginIp" />
+        <result column="activation_time" jdbcType="DATE" property="activationTime" />
+        <result column="expire_date" jdbcType="DATE" property="expireDate" />
+        <result column="created_by" jdbcType="BIGINT" property="createdBy" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="updated_by" jdbcType="BIGINT" property="updatedBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+        <result column="def1" jdbcType="VARCHAR" property="def1" />
+        <result column="def2" jdbcType="VARCHAR" property="def2" />
+        <result column="def3" jdbcType="VARCHAR" property="def3" />
+        <result column="def5" jdbcType="VARCHAR" property="def5" />
+        <result column="def6" jdbcType="DOUBLE" property="def6" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="dept_name" jdbcType="VARCHAR" property="deptName" />
+                        </resultMap>
+        <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, dept_name, status, created_time,dr,login_name,password
+    </sql>
+
+    <select id="listNum" resultType="int">
+        select count(*) from adm_sys_user where dr = 0
+    </select>
+
+
+    <select id="accountTotal" resultType="int">
+        select count(*) from adm_sys_user where dr = 0
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and ( login_name like concat('%', #{enter.keyword}, '%') or
+            dept_name like concat('%', #{enter.keyword}, '%') or
+            `name` like concat('%', #{enter.keyword}, '%')
+            )
+        </if>
+    </select>
+    <select id="accountList" resultType="com.redescooter.ses.api.hub.vo.admin.OperatingAccountListResult">
+        select
+            id,
+            `name`,
+            dept_name,
+            status,
+            created_time,
+            login_name,
+            password
+        from adm_sys_user
+        where dr = 0
+        <if test="enter.status != null and enter.status != ''">
+          and status like concat('%', #{enter.status}, '%')
+        </if>
+        <if test="enter.keyword != null and enter.keyword != ''">
+            and ( login_name like concat('%', #{enter.keyword}, '%') or
+            dept_name like concat('%', #{enter.keyword}, '%') or
+            `name` like concat('%', #{enter.keyword}, '%')
+            )
+        </if>
+        order by created_time desc limit #{enter.startRow},#{enter.pageSize}
+    </select>
+
+    </mapper>

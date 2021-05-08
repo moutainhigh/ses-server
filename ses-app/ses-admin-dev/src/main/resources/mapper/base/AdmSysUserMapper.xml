@@ -28,6 +28,8 @@
     <result column="def3" jdbcType="VARCHAR" property="def3" />
     <result column="def5" jdbcType="VARCHAR" property="def5" />
     <result column="def6" jdbcType="DOUBLE" property="def6" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="dept_name" jdbcType="DOUBLE" property="deptName" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
