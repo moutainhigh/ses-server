@@ -450,7 +450,6 @@ public class OrderServiceImpl implements OrderService {
                         Integer count = Integer.valueOf(installmentTime) - 1;
                         // 配件总额 /（分期-1）  平均分到每期
                         shouldPayPeriod = shouldPayPeriod.add(partAllTotalPrice.divide(new BigDecimal(String.valueOf(count)), 2, BigDecimal.ROUND_DOWN));
-                        //shouldPayPeriod = shouldPayPeriod.add(partAllTotalPrice.divide(new BigDecimal(String.valueOf(count))).setScale(2, BigDecimal.ROUND_DOWN));
                     }
                 }
             }
