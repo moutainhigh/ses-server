@@ -42,7 +42,7 @@ public Response<PageResult<OperatingAccountListResult>> list(@ModelAttribute @Ap
     /**
      * 新增
      */
-@ApiOperation(value = "新增", notes = "新增", response = AdmSysUser.class)
+@ApiOperation(value = "新增", notes = "新增", response = GeneralResult.class)
 @PostMapping("/save")
 @AvoidDuplicateSubmit
 public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") AdmSysUser admOperatingEnter) throws Exception {
@@ -52,7 +52,7 @@ public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") Ad
     /**
      * 修改
      */
-    @ApiOperation(value = "修改", notes = "修改", response = ColorDataResult.class)
+    @ApiOperation(value = "修改", notes = "修改", response = GeneralResult.class)
     @PostMapping("/update")
     @AvoidDuplicateSubmit
     public Response<GeneralResult> update(@ModelAttribute @ApiParam("请求参数") AdmSysUser admOperatingEnter){
@@ -62,7 +62,7 @@ public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") Ad
     /**
      * 删除
      */
-    @ApiOperation(value = "删除", notes = "删除", response = ColorDataResult.class)
+    @ApiOperation(value = "删除", notes = "删除", response = GeneralResult.class)
     @PostMapping("/delete")
     public Response<GeneralResult> delete(@ModelAttribute @ApiParam("请求参数") IdEnter enter){
         return new Response(opeOperatingAccountService.deleteByPk(enter));
@@ -75,14 +75,14 @@ public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") Ad
      * @return
      */
     @PostMapping(value = "/Deatil")
-    @ApiOperation(value = "详情", response = AccountDeatilResult.class)
+    @ApiOperation(value = "详情", response = GeneralResult.class)
     public Response<AccountDeatilResult> accountDeatil(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response(opeOperatingAccountService.accountDeatil(enter));
     }
 
     @PostMapping(value = "/updateStatus")
     @AvoidDuplicateSubmit
-    @ApiOperation(value = "修改状态", response = AccountDeatilResult.class)
+    @ApiOperation(value = "修改状态", response = GeneralResult.class)
     public Response<GeneralResult> updateStatus(@ModelAttribute @ApiParam("请求参数") IdEnter idEnter) {
         return new Response(opeOperatingAccountService.updateStatus(idEnter));
     }

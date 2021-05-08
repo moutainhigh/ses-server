@@ -91,6 +91,10 @@ public enum ExceptionCodeEnums {
     INQUIRY_IS_NOT_EXIST(10037, "询价单不存在"),
 
     STATUS_ILLEGAL(10038, "状态异常"),
+
+    EMAIL_TOO_LONG(10039,"邮箱过长"),
+
+    DEPT_TOO_LONG(10040,"部门过长")
     ;
     private int code;
 

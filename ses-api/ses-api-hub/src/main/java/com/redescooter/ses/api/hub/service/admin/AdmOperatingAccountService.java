@@ -20,7 +20,7 @@ public interface AdmOperatingAccountService {
     /**
      * 添加
      */
-    int saveAdmOperatingAccount(AdmSysUser admOperatingAccount) throws Exception;
+    int saveAdmOperatingAccount(AdmSysUser admOperatingAccount);
 
     /**
      * 修改
