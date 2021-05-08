@@ -96,12 +96,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.NumberFormat;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Description 车辆待分配ServiceImpl
@@ -965,6 +960,157 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         return array[index];
     }
 
+
+    /**
+     * 替换Vin的第九位数字（校验vin）
+     * @param vin
+     * @return
+     */
+    public static String checkVIN(String vin) {
+        Map vinMapWeighting = null;
+
+        Map vinMapValue = null;
+
+        vinMapWeighting = new HashMap();
+
+        vinMapValue = new HashMap();
+
+        vinMapWeighting.put(1, 8);
+
+        vinMapWeighting.put(2, 7);
+
+        vinMapWeighting.put(3, 6);
+
+        vinMapWeighting.put(4, 5);
+
+        vinMapWeighting.put(5, 4);
+
+        vinMapWeighting.put(6, 3);
+
+        vinMapWeighting.put(7, 2);
+
+        vinMapWeighting.put(8, 10);
+
+        vinMapWeighting.put(9, 0);
+
+        vinMapWeighting.put(10, 9);
+
+        vinMapWeighting.put(11, 8);
+
+        vinMapWeighting.put(12, 7);
+
+        vinMapWeighting.put(13, 6);
+
+        vinMapWeighting.put(14, 5);
+
+        vinMapWeighting.put(15, 4);
+
+        vinMapWeighting.put(16, 3);
+
+        vinMapWeighting.put(17, 2);
+
+        vinMapValue.put('0', 0);
+
+        vinMapValue.put('1', 1);
+
+        vinMapValue.put('2', 2);
+
+        vinMapValue.put('3', 3);
+
+        vinMapValue.put('4', 4);
+
+        vinMapValue.put('5', 5);
+
+        vinMapValue.put('6', 6);
+
+        vinMapValue.put('7', 7);
+
+        vinMapValue.put('8', 8);
+
+        vinMapValue.put('9', 9);
+
+        vinMapValue.put('A', 1);
+
+        vinMapValue.put('B', 2);
+
+        vinMapValue.put('C', 3);
+
+        vinMapValue.put('D', 4);
+
+        vinMapValue.put('E', 5);
+
+        vinMapValue.put('F', 6);
+
+        vinMapValue.put('G', 7);
+
+        vinMapValue.put('H', 8);
+
+        vinMapValue.put('J', 1);
+
+        vinMapValue.put('K', 2);
+
+        vinMapValue.put('M', 4);
+
+        vinMapValue.put('L', 3);
+
+        vinMapValue.put('N', 5);
+
+        vinMapValue.put('P', 7);
+
+        vinMapValue.put('R', 9);
+
+        vinMapValue.put('S', 2);
+
+        vinMapValue.put('T', 3);
+
+        vinMapValue.put('U', 4);
+
+        vinMapValue.put('V', 5);
+
+        vinMapValue.put('W', 6);
+
+        vinMapValue.put('X', 7);
+
+        vinMapValue.put('Y', 8);
+
+        vinMapValue.put('Z', 9);
+
+        boolean reultFlag = false;
+
+        String uppervin = vin.toUpperCase();
+
+//排除字母O、I
+
+        if (vin == null || uppervin.indexOf("O") >= 0 || uppervin.indexOf("I") >= 0) {
+            reultFlag = false;
+
+        } else {
+//1:长度为17
+
+            if (vin.length() == 17) {
+                int amount = 0;
+                char[] vinArr = uppervin.toCharArray();
+                for (int i = 0; i < vinArr.length; i++) {
+
+//VIN码从从第一位开始，码数字的对应值×该位的加权值，计算全部17位的乘积值相加
+                    Object o = vinMapValue.get(vinArr[i]);
+                    Object o2 = vinMapWeighting.get(i + 1);
+                    amount += Integer.parseInt(o==null?"":o.toString()) * Integer.parseInt(o2==null?"":o2.toString());
+
+                }
+                if (amount % 11 == 10) {
+                   return "X";
+                } else {
+                    int result = amount%11;
+                    return String.valueOf(result);
+                }
+            }
+        }
+        return null;
+    }
+
+
+
     /**
      * 生成VIN Code
      */
@@ -1022,8 +1168,13 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         } else {
             result.append("000001");
         }
+        //根据生成的vin得到正确的第九位数字
+        String nineCode = checkVIN(result.toString());
+        //用正确的第九位数字替换之前随机生成的第九位数字
+        result.replace(8,9, nineCode);
         return result.toString();
     }
+
 
     /**
      * 生成105条SSN
@@ -1032,10 +1183,10 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     public List<String> testGenerateVINCode(GeneralEnter enter) {
         Integer[] array = {1, 2};
         List<String> list = Lists.newArrayList();
-        for (int i = 0; i < 105; i++) {
+        for (int i = 0; i < 400; i++) {
             int index = (int) (Math.random() * array.length);
             Integer seat = array[index];
-            String s = show(Long.valueOf("102104071540736"), "E100", seat, i + 1);
+            String s = show(Long.valueOf("1006236"), "E50", 2, i + 1);
             list.add(s);
         }
         return list;
@@ -1104,10 +1255,14 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         } else {
             result.append("000001");
         }
+        //根据生成的vin得到正确的第九位数字
+        String nineCode = checkVIN(result.toString());
 
+        //用正确的第九位数字替换之前随机生成的第九位数字
+        result.replace(8,9, nineCode);
+        logger.info(result.toString()+"{result>>>>>>>>>>>>>>>>>>>>>>>}");
         // 新增到主表
         OpeCarDistribute model = new OpeCarDistribute();
-        model.setId(Long.valueOf(i));
         model.setTenantId(1L);
         model.setUserId(1L);
         model.setCustomerId(1L);
@@ -1115,8 +1270,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         model.setSeatNumber(seatNumber);
         model.setCreatedBy(1L);
         model.setVinCode(result.toString());
+        model.setCreatedTime(new Date());
         opeCarDistributeMapper.insert(model);
-
         return result.toString();
     }
 

@@ -128,7 +128,7 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
             throw new SeSHubException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
         String status = admOperatingAccount.getStatus();
-        admOperatingAccount.setStatus(status .equals("Normal")  ?"Expired" : "Normal");
+        admOperatingAccount.setStatus(status .equals("0")  ?"1" : "0");
         int result = admOperatingAccountMapper.updateById(admOperatingAccount);
         return new GeneralResult(idEnter.getRequestId());
     }
