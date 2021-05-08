@@ -10,7 +10,6 @@ import com.redescooter.ses.api.common.service.SiteWebInquiryService;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.IdResult;
 import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryEnter;
 import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryPriceEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -46,6 +45,7 @@ import com.redescooter.ses.web.website.service.base.SiteProductPriceService;
 import com.redescooter.ses.web.website.service.base.SiteProductService;
 import com.redescooter.ses.web.website.service.base.SiteUserService;
 import com.redescooter.ses.web.website.vo.order.AddOrderPartsEnter;
+import com.redescooter.ses.web.website.vo.order.AddOrderResult;
 import com.redescooter.ses.web.website.vo.order.AddPartListEnter;
 import com.redescooter.ses.web.website.vo.order.AddUpdateOrderEnter;
 import com.redescooter.ses.web.website.vo.order.OrderDetailsResult;
@@ -123,7 +123,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
-    public IdResult addOrder(AddUpdateOrderEnter enter) {
+    public AddOrderResult addOrder(AddUpdateOrderEnter enter) {
         SiteOrder addSiteOrderVO = null;
         //获取当前登录用户
         SiteUser user = siteUserService.getById(enter.getUserId());
@@ -300,8 +300,9 @@ public class OrderServiceImpl implements OrderService {
         addSiteOrderVO.setUpdatedBy(enter.getUserId());
 
         siteOrderService.saveOrUpdate(addSiteOrderVO);
-        IdResult result = new IdResult();
+        AddOrderResult result = new AddOrderResult();
         result.setId(addSiteOrderVO.getId());
+        result.setDeposit(addSiteOrderVO.getPrepaidDeposit());
         result.setRequestId(enter.getRequestId());
         String bankCardName = customer.getCardholder();
         // 官网的订单数据 要同步到ROS系统中
