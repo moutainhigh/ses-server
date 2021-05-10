@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -116,8 +117,13 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
         if(admOperatingAccount==null){
             throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
         }
-        OperatingAccountListResult operatingAccountListResult = admOperatingAccountMapper.getAccountById(enter.getLoginName(),enter.getId());
-        if (operatingAccountListResult!=null){
+
+        QueryWrapper<AdmSysUser> wrapper = new QueryWrapper<>();
+        wrapper.eq("dr",0);
+        wrapper.ne("id",enter.getId());
+        List<AdmSysUser> operatingAccountListResult = admOperatingAccountMapper.selectList(wrapper);
+        List<String> emailList = operatingAccountListResult.stream().map(o -> o.getLoginName()).collect(Collectors.toList());
+        if (emailList.contains(enter.getLoginName())){
             throw new SeSHubException(ExceptionCodeEnums.EMAIL_TO_REPEAT.getCode(), ExceptionCodeEnums.EMAIL_TO_REPEAT.getMessage());
         }
         AdmSysUser admSysUser = new AdmSysUser();
