@@ -210,8 +210,17 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
         if (null == account) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
+
+        // 密码解密
+        String decryptPassword;
+        try {
+            decryptPassword = RsaUtils.decrypt(enter.getNewPassword(), privateKey);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
+
         String salt = account.getSalt();
-        String pwd = DigestUtils.md5Hex(enter.getNewPassword() + salt);
+        String pwd = DigestUtils.md5Hex(decryptPassword + salt);
         account.setEmail(enter.getEmail());
         account.setPassword(pwd);
         opeWarehouseAccountService.updateById(account);
