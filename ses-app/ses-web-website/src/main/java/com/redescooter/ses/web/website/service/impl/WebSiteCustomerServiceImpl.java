@@ -122,6 +122,8 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
                     ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
 
+        checkParamLength(enter);
+
         checkEmail(enter.getEmail());
         Long customerID = saveCustomer(enter);
 
@@ -147,6 +149,18 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         signUp.setPassword(enter.getCfmPassword().trim());
         signUp.setCustomerId(customerID);
         return tokenWebsiteService.signUp(signUp);
+    }
+
+    public void checkParamLength(AddCustomerEnter enter) {
+        if (StringUtils.isNotBlank(enter.getEmail()) && enter.getEmail().length() > 64) {
+            throw new SesWebsiteException(ExceptionCodeEnums.EMAIL_TOO_LONG.getCode(), ExceptionCodeEnums.EMAIL_TOO_LONG.getMessage());
+        }
+        if (StringUtils.isNotBlank(enter.getTelephone()) && enter.getTelephone().length() > 32) {
+            throw new SesWebsiteException(ExceptionCodeEnums.PHONE_LENGTH_OUT.getCode(), ExceptionCodeEnums.PHONE_LENGTH_OUT.getMessage());
+        }
+        if (StringUtils.isNotBlank(enter.getAddress()) && enter.getAddress().length() > 256) {
+            throw new SesWebsiteException(ExceptionCodeEnums.ADDRESS_LENGTH_OUT.getCode(), ExceptionCodeEnums.ADDRESS_LENGTH_OUT.getMessage());
+        }
     }
 
     @Async
