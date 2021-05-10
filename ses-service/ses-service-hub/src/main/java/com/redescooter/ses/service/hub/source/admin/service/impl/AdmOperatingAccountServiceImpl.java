@@ -23,6 +23,7 @@ import com.redescooter.ses.service.hub.source.admin.dao.AdmSysUserMapper;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.tool.utils.ValidatorUtil;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -68,12 +69,15 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
     @DS("admin")
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult saveAdmOperatingAccount(SavePasswordAccountEnter enter) {
-        log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>进来");
         if (enter.getLoginName().length()>50){
             throw new SeSHubException(ExceptionCodeEnums.EMAIL_TOO_LONG.getCode(), ExceptionCodeEnums.EMAIL_TOO_LONG.getMessage());
         }
         if (enter.getDeptName().length()>50){
             throw new SeSHubException(ExceptionCodeEnums.DEPT_TOO_LONG.getCode(), ExceptionCodeEnums.DEPT_TOO_LONG.getMessage());
+        }
+        boolean email = ValidatorUtil.isEmail(enter.getLoginName());
+        if (!email){
+            throw new SeSHubException(ExceptionCodeEnums.EMAIL_ERRO.getCode(), ExceptionCodeEnums.EMAIL_ERRO.getMessage());
         }
         QueryWrapper<AdmSysUser> wrapper = new QueryWrapper<>();
         wrapper.eq("login_name",enter.getLoginName());
@@ -121,7 +125,10 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
         if(admOperatingAccount==null){
             throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
         }
-
+        boolean email = ValidatorUtil.isEmail(enter.getLoginName());
+        if (!email){
+            throw new SeSHubException(ExceptionCodeEnums.EMAIL_ERRO.getCode(), ExceptionCodeEnums.EMAIL_ERRO.getMessage());
+        }
         QueryWrapper<AdmSysUser> wrapper = new QueryWrapper<>();
         wrapper.eq("dr",0);
         wrapper.ne("id",enter.getId());

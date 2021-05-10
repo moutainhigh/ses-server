@@ -18,6 +18,7 @@ public interface RegexpConstant {
     //邮箱地址
      String email="^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$";
 
+     String emailAcount = "[\\w\\.\\-]+@([\\w\\-]+\\.)+[\\w\\-]+";
     //用户名校验
     //帐号是否合法(字母开头，允许5-16字节，允许字母数字下划线)
      String loginName="^[a-zA-Z][a-zA-Z0-9_]{4,15}$";
@@ -62,4 +63,5 @@ public interface RegexpConstant {
 
     // 规格类型名称的正则表达式 （只允许大写字母、数字、-组成）
     String SPECIFICATNAME = "^[0-9A-Z-]+$";
+
 }
