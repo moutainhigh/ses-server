@@ -3,6 +3,9 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.OperatingEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.oms.EditAccountEnter;
+import com.redescooter.ses.api.common.vo.oms.SaveAccountEnter;
+import com.redescooter.ses.api.common.vo.oms.SavePasswordAccountEnter;
 import com.redescooter.ses.api.hub.vo.admin.AdmSysUser;
 import com.redescooter.ses.api.hub.vo.admin.OperatingAccountListResult;
 
@@ -20,12 +23,12 @@ public interface AdmOperatingAccountService {
     /**
      * 添加
      */
-    int saveAdmOperatingAccount(AdmSysUser admOperatingAccount);
+    GeneralResult saveAdmOperatingAccount(SavePasswordAccountEnter enter);
 
     /**
      * 修改
      */
-    int updateByPk(AdmSysUser admOperatingAccount);
+    GeneralResult updateByPk(EditAccountEnter enter);
 
     /**
      * 删除
@@ -39,13 +42,10 @@ public interface AdmOperatingAccountService {
     PageResult<OperatingAccountListResult> list(OperatingEnter enter);
 
 
-    /**
-     * 详情
-     * @param enter
-     * @return
-     */
-    AdmSysUser accountDeatil(IdEnter enter);
+
 
 
     GeneralResult updateStatus(IdEnter idEnter);
+
+    GeneralResult editPassword(SavePasswordAccountEnter enter);
 }

@@ -2,9 +2,11 @@ package com.redescooter.ses.web.ros.controller.account;
 
 import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.oms.EditAccountEnter;
+import com.redescooter.ses.api.common.vo.oms.SaveAccountEnter;
+import com.redescooter.ses.api.common.vo.oms.SavePasswordAccountEnter;
 import com.redescooter.ses.api.hub.service.admin.AdmOperatingAccountService;
 import com.redescooter.ses.api.hub.vo.admin.AdmSysUser;
-import com.redescooter.ses.web.ros.vo.account.AccountDeatilResult;
 import com.redescooter.ses.web.ros.vo.account.OperatingAccountListResult;
 import com.redescooter.ses.web.ros.vo.specificat.ColorDataResult;
 import io.swagger.annotations.*;
@@ -45,8 +47,8 @@ public Response<PageResult<OperatingAccountListResult>> list(@ModelAttribute @Ap
 @ApiOperation(value = "新增", notes = "新增", response = GeneralResult.class)
 @PostMapping("/save")
 @AvoidDuplicateSubmit
-public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") AdmSysUser admOperatingEnter) throws Exception {
-    return new Response(opeOperatingAccountService.saveAdmOperatingAccount(admOperatingEnter));
+public Response<GeneralResult> save(@ApiParam("请求参数") @RequestBody SavePasswordAccountEnter enter) throws Exception {
+    return new Response(opeOperatingAccountService.saveAdmOperatingAccount(enter));
     }
 
     /**
@@ -55,8 +57,8 @@ public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") Ad
     @ApiOperation(value = "修改", notes = "修改", response = GeneralResult.class)
     @PostMapping("/update")
     @AvoidDuplicateSubmit
-    public Response<GeneralResult> update(@ModelAttribute @ApiParam("请求参数") AdmSysUser admOperatingEnter){
-        return new Response(opeOperatingAccountService.updateByPk(admOperatingEnter));
+    public Response<GeneralResult> update(@RequestBody @ApiParam("请求参数") EditAccountEnter enter){
+        return new Response(opeOperatingAccountService.updateByPk(enter));
         }
 
     /**
@@ -74,11 +76,11 @@ public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") Ad
      * @param enter
      * @return
      */
-    @PostMapping(value = "/Deatil")
-    @ApiOperation(value = "详情", response = GeneralResult.class)
-    public Response<AccountDeatilResult> accountDeatil(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
-        return new Response(opeOperatingAccountService.accountDeatil(enter));
-    }
+//    @PostMapping(value = "/Deatil")
+//    @ApiOperation(value = "详情", response = GeneralResult.class)
+//    public Response<OperatingAccountListResult> accountDeatil(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
+//        return new Response(opeOperatingAccountService.accountDeatil(enter));
+//    }
 
     @PostMapping(value = "/updateStatus")
     @AvoidDuplicateSubmit
@@ -86,4 +88,12 @@ public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") Ad
     public Response<GeneralResult> updateStatus(@ModelAttribute @ApiParam("请求参数") IdEnter idEnter) {
         return new Response(opeOperatingAccountService.updateStatus(idEnter));
     }
+
+    @PostMapping(value = "/status")
+    @AvoidDuplicateSubmit
+    @ApiOperation(value = "修改密码", response = GeneralResult.class)
+    public Response<GeneralResult> updateStatus(@ModelAttribute @ApiParam("请求参数") SavePasswordAccountEnter enter) {
+        return new Response(opeOperatingAccountService.editPassword(enter));
+    }
+
 }
