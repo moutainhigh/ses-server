@@ -47,7 +47,7 @@ public Response<PageResult<OperatingAccountListResult>> list(@ModelAttribute @Ap
 @ApiOperation(value = "新增", notes = "新增", response = GeneralResult.class)
 @PostMapping("/save")
 @AvoidDuplicateSubmit
-public Response<GeneralResult> save(@ApiParam("请求参数") @RequestBody SavePasswordAccountEnter enter) throws Exception {
+public Response<GeneralResult> save(@ApiParam("请求参数") @ModelAttribute SavePasswordAccountEnter enter) throws Exception {
     return new Response(opeOperatingAccountService.saveAdmOperatingAccount(enter));
     }
 
@@ -57,7 +57,7 @@ public Response<GeneralResult> save(@ApiParam("请求参数") @RequestBody SaveP
     @ApiOperation(value = "修改", notes = "修改", response = GeneralResult.class)
     @PostMapping("/update")
     @AvoidDuplicateSubmit
-    public Response<GeneralResult> update(@RequestBody @ApiParam("请求参数") EditAccountEnter enter){
+    public Response<GeneralResult> update(@ModelAttribute @ApiParam("请求参数") EditAccountEnter enter){
         return new Response(opeOperatingAccountService.updateByPk(enter));
         }
 
@@ -73,7 +73,7 @@ public Response<GeneralResult> save(@ApiParam("请求参数") @RequestBody SaveP
 
     /**
      * 详情
-     * @param enter
+     * @param
      * @return
      */
 //    @PostMapping(value = "/Deatil")

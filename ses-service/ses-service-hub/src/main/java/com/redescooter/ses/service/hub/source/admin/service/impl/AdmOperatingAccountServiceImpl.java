@@ -112,6 +112,14 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
     @DS("admin")
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult updateByPk(EditAccountEnter enter) {
+        AdmSysUser admOperatingAccount = admOperatingAccountMapper.selectById(enter.getId());
+        if(admOperatingAccount==null){
+            throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
+        }
+        OperatingAccountListResult operatingAccountListResult = admOperatingAccountMapper.getAccountById(enter.getLoginName(),enter.getId());
+        if (operatingAccountListResult!=null){
+            throw new SeSHubException(ExceptionCodeEnums.EMAIL_TO_REPEAT.getCode(), ExceptionCodeEnums.EMAIL_TO_REPEAT.getMessage());
+        }
         AdmSysUser admSysUser = new AdmSysUser();
         admSysUser.setId(enter.getId());
         admSysUser.setDeptName(enter.getDeptName());
