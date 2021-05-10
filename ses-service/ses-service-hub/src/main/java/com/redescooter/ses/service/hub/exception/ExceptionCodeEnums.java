@@ -94,7 +94,9 @@ public enum ExceptionCodeEnums {
 
     EMAIL_TOO_LONG(10039,"邮箱过长"),
 
-    DEPT_TOO_LONG(10040,"部门过长")
+    DEPT_TOO_LONG(10040,"部门过长"),
+
+    EMAIL_TO_REPEAT(10041,"邮箱重复")
     ;
     private int code;
 

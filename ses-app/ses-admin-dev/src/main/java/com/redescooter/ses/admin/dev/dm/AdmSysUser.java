@@ -187,7 +187,7 @@ public class AdmSysUser {
     private Double def6;
 
     /**
-     * 冗余字段
+     * 使用者
      */
     @TableField(value = "name")
     @ApiModelProperty(value="使用者")
@@ -198,7 +198,8 @@ public class AdmSysUser {
      */
     @TableField(value = "dept_name")
     @ApiModelProperty(value="部门名称")
-    private Double deptName;
+    private String deptName;
+
 
     public static final String COL_ID = "id";
 
