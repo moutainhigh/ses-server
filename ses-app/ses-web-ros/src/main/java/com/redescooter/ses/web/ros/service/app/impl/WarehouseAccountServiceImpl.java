@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.OpeWarehouseAccountMapper;
@@ -28,6 +29,7 @@ import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -52,6 +54,9 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
 
     @DubboReference
     private IdAppService idAppService;
+
+    @Value("${Request.privateKey}")
+    private String privateKey;
 
     /**
      * 每个tab的count
@@ -92,8 +97,16 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
         // 校验
         check(enter);
 
+        // 密码解密
+        String decryptPassword;
+        try {
+            decryptPassword = RsaUtils.decrypt(enter.getNewPassword(), privateKey);
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+        }
+
         int salt = RandomUtils.nextInt(10000, 99999);
-        String pwd = DigestUtils.md5Hex(enter.getNewPassword() + salt);
+        String pwd = DigestUtils.md5Hex(decryptPassword + salt);
         OpeWarehouseAccount account = new OpeWarehouseAccount();
         account.setId(idAppService.getId(SequenceName.OPE_WAREHOUSE_ACCOUNT));
         account.setDr(Constant.DR_FALSE);
