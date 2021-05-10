@@ -112,9 +112,6 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
     }
 
     public void check(WarehouseAccountSaveEnter enter) {
-        if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmNewPassword())) {
-            throw new SesWebRosException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
-        }
         LambdaQueryWrapper<OpeWarehouseAccount> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeWarehouseAccount::getDr, Constant.DR_FALSE);
         qw.eq(OpeWarehouseAccount::getEmail, enter.getEmail());
