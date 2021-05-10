@@ -31,9 +31,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
+import redis.clients.jedis.JedisCluster;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -50,6 +52,9 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
 
     @Autowired
     private AdmSysUserMapper admOperatingAccountMapper;
+
+    @Autowired
+    private JedisCluster jedisCluster;
 
     @DubboReference
     private AdmOperatingAccountService admOperatingAccountService;
@@ -116,8 +121,13 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
         if(admOperatingAccount==null){
             throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
         }
-        OperatingAccountListResult operatingAccountListResult = admOperatingAccountMapper.getAccountById(enter.getLoginName(),enter.getId());
-        if (operatingAccountListResult!=null){
+
+        QueryWrapper<AdmSysUser> wrapper = new QueryWrapper<>();
+        wrapper.eq("dr",0);
+        wrapper.ne("id",enter.getId());
+        List<AdmSysUser> operatingAccountListResult = admOperatingAccountMapper.selectList(wrapper);
+        List<String> emailList = operatingAccountListResult.stream().map(o -> o.getLoginName()).collect(Collectors.toList());
+        if (emailList.contains(enter.getLoginName())){
             throw new SeSHubException(ExceptionCodeEnums.EMAIL_TO_REPEAT.getCode(), ExceptionCodeEnums.EMAIL_TO_REPEAT.getMessage());
         }
         AdmSysUser admSysUser = new AdmSysUser();
@@ -223,6 +233,17 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
         admSysUser.setId(enter.getId());
         admSysUser.setSalt(salt);
         admOperatingAccountMapper.updateById(admSysUser);
+        if (StringUtils.isNotBlank(admSysUser.getLastLoginToken())) {
+            // 清除原有token,重新登录
+            jedisCluster.del(admSysUser.getLastLoginToken());
+            jedisCluster.del(enter.getRequestId());
+        }
+        //token 为空为系统外设置密码 设置成功过后 清楚 缓存保证一个requestId 只能用一次
+        if (StringUtils.isBlank(enter.getToken())) {
+            if (jedisCluster.exists(enter.getRequestId())) {
+                jedisCluster.del(enter.getRequestId());
+            }
+        }
         return new GeneralResult(enter.getRequestId());
     }
 

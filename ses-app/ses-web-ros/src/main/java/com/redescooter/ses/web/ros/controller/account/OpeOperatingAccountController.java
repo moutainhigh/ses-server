@@ -89,10 +89,10 @@ public Response<GeneralResult> save(@ApiParam("请求参数") @ModelAttribute Sa
         return new Response(opeOperatingAccountService.updateStatus(idEnter));
     }
 
-    @PostMapping(value = "/status")
+    @PostMapping(value = "/updatePasswod")
     @AvoidDuplicateSubmit
     @ApiOperation(value = "修改密码", response = GeneralResult.class)
-    public Response<GeneralResult> updateStatus(@ModelAttribute @ApiParam("请求参数") SavePasswordAccountEnter enter) {
+    public Response<GeneralResult> updatePasswod(@ModelAttribute @ApiParam("请求参数") SavePasswordAccountEnter enter) {
         return new Response(opeOperatingAccountService.editPassword(enter));
     }
 
