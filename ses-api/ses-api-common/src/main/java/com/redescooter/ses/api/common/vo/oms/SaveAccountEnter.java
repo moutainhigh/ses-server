@@ -1,6 +1,10 @@
 package com.redescooter.ses.api.common.vo.oms;
 
+import com.redescooter.ses.api.common.annotation.MaximumLength;
+import com.redescooter.ses.api.common.annotation.MinimumLength;
 import com.redescooter.ses.api.common.annotation.NotNull;
+import com.redescooter.ses.api.common.annotation.Regexp;
+import com.redescooter.ses.api.common.constant.RegexpConstant;
 import com.redescooter.ses.api.common.exception.ValidationExceptionBaseCode;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
@@ -33,6 +37,9 @@ public class SaveAccountEnter extends GeneralEnter {
      * 登录名
      */
     @ApiModelProperty(value="登录名")
+    @Regexp(value = RegexpConstant.email,code = ValidationExceptionBaseCode.EMAIL_IS_ILLEGAL,message = "邮件非法")
+    @MinimumLength(value = "2",code = ValidationExceptionBaseCode.EMAIL_IS_ILLEGAL,message = "邮件非法")
+    @MaximumLength(value = "50",code = ValidationExceptionBaseCode.EMAIL_IS_ILLEGAL,message = "邮件非法")
     @NotNull(code = ValidationExceptionBaseCode.EMAIL_IS_EMPTY, message = "登录名不能为空")
     private String loginName;
 
