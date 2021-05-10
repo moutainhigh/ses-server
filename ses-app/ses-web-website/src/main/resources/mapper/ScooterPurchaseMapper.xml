@@ -127,7 +127,7 @@
                 price.should_pay_period
         from site_product_price price
         inner join site_product_model model on price.product_model_id = model.id and model.dr = 0
-        where price.dr = 0 and price.`status` = 1
+        where price.dr = 0 and price.`status` = 1 and price.price_type = 1
         order by scooterBattery, installment_time
     </select>
 
