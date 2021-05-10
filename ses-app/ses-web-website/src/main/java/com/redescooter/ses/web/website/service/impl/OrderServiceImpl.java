@@ -472,7 +472,7 @@ public class OrderServiceImpl implements OrderService {
             siteOrderBService.batchInsert(list);
 
             // 如果选择的有配件,同步修改ros预订单的价格(加上配件的价格)
-            syncPriceToRos(enter, orderTotalPrice, amountObligation);
+            syncPriceToRos(enter, orderTotalPrice, orderTotalPrice.subtract(order.getAmountPaid()));
         }
         return new GeneralResult(enter.getRequestId());
     }
