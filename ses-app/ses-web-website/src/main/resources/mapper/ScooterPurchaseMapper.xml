@@ -67,7 +67,7 @@
                 sp.remark
         from site_parts sp
         left join site_product_parts spp on sp.id = spp.parts_id and spp.dr = 0
-        where sp.dr = 0 and sp.`status` = 1
+        where sp.dr = 0 and sp.`status` = 1 and sp.parts_type != 3
         <if test="id != null and id != ''">
             and spp.product_id = #{id}
         </if>
@@ -83,7 +83,7 @@
                sp.price * spp.qty as price
         from site_product_parts spp
         left join site_parts sp on spp.parts_id = sp.id and sp.dr = 0
-        where spp.dr = 0 and parts_type = 3
+        where spp.dr = 0 and spp.`status` = 1 and sp.parts_type = 3
         <if test="id != null">
             and spp.product_id = #{id}
         </if>
