@@ -93,7 +93,7 @@ public class AdminTokenServiceImpl implements AdminTokenService {
         wrapper.eq(AdmSysUser.COL_APP_ID, enter.getAppId());
         wrapper.eq(AdmSysUser.COL_SYSTEM_ID, enter.getSystemId());
         wrapper.eq(AdmSysUser.COL_DEF1, SysUserSourceEnum.SYSTEM.getValue());
-        wrapper.eq(AdmSysUser.COL_STATUS,0);
+        wrapper.eq(AdmSysUser.COL_STATUS,1);
         wrapper.last("limit 1");
         AdmSysUser sysUser = admSysUserService.getOne(wrapper);
         //用户名验证，及根据用户名未查到改用户，则该用户不存在
