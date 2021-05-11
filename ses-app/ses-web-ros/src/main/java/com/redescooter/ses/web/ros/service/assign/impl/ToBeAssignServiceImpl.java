@@ -803,7 +803,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      */
     @Override
     public Map<String, Object> getTabCount(GeneralEnter enter) {
-        Map<String, Object> result = Maps.newHashMapWithExpectedSize(2);
+        Map<String, Object> result = Maps.newHashMapWithExpectedSize(3);
 
         // 待分配列表条数
         List<ToBeAssignListResult> list = opeCarDistributeExMapper.getToBeAssignListNoPage(enter);
@@ -822,8 +822,11 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         }
         // 已分配列表条数
         int assignedCount = opeCarDistributeExMapper.getAssignedListCount(new AssignedListEnter());
+        // 处理中列表条数
+        int doingCount = opeCarDistributeExMapper.getDoingListCount(new ToBeAssignListEnter());
         result.put("toBeAssignCount", list.size());
         result.put("assignedCount", assignedCount);
+        result.put("doing", doingCount);
         return result;
     }
 

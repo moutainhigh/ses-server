@@ -89,6 +89,16 @@
         where a.dr = 0 and b.dr = 0 and a.customer_id = #{customerId}
     </select>
 
+    <!-- 处理中列表条数 -->
+    <select id="getDoingListCount" resultType="java.lang.Integer">
+        select count(*)
+        from ope_customer_inquiry a
+        left join ope_car_distribute_node b on a.customer_id = b.customer_id
+        left join ope_customer c on a.customer_id = c.id
+        where a.dr = 0 and c.dr = 0 and c.status = 2 and b.flag = 1 and b.app_node in (1, 2, 3)
+        <include refid="toBeAssignList"/>
+    </select>
+
     <!-- 待分配列表筛选条件 -->
     <sql id="toBeAssignList">
         <if test="param.generateDateStartTime != null">

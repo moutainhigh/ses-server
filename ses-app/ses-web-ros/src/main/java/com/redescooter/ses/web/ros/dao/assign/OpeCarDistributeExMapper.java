@@ -49,4 +49,9 @@ public interface OpeCarDistributeExMapper {
      */
     ToBeAssignDetailCustomerInfoResult getCustomerInfo(@Param("customerId") Long customerId);
 
+    /**
+     * 处理中列表条数
+     */
+    int getDoingListCount(@Param("param") ToBeAssignListEnter enter);
+
 }
