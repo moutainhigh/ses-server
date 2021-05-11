@@ -4,16 +4,19 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Maps;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.service.website.ProductionService;
 import com.redescooter.ses.api.hub.vo.website.SyncProductionDataEnter;
 import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
+import com.redescooter.ses.service.hub.source.operation.service.impl.SalePriceServiceImpl;
 import com.redescooter.ses.service.hub.source.website.dm.SiteColour;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProduct;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProductClass;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProductColour;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProductModel;
+import com.redescooter.ses.service.hub.source.website.dm.SiteProductPrice;
 import com.redescooter.ses.service.hub.source.website.service.base.SiteColourService;
 import com.redescooter.ses.service.hub.source.website.service.base.SiteProductClassService;
 import com.redescooter.ses.service.hub.source.website.service.base.SiteProductColourService;
@@ -61,6 +64,9 @@ public class ProductionServiceImpl implements ProductionService {
     @Autowired
     private SiteProductPriceService siteProductPriceService;
 
+    @Autowired
+    private SalePriceServiceImpl salePriceService;
+
     @DubboReference
     private IdAppService idAppService;
 
@@ -97,13 +103,15 @@ public class ProductionServiceImpl implements ProductionService {
             }
 
             // 删除site_product_price
-            /*LambdaQueryWrapper<SiteProductPrice> wrapper = new LambdaQueryWrapper<>();
+            LambdaQueryWrapper<SiteProductPrice> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(SiteProductPrice::getProductModelId, product.getId());
             List<SiteProductPrice> list = siteProductPriceService.list(wrapper);
             if (CollectionUtils.isNotEmpty(list)) {
                 List<Long> ids = list.stream().map(o -> o.getId()).collect(Collectors.toList());
                 siteProductPriceService.removeByIds(ids);
-            }*/
+            }
+
+            salePriceService.deleteSalePrice(product.getProductModelName());
 
 //            product.setStatus(saleStatus == 1 ? 1 : -1);
 //            product.setUpdatedTime(new Date());
@@ -129,7 +137,6 @@ public class ProductionServiceImpl implements ProductionService {
 //        return flag;
     }
 
-
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     @DS("website")
@@ -140,6 +147,7 @@ public class ProductionServiceImpl implements ProductionService {
         SiteProductClass productClass;
         QueryWrapper<SiteProductClass> productClassQw = new QueryWrapper<>();
         productClassQw.eq(SiteProductClass.COL_PRODUCT_CLASS_CODE, syncProductionDataEnter.getProductClassCode());
+        productClassQw.eq(SiteProductClass.COL_DR, Constant.DR_FALSE);
         productClassQw.last("limit 1");
         productClass = siteProductClassService.getOne(productClassQw);
         if (productClass == null) {
@@ -162,6 +170,7 @@ public class ProductionServiceImpl implements ProductionService {
         SiteProductModel productModel;
         QueryWrapper<SiteProductModel> productModelQw = new QueryWrapper<>();
         productModelQw.eq(SiteProductModel.COL_PRODUCT_MODEL_NAME, syncProductionDataEnter.getProductModelName());
+        productModelQw.eq(SiteProductModel.COL_DR, Constant.DR_FALSE);
         productModelQw.last("limit 1");
         productModel = siteProductModelService.getOne(productModelQw);
         if (productModel == null) {
@@ -183,6 +192,7 @@ public class ProductionServiceImpl implements ProductionService {
         SiteProduct product;
         QueryWrapper<SiteProduct> qw = new QueryWrapper<>();
         qw.eq(SiteProduct.COL_FR_NAME, syncProductionDataEnter.getFrName());
+        qw.eq(SiteProduct.COL_DR, Constant.DR_FALSE);
         qw.last("limit 1");
         product = siteProductService.getOne(qw);
         if (product == null) {
@@ -203,6 +213,7 @@ public class ProductionServiceImpl implements ProductionService {
         SiteColour colour;
         QueryWrapper<SiteColour> colourQw = new QueryWrapper<>();
         colourQw.eq(SiteColour.COL_COLOUR_CODE, syncProductionDataEnter.getColourCode());
+        colourQw.eq(SiteColour.COL_DR, Constant.DR_FALSE);
         colourQw.last("limit 1");
         colour = siteColourService.getOne(colourQw);
         if (colour == null) {
@@ -373,13 +384,15 @@ public class ProductionServiceImpl implements ProductionService {
             }
 
             // 删除site_product_price
-            /*LambdaQueryWrapper<SiteProductPrice> wrapper = new LambdaQueryWrapper<>();
+            LambdaQueryWrapper<SiteProductPrice> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(SiteProductPrice::getProductModelId, product.getId());
             List<SiteProductPrice> list = siteProductPriceService.list(wrapper);
             if (CollectionUtils.isNotEmpty(list)) {
                 List<Long> ids = list.stream().map(o -> o.getId()).collect(Collectors.toList());
                 siteProductPriceService.removeByIds(ids);
-            }*/
+            }
+
+            salePriceService.deleteSalePrice(product.getProductModelName());
         }
     }
 
