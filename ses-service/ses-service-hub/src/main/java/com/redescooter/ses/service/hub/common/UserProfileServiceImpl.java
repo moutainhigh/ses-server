@@ -75,9 +75,13 @@ public class UserProfileServiceImpl implements UserProfileService {
      */
     @Override
     public void saveUserProfile2C(SaveUserProfileHubEnter enter) {
+        log.info("enter saveUserProfile2C:{}",enter);
         //TOC 修改个人信息
         SaveUserProfileEnter saveUserProfileEnter = new SaveUserProfileEnter();
         BeanUtils.copyProperties(enter, saveUserProfileEnter);
+        saveUserProfileEnter.setAddress(enter.getAddress());
+        saveUserProfileEnter.setId(enter.getId());
+        log.info("saveUserProfileEnter的值：{}",saveUserProfileEnter);
         userProfileProService.saveUserPofile(saveUserProfileEnter);
     }
 

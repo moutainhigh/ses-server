@@ -142,6 +142,7 @@ public class UserProfileProServiceImpl implements UserProfileProService {
      * @param enter
      */
     private ConUserProfile checkUserProfile(SaveUserProfileEnter enter, BaseCustomerEnter baseCustomerEnter) {
+        System.out.println("enter的值:{}"+enter);
         // 查询个人信息
         ConUserProfile conUserProfile = userProfileService.getById(enter.getId());
         if (conUserProfile == null) {
@@ -175,10 +176,12 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             conUserProfile.setCertificatePositiveAnnex(enter.getCertificatePositiveAnnex());
         }
         conUserProfile.setAddress(enter.getAddress());
+        System.out.println("address的值：{}"+conUserProfile.getAddress());
         baseCustomerEnter.setEmail(conUserProfile.getEmail1());
         conUserProfile.setUpdatedBy(enter.getUserId());
         conUserProfile.setUpdatedTime(new Date());
-        userProfileService.updateById(conUserProfile);
+        boolean a = userProfileService.updateById(conUserProfile);
+        System.out.println("修改的结果的值：{}"+a);
         return conUserProfile;
     }
 }
