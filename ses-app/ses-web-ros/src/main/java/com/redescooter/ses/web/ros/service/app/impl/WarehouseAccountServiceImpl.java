@@ -11,7 +11,11 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
+import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeNodeMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWarehouseAccountMapper;
+import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
+import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
 import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.enums.distributor.StatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -25,6 +29,7 @@ import com.redescooter.ses.web.ros.vo.app.WarehouseAccountUpdateEnter;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -51,6 +56,12 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
 
     @Autowired
     private OpeWarehouseAccountMapper opeWarehouseAccountMapper;
+
+    @Autowired
+    private OpeCarDistributeMapper opeCarDistributeMapper;
+
+    @Autowired
+    private OpeCarDistributeNodeMapper opeCarDistributeNodeMapper;
 
     @DubboReference
     private IdAppService idAppService;
@@ -187,11 +198,38 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
         if (null == account) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
-        // 关闭时判断,若账号下还有处理中的询价单,抛出异常
-
-
-
         Integer status = account.getStatus();
+
+        // 关闭时判断,若账号下还有处理中的询价单,抛出异常
+        if (status == 1) {
+            LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+            qw.eq(OpeCarDistribute::getWarehouseAccountId, account.getId());
+            List<OpeCarDistribute> list = opeCarDistributeMapper.selectList(qw);
+            if (CollectionUtils.isNotEmpty(list)) {
+                boolean flag = false;
+                for (OpeCarDistribute item : list) {
+                    Long customerId = item.getCustomerId();
+                    if (null != customerId) {
+                        LambdaQueryWrapper<OpeCarDistributeNode> wrapper = new LambdaQueryWrapper<>();
+                        wrapper.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
+                        wrapper.eq(OpeCarDistributeNode::getCustomerId, customerId);
+                        wrapper.last("limit 1");
+                        OpeCarDistributeNode node = opeCarDistributeNodeMapper.selectOne(wrapper);
+                        if (null != node) {
+                            Integer nodeFlag = node.getFlag();
+                            if (nodeFlag == 1) {
+                                flag = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (flag) {
+                    throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_HAS_INQUIRY.getCode(), ExceptionCodeEnums.ACCOUNT_HAS_INQUIRY.getMessage());
+                }
+            }
+        }
         account.setStatus(status == 1 ? 2 : 1);
         opeWarehouseAccountService.updateById(account);
         return new GeneralResult(enter.getRequestId());

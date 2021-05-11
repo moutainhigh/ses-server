@@ -546,7 +546,9 @@ public enum ExceptionCodeEnums {
 
     SCOOTER_BATTERY_IS_EMPTY(10264, "车型为空"),
 
-    RULE_ALREADY_EXIST(10265, "规则已存在")
+    RULE_ALREADY_EXIST(10265, "规则已存在"),
+
+    ACCOUNT_HAS_INQUIRY(10266, "该账号下还有处理中的询价单,需处理完成后才可禁用")
 
 
 

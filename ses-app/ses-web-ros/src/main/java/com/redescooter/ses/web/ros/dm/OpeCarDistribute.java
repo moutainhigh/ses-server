@@ -41,6 +41,9 @@ public class OpeCarDistribute implements Serializable {
     @TableLogic
     private Integer dr;
 
+    @ApiModelProperty(value = "仓库账号id")
+    private Long warehouseAccountId;
+
     @ApiModelProperty(value = "租户id")
     private Long tenantId;
 
