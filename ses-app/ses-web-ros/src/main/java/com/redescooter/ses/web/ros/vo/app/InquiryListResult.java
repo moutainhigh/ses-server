@@ -24,6 +24,9 @@ import java.util.Date;
 @EqualsAndHashCode
 public class InquiryListResult extends PageResult {
 
+    @ApiModelProperty(value = "询价单id")
+    private Long id;
+
     @ApiModelProperty(value = "询价单号")
     private String orderNo;
 
@@ -49,5 +52,9 @@ public class InquiryListResult extends PageResult {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdTime;
+
+    private Integer appNode;
+
+    private Integer flag;
 
 }

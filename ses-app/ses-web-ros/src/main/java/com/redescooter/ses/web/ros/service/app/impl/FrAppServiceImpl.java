@@ -26,12 +26,16 @@ import com.redescooter.ses.web.ros.vo.app.InquiryListResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.JedisCluster;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -158,6 +162,19 @@ public class FrAppServiceImpl implements FrAppService {
             return PageResult.createZeroRowResult(enter);
         }
         List<InquiryListResult> list = opeCarDistributeExMapper.getInquiryList(enter);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (InquiryListResult item : list) {
+                if (item.getFlag() == 1 && item.getAppNode() == 0) {
+                    item.setStatus(1);
+                }
+                if (item.getFlag() == 1 && (item.getAppNode() == 1 || item.getAppNode() == 2 || item.getAppNode() == 3)) {
+                    item.setStatus(2);
+                }
+                if (item.getFlag() == 2) {
+                    item.setStatus(3);
+                }
+            }
+        }
         return PageResult.create(enter, count, list);
     }
 
@@ -166,7 +183,21 @@ public class FrAppServiceImpl implements FrAppService {
      */
     @Override
     public InquiryDetailResult getDetail(IdEnter enter) {
-        return null;
+        InquiryDetailResult result = opeCarDistributeExMapper.getInquiryDetail(enter);
+        if (null != result) {
+            String battery = result.getBattery();
+            if (StringUtils.isBlank(battery)) {
+                result.setBatteryNumber(0);
+                result.setBatteryList(new ArrayList<>());
+            } else {
+                String[] split = battery.split(",");
+                List<String> batteryList = new ArrayList<>(Arrays.asList(split));
+                batteryList.removeAll(Collections.singleton(null));
+                result.setBatteryNumber(batteryList.size());
+                result.setBatteryList(batteryList);
+            }
+        }
+        return result;
     }
 
 
