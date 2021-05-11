@@ -31,7 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -241,9 +240,6 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult updatePassword(UpdatePasswordEnter enter) {
-        if (!StringUtils.equals(enter.getNewPassword(), enter.getConfirmNewPassword())) {
-            throw new SesWebRosException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
-        }
         OpeWarehouseAccount account = opeWarehouseAccountService.getById(enter.getId());
         if (null == account) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
