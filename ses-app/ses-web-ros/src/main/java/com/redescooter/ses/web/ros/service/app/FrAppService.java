@@ -7,6 +7,9 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.vo.app.AppLoginEnter;
+import com.redescooter.ses.web.ros.vo.app.BindVinEnter;
+import com.redescooter.ses.web.ros.vo.app.InputBatteryEnter;
+import com.redescooter.ses.web.ros.vo.app.InputScooterEnter;
 import com.redescooter.ses.web.ros.vo.app.InquiryDetailResult;
 import com.redescooter.ses.web.ros.vo.app.InquiryListAppEnter;
 import com.redescooter.ses.web.ros.vo.app.InquiryListResult;
@@ -43,7 +46,19 @@ public interface FrAppService {
      */
     InquiryDetailResult getDetail(IdEnter enter);
 
+    /**
+     * 录入车辆
+     */
+    GeneralResult inputScooter(InputScooterEnter enter);
 
+    /**
+     * 录入电池
+     */
+    GeneralResult inputBattery(InputBatteryEnter enter);
 
+    /**
+     * 绑定VIN
+     */
+    GeneralResult bindVin(BindVinEnter enter);
 
 }

@@ -8,11 +8,15 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
+import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.crypt.RsaUtils;
+import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeExMapper;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeNodeMapper;
+import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
+import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
 import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.enums.distributor.StatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -20,14 +24,19 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.app.FrAppService;
 import com.redescooter.ses.web.ros.service.base.OpeWarehouseAccountService;
 import com.redescooter.ses.web.ros.vo.app.AppLoginEnter;
+import com.redescooter.ses.web.ros.vo.app.BindVinEnter;
+import com.redescooter.ses.web.ros.vo.app.InputBatteryEnter;
+import com.redescooter.ses.web.ros.vo.app.InputScooterEnter;
 import com.redescooter.ses.web.ros.vo.app.InquiryDetailResult;
 import com.redescooter.ses.web.ros.vo.app.InquiryListAppEnter;
 import com.redescooter.ses.web.ros.vo.app.InquiryListResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,6 +45,7 @@ import redis.clients.jedis.JedisCluster;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -66,6 +76,9 @@ public class FrAppServiceImpl implements FrAppService {
 
     @Value("${Request.privateKey}")
     private String privateKey;
+
+    @DubboReference
+    private IdAppService idAppService;
 
     /**
      * 登录
@@ -198,6 +211,81 @@ public class FrAppServiceImpl implements FrAppService {
             }
         }
         return result;
+    }
+
+    /**
+     * 录入车辆
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult inputScooter(InputScooterEnter enter) {
+        Long customerId = enter.getCustomerId();
+        String rsn = enter.getRsn();
+        String tabletSn = enter.getTabletSn();
+        String bluetoothAddress = enter.getBluetoothAddress();
+
+        LambdaQueryWrapper<OpeCarDistributeNode> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
+        qw.eq(OpeCarDistributeNode::getCustomerId, customerId);
+        List<OpeCarDistributeNode> nodeList = opeCarDistributeNodeMapper.selectList(qw);
+        if (CollectionUtils.isEmpty(nodeList)) {
+            OpeCarDistributeNode node = new OpeCarDistributeNode();
+            node.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE_NODE));
+            node.setDr(Constant.DR_FALSE);
+            node.setUserId(enter.getUserId());
+            node.setCustomerId(customerId);
+            node.setAppNode(1);
+            node.setFlag(1);
+            node.setCreatedBy(enter.getUserId());
+            node.setCreatedTime(new Date());
+            opeCarDistributeNodeMapper.insert(node);
+
+            OpeCarDistribute distribute = new OpeCarDistribute();
+            distribute.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE));
+            distribute.setDr(Constant.DR_FALSE);
+            distribute.setWarehouseAccountId(enter.getUserId());
+            distribute.setUserId(enter.getUserId());
+            distribute.setCustomerId(customerId);
+            distribute.setSpecificatTypeId(enter.getSpecificatTypeId());
+            distribute.setSeatNumber(enter.getSeatNumber());
+            distribute.setQty(1);
+            distribute.setRsn(rsn);
+            distribute.setBluetoothAddress(bluetoothAddress);
+            distribute.setTabletSn(tabletSn);
+            distribute.setColorId(enter.getColorId());
+            distribute.setCreatedBy(enter.getUserId());
+            distribute.setCreatedTime(new Date());
+            opeCarDistributeMapper.insert(distribute);
+        }
+
+
+
+
+
+
+
+
+
+
+        return null;
+    }
+
+    /**
+     * 录入电池
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult inputBattery(InputBatteryEnter enter) {
+        return null;
+    }
+
+    /**
+     * 绑定VIN
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult bindVin(BindVinEnter enter) {
+        return null;
     }
 
 

@@ -36,6 +36,12 @@ public class InquiryListResult extends PageResult {
     @ApiModelProperty(value = "车型名称")
     private String scooterName;
 
+    @ApiModelProperty(value = "车型id")
+    private Long specificatTypeId;
+
+    @ApiModelProperty(value = "颜色id")
+    private Long colorId;
+
     @ApiModelProperty(value = "颜色名称")
     private String colorName;
 
@@ -47,6 +53,9 @@ public class InquiryListResult extends PageResult {
 
     @ApiModelProperty(value = "客户姓名")
     private String customerName;
+
+    @ApiModelProperty(value = "客户id")
+    private Long customerId;
 
     @ApiModelProperty(value = "创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")

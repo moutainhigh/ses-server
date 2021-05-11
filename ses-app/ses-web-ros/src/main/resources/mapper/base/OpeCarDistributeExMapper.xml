@@ -152,11 +152,14 @@
             oci.order_no,
             ocdn.app_node,
             ocdn.flag,
+            ost.id as specificatTypeId,
             ost.specificat_name as scooterName,
+            oc.id as colorId,
             oc.color_name,
             ocib.product_qty as batteryNum,
-            ocd.seat_number,
+            IFNULL(ocd.seat_number, 2) as seatNumber,
             oci.full_name as customerName,
+            oci.customer_id,
             oci.created_time
         from ope_customer_inquiry oci
         left join ope_customer_inquiry_b ocib on oci.id = ocib.inquiry_id and ocib.dr = 0

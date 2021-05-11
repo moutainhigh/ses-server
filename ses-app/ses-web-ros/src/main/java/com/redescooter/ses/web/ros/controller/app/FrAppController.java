@@ -10,6 +10,9 @@ import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.service.app.FrAppService;
 import com.redescooter.ses.web.ros.vo.app.AppLoginEnter;
+import com.redescooter.ses.web.ros.vo.app.BindVinEnter;
+import com.redescooter.ses.web.ros.vo.app.InputBatteryEnter;
+import com.redescooter.ses.web.ros.vo.app.InputScooterEnter;
 import com.redescooter.ses.web.ros.vo.app.InquiryDetailResult;
 import com.redescooter.ses.web.ros.vo.app.InquiryListAppEnter;
 import com.redescooter.ses.web.ros.vo.app.InquiryListResult;
@@ -85,17 +88,33 @@ public class FrAppController {
     /**
      * 录入车辆
      */
-
+    @PostMapping("/scooter")
+    @ApiOperation(value = "录入车辆", notes = "录入车辆")
+    public Response<GeneralResult> inputScooter(@ModelAttribute InputScooterEnter enter) {
+        return new Response<>(frAppService.inputScooter(enter));
+    }
 
     /**
      * 录入电池
      */
-
+    @PostMapping("/battery")
+    @ApiOperation(value = "录入电池", notes = "录入电池")
+    public Response<GeneralResult> inputBattery(@ModelAttribute InputBatteryEnter enter) {
+        return new Response<>(frAppService.inputBattery(enter));
+    }
 
     /**
      * 绑定VIN
      */
+    @PostMapping("/bind")
+    @ApiOperation(value = "绑定VIN", notes = "绑定VIN")
+    public Response<GeneralResult> bindVin(@ModelAttribute BindVinEnter enter) {
+        return new Response<>(frAppService.bindVin(enter));
+    }
 
+    /**
+     * 设置软体
+     */
 
 
 
