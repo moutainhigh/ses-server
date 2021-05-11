@@ -116,6 +116,21 @@
         limit #{param.startRow}, #{param.pageSize}
     </select>
 
+    <!-- 询价单列表count -->
+    <select id="getInquiryListCount" resultType="java.lang.Integer">
+
+    </select>
+
+    <!-- 询价单列表 -->
+    <select id="getInquiryList" resultType="com.redescooter.ses.web.ros.vo.app.InquiryListResult">
+
+
+
+
+
+
+    </select>
+
     <!-- 待分配列表筛选条件 -->
     <sql id="toBeAssignList">
         <if test="param.generateDateStartTime != null">

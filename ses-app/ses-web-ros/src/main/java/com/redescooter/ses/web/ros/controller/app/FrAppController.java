@@ -3,11 +3,16 @@ package com.redescooter.ses.web.ros.controller.app;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.service.app.FrAppService;
 import com.redescooter.ses.web.ros.vo.app.AppLoginEnter;
+import com.redescooter.ses.web.ros.vo.app.InquiryDetailResult;
+import com.redescooter.ses.web.ros.vo.app.InquiryListEnter;
+import com.redescooter.ses.web.ros.vo.app.InquiryListResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +63,41 @@ public class FrAppController {
     public Response<OpeWarehouseAccount> getUserInfo(@ModelAttribute GeneralEnter enter) {
         return new Response<>(frAppService.getUserInfo(enter));
     }
+
+    /**
+     * 询价单列表
+     */
+    @PostMapping("/list")
+    @ApiOperation(value = "询价单列表", notes = "询价单列表")
+    public Response<PageResult<InquiryListResult>> getList(@ModelAttribute InquiryListEnter enter) {
+        return new Response<>(frAppService.getList(enter));
+    }
+
+    /**
+     * 询价单详情
+     */
+    @PostMapping("/detail")
+    @ApiOperation(value = "询价单详情", notes = "询价单详情")
+    public Response<InquiryDetailResult> getDetail(@ModelAttribute IdEnter enter) {
+        return new Response<>(frAppService.getDetail(enter));
+    }
+
+    /**
+     * 录入车辆
+     */
+
+
+    /**
+     * 录入电池
+     */
+
+
+    /**
+     * 绑定VIN
+     */
+
+
+
 
 
 

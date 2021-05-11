@@ -4,10 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.crypt.RsaUtils;
+import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeExMapper;
+import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
+import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeNodeMapper;
 import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.enums.distributor.StatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -15,6 +20,9 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.app.FrAppService;
 import com.redescooter.ses.web.ros.service.base.OpeWarehouseAccountService;
 import com.redescooter.ses.web.ros.vo.app.AppLoginEnter;
+import com.redescooter.ses.web.ros.vo.app.InquiryDetailResult;
+import com.redescooter.ses.web.ros.vo.app.InquiryListEnter;
+import com.redescooter.ses.web.ros.vo.app.InquiryListResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -24,6 +32,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.JedisCluster;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -41,6 +50,15 @@ public class FrAppServiceImpl implements FrAppService {
 
     @Autowired
     private JedisCluster jedisCluster;
+
+    @Autowired
+    private OpeCarDistributeMapper opeCarDistributeMapper;
+
+    @Autowired
+    private OpeCarDistributeNodeMapper opeCarDistributeNodeMapper;
+
+    @Autowired
+    private OpeCarDistributeExMapper opeCarDistributeExMapper;
 
     @Value("${Request.privateKey}")
     private String privateKey;
@@ -128,6 +146,27 @@ public class FrAppServiceImpl implements FrAppService {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
         return account;
+    }
+
+    /**
+     * 询价单列表
+     */
+    @Override
+    public PageResult<InquiryListResult> getList(InquiryListEnter enter) {
+        int count = opeCarDistributeExMapper.getInquiryListCount(enter);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<InquiryListResult> list = opeCarDistributeExMapper.getInquiryList(enter);
+        return PageResult.create(enter, count, list);
+    }
+
+    /**
+     * 询价单详情
+     */
+    @Override
+    public InquiryDetailResult getDetail(IdEnter enter) {
+        return null;
     }
 
 

@@ -2,9 +2,14 @@ package com.redescooter.ses.web.ros.service.app;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.vo.app.AppLoginEnter;
+import com.redescooter.ses.web.ros.vo.app.InquiryDetailResult;
+import com.redescooter.ses.web.ros.vo.app.InquiryListEnter;
+import com.redescooter.ses.web.ros.vo.app.InquiryListResult;
 
 /**
  * @Description
@@ -28,6 +33,15 @@ public interface FrAppService {
      */
     OpeWarehouseAccount getUserInfo(GeneralEnter enter);
 
+    /**
+     * 询价单列表
+     */
+    PageResult<InquiryListResult> getList(InquiryListEnter enter);
+
+    /**
+     * 询价单详情
+     */
+    InquiryDetailResult getDetail(IdEnter enter);
 
 
 
