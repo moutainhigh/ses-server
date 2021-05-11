@@ -71,6 +71,15 @@ public class OpeCarDistribute implements Serializable {
     @ApiModelProperty(value = "R.SN")
     private String rsn;
 
+    @ApiModelProperty(value = "蓝牙地址")
+    private String bluetoothAddress;
+
+    @ApiModelProperty(value = "平板序列号")
+    private String tabletSn;
+
+    @ApiModelProperty(value = "电池码 多个时通过逗号分隔")
+    private String battery;
+
     @ApiModelProperty(value = "颜色id")
     private Long colorId;
 

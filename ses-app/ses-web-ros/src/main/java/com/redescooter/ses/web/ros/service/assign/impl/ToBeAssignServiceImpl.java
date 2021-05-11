@@ -826,7 +826,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         int doingCount = opeCarDistributeExMapper.getDoingListCount(new ToBeAssignListEnter());
         result.put("toBeAssignCount", list.size());
         result.put("assignedCount", assignedCount);
-        result.put("doing", doingCount);
+        result.put("doingCount", doingCount);
         return result;
     }
 

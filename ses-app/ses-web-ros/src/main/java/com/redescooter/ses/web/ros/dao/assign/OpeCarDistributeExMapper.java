@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.dao.assign;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.ros.vo.assign.doing.result.AssigningListResult;
 import com.redescooter.ses.web.ros.vo.assign.done.enter.AssignedListEnter;
 import com.redescooter.ses.web.ros.vo.assign.done.result.AssignedListResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignListEnter;
@@ -53,5 +54,10 @@ public interface OpeCarDistributeExMapper {
      * 处理中列表条数
      */
     int getDoingListCount(@Param("param") ToBeAssignListEnter enter);
+
+    /**
+     * 处理中列表
+     */
+    List<AssigningListResult> getDoingList(@Param("param") ToBeAssignListEnter enter);
 
 }
