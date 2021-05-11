@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class InquiryListEnter extends PageEnter {
+public class InquiryListAppEnter extends PageEnter {
 
     @ApiModelProperty(value = "询价单状态 1待处理 2处理中 3已完成")
     private Integer status;

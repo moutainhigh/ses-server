@@ -1,7 +1,7 @@
 package com.redescooter.ses.web.ros.dao.assign;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.web.ros.vo.app.InquiryListEnter;
+import com.redescooter.ses.web.ros.vo.app.InquiryListAppEnter;
 import com.redescooter.ses.web.ros.vo.app.InquiryListResult;
 import com.redescooter.ses.web.ros.vo.assign.doing.result.AssigningListResult;
 import com.redescooter.ses.web.ros.vo.assign.done.enter.AssignedListEnter;
@@ -65,12 +65,12 @@ public interface OpeCarDistributeExMapper {
     /**
      * app询价单列表count
      */
-    int getInquiryListCount(@Param("param") InquiryListEnter enter);
+    int getInquiryListCount(@Param("param") InquiryListAppEnter enter);
 
     /**
      * app询价单列表
      */
-    List<InquiryListResult> getInquiryList(@Param("param") InquiryListEnter enter);
+    List<InquiryListResult> getInquiryList(@Param("param") InquiryListAppEnter enter);
 
 
 }

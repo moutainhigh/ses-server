@@ -21,7 +21,7 @@ import com.redescooter.ses.web.ros.service.app.FrAppService;
 import com.redescooter.ses.web.ros.service.base.OpeWarehouseAccountService;
 import com.redescooter.ses.web.ros.vo.app.AppLoginEnter;
 import com.redescooter.ses.web.ros.vo.app.InquiryDetailResult;
-import com.redescooter.ses.web.ros.vo.app.InquiryListEnter;
+import com.redescooter.ses.web.ros.vo.app.InquiryListAppEnter;
 import com.redescooter.ses.web.ros.vo.app.InquiryListResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
@@ -152,7 +152,7 @@ public class FrAppServiceImpl implements FrAppService {
      * 询价单列表
      */
     @Override
-    public PageResult<InquiryListResult> getList(InquiryListEnter enter) {
+    public PageResult<InquiryListResult> getList(InquiryListAppEnter enter) {
         int count = opeCarDistributeExMapper.getInquiryListCount(enter);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);

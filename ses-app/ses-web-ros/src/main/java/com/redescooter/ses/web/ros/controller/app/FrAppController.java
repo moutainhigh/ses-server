@@ -11,7 +11,7 @@ import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.service.app.FrAppService;
 import com.redescooter.ses.web.ros.vo.app.AppLoginEnter;
 import com.redescooter.ses.web.ros.vo.app.InquiryDetailResult;
-import com.redescooter.ses.web.ros.vo.app.InquiryListEnter;
+import com.redescooter.ses.web.ros.vo.app.InquiryListAppEnter;
 import com.redescooter.ses.web.ros.vo.app.InquiryListResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -69,7 +69,7 @@ public class FrAppController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "询价单列表", notes = "询价单列表")
-    public Response<PageResult<InquiryListResult>> getList(@ModelAttribute InquiryListEnter enter) {
+    public Response<PageResult<InquiryListResult>> getList(@ModelAttribute InquiryListAppEnter enter) {
         return new Response<>(frAppService.getList(enter));
     }
 

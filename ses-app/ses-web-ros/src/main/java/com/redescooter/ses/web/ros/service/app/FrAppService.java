@@ -8,7 +8,7 @@ import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.vo.app.AppLoginEnter;
 import com.redescooter.ses.web.ros.vo.app.InquiryDetailResult;
-import com.redescooter.ses.web.ros.vo.app.InquiryListEnter;
+import com.redescooter.ses.web.ros.vo.app.InquiryListAppEnter;
 import com.redescooter.ses.web.ros.vo.app.InquiryListResult;
 
 /**
@@ -36,7 +36,7 @@ public interface FrAppService {
     /**
      * 询价单列表
      */
-    PageResult<InquiryListResult> getList(InquiryListEnter enter);
+    PageResult<InquiryListResult> getList(InquiryListAppEnter enter);
 
     /**
      * 询价单详情
