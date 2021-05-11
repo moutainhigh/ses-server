@@ -20,7 +20,10 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class InputBatteryEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "电池码")
+    @ApiModelProperty(value = "电池码,多个时逗号分隔")
     private String battery;
+
+    @ApiModelProperty(value = "客户id")
+    private Long customerId;
 
 }

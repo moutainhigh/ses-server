@@ -11,17 +11,17 @@ import lombok.NoArgsConstructor;
 /**
  * @Description
  * @Author Chris
- * @Date 2021/5/11 16:21
+ * @Date 2021/5/11 16:59
  */
 @Data
-@ApiModel(value = "绑定VIN入参")
+@ApiModel(value = "询价单详情入参")
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class BindVinEnter extends GeneralEnter {
+public class InquiryDetailEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "VIN")
-    private String vinCode;
+    @ApiModelProperty(value = "询价单id")
+    private Long id;
 
     @ApiModelProperty(value = "客户id")
     private Long customerId;

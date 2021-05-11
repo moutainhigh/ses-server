@@ -1,35 +1,59 @@
 package com.redescooter.ses.web.ros.service.app.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
+import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
+import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
+import com.redescooter.ses.api.common.enums.wms.WmsStockStatusEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
+import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
+import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
+import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
+import com.redescooter.ses.api.hub.vo.HubSaveScooterEnter;
+import com.redescooter.ses.api.scooter.service.ScooterService;
+import com.redescooter.ses.api.scooter.vo.ScoScooterResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.crypt.RsaUtils;
+import com.redescooter.ses.tool.utils.map.MapUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeExMapper;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeNodeMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeWmsScooterStockMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeWmsStockRecordMapper;
+import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
 import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
+import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
+import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
+import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.web.ros.enums.distributor.StatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.app.FrAppService;
+import com.redescooter.ses.web.ros.service.assign.impl.ToBeAssignServiceImpl;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeWarehouseAccountService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
 import com.redescooter.ses.web.ros.vo.app.AppLoginEnter;
 import com.redescooter.ses.web.ros.vo.app.BindVinEnter;
 import com.redescooter.ses.web.ros.vo.app.InputBatteryEnter;
 import com.redescooter.ses.web.ros.vo.app.InputScooterEnter;
+import com.redescooter.ses.web.ros.vo.app.InquiryDetailEnter;
 import com.redescooter.ses.web.ros.vo.app.InquiryDetailResult;
 import com.redescooter.ses.web.ros.vo.app.InquiryListAppEnter;
 import com.redescooter.ses.web.ros.vo.app.InquiryListResult;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
@@ -74,11 +98,41 @@ public class FrAppServiceImpl implements FrAppService {
     @Autowired
     private OpeCarDistributeExMapper opeCarDistributeExMapper;
 
+    @Autowired
+    private OpeCustomerMapper opeCustomerMapper;
+
+    @Autowired
+    private OpeWmsScooterStockMapper opeWmsScooterStockMapper;
+
+    @Autowired
+    private OpeWmsStockRecordMapper opeWmsStockRecordMapper;
+
+    @Autowired
+    private OpeWmsStockSerialNumberMapper opeWmsStockSerialNumberMapper;
+
+    @Autowired
+    private OpeWmsStockSerialNumberService opeWmsStockSerialNumberService;
+
+    @Autowired
+    private OpeCustomerInquiryService opeCustomerInquiryService;
+
+    @Autowired
+    private ToBeAssignServiceImpl toBeAssignService;
+
     @Value("${Request.privateKey}")
     private String privateKey;
 
     @DubboReference
     private IdAppService idAppService;
+
+    @DubboReference
+    private AccountBaseService accountBaseService;
+
+    @DubboReference
+    private ScooterService scooterService;
+
+    @DubboReference
+    private CusotmerScooterService cusotmerScooterService;
 
     /**
      * 登录
@@ -195,7 +249,7 @@ public class FrAppServiceImpl implements FrAppService {
      * 询价单详情
      */
     @Override
-    public InquiryDetailResult getDetail(IdEnter enter) {
+    public InquiryDetailResult getDetail(InquiryDetailEnter enter) {
         InquiryDetailResult result = opeCarDistributeExMapper.getInquiryDetail(enter);
         if (null != result) {
             String battery = result.getBattery();
@@ -209,6 +263,32 @@ public class FrAppServiceImpl implements FrAppService {
                 result.setBatteryNumber(batteryList.size());
                 result.setBatteryList(batteryList);
             }
+        }
+
+        // 先查看客户在node表是否存在数据,不存在就新建
+        LambdaQueryWrapper<OpeCarDistributeNode> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
+        qw.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
+        List<OpeCarDistributeNode> nodeList = opeCarDistributeNodeMapper.selectList(qw);
+        if (CollectionUtils.isEmpty(nodeList)) {
+            OpeCarDistributeNode node = new OpeCarDistributeNode();
+            node.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE_NODE));
+            node.setDr(Constant.DR_FALSE);
+            node.setCustomerId(enter.getCustomerId());
+            node.setAppNode(0);
+            node.setFlag(0);
+            node.setCreatedBy(enter.getUserId());
+            node.setCreatedTime(new Date());
+            opeCarDistributeNodeMapper.insert(node);
+
+            OpeCarDistribute distribute = new OpeCarDistribute();
+            distribute.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE));
+            distribute.setDr(Constant.DR_FALSE);
+            distribute.setCustomerId(enter.getCustomerId());
+            distribute.setQty(1);
+            distribute.setCreatedBy(enter.getUserId());
+            distribute.setCreatedTime(new Date());
+            opeCarDistributeMapper.insert(distribute);
         }
         return result;
     }
@@ -224,50 +304,33 @@ public class FrAppServiceImpl implements FrAppService {
         String tabletSn = enter.getTabletSn();
         String bluetoothAddress = enter.getBluetoothAddress();
 
-        LambdaQueryWrapper<OpeCarDistributeNode> qw = new LambdaQueryWrapper<>();
-        qw.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
-        qw.eq(OpeCarDistributeNode::getCustomerId, customerId);
-        List<OpeCarDistributeNode> nodeList = opeCarDistributeNodeMapper.selectList(qw);
-        if (CollectionUtils.isEmpty(nodeList)) {
-            OpeCarDistributeNode node = new OpeCarDistributeNode();
-            node.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE_NODE));
-            node.setDr(Constant.DR_FALSE);
-            node.setUserId(enter.getUserId());
-            node.setCustomerId(customerId);
-            node.setAppNode(1);
-            node.setFlag(1);
-            node.setCreatedBy(enter.getUserId());
-            node.setCreatedTime(new Date());
-            opeCarDistributeNodeMapper.insert(node);
+        // 修改主表
+        OpeCarDistribute distribute = new OpeCarDistribute();
+        distribute.setWarehouseAccountId(enter.getUserId());
+        distribute.setSpecificatTypeId(enter.getSpecificatTypeId());
+        distribute.setSeatNumber(enter.getSeatNumber());
+        distribute.setRsn(rsn);
+        distribute.setBluetoothAddress(bluetoothAddress);
+        distribute.setTabletSn(tabletSn);
+        distribute.setColorId(enter.getColorId());
+        // 条件
+        LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        qw.eq(OpeCarDistribute::getCustomerId, customerId);
+        opeCarDistributeMapper.update(distribute, qw);
 
-            OpeCarDistribute distribute = new OpeCarDistribute();
-            distribute.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE));
-            distribute.setDr(Constant.DR_FALSE);
-            distribute.setWarehouseAccountId(enter.getUserId());
-            distribute.setUserId(enter.getUserId());
-            distribute.setCustomerId(customerId);
-            distribute.setSpecificatTypeId(enter.getSpecificatTypeId());
-            distribute.setSeatNumber(enter.getSeatNumber());
-            distribute.setQty(1);
-            distribute.setRsn(rsn);
-            distribute.setBluetoothAddress(bluetoothAddress);
-            distribute.setTabletSn(tabletSn);
-            distribute.setColorId(enter.getColorId());
-            distribute.setCreatedBy(enter.getUserId());
-            distribute.setCreatedTime(new Date());
-            opeCarDistributeMapper.insert(distribute);
-        }
-
-
-
-
-
-
-
-
-
-
-        return null;
+        // node表appNode字段
+        OpeCarDistributeNode node = new OpeCarDistributeNode();
+        node.setAppNode(1);
+        node.setFlag(1);
+        node.setUpdatedBy(enter.getUserId());
+        node.setUpdatedTime(new Date());
+        // 条件
+        LambdaQueryWrapper<OpeCarDistributeNode> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
+        wrapper.eq(OpeCarDistributeNode::getCustomerId, customerId);
+        opeCarDistributeNodeMapper.update(node, wrapper);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -276,7 +339,28 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult inputBattery(InputBatteryEnter enter) {
-        return null;
+        String battery = enter.getBattery();
+
+        // 修改主表
+        OpeCarDistribute distribute = new OpeCarDistribute();
+        distribute.setBattery(battery);
+        // 条件
+        LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        qw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+        opeCarDistributeMapper.update(distribute, qw);
+
+        // node表appNode字段
+        OpeCarDistributeNode node = new OpeCarDistributeNode();
+        node.setAppNode(2);
+        node.setUpdatedBy(enter.getUserId());
+        node.setUpdatedTime(new Date());
+        // 条件
+        LambdaQueryWrapper<OpeCarDistributeNode> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
+        wrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
+        opeCarDistributeNodeMapper.update(node, wrapper);
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -285,8 +369,158 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult bindVin(BindVinEnter enter) {
-        return null;
+        String vinCode = enter.getVinCode();
+
+        // 修改主表
+        OpeCarDistribute distribute = new OpeCarDistribute();
+        distribute.setVinCode(vinCode);
+        // 条件
+        LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        qw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+        opeCarDistributeMapper.update(distribute, qw);
+
+        // node表appNode字段
+        OpeCarDistributeNode node = new OpeCarDistributeNode();
+        node.setAppNode(3);
+        node.setUpdatedBy(enter.getUserId());
+        node.setUpdatedTime(new Date());
+        // 条件
+        LambdaQueryWrapper<OpeCarDistributeNode> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
+        wrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
+        opeCarDistributeNodeMapper.update(node, wrapper);
+        return new GeneralResult(enter.getRequestId());
     }
 
+    /**
+     * 设置软体
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult setScooterModel(CustomerIdEnter enter) {
+        LambdaQueryWrapper<OpeCarDistribute> scooterWrapper = new LambdaQueryWrapper<>();
+        scooterWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        scooterWrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+        scooterWrapper.last("limit 1");
+        OpeCarDistribute model = opeCarDistributeMapper.selectOne(scooterWrapper);
+
+        // 客户信息
+        OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getCustomerId());
+        if (null == opeCustomer) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+        if (!StringUtils.equals(opeCustomer.getStatus(), CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue())) {
+            throw new SesWebRosException(ExceptionCodeEnums.CONVERT_TO_FORMAL_CUSTOMER_FIRST.getCode(), ExceptionCodeEnums.CONVERT_TO_FORMAL_CUSTOMER_FIRST.getMessage());
+        }
+
+        // 查询客户的账号信息(查pla_user表)
+        QueryAccountResult accountInfo = accountBaseService.customerAccountDeatil(opeCustomer.getEmail());
+        if (null == accountInfo) {
+            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        }
+
+        // 客户和车辆产生绑定关系
+        List<HubSaveScooterEnter> saveRelationList = Lists.newArrayList();
+
+        // 修改成品库车辆库存
+        // 获得询价单型号id和颜色id
+        CustomerIdEnter customerIdEnter = new CustomerIdEnter();
+        customerIdEnter.setCustomerId(enter.getCustomerId());
+        Map<String, Long> map = toBeAssignService.getSpecificatIdAndColorId(customerIdEnter);
+        Long specificatId = map.get("specificatId");
+        Long inquiryColorId = map.get("colorId");
+
+        // 法国仓库指定车型和颜色
+        LambdaQueryWrapper<OpeWmsScooterStock> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeWmsScooterStock::getDr, Constant.DR_FALSE);
+        wrapper.eq(OpeWmsScooterStock::getGroupId, specificatId);
+        wrapper.eq(OpeWmsScooterStock::getColorId, inquiryColorId);
+        wrapper.eq(OpeWmsScooterStock::getStockType, 2);
+        wrapper.orderByDesc(OpeWmsScooterStock::getCreatedTime);
+        List<OpeWmsScooterStock> stockList = opeWmsScooterStockMapper.selectList(wrapper);
+        OpeWmsScooterStock stock = null;
+        if (CollectionUtils.isNotEmpty(stockList)) {
+            stock = stockList.get(0);
+            // 得到原先库存的可用库存数量和已用库存数量
+            Long stockId = stock.getId();
+            Integer ableStockQty = stock.getAbleStockQty();
+            Integer usedStockQty = stock.getUsedStockQty();
+
+            // 原先库存的可用库存数量-1,已用库存数量+1
+            OpeWmsScooterStock param = new OpeWmsScooterStock();
+            param.setId(stockId);
+            param.setAbleStockQty(ableStockQty - 1);
+            param.setUsedStockQty(usedStockQty + 1);
+            param.setUpdatedBy(enter.getUserId());
+            param.setUpdatedTime(new Date());
+            opeWmsScooterStockMapper.updateById(param);
+        }
+
+        // 新增出库记录
+        if (null != stock) {
+            OpeWmsStockRecord record = new OpeWmsStockRecord();
+            record.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_RECORD));
+            record.setDr(Constant.DR_FALSE);
+            record.setRelationId(stock.getId());
+            record.setRelationType(7);
+            record.setInWhQty(1);
+            record.setRecordType(2);
+            record.setStockType(2);
+            record.setCreatedBy(enter.getUserId());
+            record.setCreatedTime(new Date());
+            opeWmsStockRecordMapper.insert(record);
+        }
+
+        // 获得规格名称
+        String specificatName = toBeAssignService.getSpecificatNameById(model.getSpecificatTypeId());
+
+        // 数据同步
+        // 根据rsn查询sco_scooter表
+        ScoScooterResult scoScooter = scooterService.getScoScooterByTableSn(model.getRsn());
+        if (null == scoScooter) {
+            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
+        }
+        Long scooterId = scoScooter.getId();
+        HubSaveScooterEnter item = new HubSaveScooterEnter();
+        item.setScooterId(scooterId);
+        item.setModel(ScooterModelEnums.showValueByCode(specificatName));
+        item.setLongitude(MapUtil.randomLonLat(Constant.lng));
+        item.setLatitude(MapUtil.randomLonLat(Constant.lng));
+        item.setLicensePlatePicture(null);
+        item.setStatus(ScooterStatusEnums.AVAILABLE.getValue());
+        item.setUserId(accountInfo.getId());
+        item.setTenantId(accountInfo.getTenantId());
+        saveRelationList.add(item);
+        cusotmerScooterService.saveScooter(saveRelationList);
+
+        // 根据rsn修改库存产品序列号表的库存状态为不可用
+        LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+        qw.eq(OpeWmsStockSerialNumber::getRsn, model.getRsn());
+        qw.eq(OpeWmsStockSerialNumber::getStockStatus, WmsStockStatusEnum.AVAILABLE.getStatus());
+        List<OpeWmsStockSerialNumber> serialNumberList = opeWmsStockSerialNumberMapper.selectList(qw);
+        if (CollectionUtils.isNotEmpty(serialNumberList)) {
+            for (OpeWmsStockSerialNumber serialNumber : serialNumberList) {
+                if (null != serialNumber) {
+                    serialNumber.setStockStatus(WmsStockStatusEnum.UNAVAILABLE.getStatus());
+                    opeWmsStockSerialNumberService.updateById(serialNumber);
+                }
+            }
+        }
+
+        // node表appNode字段
+        OpeCarDistributeNode node = new OpeCarDistributeNode();
+        node.setAppNode(4);
+        node.setFlag(2);
+        node.setUpdatedBy(enter.getUserId());
+        node.setUpdatedTime(new Date());
+        // 条件
+        LambdaQueryWrapper<OpeCarDistributeNode> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
+        lqw.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
+        opeCarDistributeNodeMapper.update(node, lqw);
+        return new GeneralResult(enter.getRequestId());
+    }
 
 }
