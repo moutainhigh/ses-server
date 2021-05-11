@@ -60,6 +60,10 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             BeanUtils.copyProperties(enter, userProfile);
             userProfile.setId(idAppService.getId(SequenceName.CON_USER_PROFILE));
             userProfile.setDr(0);
+            userProfile.setFullName(enter.getFullName());
+            userProfile.setFirstName(enter.getFirstName());
+            userProfile.setLastName(enter.getLastName());
+            userProfile.setAddress(enter.getAddress());
             userProfile.setTenantId(enter.getTenantId());
             userProfile.setJoinDate(new Date());
             userProfile.setCreatedBy(enter.getUserId());
@@ -70,14 +74,14 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             //更新客户信息
             BaseCustomerEnter baseCustomerEnter = new BaseCustomerEnter();
             // 修改 个人信息
-            userProfile = checkUserProfile(enter, baseCustomerEnter);
+            checkUserProfile(enter, baseCustomerEnter);
             //更新客户个人信息
             customerService.updateCustomerInfoByEmail(baseCustomerEnter);
         }
 
-        if (userProfile != null) {
-            conUserProfileMapper.insertOrUpdate(userProfile);
-        }
+//        if (userProfile != null) {
+//            conUserProfileMapper.insertOrUpdate(userProfile);
+//        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -138,6 +142,7 @@ public class UserProfileProServiceImpl implements UserProfileProService {
      * @param enter
      */
     private ConUserProfile checkUserProfile(SaveUserProfileEnter enter, BaseCustomerEnter baseCustomerEnter) {
+        System.out.println("enter的值:{}"+enter);
         // 查询个人信息
         ConUserProfile conUserProfile = userProfileService.getById(enter.getId());
         if (conUserProfile == null) {
@@ -171,9 +176,12 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             conUserProfile.setCertificatePositiveAnnex(enter.getCertificatePositiveAnnex());
         }
         conUserProfile.setAddress(enter.getAddress());
+        System.out.println("address的值：{}"+conUserProfile.getAddress());
         baseCustomerEnter.setEmail(conUserProfile.getEmail1());
         conUserProfile.setUpdatedBy(enter.getUserId());
         conUserProfile.setUpdatedTime(new Date());
+        boolean a = userProfileService.updateById(conUserProfile);
+        System.out.println("修改的结果的值：{}"+a);
         return conUserProfile;
     }
 }
