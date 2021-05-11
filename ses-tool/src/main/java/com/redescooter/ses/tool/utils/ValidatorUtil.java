@@ -14,13 +14,13 @@ public class ValidatorUtil {
      */
     public static final String REGEX_NUMBER = "^[0-9]*$";
 
-    public static final String REGEX_EMAIL = "[\\w\\.\\-]+@([\\w\\-]+\\.)+[\\w\\-]+";
+    public static final String REGEX_EMAIL = "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$";
 
     public static boolean isNumber(String code) {
         return Pattern.matches(REGEX_NUMBER, code);
     }
 
     public static boolean isEmail(String code) {
-        return Pattern.matches(REGEX_NUMBER, code);
+        return Pattern.matches(REGEX_EMAIL, code);
     }
 }
