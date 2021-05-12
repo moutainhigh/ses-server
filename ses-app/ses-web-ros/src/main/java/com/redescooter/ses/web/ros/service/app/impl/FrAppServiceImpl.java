@@ -351,6 +351,15 @@ public class FrAppServiceImpl implements FrAppService {
         String tabletSn = enter.getTabletSn();
         String bluetoothAddress = enter.getBluetoothAddress();
 
+        LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        lqw.eq(OpeCarDistribute::getRsn, rsn);
+        lqw.last("limit 1");
+        OpeCarDistribute model = opeCarDistributeMapper.selectOne(lqw);
+        if (null != model) {
+            throw new SesWebRosException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
+        }
+
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();
         distribute.setWarehouseAccountId(userId);

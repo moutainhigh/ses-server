@@ -44,7 +44,8 @@
         from ope_warehouse_account
         where dr = 0 and type = #{enter.type}
         <include refid="condition"/>
-        order by created_time desc limit #{enter.startRow },#{enter.pageSize}
+        order by created_time desc
+        limit #{enter.startRow}, #{enter.pageSize}
     </select>
 
     <!-- 条件 -->

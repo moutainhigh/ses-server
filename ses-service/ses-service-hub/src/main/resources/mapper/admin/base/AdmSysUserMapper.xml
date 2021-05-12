@@ -36,10 +36,6 @@
         id, name, dept_name, status, created_time,dr,login_name,password
     </sql>
 
-    <select id="listNum" resultType="int">
-        select count(*) from adm_sys_user where dr = 0
-    </select>
-
 
     <select id="accountTotal" resultType="int">
         select count(*) from adm_sys_user where dr = 0
@@ -70,7 +66,7 @@
             `name` like concat('%', #{enter.keyword}, '%')
             )
         </if>
-        order by created_time desc limit #{enter.startRow },#{enter.pageSize}
+        order by created_time desc limit #{enter.startRow},#{enter.pageSize}
     </select>
 
 
