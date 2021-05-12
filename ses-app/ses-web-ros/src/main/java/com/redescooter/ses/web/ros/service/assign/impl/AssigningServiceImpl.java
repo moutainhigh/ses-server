@@ -13,6 +13,7 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.assign.AssigningService;
 import com.redescooter.ses.web.ros.vo.assign.doing.result.AssigningDetailResult;
+import com.redescooter.ses.web.ros.vo.assign.doing.result.AssigningDetailScooterInfoResult;
 import com.redescooter.ses.web.ros.vo.assign.doing.result.AssigningDetailScooterResult;
 import com.redescooter.ses.web.ros.vo.assign.doing.result.AssigningListResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
@@ -67,7 +68,7 @@ public class AssigningServiceImpl implements AssigningService {
     @Override
     public AssigningDetailResult getDetail(CustomerIdEnter enter) {
         AssigningDetailResult result = new AssigningDetailResult();
-        List<AssigningDetailScooterResult> scooterList = Lists.newArrayList();
+        List<AssigningDetailScooterResult> scooterInfo = Lists.newArrayList();
 
         // 客户信息
         ToBeAssignDetailCustomerInfoResult customerInfo = opeCarDistributeExMapper.getCustomerInfo(enter.getCustomerId());
@@ -94,37 +95,44 @@ public class AssigningServiceImpl implements AssigningService {
 
         for (OpeCarDistribute o : list) {
             AssigningDetailScooterResult scooter = new AssigningDetailScooterResult();
-            scooter.setSeatNumber(o.getSeatNumber());
-            scooter.setVinCode(o.getVinCode());
-            scooter.setLicensePlate(o.getLicensePlate());
-            scooter.setRsn(o.getRsn());
+            scooter.setTotalCount(1);
             if (null != o.getSpecificatTypeId()) {
+                scooter.setSpecificatId(o.getSpecificatTypeId());
                 scooter.setSpecificatName(toBeAssignServiceImpl.getSpecificatNameById(o.getSpecificatTypeId()));
             }
+
+            // 详细信息
+            List<AssigningDetailScooterInfoResult> scooterList = Lists.newArrayList();
+            AssigningDetailScooterInfoResult model = new AssigningDetailScooterInfoResult();
+            model.setSeatNumber(o.getSeatNumber());
+            model.setVinCode(o.getVinCode());
+            model.setLicensePlate(o.getLicensePlate());
+            model.setRsn(o.getRsn());
+            model.setBluetoothAddress(o.getBluetoothAddress());
+            model.setTabletSn(o.getTabletSn());
             if (null != o.getColorId()) {
                 Map<String, String> map = toBeAssignServiceImpl.getColorNameAndValueById(o.getColorId());
-                scooter.setColorName(map.get("colorName"));
-                scooter.setColorValue(map.get("colorValue"));
+                model.setColorName(map.get("colorName"));
+                model.setColorValue(map.get("colorValue"));
             }
-            scooter.setBluetoothAddress(o.getBluetoothAddress());
-            scooter.setTabletSn(o.getTabletSn());
-
             // 电池
             String battery = o.getBattery();
             if (StringUtils.isBlank(battery)) {
-                scooter.setBatteryNum(0);
-                scooter.setBatteryList(new ArrayList<>());
+                model.setBatteryNum(0);
+                model.setBatteryList(new ArrayList<>());
             } else {
                 String[] split = battery.split(",");
                 List<String> batteryList = new ArrayList<>(Arrays.asList(split));
                 batteryList.removeAll(Collections.singleton(null));
-                scooter.setBatteryNum(batteryList.size());
-                scooter.setBatteryList(batteryList);
+                model.setBatteryNum(batteryList.size());
+                model.setBatteryList(batteryList);
             }
-            scooterList.add(scooter);
+            scooterList.add(model);
+            scooter.setScooterList(scooterList);
+            scooterInfo.add(scooter);
         }
         result.setCustomerInfo(customerInfo);
-        result.setScooterInfo(scooterList);
+        result.setScooterInfo(scooterInfo);
         result.setRequestId(enter.getRequestId());
         return result;
     }
