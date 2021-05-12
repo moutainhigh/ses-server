@@ -554,7 +554,9 @@ public enum ExceptionCodeEnums {
 
     VIN_HAS_INPUT(10268, "该VIN已被使用,请更换扫码"),
 
-    VIN_NOT_MATCH(10269, "VIN与车型不符,请重新输入")
+    VIN_NOT_MATCH(10269, "VIN与车型不符,请重新输入"),
+
+    ORDER_HAS_DEAL(10270, "该订单已在处理中")
 
 
 

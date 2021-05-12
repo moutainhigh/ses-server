@@ -361,6 +361,15 @@ public class FrAppServiceImpl implements FrAppService {
             throw new SesWebRosException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
         }
 
+        LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
+        checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        checkWrapper.eq(OpeCarDistribute::getCustomerId, customerId);
+        checkWrapper.last("limit 1");
+        OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
+        if (null != checkModel && null != checkModel.getWarehouseAccountId() && StringUtils.isNotBlank(checkModel.getRsn())) {
+            throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DEAL.getCode(), ExceptionCodeEnums.ORDER_HAS_DEAL.getMessage());
+        }
+
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();
         distribute.setWarehouseAccountId(userId);
