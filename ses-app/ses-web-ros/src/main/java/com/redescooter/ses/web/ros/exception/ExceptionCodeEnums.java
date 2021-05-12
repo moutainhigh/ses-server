@@ -550,7 +550,9 @@ public enum ExceptionCodeEnums {
 
     ACCOUNT_HAS_INQUIRY(10266, "该账号下还有处理中的询价单,需处理完成后才可禁用"),
 
-    PARTS_HAS_INPUT(10267, "该部件已录入,请更换一件扫码")
+    PARTS_HAS_INPUT(10267, "该部件已录入,请更换一件扫码"),
+
+    VIN_HAS_INPUT(10268, "该VIN已被使用,请更换扫码")
 
 
 

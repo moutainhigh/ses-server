@@ -398,6 +398,15 @@ public class FrAppServiceImpl implements FrAppService {
         Long userId = getUserId(enter);
         Long inquiryId = enter.getId();
 
+        LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
+        checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        checkWrapper.like(OpeCarDistribute::getBattery, enter.getBattery());
+        checkWrapper.last("limit 1");
+        OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
+        if (null != checkModel) {
+            throw new SesWebRosException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
+        }
+
         // 得到询价单的电池数量
         LambdaQueryWrapper<OpeCustomerInquiryB> lqw = new LambdaQueryWrapper<>();
         lqw.eq(OpeCustomerInquiryB::getDr, Constant.DR_FALSE);
@@ -460,6 +469,15 @@ public class FrAppServiceImpl implements FrAppService {
     public GeneralResult bindVin(BindVinEnter enter) {
         Long userId = getUserId(enter);
         String vinCode = enter.getVinCode();
+
+        LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
+        checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        checkWrapper.eq(OpeCarDistribute::getVinCode, vinCode);
+        checkWrapper.last("limit 1");
+        OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
+        if (null != checkModel) {
+            throw new SesWebRosException(ExceptionCodeEnums.VIN_HAS_INPUT.getCode(), ExceptionCodeEnums.VIN_HAS_INPUT.getMessage());
+        }
 
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();
