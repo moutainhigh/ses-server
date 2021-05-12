@@ -70,13 +70,9 @@
             `name` like concat('%', #{enter.keyword}, '%')
             )
         </if>
-        order by created_time desc limit #{enter.startRow},#{enter.pageSize}
+        order by created_time desc limit #{enter.pageNo},#{enter.pageSize}
     </select>
 
 
-    <!--根据平板序列号查询车辆信息-->
-    <select id="getAccountById" resultType="com.redescooter.ses.api.hub.vo.admin.OperatingAccountListResult">
-        select * from adm_sys_user
-        where login_name = #{loginName} and id !=#{id} and dr = 0
-    </select>
+
     </mapper>
