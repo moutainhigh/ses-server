@@ -28,7 +28,7 @@ public interface AdmOperatingAccountService {
     /**
      * 删除
      */
-    Integer deleteByPk(IdEnter enter);
+    GeneralResult deleteByPk(IdEnter enter);
 
 
     /**
