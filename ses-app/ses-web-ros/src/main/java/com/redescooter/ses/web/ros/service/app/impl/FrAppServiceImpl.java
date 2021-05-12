@@ -37,6 +37,7 @@ import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
+import com.redescooter.ses.web.ros.enums.assign.ProductTypeEnum;
 import com.redescooter.ses.web.ros.enums.distributor.StatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
@@ -477,6 +478,20 @@ public class FrAppServiceImpl implements FrAppService {
         OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
         if (null != checkModel) {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_HAS_INPUT.getCode(), ExceptionCodeEnums.VIN_HAS_INPUT.getMessage());
+        }
+
+        String productType = ProductTypeEnum.showCode(enter.getScooterName());
+        // 截取第7位,车型编号
+        String productTypeSub = vinCode.substring(0, 8);
+        if (!StringUtils.equals(productType, productTypeSub)) {
+            throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+        }
+
+        Integer seatNumber = enter.getSeatNumber();
+        // 截取第8位,座位数量
+        String seatNumberSub = vinCode.substring(0, 9);
+        if (!StringUtils.equals(String.valueOf(seatNumber), seatNumberSub)) {
+            throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
         }
 
         // 修改主表

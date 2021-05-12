@@ -26,4 +26,10 @@ public class BindVinEnter extends GeneralEnter {
     @ApiModelProperty(value = "客户id")
     private Long customerId;
 
+    @ApiModelProperty(value = "车型名称")
+    private String scooterName;
+
+    @ApiModelProperty(value = "座位数量")
+    private Integer seatNumber;
+
 }

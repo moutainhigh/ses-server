@@ -552,7 +552,10 @@ public enum ExceptionCodeEnums {
 
     PARTS_HAS_INPUT(10267, "该部件已录入,请更换一件扫码"),
 
-    VIN_HAS_INPUT(10268, "该VIN已被使用,请更换扫码")
+    VIN_HAS_INPUT(10268, "该VIN已被使用,请更换扫码"),
+
+    VIN_NOT_MATCH(10269, "VIN与车型不符,请重新输入")
+
 
 
 
