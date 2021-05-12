@@ -98,7 +98,10 @@ public enum ExceptionCodeEnums {
 
     EMAIL_TO_REPEAT(10041,"邮箱重复"),
 
-    EMAIL_ERRO(10042,"邮箱格式错误")
+    EMAIL_ERRO(10042,"邮箱格式错误"),
+
+    INVALID_ACCOUNT_STATUS(10043,"账号状态失效")
+
     ;
     private int code;
 
