@@ -23,6 +23,5 @@ public interface AdmSysUserMapper extends BaseMapper<AdmSysUser> {
 
     List<OperatingAccountListResult> accountList(@Param("enter")  OperatingEnter enter);
 
-    OperatingAccountListResult getAccountById(String loginName,Long id);
 
     }

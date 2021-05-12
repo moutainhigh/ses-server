@@ -70,7 +70,7 @@
             `name` like concat('%', #{enter.keyword}, '%')
             )
         </if>
-        order by created_time desc limit #{enter.pageNo},#{enter.pageSize}
+        order by created_time desc limit #{enter.startRow },#{enter.pageSize}
     </select>
 
 
