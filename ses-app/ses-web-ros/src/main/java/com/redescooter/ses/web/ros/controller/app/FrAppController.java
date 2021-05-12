@@ -55,6 +55,7 @@ public class FrAppController {
      */
     @PostMapping("/logout")
     @ApiOperation(value = "登出", notes = "登出")
+    @IgnoreLoginCheck
     public Response<GeneralResult> logout(@ModelAttribute GeneralEnter enter) {
         return new Response<>(frAppService.logout(enter));
     }
@@ -64,6 +65,7 @@ public class FrAppController {
      */
     @PostMapping("/info")
     @ApiOperation(value = "获得个人信息", notes = "获得个人信息")
+    @IgnoreLoginCheck
     public Response<OpeWarehouseAccount> getUserInfo(@ModelAttribute GeneralEnter enter) {
         return new Response<>(frAppService.getUserInfo(enter));
     }
@@ -73,6 +75,7 @@ public class FrAppController {
      */
     @PostMapping("/list")
     @ApiOperation(value = "询价单列表", notes = "询价单列表")
+    @IgnoreLoginCheck
     public Response<PageResult<InquiryListResult>> getList(@ModelAttribute InquiryListAppEnter enter) {
         return new Response<>(frAppService.getList(enter));
     }
@@ -82,6 +85,7 @@ public class FrAppController {
      */
     @PostMapping("/detail")
     @ApiOperation(value = "询价单详情", notes = "询价单详情")
+    @IgnoreLoginCheck
     public Response<InquiryDetailResult> getDetail(@ModelAttribute InquiryDetailEnter enter) {
         return new Response<>(frAppService.getDetail(enter));
     }
@@ -91,6 +95,7 @@ public class FrAppController {
      */
     @PostMapping("/scooter")
     @ApiOperation(value = "录入车辆", notes = "录入车辆")
+    @IgnoreLoginCheck
     public Response<GeneralResult> inputScooter(@ModelAttribute InputScooterEnter enter) {
         return new Response<>(frAppService.inputScooter(enter));
     }
@@ -100,6 +105,7 @@ public class FrAppController {
      */
     @PostMapping("/battery")
     @ApiOperation(value = "录入电池", notes = "录入电池")
+    @IgnoreLoginCheck
     public Response<GeneralResult> inputBattery(@ModelAttribute InputBatteryEnter enter) {
         return new Response<>(frAppService.inputBattery(enter));
     }
@@ -109,6 +115,7 @@ public class FrAppController {
      */
     @PostMapping("/bind")
     @ApiOperation(value = "绑定VIN", notes = "绑定VIN")
+    @IgnoreLoginCheck
     public Response<GeneralResult> bindVin(@ModelAttribute BindVinEnter enter) {
         return new Response<>(frAppService.bindVin(enter));
     }
@@ -118,6 +125,7 @@ public class FrAppController {
      */
     @PostMapping("/set")
     @ApiOperation(value = "设置软体", notes = "设置软体")
+    @IgnoreLoginCheck
     public Response<GeneralResult> setScooterModel(@ModelAttribute CustomerIdEnter enter) {
         return new Response<>(frAppService.setScooterModel(enter));
     }
