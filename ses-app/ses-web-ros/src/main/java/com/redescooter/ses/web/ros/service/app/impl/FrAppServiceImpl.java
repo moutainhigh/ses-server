@@ -218,12 +218,26 @@ public class FrAppServiceImpl implements FrAppService {
         return new GeneralResult(enter.getRequestId());
     }
 
+    public Long getUserId(GeneralEnter enter) {
+        String token = enter.getToken();
+        Boolean flag = jedisCluster.exists(token);
+        if (flag) {
+            Map<String, String> map = jedisCluster.hgetAll(token);
+            if (null != map) {
+                String userId = map.get("userId");
+                return Long.valueOf(userId);
+            }
+        }
+        return null;
+    }
+
     /**
      * 获得个人信息
      */
     @Override
     public OpeWarehouseAccount getUserInfo(GeneralEnter enter) {
-        OpeWarehouseAccount account = opeWarehouseAccountService.getById(enter.getUserId());
+        Long userId = getUserId(enter);
+        OpeWarehouseAccount account = opeWarehouseAccountService.getById(userId);
         if (null == account) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
@@ -261,6 +275,7 @@ public class FrAppServiceImpl implements FrAppService {
      */
     @Override
     public InquiryDetailResult getDetail(InquiryDetailEnter enter) {
+        Long userId = getUserId(enter);
         InquiryDetailResult result = opeCarDistributeExMapper.getInquiryDetail(enter);
         if (null != result) {
             String battery = result.getBattery();
@@ -289,7 +304,7 @@ public class FrAppServiceImpl implements FrAppService {
             node.setCustomerId(enter.getCustomerId());
             node.setAppNode(0);
             node.setFlag(0);
-            node.setCreatedBy(enter.getUserId());
+            node.setCreatedBy(userId);
             node.setCreatedTime(new Date());
             opeCarDistributeNodeMapper.insert(node);
 
@@ -299,7 +314,7 @@ public class FrAppServiceImpl implements FrAppService {
             distribute.setDr(Constant.DR_FALSE);
             distribute.setCustomerId(enter.getCustomerId());
             distribute.setQty(1);
-            distribute.setCreatedBy(enter.getUserId());
+            distribute.setCreatedBy(userId);
             distribute.setCreatedTime(new Date());
             opeCarDistributeMapper.insert(distribute);
         }
@@ -312,6 +327,7 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult inputScooter(InputScooterEnter enter) {
+        Long userId = getUserId(enter);
         Long customerId = enter.getCustomerId();
         String rsn = enter.getRsn();
         String tabletSn = enter.getTabletSn();
@@ -319,7 +335,7 @@ public class FrAppServiceImpl implements FrAppService {
 
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();
-        distribute.setWarehouseAccountId(enter.getUserId());
+        distribute.setWarehouseAccountId(userId);
         distribute.setSpecificatTypeId(enter.getSpecificatTypeId());
         distribute.setSeatNumber(enter.getSeatNumber());
         distribute.setRsn(rsn);
@@ -336,7 +352,7 @@ public class FrAppServiceImpl implements FrAppService {
         OpeCarDistributeNode node = new OpeCarDistributeNode();
         node.setAppNode(1);
         node.setFlag(1);
-        node.setUpdatedBy(enter.getUserId());
+        node.setUpdatedBy(userId);
         node.setUpdatedTime(new Date());
         // 条件
         LambdaQueryWrapper<OpeCarDistributeNode> wrapper = new LambdaQueryWrapper<>();
@@ -352,6 +368,7 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult inputBattery(InputBatteryEnter enter) {
+        Long userId = getUserId(enter);
         String battery = enter.getBattery();
 
         // 修改主表
@@ -366,7 +383,7 @@ public class FrAppServiceImpl implements FrAppService {
         // node表appNode字段
         OpeCarDistributeNode node = new OpeCarDistributeNode();
         node.setAppNode(2);
-        node.setUpdatedBy(enter.getUserId());
+        node.setUpdatedBy(userId);
         node.setUpdatedTime(new Date());
         // 条件
         LambdaQueryWrapper<OpeCarDistributeNode> wrapper = new LambdaQueryWrapper<>();
@@ -382,6 +399,7 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult bindVin(BindVinEnter enter) {
+        Long userId = getUserId(enter);
         String vinCode = enter.getVinCode();
 
         // 修改主表
@@ -396,7 +414,7 @@ public class FrAppServiceImpl implements FrAppService {
         // node表appNode字段
         OpeCarDistributeNode node = new OpeCarDistributeNode();
         node.setAppNode(3);
-        node.setUpdatedBy(enter.getUserId());
+        node.setUpdatedBy(userId);
         node.setUpdatedTime(new Date());
         // 条件
         LambdaQueryWrapper<OpeCarDistributeNode> wrapper = new LambdaQueryWrapper<>();
@@ -412,6 +430,7 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult setScooterModel(CustomerIdEnter enter) {
+        Long userId = getUserId(enter);
         LambdaQueryWrapper<OpeCarDistribute> scooterWrapper = new LambdaQueryWrapper<>();
         scooterWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
         scooterWrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
@@ -465,7 +484,7 @@ public class FrAppServiceImpl implements FrAppService {
             param.setId(stockId);
             param.setAbleStockQty(ableStockQty - 1);
             param.setUsedStockQty(usedStockQty + 1);
-            param.setUpdatedBy(enter.getUserId());
+            param.setUpdatedBy(userId);
             param.setUpdatedTime(new Date());
             opeWmsScooterStockMapper.updateById(param);
         }
@@ -480,7 +499,7 @@ public class FrAppServiceImpl implements FrAppService {
             record.setInWhQty(1);
             record.setRecordType(2);
             record.setStockType(2);
-            record.setCreatedBy(enter.getUserId());
+            record.setCreatedBy(userId);
             record.setCreatedTime(new Date());
             opeWmsStockRecordMapper.insert(record);
         }
@@ -526,7 +545,7 @@ public class FrAppServiceImpl implements FrAppService {
         OpeCarDistributeNode node = new OpeCarDistributeNode();
         node.setAppNode(4);
         node.setFlag(2);
-        node.setUpdatedBy(enter.getUserId());
+        node.setUpdatedBy(userId);
         node.setUpdatedTime(new Date());
         // 条件
         LambdaQueryWrapper<OpeCarDistributeNode> lqw = new LambdaQueryWrapper<>();
