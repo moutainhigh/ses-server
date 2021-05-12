@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.OperatingEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.common.vo.oms.EditAccountEnter;
 import com.redescooter.ses.api.common.vo.oms.SaveAccountEnter;
 import com.redescooter.ses.api.common.vo.oms.SavePasswordAccountEnter;
@@ -40,7 +37,7 @@ import java.util.stream.Collectors;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author Courtney
@@ -69,20 +66,20 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
     @DS("admin")
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult saveAdmOperatingAccount(SavePasswordAccountEnter enter) {
-        if (enter.getLoginName().length()>50){
+        if (enter.getLoginName().length() > 50) {
             throw new SeSHubException(ExceptionCodeEnums.EMAIL_TOO_LONG.getCode(), ExceptionCodeEnums.EMAIL_TOO_LONG.getMessage());
         }
-        if (enter.getDeptName().length()>50){
+        if (enter.getDeptName().length() > 50) {
             throw new SeSHubException(ExceptionCodeEnums.DEPT_TOO_LONG.getCode(), ExceptionCodeEnums.DEPT_TOO_LONG.getMessage());
         }
         boolean email = ValidatorUtil.isEmail(enter.getLoginName());
-        if (!email){
+        if (!email) {
             throw new SeSHubException(ExceptionCodeEnums.EMAIL_ERRO.getCode(), ExceptionCodeEnums.EMAIL_ERRO.getMessage());
         }
         QueryWrapper<AdmSysUser> wrapper = new QueryWrapper<>();
-        wrapper.eq("login_name",enter.getLoginName());
+        wrapper.eq("login_name", enter.getLoginName());
         AdmSysUser admOperatingAccount = admOperatingAccountMapper.selectOne(wrapper);
-        if(admOperatingAccount!=null){
+        if (admOperatingAccount != null) {
             throw new SeSHubException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
         //密码解密 无法解密时 就是提示密码错误
@@ -96,7 +93,7 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
         String decryptPassword = checkPassWord(loginEnter);
         //密码MD5 加密
         String password = DigestUtils.md5Hex(decryptPassword + salt);
-        admOperatingAccount =new AdmSysUser();
+        admOperatingAccount = new AdmSysUser();
         admOperatingAccount.setId(idSerService.getId(SequenceName.ADM_SYS_USER));
         admOperatingAccount.setDr(Constant.DR_FALSE);
         admOperatingAccount.setSalt(salt);
@@ -116,25 +113,31 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
         return new GeneralResult(enter.getRequestId());
     }
 
+    public static void main(String[] args) {
+        boolean email = ValidatorUtil.isEmail("bella@redescooter.comm");
+        if (!email) {
+            throw new SeSHubException(ExceptionCodeEnums.EMAIL_ERRO.getCode(), ExceptionCodeEnums.EMAIL_ERRO.getMessage());
+        }
+    }
 
     @Override
     @DS("admin")
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult updateByPk(EditAccountEnter enter) {
         AdmSysUser admOperatingAccount = admOperatingAccountMapper.selectById(enter.getId());
-        if(admOperatingAccount==null){
+        if (admOperatingAccount == null) {
             throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
         }
         boolean email = ValidatorUtil.isEmail(enter.getLoginName());
-        if (!email){
+        if (!email) {
             throw new SeSHubException(ExceptionCodeEnums.EMAIL_ERRO.getCode(), ExceptionCodeEnums.EMAIL_ERRO.getMessage());
         }
         QueryWrapper<AdmSysUser> wrapper = new QueryWrapper<>();
-        wrapper.eq("dr",0);
-        wrapper.ne("id",enter.getId());
+        wrapper.eq("dr", 0);
+        wrapper.ne("id", enter.getId());
         List<AdmSysUser> operatingAccountListResult = admOperatingAccountMapper.selectList(wrapper);
         List<String> emailList = operatingAccountListResult.stream().map(o -> o.getLoginName()).collect(Collectors.toList());
-        if (emailList.contains(enter.getLoginName())){
+        if (emailList.contains(enter.getLoginName())) {
             throw new SeSHubException(ExceptionCodeEnums.EMAIL_TO_REPEAT.getCode(), ExceptionCodeEnums.EMAIL_TO_REPEAT.getMessage());
         }
         AdmSysUser admSysUser = new AdmSysUser();
@@ -153,7 +156,7 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
     @GlobalTransactional(rollbackFor = Exception.class)
     public Integer deleteByPk(IdEnter enter) {
         AdmSysUser AdmOperatingAccount = admOperatingAccountMapper.selectById(enter.getId());
-        if(AdmOperatingAccount==null){
+        if (AdmOperatingAccount == null) {
             throw new SeSHubException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
         return admOperatingAccountMapper.deleteById(enter.getId());
@@ -203,43 +206,49 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
     @DS("admin")
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult updateStatus(IdEnter idEnter) {
-        log.info(idEnter.getId()+"{>>>>>>>>>>>>>>>>11111111111111111}");
+        log.info(idEnter.getId() + "{>>>>>>>>>>>>>>>>11111111111111111}");
         QueryWrapper<AdmSysUser> wrapper = new QueryWrapper<>();
-        wrapper.eq("id",idEnter.getId());
+        wrapper.eq("id", idEnter.getId());
         AdmSysUser admOperatingAccount = admOperatingAccountMapper.selectOne(wrapper);
-        log.info(admOperatingAccount+"{>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>}");
-        if(admOperatingAccount==null){
+        log.info(admOperatingAccount + "{>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>}");
+        if (admOperatingAccount == null) {
             throw new SeSHubException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
-        if (admOperatingAccount.getLoginName().length()>50){
+        if (admOperatingAccount.getLoginName().length() > 50) {
             throw new SeSHubException(ExceptionCodeEnums.EMAIL_TOO_LONG.getCode(), ExceptionCodeEnums.EMAIL_TOO_LONG.getMessage());
         }
-        if (admOperatingAccount.getDeptName().length()>50){
+        if (admOperatingAccount.getDeptName().length() > 50) {
             throw new SeSHubException(ExceptionCodeEnums.DEPT_TOO_LONG.getCode(), ExceptionCodeEnums.DEPT_TOO_LONG.getMessage());
         }
         String status = admOperatingAccount.getStatus();
-        admOperatingAccount.setStatus(status .equals("0")  ?"1" : "0");
+        admOperatingAccount.setStatus(status.equals("0") ? "1" : "0");
         int result = admOperatingAccountMapper.updateById(admOperatingAccount);
+        if (status.equals("1")&&result>0){
+            //修改成功后并且状态为关闭的状态退出登录
+            admOperatingAccountService.logout(idEnter);
+        }
         return new GeneralResult(idEnter.getRequestId());
     }
 
     @Override
+    @DS("admin")
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult editPassword(SavePasswordAccountEnter enter) {
         AdmSysUser admSysUser = admOperatingAccountMapper.selectById(enter.getId());
-        if (admSysUser==null){
+        if (admSysUser == null) {
             throw new SeSHubException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
         LoginEnter loginEnter = new LoginEnter();
         loginEnter.setPassword(enter.getPassword());
         String decryptPassword = checkPassWord(loginEnter);
-        log.info(decryptPassword+"{>>>>>>>>>>>>>>>>>>>>decryptPassword}");
+        log.info(decryptPassword + "{>>>>>>>>>>>>>>>>>>>>decryptPassword}");
         String salt = String.valueOf(RandomUtils.nextInt(10000, 99999));
         //密码MD5 加密
         String password = DigestUtils.md5Hex(decryptPassword + salt);
         admSysUser.setPassword(password);
         admSysUser.setId(enter.getId());
         admSysUser.setSalt(salt);
-        admOperatingAccountMapper.updateById(admSysUser);
+        int result = admOperatingAccountMapper.updateById(admSysUser);
         if (StringUtils.isNotBlank(admSysUser.getLastLoginToken())) {
             // 清除原有token,重新登录
             jedisCluster.del(admSysUser.getLastLoginToken());
@@ -251,8 +260,18 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
                 jedisCluster.del(enter.getRequestId());
             }
         }
+        if (result > 0) {
+            //修改成功后退出登录
+            admOperatingAccountService.logout(enter);
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
-
+    @Override
+    @DS("website")
+    public GeneralResult logout(GeneralEnter enter) {
+        String token = enter.getToken();
+        jedisCluster.del(token);
+        return new GeneralResult(enter.getRequestId());
+    }
 }

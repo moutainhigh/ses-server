@@ -1,12 +1,7 @@
 package com.redescooter.ses.api.hub.service.admin;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.OperatingEnter;
-import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.common.vo.oms.EditAccountEnter;
-import com.redescooter.ses.api.common.vo.oms.SaveAccountEnter;
 import com.redescooter.ses.api.common.vo.oms.SavePasswordAccountEnter;
-import com.redescooter.ses.api.hub.vo.admin.AdmSysUser;
 import com.redescooter.ses.api.hub.vo.admin.OperatingAccountListResult;
 
 
@@ -48,4 +43,7 @@ public interface AdmOperatingAccountService {
     GeneralResult updateStatus(IdEnter idEnter);
 
     GeneralResult editPassword(SavePasswordAccountEnter enter);
+
+
+    GeneralResult logout(GeneralEnter enter);
 }
