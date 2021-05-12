@@ -155,12 +155,25 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
     @DS("admin")
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult deleteByPk(IdEnter enter) {
-        AdmSysUser AdmOperatingAccount = admOperatingAccountMapper.selectById(enter.getId());
-        if (AdmOperatingAccount == null) {
-            throw new SeSHubException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        QueryWrapper<AdmSysUser> wrapper = new QueryWrapper<>();
+        wrapper.eq("id", enter.getId());
+        AdmSysUser admOperatingAccount = admOperatingAccountMapper.selectOne(wrapper);
+        if (admOperatingAccount == null) {
+            throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
+        }
+        if (StringUtils.isNotBlank(admOperatingAccount.getLastLoginToken())) {
+            // 清除原有token,重新登录
+            jedisCluster.del(admOperatingAccount.getLastLoginToken());
+            jedisCluster.del(enter.getRequestId());
+        }
+        //token 为空为系统外设置密码 设置成功过后 清楚 缓存保证一个requestId 只能用一次
+        if (StringUtils.isBlank(enter.getToken())) {
+            if (jedisCluster.exists(enter.getRequestId())) {
+                jedisCluster.del(enter.getRequestId());
+            }
         }
         int result = admOperatingAccountMapper.deleteById(enter.getId());
-        if (result>0){
+        if (result > 0) {
             //修改成功后并且状态为关闭的状态退出登录
             admOperatingAccountService.logout(enter);
         }
@@ -227,8 +240,19 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
         }
         String status = admOperatingAccount.getStatus();
         admOperatingAccount.setStatus(status.equals("0") ? "1" : "0");
+        if (StringUtils.isNotBlank(admOperatingAccount.getLastLoginToken())) {
+            // 清除原有token,重新登录
+            jedisCluster.del(admOperatingAccount.getLastLoginToken());
+            jedisCluster.del(idEnter.getRequestId());
+        }
+        //token 为空为系统外设置密码 设置成功过后 清楚 缓存保证一个requestId 只能用一次
+        if (StringUtils.isBlank(idEnter.getToken())) {
+            if (jedisCluster.exists(idEnter.getRequestId())) {
+                jedisCluster.del(idEnter.getRequestId());
+            }
+        }
         int result = admOperatingAccountMapper.updateById(admOperatingAccount);
-        if (result>0){
+        if (result > 0) {
             //修改成功后并且状态为关闭的状态退出登录
             admOperatingAccountService.logout(idEnter);
         }
