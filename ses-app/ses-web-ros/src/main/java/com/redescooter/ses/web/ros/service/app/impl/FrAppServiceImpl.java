@@ -211,7 +211,10 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     public GeneralResult logout(GeneralEnter enter) {
         String token = enter.getToken();
-        jedisCluster.del(token);
+        Boolean flag = jedisCluster.exists(token);
+        if (flag) {
+            jedisCluster.del(token);
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -239,7 +242,7 @@ public class FrAppServiceImpl implements FrAppService {
         List<InquiryListResult> list = opeCarDistributeExMapper.getInquiryList(enter);
         if (CollectionUtils.isNotEmpty(list)) {
             for (InquiryListResult item : list) {
-                if (item.getFlag() == 1 && item.getAppNode() == 0) {
+                if (item.getFlag() == 0 && item.getAppNode() == 0) {
                     item.setStatus(1);
                 }
                 if (item.getFlag() == 1 && (item.getAppNode() == 1 || item.getAppNode() == 2 || item.getAppNode() == 3)) {
@@ -279,6 +282,7 @@ public class FrAppServiceImpl implements FrAppService {
         qw.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
         List<OpeCarDistributeNode> nodeList = opeCarDistributeNodeMapper.selectList(qw);
         if (CollectionUtils.isEmpty(nodeList)) {
+            // 新增node表
             OpeCarDistributeNode node = new OpeCarDistributeNode();
             node.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE_NODE));
             node.setDr(Constant.DR_FALSE);
@@ -289,6 +293,7 @@ public class FrAppServiceImpl implements FrAppService {
             node.setCreatedTime(new Date());
             opeCarDistributeNodeMapper.insert(node);
 
+            // 新增主表
             OpeCarDistribute distribute = new OpeCarDistribute();
             distribute.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE));
             distribute.setDr(Constant.DR_FALSE);
