@@ -154,12 +154,17 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
     @Override
     @DS("admin")
     @GlobalTransactional(rollbackFor = Exception.class)
-    public Integer deleteByPk(IdEnter enter) {
+    public GeneralResult deleteByPk(IdEnter enter) {
         AdmSysUser AdmOperatingAccount = admOperatingAccountMapper.selectById(enter.getId());
         if (AdmOperatingAccount == null) {
             throw new SeSHubException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
-        return admOperatingAccountMapper.deleteById(enter.getId());
+        int result = admOperatingAccountMapper.deleteById(enter.getId());
+        if (result>0){
+            //修改成功后并且状态为关闭的状态退出登录
+            admOperatingAccountService.logout(enter);
+        }
+        return new GeneralResult(enter.getRequestId());
     }
 
     @Override
@@ -223,7 +228,7 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
         String status = admOperatingAccount.getStatus();
         admOperatingAccount.setStatus(status.equals("0") ? "1" : "0");
         int result = admOperatingAccountMapper.updateById(admOperatingAccount);
-        if (status.equals("1")&&result>0){
+        if (result>0){
             //修改成功后并且状态为关闭的状态退出登录
             admOperatingAccountService.logout(idEnter);
         }
