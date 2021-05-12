@@ -32,6 +32,7 @@ import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMappe
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
 import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
 import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
@@ -41,6 +42,7 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.app.FrAppService;
 import com.redescooter.ses.web.ros.service.assign.impl.ToBeAssignServiceImpl;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeWarehouseAccountService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
@@ -114,6 +116,9 @@ public class FrAppServiceImpl implements FrAppService {
 
     @Autowired
     private OpeCustomerInquiryService opeCustomerInquiryService;
+
+    @Autowired
+    private OpeCustomerInquiryBService opeCustomerInquiryBService;
 
     @Autowired
     private ToBeAssignServiceImpl toBeAssignService;
@@ -382,27 +387,59 @@ public class FrAppServiceImpl implements FrAppService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult inputBattery(InputBatteryEnter enter) {
         Long userId = getUserId(enter);
-        String battery = enter.getBattery();
+        Long inquiryId = enter.getId();
 
-        // 修改主表
-        OpeCarDistribute distribute = new OpeCarDistribute();
-        distribute.setBattery(battery);
-        // 条件
-        LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
-        qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
-        qw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
-        opeCarDistributeMapper.update(distribute, qw);
+        // 得到询价单的电池数量
+        LambdaQueryWrapper<OpeCustomerInquiryB> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(OpeCustomerInquiryB::getDr, Constant.DR_FALSE);
+        lqw.eq(OpeCustomerInquiryB::getInquiryId, inquiryId);
+        lqw.last("limit 1");
+        OpeCustomerInquiryB inquiryB = opeCustomerInquiryBService.getOne(lqw);
+        Integer batteryNum = inquiryB.getProductQty();
 
-        // node表appNode字段
-        OpeCarDistributeNode node = new OpeCarDistributeNode();
-        node.setAppNode(2);
-        node.setUpdatedBy(userId);
-        node.setUpdatedTime(new Date());
-        // 条件
-        LambdaQueryWrapper<OpeCarDistributeNode> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
-        wrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
-        opeCarDistributeNodeMapper.update(node, wrapper);
+        LambdaQueryWrapper<OpeCarDistribute> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        queryWrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+        queryWrapper.last("limit 1");
+        OpeCarDistribute model = opeCarDistributeMapper.selectOne(queryWrapper);
+        String modelBattery = model.getBattery();
+        if (StringUtils.isBlank(modelBattery)) {
+            // 第一次扫描电池
+            OpeCarDistribute distribute = new OpeCarDistribute();
+            distribute.setBattery(enter.getBattery());
+            LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+            qw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+            opeCarDistributeMapper.update(distribute, qw);
+        } else {
+            // 之前已经扫描过电池,在电池后追加
+            OpeCarDistribute distribute = new OpeCarDistribute();
+            distribute.setBattery(modelBattery + "," + enter.getBattery());
+            LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+            qw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+            opeCarDistributeMapper.update(distribute, qw);
+        }
+
+        // 查询最新的已经扫描过的电池数量
+        OpeCarDistribute distribute = opeCarDistributeMapper.selectOne(queryWrapper);
+        String[] split = distribute.getBattery().split(",");
+        List<String> batteryList = new ArrayList<>(Arrays.asList(split));
+        // 如果已经扫描过的电池数量=询价单的电池数量
+        if (CollectionUtils.isNotEmpty(batteryList)) {
+            if (batteryNum.equals(batteryList.size())) {
+                // node表appNode字段
+                OpeCarDistributeNode node = new OpeCarDistributeNode();
+                node.setAppNode(2);
+                node.setUpdatedBy(userId);
+                node.setUpdatedTime(new Date());
+                // 条件
+                LambdaQueryWrapper<OpeCarDistributeNode> wrapper = new LambdaQueryWrapper<>();
+                wrapper.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
+                wrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
+                opeCarDistributeNodeMapper.update(node, wrapper);
+            }
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
