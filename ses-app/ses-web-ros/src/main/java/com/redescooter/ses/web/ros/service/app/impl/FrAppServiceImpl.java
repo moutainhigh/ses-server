@@ -20,7 +20,6 @@ import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.api.scooter.vo.ScoScooterResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
-import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.map.MapUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeExMapper;
@@ -139,25 +138,34 @@ public class FrAppServiceImpl implements FrAppService {
      */
     @Override
     public TokenResult login(AppLoginEnter enter) {
-        LambdaQueryWrapper<OpeWarehouseAccount> qw = new LambdaQueryWrapper<>();
-        qw.eq(OpeWarehouseAccount::getDr, Constant.DR_FALSE);
-        qw.eq(OpeWarehouseAccount::getStatus, StatusEnum.ENABLE.getCode());
-        qw.eq(OpeWarehouseAccount::getSystem, 1);
-        qw.eq(OpeWarehouseAccount::getEmail, enter.getEmail());
-        qw.last("limit 1");
-        OpeWarehouseAccount account = opeWarehouseAccountService.getOne(qw);
-        if (null == account) {
-            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        // 邮箱解密
+        /*String decryptEmail;
+        try {
+            decryptEmail = RsaUtils.decrypt(enter.getEmail(), privateKey);
+        } catch (Exception ex) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-
         // 密码解密
         String decryptPassword;
         try {
             decryptPassword = RsaUtils.decrypt(enter.getPassword(), privateKey);
         } catch (Exception e) {
-            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
-        }
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }*/
 
+        String decryptEmail = enter.getEmail();
+        String decryptPassword = enter.getPassword();
+
+        LambdaQueryWrapper<OpeWarehouseAccount> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeWarehouseAccount::getDr, Constant.DR_FALSE);
+        qw.eq(OpeWarehouseAccount::getStatus, StatusEnum.ENABLE.getCode());
+        qw.eq(OpeWarehouseAccount::getSystem, 1);
+        qw.eq(OpeWarehouseAccount::getEmail, decryptEmail);
+        qw.last("limit 1");
+        OpeWarehouseAccount account = opeWarehouseAccountService.getOne(qw);
+        if (null == account) {
+            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        }
         // 拿着解密后的密码再次md5加密,和db存储的md5加密的密码相比较
         String encryptPassword = DigestUtils.md5Hex(decryptPassword + account.getSalt());
         if (!StringUtils.equals(encryptPassword, account.getPassword())) {
@@ -188,7 +196,7 @@ public class FrAppServiceImpl implements FrAppService {
             jedisCluster.hmset(token, map);
             jedisCluster.expire(token, new Long(RedisExpireEnum.HOURS_24.getSeconds()).intValue());
         } catch (Exception ex) {
-            log.error("设置token失败" + ex);
+            log.error("设置token失败", ex);
         }
 
         TokenResult result = new TokenResult();
