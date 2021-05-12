@@ -67,4 +67,12 @@ public class InquiryListResult extends PageResult {
 
     private Integer flag;
 
+    private String battery;
+
+    @ApiModelProperty(value = "处理中 已录入的电池数量")
+    private Integer hasInputBatteryNum;
+
+    @ApiModelProperty(value = "处理中 未录入的电池数量")
+    private Integer noInputBatteryNum;
+
 }

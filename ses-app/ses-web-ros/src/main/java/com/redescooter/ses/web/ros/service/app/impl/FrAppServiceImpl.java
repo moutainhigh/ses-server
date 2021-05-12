@@ -265,6 +265,19 @@ public class FrAppServiceImpl implements FrAppService {
                 if (item.getFlag() == 2) {
                     item.setStatus(3);
                 }
+
+                // 处理中 已录入的电池数量,未录入的电池数量
+                String battery = item.getBattery();
+                if (StringUtils.isBlank(battery)) {
+                    item.setHasInputBatteryNum(0);
+                    item.setNoInputBatteryNum(item.getBatteryNum());
+                } else {
+                    String[] split = battery.split(",");
+                    List<String> batteryList = new ArrayList<>(Arrays.asList(split));
+                    batteryList.removeAll(Collections.singleton(null));
+                    item.setHasInputBatteryNum(batteryList.size());
+                    item.setNoInputBatteryNum(item.getBatteryNum() - batteryList.size());
+                }
             }
         }
         return PageResult.create(enter, count, list);

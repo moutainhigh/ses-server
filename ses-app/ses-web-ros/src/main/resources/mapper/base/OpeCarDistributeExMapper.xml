@@ -157,6 +157,7 @@
             oc.id as colorId,
             oc.color_name,
             ocib.product_qty as batteryNum,
+            ocd.battery,
             IFNULL(ocd.seat_number, 2) as seatNumber,
             oci.full_name as customerName,
             oci.customer_id,
