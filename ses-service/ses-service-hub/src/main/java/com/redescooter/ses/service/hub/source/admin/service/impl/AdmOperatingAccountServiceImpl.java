@@ -212,7 +212,7 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
         AdmSysUser admOperatingAccount = admOperatingAccountMapper.selectOne(wrapper);
         log.info(admOperatingAccount + "{>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>}");
         if (admOperatingAccount == null) {
-            throw new SeSHubException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+            throw new SeSHubException(ExceptionCodeEnums.INVALID_ACCOUNT_STATUS.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
         if (admOperatingAccount.getLoginName().length() > 50) {
             throw new SeSHubException(ExceptionCodeEnums.EMAIL_TOO_LONG.getCode(), ExceptionCodeEnums.EMAIL_TOO_LONG.getMessage());
