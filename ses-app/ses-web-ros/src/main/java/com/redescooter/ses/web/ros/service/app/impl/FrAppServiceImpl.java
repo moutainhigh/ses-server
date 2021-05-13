@@ -285,11 +285,12 @@ public class FrAppServiceImpl implements FrAppService {
      */
     @Override
     public PageResult<InquiryListResult> getList(InquiryListAppEnter enter) {
-        int count = opeCarDistributeExMapper.getInquiryListCount(enter);
+        Long userId = getUserId(enter);
+        int count = opeCarDistributeExMapper.getInquiryListCount(enter, userId);
         if (count == 0) {
             return PageResult.createZeroRowResult(enter);
         }
-        List<InquiryListResult> list = opeCarDistributeExMapper.getInquiryList(enter);
+        List<InquiryListResult> list = opeCarDistributeExMapper.getInquiryList(enter, userId);
         if (CollectionUtils.isNotEmpty(list)) {
             for (InquiryListResult item : list) {
 
