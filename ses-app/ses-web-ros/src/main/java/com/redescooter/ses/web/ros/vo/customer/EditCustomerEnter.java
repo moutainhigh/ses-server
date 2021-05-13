@@ -47,7 +47,7 @@ public class EditCustomerEnter extends GeneralEnter {
     @NotNull(code = ValidationExceptionBaseCode.EMAIL_IS_EMPTY, message = "邮箱不能为空")
     @MinimumLength(value = "2",code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL,message = "邮件非法")
     @MaximumLength(value = "50",code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL,message = "邮件非法")
-    @Regexp(value = RegexpConstant.email,code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL,message = "邮箱非法")
+    //@Regexp(value = RegexpConstant.email,code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL,message = "邮箱非法")
     private String email;
 
     @ApiModelProperty(value = "客户名字")

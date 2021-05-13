@@ -5,9 +5,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserSourceEnum;
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.OperatingEnter;
+import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.oms.EditAccountEnter;
-import com.redescooter.ses.api.common.vo.oms.SaveAccountEnter;
 import com.redescooter.ses.api.common.vo.oms.SavePasswordAccountEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
@@ -72,10 +75,20 @@ public class AdmOperatingAccountServiceImpl extends ServiceImpl<AdmSysUserMapper
         if (enter.getDeptName().length() > 50) {
             throw new SeSHubException(ExceptionCodeEnums.DEPT_TOO_LONG.getCode(), ExceptionCodeEnums.DEPT_TOO_LONG.getMessage());
         }
-        boolean email = ValidatorUtil.isEmail(enter.getLoginName());
+        if (StringUtils.isNotBlank(enter.getLoginName())) {
+            String email = enter.getLoginName();
+            int firstIndex = email.indexOf("@");
+            int secondIndex = email.indexOf(".");
+
+            // 1.必须包含@ 2.必须包含. 3.@必须在.之前 4..后至少要有一位
+            if (firstIndex == -1 || secondIndex == -1 || firstIndex > secondIndex || email.endsWith(".")) {
+                throw new SeSHubException(ExceptionCodeEnums.EMAIL_ERRO.getCode(), ExceptionCodeEnums.EMAIL_ERRO.getMessage());
+            }
+        }
+        /*boolean email = ValidatorUtil.isEmail(enter.getLoginName());
         if (!email) {
             throw new SeSHubException(ExceptionCodeEnums.EMAIL_ERRO.getCode(), ExceptionCodeEnums.EMAIL_ERRO.getMessage());
-        }
+        }*/
         QueryWrapper<AdmSysUser> wrapper = new QueryWrapper<>();
         wrapper.eq("login_name", enter.getLoginName());
         AdmSysUser admOperatingAccount = admOperatingAccountMapper.selectOne(wrapper);

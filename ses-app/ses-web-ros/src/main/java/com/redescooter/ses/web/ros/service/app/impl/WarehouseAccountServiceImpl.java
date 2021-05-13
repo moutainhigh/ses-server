@@ -31,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -135,6 +136,17 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
     }
 
     public void check(WarehouseAccountSaveEnter enter) {
+        if (StringUtils.isNotBlank(enter.getEmail())) {
+            String email = enter.getEmail();
+            int firstIndex = email.indexOf("@");
+            int secondIndex = email.indexOf(".");
+
+            // 1.必须包含@ 2.必须包含. 3.@必须在.之前 4..后至少要有一位
+            if (firstIndex == -1 || secondIndex == -1 || firstIndex > secondIndex || email.endsWith(".")) {
+                throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
+            }
+        }
+
         LambdaQueryWrapper<OpeWarehouseAccount> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeWarehouseAccount::getDr, Constant.DR_FALSE);
         qw.eq(OpeWarehouseAccount::getEmail, enter.getEmail());

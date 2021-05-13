@@ -95,7 +95,11 @@ public enum ExceptionCodeEnums {
 
     REFRESH_TOKEN_NOT_EXIST(10037, "刷新token不存在"),
 
-    EMAIL_TOO_LONG(10038, "邮箱长度过长")
+    EMAIL_TOO_LONG(10038, "邮箱长度过长"),
+
+    EMAIL_ERROR(10039, "邮箱格式错误")
+
+
 
 
     ;
