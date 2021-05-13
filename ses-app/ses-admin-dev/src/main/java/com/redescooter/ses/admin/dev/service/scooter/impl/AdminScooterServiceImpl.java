@@ -2,7 +2,6 @@ package com.redescooter.ses.admin.dev.service.scooter.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.redescooter.ses.admin.dev.constant.SequenceName;
-import com.redescooter.ses.admin.dev.constant.SpecificDefNameConstant;
 import com.redescooter.ses.admin.dev.dao.scooter.AdminScooterMapper;
 import com.redescooter.ses.admin.dev.dao.scooter.AdminScooterPartsMapper;
 import com.redescooter.ses.admin.dev.dm.AdmScooter;
@@ -15,6 +14,7 @@ import com.redescooter.ses.admin.dev.vo.scooter.AdminScooterPartsDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.InsertAdminScooterDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.QueryAdminScooterParamDTO;
 import com.redescooter.ses.admin.dev.vo.scooter.SetScooterModelParamDTO;
+import com.redescooter.ses.api.common.constant.SpecificDefNameConstant;
 import com.redescooter.ses.api.common.enums.date.DayCodeEnum;
 import com.redescooter.ses.api.common.enums.date.MonthCodeEnum;
 import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;

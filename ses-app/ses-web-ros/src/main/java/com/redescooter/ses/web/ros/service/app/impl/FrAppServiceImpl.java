@@ -3,7 +3,12 @@ package com.redescooter.ses.web.ros.service.app.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.constant.SpecificDefNameConstant;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
+import com.redescooter.ses.api.common.enums.date.DayCodeEnum;
+import com.redescooter.ses.api.common.enums.date.MonthCodeEnum;
+import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
+import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
 import com.redescooter.ses.api.common.enums.wms.WmsStockStatusEnum;
@@ -11,13 +16,25 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
+import com.redescooter.ses.api.common.vo.scooter.ColorDTO;
+import com.redescooter.ses.api.common.vo.scooter.SpecificGroupDTO;
+import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
+import com.redescooter.ses.api.common.vo.specification.SpecificDefDTO;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
+import com.redescooter.ses.api.hub.service.admin.ScooterModelService;
 import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
+import com.redescooter.ses.api.hub.service.operation.ColorService;
+import com.redescooter.ses.api.hub.service.operation.SpecificService;
 import com.redescooter.ses.api.hub.vo.HubSaveScooterEnter;
+import com.redescooter.ses.api.hub.vo.admin.AdmScooter;
+import com.redescooter.ses.api.hub.vo.operation.SpecificTypeDTO;
+import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.api.scooter.vo.ScoScooterResult;
+import com.redescooter.ses.api.scooter.vo.emqx.SetScooterModelPublishDTO;
+import com.redescooter.ses.api.scooter.vo.emqx.SpecificDefGroupPublishDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.map.MapUtil;
@@ -37,7 +54,6 @@ import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
-import com.redescooter.ses.web.ros.enums.assign.ProductTypeEnum;
 import com.redescooter.ses.web.ros.enums.distributor.StatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
@@ -70,11 +86,13 @@ import redis.clients.jedis.JedisCluster;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @Description
@@ -138,6 +156,18 @@ public class FrAppServiceImpl implements FrAppService {
 
     @DubboReference
     private CusotmerScooterService cusotmerScooterService;
+
+    @DubboReference
+    private ScooterModelService scooterModelService;
+
+    @DubboReference
+    private SpecificService specificService;
+
+    @DubboReference
+    private ColorService colorService;
+
+    @DubboReference
+    private ScooterEmqXService scooterEmqXService;
 
     /**
      * 登录
@@ -499,7 +529,7 @@ public class FrAppServiceImpl implements FrAppService {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_HAS_INPUT.getCode(), ExceptionCodeEnums.VIN_HAS_INPUT.getMessage());
         }
 
-        String productType = ProductTypeEnum.showCode(enter.getScooterName());
+        /*String productType = ProductTypeEnum.showCode(enter.getScooterName());
         // 截取第7位,车型编号
         String productTypeSub = vinCode.substring(0, 8);
         if (!StringUtils.equals(productType, productTypeSub)) {
@@ -511,7 +541,7 @@ public class FrAppServiceImpl implements FrAppService {
         String seatNumberSub = vinCode.substring(0, 9);
         if (!StringUtils.equals(String.valueOf(seatNumber), seatNumberSub)) {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
-        }
+        }*/
 
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();
@@ -618,7 +648,6 @@ public class FrAppServiceImpl implements FrAppService {
         // 获得规格名称
         String specificatName = toBeAssignService.getSpecificatNameById(model.getSpecificatTypeId());
 
-        // 数据同步
         // 根据rsn查询sco_scooter表
         ScoScooterResult scoScooter = scooterService.getScoScooterByTableSn(model.getRsn());
         if (null == scoScooter) {
@@ -652,6 +681,79 @@ public class FrAppServiceImpl implements FrAppService {
             }
         }
 
+        // 创建车辆
+        AdmScooter admScooter = scooterModelService.getScooterBySn(model.getRsn());
+        if (null != admScooter) {
+            throw new SesWebRosException(ExceptionCodeEnums.SN_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.SN_ALREADY_EXISTS.getMessage());
+        }
+        SpecificGroupDTO group = specificService.getSpecificGroupById(specificatId);
+        ColorDTO color = colorService.getColorInfoById(inquiryColorId);
+        if (null == group) {
+            throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
+        }
+        if (null == color) {
+            throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+        }
+
+        // 新增adm_scooter表
+        AdmScooter scooter = new AdmScooter();
+        scooter.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE_NODE));
+        scooter.setDr(Constant.DR_FALSE);
+        scooter.setSn(model.getRsn());
+        scooter.setGroupId(specificatId);
+        scooter.setColorId(inquiryColorId);
+        scooter.setMacAddress(model.getBluetoothAddress());
+        scooter.setScooterController(ScooterModelEnum.SCOOTER_E50.getType());
+        scooter.setCreatedBy(0L);
+        scooter.setCreatedTime(new Date());
+        scooter.setUpdatedBy(0L);
+        scooter.setUpdatedTime(new Date());
+        scooter.setColorName(color.getColorName());
+        scooter.setColorValue(color.getColorValue());
+        scooter.setGroupName(group.getGroupName());
+        scooter.setMacName(model.getBluetoothAddress());
+        scooterModelService.insertScooter(scooter);
+
+        // 根据平板序列号(sn)查询在sco_scooter表是否存在 不存在返回true 存在返回false
+        Boolean flag = scooterService.getSnIsExist(scooter.getSn());
+        if (flag) {
+            String scooterNo = generateScooterNo();
+            scooterService.syncScooterData(buildData(scooter.getId(), scooter.getSn(), scooter.getScooterController(), userId, scooterNo));
+        }
+
+        // 设置软体
+        AdmScooter scooterModel = scooterModelService.getScooterById(scooter.getId());
+        if (null == scooterModel) {
+            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
+        }
+        // 只允许车辆关闭状态时进行软体设置
+        String status = scooterService.getScooterStatusByTabletSn(scooter.getSn());
+        if (ScooterLockStatusEnums.UNLOCK.getValue().equals(status)) {
+            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_CLOSED.getCode(), ExceptionCodeEnums.SCOOTER_NOT_CLOSED.getMessage());
+        }
+        SpecificTypeDTO specificType = specificService.getSpecificTypeByName(ScooterModelEnum.SCOOTER_E50.getModel());
+        if (null == specificType) {
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
+        }
+        Integer type = ScooterModelEnum.getScooterModelType(specificType.getSpecificatName());
+        if (type == 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.SELECT_SCOOTER_MODEL_ERROR.getCode(), ExceptionCodeEnums.SELECT_SCOOTER_MODEL_ERROR.getMessage());
+        }
+        // 如果设置的型号与当前车辆的型号一致则不做操作
+        if (null != scooterModel.getScooterController() && scooterModel.getScooterController().equals(type)) {
+            return new GeneralResult(enter.getRequestId());
+        }
+
+        List<SpecificDefGroupPublishDTO> list = buildSetScooterModelData(specificType.getId());
+        if (CollectionUtils.isNotEmpty(list)) {
+            // 发送EMQ消息,通知车辆那边进行升级处理
+            SetScooterModelPublishDTO instance = new SetScooterModelPublishDTO();
+            instance.setTabletSn(scooterModel.getSn());
+            instance.setScooterModel(type);
+            instance.setSpecificDefGroupList(list);
+            scooterEmqXService.setScooterModel(instance);
+        }
+
         // node表appNode字段
         OpeCarDistributeNode node = new OpeCarDistributeNode();
         node.setAppNode(4);
@@ -664,6 +766,89 @@ public class FrAppServiceImpl implements FrAppService {
         lqw.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
         opeCarDistributeNodeMapper.update(node, lqw);
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 组装设置车辆型号数据
+     */
+    private List<SpecificDefGroupPublishDTO> buildSetScooterModelData(Long specificTypeId) {
+        List<SpecificDefGroupPublishDTO> list = new ArrayList<>();
+
+        // 查询当前车辆电池信息,这里主要是为了拿车辆电池的出厂号/流水号信息(用于设置软体时使用) 先不给电池的出厂号/流水号(车辆那边现在不是强制性需要)
+        // 查询车辆型号自定义项信息
+        List<SpecificDefDTO> specificDefList = specificService.getSpecificDefBySpecificId(specificTypeId);
+        if (CollectionUtils.isNotEmpty(specificDefList)) {
+            // 旧数据ope_specificat_def表里面def_group_id字段值是空的,这里会导致stream分组的时候报错
+            specificDefList.forEach(def -> {
+                if (null == def.getSpecificDefGroupId()) {
+                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                }
+            });
+
+            Map<Long, List<SpecificDefDTO>> specificDefGroupMap = specificDefList.stream().collect(Collectors.groupingBy(SpecificDefDTO::getSpecificDefGroupId));
+
+            for (Map.Entry<Long, List<SpecificDefDTO>> map : specificDefGroupMap.entrySet()) {
+                Map<String, String> specificDefMap = map.getValue().stream().collect(Collectors.toMap(SpecificDefDTO::getDefName, SpecificDefDTO::getDefValue));
+
+                // 组装自定义项数据 -- 自定义项名称固定值
+                SpecificDefGroupPublishDTO publish = SpecificDefGroupPublishDTO.builder()
+                        .wheelDiameter(specificDefMap.get(SpecificDefNameConstant.WHEEL_DIAMETER))
+                        .speedRatio(specificDefMap.get(SpecificDefNameConstant.SPEED_RATIO))
+                        .limitSpeedBos(specificDefMap.get(SpecificDefNameConstant.LIMIT_SPEED_BOS))
+                        .limiting(specificDefMap.get(SpecificDefNameConstant.LIMITING))
+                        .speedLimit(specificDefMap.get(SpecificDefNameConstant.SPEED_LIMIT))
+                        .socRedWarning(specificDefMap.get(SpecificDefNameConstant.SOC_RED_WARNING))
+                        .orangeWarning(specificDefMap.get(SpecificDefNameConstant.ORANGE_WARNING))
+                        .stallSOC(specificDefMap.get(SpecificDefNameConstant.STALL_SOC))
+                        .setSOCTo0AtStallUndervoltage(specificDefMap.get(SpecificDefNameConstant.SET_SOC_TO_0_AT_STALL_UNDER_VOLTAGE))
+                        .stallVoltageUndervoltage(specificDefMap.get(SpecificDefNameConstant.STALL_VOLTAGE_UNDER_VOLTAGE))
+                        .voltageLegalRecognitionMin(specificDefMap.get(SpecificDefNameConstant.VOLTAGE_LEGAL_RECOGNITION_MAX))
+                        .voltageLegalRecognitionMax(specificDefMap.get(SpecificDefNameConstant.VOLTAGE_LEGAL_RECOGNITION_MIN))
+                        .controllerUndervoltage(specificDefMap.get(SpecificDefNameConstant.CONTROLLER_UNDER_VOLTAGE))
+                        .controllerUndervoltageRecovery(specificDefMap.get(SpecificDefNameConstant.CONTROLLER_UNDER_VOLTAGE_RECOVERY))
+                        .build();
+                list.add(publish);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 组装同步车辆数据
+     */
+    private List<SyncScooterDataDTO> buildData(Long scooterId, String tabletSn, Integer scooterModel, Long userId, String scooterNo) {
+        SyncScooterDataDTO model = new SyncScooterDataDTO();
+        model.setId(scooterId);
+        model.setScooterNo(scooterNo);
+        model.setTabletSn(tabletSn);
+        model.setModel(String.valueOf(scooterModel));
+        model.setUserId(userId);
+        return new ArrayList<>(Arrays.asList(model));
+    }
+
+    /**
+     * 生成车辆编号
+     */
+    private String generateScooterNo() {
+        Calendar cal = Calendar.getInstance();
+        String year = String.valueOf(cal.get(Calendar.YEAR));
+        int month = cal.get(Calendar.MONTH) + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        // 编号规则：区域 + 产品范围 + 结构类型 + 额定功率 + 生产地点 + 年份 + 月份 + 生产流水号(数量从1开始)
+        StringBuilder sb = new StringBuilder();
+        sb.append("FR");
+        sb.append("ED");
+        sb.append("D");
+        sb.append("0");
+        sb.append(year.substring(2, 4));
+        sb.append(MonthCodeEnum.getMonthCodeByMonth(month));
+        // 获取当前时间戳,并截取最后6位拼接在编号最后
+        String timeStamp = String.valueOf(System.currentTimeMillis());
+        String sub = timeStamp.substring(timeStamp.length() - 6);
+        String number = String.format("%s%s%s", DayCodeEnum.getDayCodeByDay(day), "1", sub);
+        sb.append(number);
+        return sb.toString();
     }
 
 }

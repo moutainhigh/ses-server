@@ -556,7 +556,13 @@ public enum ExceptionCodeEnums {
 
     VIN_NOT_MATCH(10269, "VIN与车型不符,请重新输入"),
 
-    ORDER_HAS_DEAL(10270, "该订单已在处理中")
+    ORDER_HAS_DEAL(10270, "该订单已在处理中"),
+
+    SN_ALREADY_EXISTS(10271, "车辆平板已存在"),
+
+    SCOOTER_NOT_CLOSED(10272, "车辆未关闭"),
+
+    SELECT_SCOOTER_MODEL_ERROR(10273, "选择的车辆型号有误")
 
 
 
