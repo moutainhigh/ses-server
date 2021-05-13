@@ -75,7 +75,7 @@ public interface OpeCarDistributeExMapper {
     List<InquiryListResult> getInquiryList(@Param("param") InquiryListAppEnter enter);
 
     /**
-     * 询价单详情
+     * app询价单详情
      */
     InquiryDetailResult getInquiryDetail(@Param("param") InquiryDetailEnter enter);
 

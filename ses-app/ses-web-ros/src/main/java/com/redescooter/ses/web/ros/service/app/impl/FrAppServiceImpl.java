@@ -430,23 +430,25 @@ public class FrAppServiceImpl implements FrAppService {
         queryWrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
         queryWrapper.last("limit 1");
         OpeCarDistribute model = opeCarDistributeMapper.selectOne(queryWrapper);
-        String modelBattery = model.getBattery();
-        if (StringUtils.isBlank(modelBattery)) {
-            // 第一次扫描电池
-            OpeCarDistribute distribute = new OpeCarDistribute();
-            distribute.setBattery(enter.getBattery());
-            LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
-            qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
-            qw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
-            opeCarDistributeMapper.update(distribute, qw);
-        } else {
-            // 之前已经扫描过电池,在电池后追加
-            OpeCarDistribute distribute = new OpeCarDistribute();
-            distribute.setBattery(modelBattery + "," + enter.getBattery());
-            LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
-            qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
-            qw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
-            opeCarDistributeMapper.update(distribute, qw);
+        if (null != model) {
+            String modelBattery = model.getBattery();
+            if (StringUtils.isBlank(modelBattery)) {
+                // 第一次扫描电池
+                OpeCarDistribute distribute = new OpeCarDistribute();
+                distribute.setBattery(enter.getBattery());
+                LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
+                qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+                qw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+                opeCarDistributeMapper.update(distribute, qw);
+            } else {
+                // 之前已经扫描过电池,在电池后追加
+                OpeCarDistribute distribute = new OpeCarDistribute();
+                distribute.setBattery(modelBattery + "," + enter.getBattery());
+                LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
+                qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+                qw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+                opeCarDistributeMapper.update(distribute, qw);
+            }
         }
 
         // 查询最新的已经扫描过的电池数量
