@@ -69,6 +69,8 @@ public class InquiryListResult extends PageResult {
 
     private String battery;
 
+    private Integer webNode;
+
     @ApiModelProperty(value = "处理中 已录入的电池数量")
     private Integer hasInputBatteryNum;
 

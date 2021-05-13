@@ -262,13 +262,19 @@ public class FrAppServiceImpl implements FrAppService {
         List<InquiryListResult> list = opeCarDistributeExMapper.getInquiryList(enter);
         if (CollectionUtils.isNotEmpty(list)) {
             for (InquiryListResult item : list) {
-                if (item.getFlag() == 0 && item.getAppNode() == 0) {
+
+                // 这里的逻辑要和sql逻辑保持一致
+                boolean todoFlag = (item.getFlag() == 0 || item.getFlag() == 1) && ( (item.getAppNode() == 0) || (item.getWebNode() == 0) );
+                boolean dealFlag = item.getFlag() == 1 && ( (item.getAppNode() == 1 || item.getAppNode() == 2 || item.getAppNode() == 3) || (item.getWebNode() == 2 || item.getWebNode() == 3) );
+                boolean doneFlag = item.getFlag() == 2;
+
+                if (todoFlag) {
                     item.setStatus(1);
                 }
-                if (item.getFlag() == 1 && (item.getAppNode() == 1 || item.getAppNode() == 2 || item.getAppNode() == 3)) {
+                if (dealFlag) {
                     item.setStatus(2);
                 }
-                if (item.getFlag() == 2) {
+                if (doneFlag) {
                     item.setStatus(3);
                 }
 
@@ -453,21 +459,23 @@ public class FrAppServiceImpl implements FrAppService {
 
         // 查询最新的已经扫描过的电池数量
         OpeCarDistribute distribute = opeCarDistributeMapper.selectOne(queryWrapper);
-        String[] split = distribute.getBattery().split(",");
-        List<String> batteryList = new ArrayList<>(Arrays.asList(split));
-        // 如果已经扫描过的电池数量=询价单的电池数量
-        if (CollectionUtils.isNotEmpty(batteryList)) {
-            if (batteryNum.equals(batteryList.size())) {
-                // node表appNode字段
-                OpeCarDistributeNode node = new OpeCarDistributeNode();
-                node.setAppNode(2);
-                node.setUpdatedBy(userId);
-                node.setUpdatedTime(new Date());
-                // 条件
-                LambdaQueryWrapper<OpeCarDistributeNode> wrapper = new LambdaQueryWrapper<>();
-                wrapper.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
-                wrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
-                opeCarDistributeNodeMapper.update(node, wrapper);
+        if (null != distribute) {
+            String[] split = distribute.getBattery().split(",");
+            List<String> batteryList = new ArrayList<>(Arrays.asList(split));
+            // 如果已经扫描过的电池数量=询价单的电池数量
+            if (CollectionUtils.isNotEmpty(batteryList)) {
+                if (batteryNum.equals(batteryList.size())) {
+                    // node表appNode字段
+                    OpeCarDistributeNode node = new OpeCarDistributeNode();
+                    node.setAppNode(2);
+                    node.setUpdatedBy(userId);
+                    node.setUpdatedTime(new Date());
+                    // 条件
+                    LambdaQueryWrapper<OpeCarDistributeNode> wrapper = new LambdaQueryWrapper<>();
+                    wrapper.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
+                    wrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
+                    opeCarDistributeNodeMapper.update(node, wrapper);
+                }
             }
         }
         return new GeneralResult(enter.getRequestId());
