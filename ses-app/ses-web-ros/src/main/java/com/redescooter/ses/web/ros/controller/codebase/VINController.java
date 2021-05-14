@@ -1,11 +1,25 @@
 package com.redescooter.ses.web.ros.controller.codebase;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.codebase.VINService;
+import com.redescooter.ses.web.ros.vo.codebase.SpecificatTypeResult;
+import com.redescooter.ses.web.ros.vo.codebase.VINDetailResult;
+import com.redescooter.ses.web.ros.vo.codebase.VINListEnter;
+import com.redescooter.ses.web.ros.vo.codebase.VINListResult;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @Description VIN管理控制器
@@ -21,22 +35,40 @@ public class VINController {
     @Autowired
     private VINService vinService;
 
+    /**
+     * 车型数据源
+     */
+    @PostMapping("/data")
+    @ApiOperation(value = "车型数据源", notes = "车型数据源")
+    public Response<List<SpecificatTypeResult>> getSpecificatTypeData(@ModelAttribute GeneralEnter enter) {
+        return new Response<>(vinService.getSpecificatTypeData(enter));
+    }
 
+    /**
+     * 列表
+     */
+    @PostMapping("/list")
+    @ApiOperation(value = "VIN列表", notes = "VIN列表")
+    public Response<PageResult<VINListResult>> getList(@ModelAttribute VINListEnter enter) {
+        return new Response<>(vinService.getList(enter));
+    }
 
+    /**
+     * 详情
+     */
+    @PostMapping("/detail")
+    @ApiOperation(value = "VIN详情", notes = "VIN详情")
+    public Response<VINDetailResult> getDetail(@ModelAttribute StringEnter enter) {
+        return new Response<>(vinService.getDetail(enter));
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /**
+     * 导出
+     */
+    @PostMapping("/export")
+    @ApiOperation(value = "VIN导出", notes = "VIN导出")
+    public Response<GeneralResult> export(@ModelAttribute VINListEnter enter) {
+        return new Response<>(vinService.export(enter));
+    }
 
 }
