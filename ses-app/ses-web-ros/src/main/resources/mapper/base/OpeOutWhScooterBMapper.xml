@@ -30,7 +30,7 @@
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    updateope_out_wh_scooter_b
+    update ope_out_wh_scooter_b
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">

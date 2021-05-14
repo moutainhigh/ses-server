@@ -35,7 +35,7 @@
   </sql>
   <update id="updateBatch" parameterType="java.util.List">
     <!--@mbg.generated-->
-    updateope_in_whouse_parts_b
+    update ope_in_whouse_parts_b
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
@@ -150,7 +150,7 @@
   </update>
   <update id="updateBatchSelective" parameterType="java.util.List">
     <!--@mbg.generated-->
-    updateope_in_whouse_parts_b
+    update ope_in_whouse_parts_b
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="dr = case" suffix="end,">
         <foreach collection="list" index="index" item="item">
