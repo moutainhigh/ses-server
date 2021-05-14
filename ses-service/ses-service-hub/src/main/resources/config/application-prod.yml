@@ -69,7 +69,7 @@ seata:
   service:
     disable-global-transaction: false
     vgroup-mapping:
-      ses-service-proxy-group: default
+      ses-service-hub-group: default
   client:
     rm:
       report-success-enable: false

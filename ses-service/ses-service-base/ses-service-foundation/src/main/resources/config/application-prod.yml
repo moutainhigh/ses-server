@@ -53,7 +53,7 @@ seata:
   service:
     disable-global-transaction: false
     vgroup-mapping:
-      ses-admin-dev-group: default
+      ses-service-foundation-group: default
   client:
     rm:
       report-success-enable: false

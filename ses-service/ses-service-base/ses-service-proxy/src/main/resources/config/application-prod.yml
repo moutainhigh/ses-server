@@ -41,7 +41,7 @@ spring:
 seata:
   enabled: true
   enable-auto-data-source-proxy: true
-  tx-service-group: ses-service-foundation-group
+  tx-service-group: ses-service-proxy-group
   registry:
     type: zk
     zk:
@@ -56,7 +56,7 @@ seata:
   service:
     disable-global-transaction: false
     vgroup-mapping:
-      ses-admin-dev-group: default
+      ses-service-proxy-group: default
   client:
     rm:
       report-success-enable: false

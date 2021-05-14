@@ -114,7 +114,7 @@ seata:
   service:
     disable-global-transaction: false
     vgroup-mapping:
-      ses-admin-dev-group: default
+      ses-web-website-group: default
   client:
     rm:
       report-success-enable: false
