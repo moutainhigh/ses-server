@@ -52,6 +52,9 @@ public class InquiryDetailResult extends GeneralResult {
     @ApiModelProperty(value = "电池码")
     private List<String> batteryList;
 
+    @ApiModelProperty(value = "app节点 0车辆信息 1电池信息 2绑定VIN 3设置软体 4完成")
+    private Integer appNode;
+
     private String battery;
 
 }

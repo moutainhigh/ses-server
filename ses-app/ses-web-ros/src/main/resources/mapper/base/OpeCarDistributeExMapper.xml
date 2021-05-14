@@ -191,10 +191,12 @@
             ocd.tablet_sn,
             ocd.bluetooth_address,
             ocd.vin_code,
+            ocdn.app_node,
             ocd.battery
         from ope_customer_inquiry oci
         left join ope_customer_inquiry_b ocib on oci.id = ocib.inquiry_id and ocib.dr = 0
         left join ope_car_distribute ocd on oci.customer_id = ocd.customer_id and ocd.dr = 0
+        left join ope_car_distribute_node ocdn on ocdn.customer_id = oci.customer_id and ocdn.dr = 0
         left join ope_sale_scooter oss on oss.id = oci.product_id and oss.dr = 0
         left join ope_specificat_type ost on ost.id = oss.specificat_id and ost.dr = 0
         left join ope_color oc on oc.id = oss.color_id and oc.dr = 0
