@@ -37,13 +37,13 @@ seata:
   registry:
     type: zk
     zk:
-      server-addr: 172.31.6.101:2181
+      server-addr: 10.1.1.142:2181
       cluster: default
       connect-timeout: 2000000
   config:
     type: zk
     zk:
-      server-addr: 172.31.6.101:2181
+      server-addr: 10.1.1.142:2181
       connect-timeout: 2000000
   service:
     disable-global-transaction: false
