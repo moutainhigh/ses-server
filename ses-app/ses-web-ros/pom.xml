@@ -69,7 +69,7 @@
             <properties>
                 <profile-active>prod</profile-active>
                 <log.path>${project.build.directory}/logs/</log.path>
-                <jar.path>${project.build.directory}</jar.path>
+                <jar.path>${project.build.directory}prod</jar.path>
             </properties>
         </profile>
         <profile>

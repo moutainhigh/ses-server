@@ -6,9 +6,9 @@ log:
     max-history: 180
 dubbo:
   registry:
-    address: zookeeper://10.1.1.142:2181?backup=10.1.1.142:2182,10.1.1.142:2183
+    address: zookeeper://10.1.1.142:2181
   metadata-report:
-    address: zookeeper://10.1.1.142:2181?backup=10.1.1.142:2182,10.1.1.142:2183
+    address: zookeeper://10.1.1.142:2181
 spring:
   datasource:
     url: jdbc:mysql://10.1.2.238:2021/corporate_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
@@ -38,13 +38,13 @@ seata:
   registry:
     type: zk
     zk:
-      server-addr: 172.31.6.101:2181
+      server-addr: 10.1.1.142:2181
       cluster: default
       connect-timeout: 2000000
   config:
     type: zk
     zk:
-      server-addr: 172.31.6.101:2181
+      server-addr: 10.1.1.142:2181
       connect-timeout: 2000000
   service:
     disable-global-transaction: false
