@@ -296,8 +296,8 @@ public class FrAppServiceImpl implements FrAppService {
 
                 // 这里的逻辑要和sql逻辑保持一致
                 boolean todoFlag = (item.getFlag() == 0 || item.getFlag() == 1) && ( (item.getAppNode() == 0) || (item.getWebNode() == 0) );
-                boolean dealFlag = item.getFlag() == 1 && ( (item.getAppNode() == 1 || item.getAppNode() == 2 || item.getAppNode() == 3) || (item.getWebNode() == 2 || item.getWebNode() == 3) );
-                boolean doneFlag = item.getFlag() == 2;
+                boolean dealFlag = item.getFlag() == 1 && (item.getAppNode() == 1 || item.getAppNode() == 2 || item.getAppNode() == 3);
+                boolean doneFlag = item.getFlag() == 2 && item.getAppNode() == 4;
 
                 if (todoFlag) {
                     item.setStatus(1);
@@ -389,23 +389,23 @@ public class FrAppServiceImpl implements FrAppService {
         String tabletSn = enter.getTabletSn();
         String bluetoothAddress = enter.getBluetoothAddress();
 
-        LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
+        /*LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
         lqw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
         lqw.eq(OpeCarDistribute::getRsn, rsn);
         lqw.last("limit 1");
         OpeCarDistribute model = opeCarDistributeMapper.selectOne(lqw);
         if (null != model) {
             throw new SesWebRosException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
-        }
+        }*/
 
-        LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
+        /*LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
         checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
         checkWrapper.eq(OpeCarDistribute::getCustomerId, customerId);
         checkWrapper.last("limit 1");
         OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
         if (null != checkModel && null != checkModel.getWarehouseAccountId() && StringUtils.isNotBlank(checkModel.getRsn())) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DEAL.getCode(), ExceptionCodeEnums.ORDER_HAS_DEAL.getMessage());
-        }
+        }*/
 
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();
@@ -445,14 +445,14 @@ public class FrAppServiceImpl implements FrAppService {
         Long userId = getUserId(enter);
         Long inquiryId = enter.getId();
 
-        LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
+        /*LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
         checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
         checkWrapper.like(OpeCarDistribute::getBattery, enter.getBattery());
         checkWrapper.last("limit 1");
         OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
         if (null != checkModel) {
             throw new SesWebRosException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
-        }
+        }*/
 
         // 得到询价单的电池数量
         LambdaQueryWrapper<OpeCustomerInquiryB> lqw = new LambdaQueryWrapper<>();
@@ -521,14 +521,14 @@ public class FrAppServiceImpl implements FrAppService {
         Long userId = getUserId(enter);
         String vinCode = enter.getVinCode();
 
-        LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
+        /*LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
         checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
         checkWrapper.eq(OpeCarDistribute::getVinCode, vinCode);
         checkWrapper.last("limit 1");
         OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
         if (null != checkModel) {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_HAS_INPUT.getCode(), ExceptionCodeEnums.VIN_HAS_INPUT.getMessage());
-        }
+        }*/
 
         /*String productType = ProductTypeEnum.showCode(enter.getScooterName());
         // 截取第7位,车型编号
