@@ -131,7 +131,7 @@
         <include refid="condition"/>
     </select>
 
-    <!-- app询价单列表 -->
+    <!-- app询价单列表(注意:这里条件更改,service层判断也要改) -->
     <select id="getInquiryList" resultType="com.redescooter.ses.web.ros.vo.app.InquiryListResult">
         select
             oci.id,
@@ -168,10 +168,10 @@
             and (ocdn.flag is null or ocdn.flag in (0, 1)) and ( (ocdn.app_node is null or ocdn.app_node = 0 ) or (ocdn.node is null or ocdn.node = 0 ) )
         </if>
         <if test="param.status != null and param.status == 2">
-            and ocd.warehouse_account_id = #{warehouseAccountId} and ocdn.flag = 1 and (ocdn.app_node in (1, 2, 3) or ocdn.node in (2, 3))
+            and ocd.warehouse_account_id = #{warehouseAccountId} and ocdn.flag = 1 and ocdn.app_node in (1, 2, 3)
         </if>
         <if test="param.status != null and param.status == 3">
-            and ocd.warehouse_account_id = #{warehouseAccountId} and ocdn.flag = 2
+            and ocd.warehouse_account_id = #{warehouseAccountId} and ocdn.flag = 2 and ocdn.app_node = 4
         </if>
         <if test="param.keyword != null and param.keyword != ''">
             and (
