@@ -300,7 +300,7 @@ public class FrAppServiceImpl implements FrAppService {
                 Integer webNode = item.getWebNode();
 
                 // 这里的逻辑要和sql逻辑保持一致
-                boolean todoFlag = (flag == 0 || flag == 1) && ( (appNode == 0) || (webNode == 0) );
+                boolean todoFlag = flag == 0 && ( (appNode == 0) || (webNode == 0) );
                 boolean dealFlag = flag == 1 && (appNode == 1 || appNode == 2 || appNode == 3);
                 boolean doneFlag = flag == 2 && appNode == 4;
 
