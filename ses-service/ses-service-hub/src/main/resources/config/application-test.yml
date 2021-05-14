@@ -41,6 +41,11 @@ spring:
           url: jdbc:mysql://172.28.193.226:3306/website_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
           username: rede
           password: test.1qaz2wsx
+        admin:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://172.28.193.226:3306/admin_dev_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          username: rede
+          password: test.1qaz2wsx
   redis:
     cluster:
       nodes:

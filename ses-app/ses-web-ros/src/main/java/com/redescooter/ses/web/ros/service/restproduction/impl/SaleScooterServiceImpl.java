@@ -155,16 +155,13 @@ public class SaleScooterServiceImpl implements SaleScooterService {
     }
 
     /**
-     * 新增ope_sale_scooter_battery_relation表,并生成中英法文
+     * 新增ope_sale_scooter_battery_relation表,并生成英法文
      */
     public void insertSaleScooterBatteryRelation(OpeSaleScooter saleScooter, SaleScooterSaveOrUpdateEnter enter) {
-        for (int j = 0; j < 3; j++) {
+        for (int j = 0; j < 2; j++) {
             String language;
             String msg;
             if (j == 0) {
-                language = "cn";
-                msg = "块电池";
-            } else if (j == 1) {
                 language = "en";
                 msg = "Batterie";
             } else {

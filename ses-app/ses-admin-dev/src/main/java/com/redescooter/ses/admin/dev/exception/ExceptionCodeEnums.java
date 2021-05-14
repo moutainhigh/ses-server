@@ -80,6 +80,8 @@ public enum ExceptionCodeEnums {
     CREATE_SCOOTER_ERROR(10040, "创建车辆信息失败"),
 
     SELECT_SCOOTER_MODEL_ERROR(10041, "选择的车辆型号有误"),
+
+    INVALID_ACCOUNT_STATUS(10042,"账号状态失效")
     ;
 
     private int code;

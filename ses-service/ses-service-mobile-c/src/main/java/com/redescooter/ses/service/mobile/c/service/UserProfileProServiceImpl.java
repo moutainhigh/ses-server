@@ -60,6 +60,7 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             BeanUtils.copyProperties(enter, userProfile);
             userProfile.setId(idAppService.getId(SequenceName.CON_USER_PROFILE));
             userProfile.setDr(0);
+            userProfile.setAddress(enter.getAddress());
             userProfile.setTenantId(enter.getTenantId());
             userProfile.setJoinDate(new Date());
             userProfile.setCreatedBy(enter.getUserId());

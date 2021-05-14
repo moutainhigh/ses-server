@@ -50,6 +50,7 @@ public class HubConsumerUserProfileServiceImpl implements ConsumerUserProfileSer
         QueryWrapper<HubConUserProfile> conUserProfileQueryWrapper = new QueryWrapper<>();
         conUserProfileQueryWrapper.eq(HubConUserProfile.COL_USER_ID, enter.getId());
         conUserProfileQueryWrapper.eq(HubConUserProfile.COL_DR, 0);
+        conUserProfileQueryWrapper.last("limit 1");
         HubConUserProfile hubConUserProfile = hubConUserProfileMapper.selectOne(conUserProfileQueryWrapper);
         if (hubConUserProfile == null) {
             throw new SeSHubException(ExceptionCodeEnums.USER_PROFILE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_PROFILE_IS_NOT_EXIST.getMessage());

@@ -4,11 +4,13 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Maps;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.service.website.ProductionService;
 import com.redescooter.ses.api.hub.vo.website.SyncProductionDataEnter;
 import com.redescooter.ses.service.hub.constant.SequenceName;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
+import com.redescooter.ses.service.hub.source.operation.service.impl.SalePriceServiceImpl;
 import com.redescooter.ses.service.hub.source.website.dm.SiteColour;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProduct;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProductClass;
@@ -62,6 +64,9 @@ public class ProductionServiceImpl implements ProductionService {
     @Autowired
     private SiteProductPriceService siteProductPriceService;
 
+    @Autowired
+    private SalePriceServiceImpl salePriceService;
+
     @DubboReference
     private IdAppService idAppService;
 
@@ -106,6 +111,8 @@ public class ProductionServiceImpl implements ProductionService {
                 siteProductPriceService.removeByIds(ids);
             }
 
+            //salePriceService.deleteSalePrice(product.getProductModelName());
+
 //            product.setStatus(saleStatus == 1 ? 1 : -1);
 //            product.setUpdatedTime(new Date());
 //            product.setUpdatedBy(0L);
@@ -129,7 +136,6 @@ public class ProductionServiceImpl implements ProductionService {
         }
 //        return flag;
     }
-
 
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
@@ -156,6 +162,9 @@ public class ProductionServiceImpl implements ProductionService {
             productClass.setUpdatedBy(0L);
             productClass.setUpdatedTime(new Date());
             siteProductClassService.saveOrUpdate(productClass);
+        } else {
+            productClass.setDr(Constant.DR_FALSE);
+            siteProductClassService.updateById(productClass);
         }
 
         // 然后创建 site_product_model 信息
@@ -178,6 +187,20 @@ public class ProductionServiceImpl implements ProductionService {
             productModel.setUpdatedBy(0L);
             productModel.setUpdatedTime(new Date());
             siteProductModelService.saveOrUpdate(productModel);
+        } else {
+            LambdaQueryWrapper<SiteProductPrice> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(SiteProductPrice::getProductModelId, productModel.getId());
+            wrapper.eq(SiteProductPrice::getDr, Constant.DR_TRUE);
+            List<SiteProductPrice> list = siteProductPriceService.list(wrapper);
+            if (CollectionUtils.isNotEmpty(list)) {
+                for (SiteProductPrice item : list) {
+                    item.setDr(Constant.DR_FALSE);
+                    siteProductPriceService.updateById(item);
+                }
+            }
+
+            productModel.setDr(Constant.DR_FALSE);
+            siteProductModelService.updateById(productModel);
         }
 
         // 接着创建 site_product 信息
@@ -197,6 +220,9 @@ public class ProductionServiceImpl implements ProductionService {
             product.setUpdatedTime(new Date());
             product.setProductModelId(productModel.getId());
             siteProductService.saveOrUpdate(product);
+        } else {
+            product.setDr(Constant.DR_FALSE);
+            siteProductService.updateById(product);
         }
 
         // 再创建 site_colour 信息
@@ -220,6 +246,9 @@ public class ProductionServiceImpl implements ProductionService {
             colour.setUpdatedBy(0L);
             colour.setUpdatedTime(new Date());
             siteColourService.saveOrUpdate(colour);
+        } else {
+            colour.setDr(Constant.DR_FALSE);
+            siteColourService.updateById(colour);
         }
 
         // 最后创建 site_product_colour 信息
@@ -239,6 +268,14 @@ public class ProductionServiceImpl implements ProductionService {
             siteProductColourService.saveOrUpdate(productColour);
         }
         siteProductService.saveOrUpdate(product);
+
+
+
+
+
+
+
+
 
 
 //        // 先创建 site_product 信息
@@ -381,6 +418,8 @@ public class ProductionServiceImpl implements ProductionService {
                 List<Long> ids = list.stream().map(o -> o.getId()).collect(Collectors.toList());
                 siteProductPriceService.removeByIds(ids);
             }
+
+            salePriceService.deleteSalePrice(product.getProductModelName());
         }
     }
 

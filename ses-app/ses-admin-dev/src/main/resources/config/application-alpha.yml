@@ -17,7 +17,7 @@ spring:                                                                         
       max-file-size: 100MB
       enabled: true
   datasource:                                                                                                           #数据库连接
-    url: jdbc:mysql://192.168.2.211:3306/admin-dev?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://192.168.2.211:3306/admin_dev?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: dev
     password: 1qaz2wsx
     druid:
@@ -128,3 +128,27 @@ spring:                                                                         
 fileUpload:
     path: /usr/local/nginx/soft/download/
     download: http://192.168.2.211/download/
+
+
+seata:
+  enabled: true
+  enable-auto-data-source-proxy: true
+  tx-service-group: ses-admin-dev-group
+  registry:
+    type: zk
+    zk:
+      server-addr: 192.168.2.211:2181
+      cluster: default
+      connect-timeout: 2000000
+  config:
+    type: zk
+    zk:
+      server-addr: 192.168.2.211:2181
+      connect-timeout: 2000000
+  service:
+    disable-global-transaction: false
+    vgroup-mapping:
+      ses-admin-dev-group: default
+  client:
+    rm:
+      report-success-enable: false

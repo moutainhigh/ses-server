@@ -3,9 +3,9 @@ package com.redescooter.ses.web.website.service;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.IdResult;
-import com.redescooter.ses.web.website.vo.order.AddUpdateOrderEnter;
 import com.redescooter.ses.web.website.vo.order.AddOrderPartsEnter;
+import com.redescooter.ses.web.website.vo.order.AddOrderResult;
+import com.redescooter.ses.web.website.vo.order.AddUpdateOrderEnter;
 import com.redescooter.ses.web.website.vo.order.OrderDetailsResult;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public interface OrderService {
      * @param enter
      * @return
      */
-    IdResult addOrder(AddUpdateOrderEnter enter);
+    AddOrderResult addOrder(AddUpdateOrderEnter enter);
 
     /**
      * 创建订单配件

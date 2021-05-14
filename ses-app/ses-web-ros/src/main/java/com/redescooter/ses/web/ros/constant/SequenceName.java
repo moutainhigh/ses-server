@@ -273,5 +273,7 @@ public interface SequenceName {
 
     String OPE_SALE_PRICE = "OPE_SALE_PRICE";
 
+    String OPE_WAREHOUSE_ACCOUNT = "OPE_WAREHOUSE_ACCOUNT";
+
 
 }

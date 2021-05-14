@@ -546,9 +546,23 @@ public enum ExceptionCodeEnums {
 
     SCOOTER_BATTERY_IS_EMPTY(10264, "车型为空"),
 
-    RULE_ALREADY_EXIST(10265, "规则已存在")
+    RULE_ALREADY_EXIST(10265, "规则已存在"),
 
+    ACCOUNT_HAS_INQUIRY(10266, "该账号下还有处理中的询价单,需处理完成后才可禁用"),
 
+    PARTS_HAS_INPUT(10267, "该部件已录入,请更换一件扫码"),
+
+    VIN_HAS_INPUT(10268, "该VIN已被使用,请更换扫码"),
+
+    VIN_NOT_MATCH(10269, "VIN与车型不符,请重新输入"),
+
+    ORDER_HAS_DEAL(10270, "该订单已在处理中"),
+
+    SN_ALREADY_EXISTS(10271, "车辆平板已存在"),
+
+    SCOOTER_NOT_CLOSED(10272, "车辆未关闭"),
+
+    SELECT_SCOOTER_MODEL_ERROR(10273, "选择的车辆型号有误")
 
 
 

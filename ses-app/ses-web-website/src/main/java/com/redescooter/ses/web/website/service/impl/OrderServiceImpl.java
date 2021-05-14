@@ -10,8 +10,8 @@ import com.redescooter.ses.api.common.service.SiteWebInquiryService;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
-import com.redescooter.ses.api.common.vo.base.IdResult;
 import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryEnter;
+import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryPriceEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
 import com.redescooter.ses.tool.utils.date.DateUtil;
@@ -45,6 +45,7 @@ import com.redescooter.ses.web.website.service.base.SiteProductPriceService;
 import com.redescooter.ses.web.website.service.base.SiteProductService;
 import com.redescooter.ses.web.website.service.base.SiteUserService;
 import com.redescooter.ses.web.website.vo.order.AddOrderPartsEnter;
+import com.redescooter.ses.web.website.vo.order.AddOrderResult;
 import com.redescooter.ses.web.website.vo.order.AddPartListEnter;
 import com.redescooter.ses.web.website.vo.order.AddUpdateOrderEnter;
 import com.redescooter.ses.web.website.vo.order.OrderDetailsResult;
@@ -122,7 +123,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
-    public IdResult addOrder(AddUpdateOrderEnter enter) {
+    public AddOrderResult addOrder(AddUpdateOrderEnter enter) {
         SiteOrder addSiteOrderVO = null;
         //获取当前登录用户
         SiteUser user = siteUserService.getById(enter.getUserId());
@@ -299,18 +300,21 @@ public class OrderServiceImpl implements OrderService {
         addSiteOrderVO.setUpdatedBy(enter.getUserId());
 
         siteOrderService.saveOrUpdate(addSiteOrderVO);
-        IdResult result = new IdResult();
+        AddOrderResult result = new AddOrderResult();
         result.setId(addSiteOrderVO.getId());
+        result.setDeposit(addSiteOrderVO.getPrepaidDeposit());
         result.setRequestId(enter.getRequestId());
         String bankCardName = customer.getCardholder();
         // 官网的订单数据 要同步到ROS系统中
-        syncdataToRos(addSiteOrderVO, email , bankCardName);
+        syncdataToRos(addSiteOrderVO, email, bankCardName);
 
         return result;
     }
 
 
-    // 询价单号生成规则
+    /**
+     * 询价单号生成规则
+     */
     public String createOrderNo(String orderNoEnum) {
         String code = "";
         // 先判断当前的日期有没有生成过单据号
@@ -319,17 +323,17 @@ public class OrderServiceImpl implements OrderService {
         queryWrapper.orderByDesc(SiteOrder.COL_ORDER_NO);
         queryWrapper.last("limit 1");
         SiteOrder inquiry = siteOrderService.getOne(queryWrapper);
-        if(inquiry != null){
+        if (inquiry != null) {
             // 说明今天已经有过单据了  只需要流水号递增
-            code = OrderNoGenerateUtil.orderNoGenerate(inquiry.getOrderNo(),orderNoEnum);
-        }else {
+            code = OrderNoGenerateUtil.orderNoGenerate(inquiry.getOrderNo(), orderNoEnum);
+        } else {
             // 说明今天还没有产生过单据号，给今天的第一个就好
             code = orderNoEnum + DateUtil.getSimpleDateStamp() + "001";
         }
         //生成订单号之后 在流水号前面加上W（表示官网的数据）
-        String frond = code.substring(0,code.length()-3);
-        String back = code.substring(code.length()-3,code.length());
-        return frond +"W"+back;
+        String frond = code.substring(0, code.length() - 3);
+        String back = code.substring(code.length() - 3, code.length());
+        return frond + "W" + back;
     }
 
 
@@ -414,7 +418,7 @@ public class OrderServiceImpl implements OrderService {
                 orderB.setProductId(order.getProductId());
                 orderB.setPartsId(p.getPartsId());
                 orderB.setPartsQty(p.getParts_qty());
-                //单个配件价格合
+                //单个配件价格和
                 BigDecimal partPriceSun = part.getPrice().multiply(new BigDecimal(p.getParts_qty()));
                 orderB.setPartsPrice(partPriceSun);
                 orderB.setRevision(0);
@@ -446,7 +450,6 @@ public class OrderServiceImpl implements OrderService {
                         Integer count = Integer.valueOf(installmentTime) - 1;
                         // 配件总额 /（分期-1）  平均分到每期
                         shouldPayPeriod = shouldPayPeriod.add(partAllTotalPrice.divide(new BigDecimal(String.valueOf(count)), 2, BigDecimal.ROUND_DOWN));
-                        //shouldPayPeriod = shouldPayPeriod.add(partAllTotalPrice.divide(new BigDecimal(String.valueOf(count))).setScale(2, BigDecimal.ROUND_DOWN));
                     }
                 }
             }
@@ -467,8 +470,26 @@ public class OrderServiceImpl implements OrderService {
             siteOrderService.updateById(order);
             //创建子订单
             siteOrderBService.batchInsert(list);
+
+            // 如果选择的有配件,同步修改ros预订单的价格(加上配件的价格)
+            syncPriceToRos(enter, orderTotalPrice, orderTotalPrice.subtract(order.getAmountPaid()));
         }
         return new GeneralResult(enter.getRequestId());
+    }
+
+    public void syncPriceToRos(AddOrderPartsEnter enter, BigDecimal totalPrice, BigDecimal amountObligation) {
+        // 获取当前登录用户
+        SiteUser user = siteUserService.getById(enter.getUserId());
+        if (null == user) {
+            throw new SesWebsiteException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        String email = user.getLoginName();
+
+        // 封装参数
+        SiteWebInquiryPriceEnter model = new SiteWebInquiryPriceEnter();
+        model.setTotalPrice(totalPrice);
+        model.setAmountObligation(amountObligation);
+        siteWebInquiryService.updateRosInquiryPrice(model, email);
     }
 
     /**

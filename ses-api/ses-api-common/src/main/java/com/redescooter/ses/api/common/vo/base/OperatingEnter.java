@@ -24,7 +24,7 @@ public class OperatingEnter<T> extends PageEnter {
      * 查询条件
      */
     @ApiModelProperty(value = "查询状态")
-    private Integer status;
+    private String status;
 
 
 }
