@@ -11,7 +11,7 @@ dubbo:
     address: zookeeper://10.1.1.142:2181
 spring:
   datasource:
-    url: jdbc:mysql://10.1.2.238:2021/corporate_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://10.1.2.238:2021/consumer_test?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: rede
     password: rede1qaz2wsx
     druid:
@@ -29,8 +29,6 @@ spring:
         - 10.1.2.238:7003
         - 10.1.2.238:7004
         - 10.1.2.238:7005
-
-
 seata:
   enabled: true
   enable-auto-data-source-proxy: true
