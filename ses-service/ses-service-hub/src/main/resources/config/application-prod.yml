@@ -53,7 +53,7 @@ spring:
 
 seata:
   enabled: true
-  enable-auto-data-source-proxy: true
+  enable-auto-data-source-proxy: false
   tx-service-group: ses-service-hub-group
   registry:
     type: zk
