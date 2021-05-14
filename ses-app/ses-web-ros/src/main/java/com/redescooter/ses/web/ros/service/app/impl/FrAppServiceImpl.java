@@ -527,16 +527,10 @@ public class FrAppServiceImpl implements FrAppService {
         String vinCode = enter.getVinCode();
         Integer seatNumber = enter.getSeatNumber();
 
-        LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
-        checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
-        checkWrapper.eq(OpeCarDistribute::getVinCode, vinCode);
-        checkWrapper.last("limit 1");
-        OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
-        if (null != checkModel) {
-            throw new SesWebRosException(ExceptionCodeEnums.VIN_HAS_INPUT.getCode(), ExceptionCodeEnums.VIN_HAS_INPUT.getMessage());
-        }
-
         if (vinCode.length() != 17) {
+            throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+        }
+        if (!vinCode.startsWith("VXSR2A")) {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
         }
 
@@ -551,6 +545,15 @@ public class FrAppServiceImpl implements FrAppService {
         String seatNumberSub = vinCode.substring(7, 8);
         if (!StringUtils.equals(String.valueOf(seatNumber), seatNumberSub)) {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+        }
+
+        LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
+        checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        checkWrapper.eq(OpeCarDistribute::getVinCode, vinCode);
+        checkWrapper.last("limit 1");
+        OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
+        if (null != checkModel) {
+            throw new SesWebRosException(ExceptionCodeEnums.VIN_HAS_INPUT.getCode(), ExceptionCodeEnums.VIN_HAS_INPUT.getMessage());
         }
 
         // 修改主表
