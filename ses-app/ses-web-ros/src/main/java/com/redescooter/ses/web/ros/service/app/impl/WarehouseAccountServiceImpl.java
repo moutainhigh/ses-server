@@ -229,7 +229,10 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
                         OpeCarDistributeNode node = opeCarDistributeNodeMapper.selectOne(wrapper);
                         if (null != node) {
                             Integer nodeFlag = node.getFlag();
-                            if (nodeFlag == 1) {
+                            Integer appNode = node.getAppNode();
+
+                            boolean e = nodeFlag == 1 && (appNode == 1 || appNode == 2 || appNode == 3);
+                            if (e) {
                                 flag = true;
                                 break;
                             }
