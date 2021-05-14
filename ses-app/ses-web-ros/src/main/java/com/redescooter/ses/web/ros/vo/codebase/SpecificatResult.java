@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class SpecificatTypeResult extends GeneralResult {
+public class SpecificatResult extends GeneralResult {
 
     @ApiModelProperty(value = "车型id")
     private Long specificatTypeId;

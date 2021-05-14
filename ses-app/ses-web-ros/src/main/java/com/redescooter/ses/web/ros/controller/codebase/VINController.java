@@ -6,7 +6,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.codebase.VINService;
-import com.redescooter.ses.web.ros.vo.codebase.SpecificatTypeResult;
+import com.redescooter.ses.web.ros.vo.codebase.SpecificatResult;
 import com.redescooter.ses.web.ros.vo.codebase.VINDetailResult;
 import com.redescooter.ses.web.ros.vo.codebase.VINListEnter;
 import com.redescooter.ses.web.ros.vo.codebase.VINListResult;
@@ -40,7 +40,7 @@ public class VINController {
      */
     @PostMapping("/data")
     @ApiOperation(value = "车型数据源", notes = "车型数据源")
-    public Response<List<SpecificatTypeResult>> getSpecificatTypeData(@ModelAttribute GeneralEnter enter) {
+    public Response<List<SpecificatResult>> getSpecificatTypeData(@ModelAttribute GeneralEnter enter) {
         return new Response<>(vinService.getSpecificatTypeData(enter));
     }
 

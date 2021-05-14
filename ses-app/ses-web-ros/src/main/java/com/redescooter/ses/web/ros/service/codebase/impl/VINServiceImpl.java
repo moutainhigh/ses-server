@@ -5,7 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.codebase.VINService;
-import com.redescooter.ses.web.ros.vo.codebase.SpecificatTypeResult;
+import com.redescooter.ses.web.ros.vo.codebase.SpecificatResult;
 import com.redescooter.ses.web.ros.vo.codebase.VINDetailResult;
 import com.redescooter.ses.web.ros.vo.codebase.VINListEnter;
 import com.redescooter.ses.web.ros.vo.codebase.VINListResult;
@@ -27,7 +27,7 @@ public class VINServiceImpl implements VINService {
      * 车型数据源
      */
     @Override
-    public List<SpecificatTypeResult> getSpecificatTypeData(GeneralEnter enter) {
+    public List<SpecificatResult> getSpecificatTypeData(GeneralEnter enter) {
         return null;
     }
 

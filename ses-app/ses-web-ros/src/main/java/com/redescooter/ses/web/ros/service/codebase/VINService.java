@@ -4,7 +4,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
-import com.redescooter.ses.web.ros.vo.codebase.SpecificatTypeResult;
+import com.redescooter.ses.web.ros.vo.codebase.SpecificatResult;
 import com.redescooter.ses.web.ros.vo.codebase.VINDetailResult;
 import com.redescooter.ses.web.ros.vo.codebase.VINListEnter;
 import com.redescooter.ses.web.ros.vo.codebase.VINListResult;
@@ -21,7 +21,7 @@ public interface VINService {
     /**
      * 车型数据源
      */
-    List<SpecificatTypeResult> getSpecificatTypeData(GeneralEnter enter);
+    List<SpecificatResult> getSpecificatTypeData(GeneralEnter enter);
 
     /**
      * 列表
