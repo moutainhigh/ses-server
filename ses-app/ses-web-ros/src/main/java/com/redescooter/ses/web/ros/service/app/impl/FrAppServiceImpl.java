@@ -525,6 +525,7 @@ public class FrAppServiceImpl implements FrAppService {
     public GeneralResult bindVin(BindVinEnter enter) {
         Long userId = getUserId(enter);
         String vinCode = enter.getVinCode();
+        Integer seatNumber = enter.getSeatNumber();
 
         LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
         checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
@@ -541,14 +542,13 @@ public class FrAppServiceImpl implements FrAppService {
 
         String productType = ProductTypeEnum.showCode(enter.getScooterName());
         // 截取第7位,车型编号
-        String productTypeSub = vinCode.substring(0, 8);
+        String productTypeSub = vinCode.substring(6, 7);
         if (!StringUtils.equals(productType, productTypeSub)) {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
         }
 
-        Integer seatNumber = enter.getSeatNumber();
         // 截取第8位,座位数量
-        String seatNumberSub = vinCode.substring(0, 9);
+        String seatNumberSub = vinCode.substring(7, 8);
         if (!StringUtils.equals(String.valueOf(seatNumber), seatNumberSub)) {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
         }
