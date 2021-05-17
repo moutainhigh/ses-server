@@ -133,4 +133,6 @@ public interface SequenceName {
 
     String OPE_WMS_QUALIFIED_PARTS_STOCK = "OPE_WMS_QUALIFIED_PARTS_STOCK";
 
+    String OPE_CODEBASE_RSN = "OPE_CODEBASE_RSN";
+
 }

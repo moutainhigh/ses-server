@@ -2,15 +2,12 @@ package com.redescooter.ses.web.ros.service.assign.impl;
 
 import com.google.common.collect.Lists;
 import com.redescooter.ses.web.ros.SesWebRosApplicationTests;
-import com.redescooter.ses.web.ros.enums.assign.ProductTypeEnum;
 import com.redescooter.ses.web.ros.service.assign.ToBeAssignService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 class ToBeAssignServiceImplTest extends SesWebRosApplicationTests {

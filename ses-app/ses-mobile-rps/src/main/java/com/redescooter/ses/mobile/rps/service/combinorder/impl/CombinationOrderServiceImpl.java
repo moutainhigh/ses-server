@@ -1,6 +1,7 @@
 package com.redescooter.ses.mobile.rps.service.combinorder.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.date.DayCodeEnum;
 import com.redescooter.ses.api.common.enums.date.MonthCodeEnum;
@@ -30,6 +31,7 @@ import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionScooterBomMapper;
 import com.redescooter.ses.mobile.rps.dao.qcorder.QcOrderMapper;
 import com.redescooter.ses.mobile.rps.dao.qcorder.QcOrderSerialBindMapper;
+import com.redescooter.ses.mobile.rps.dm.OpeCodebaseRsn;
 import com.redescooter.ses.mobile.rps.dm.OpeCombinListCombinB;
 import com.redescooter.ses.mobile.rps.dm.OpeCombinListPartsSerialBind;
 import com.redescooter.ses.mobile.rps.dm.OpeCombinListRelationParts;
@@ -42,6 +44,7 @@ import com.redescooter.ses.mobile.rps.dm.OpeProductionParts;
 import com.redescooter.ses.mobile.rps.dm.OpeProductionPartsRelation;
 import com.redescooter.ses.mobile.rps.dm.OpeQcOrderSerialBind;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
+import com.redescooter.ses.mobile.rps.service.base.OpeCodebaseRsnService;
 import com.redescooter.ses.mobile.rps.service.base.OpeOrderSerialBindService;
 import com.redescooter.ses.mobile.rps.service.combinorder.CombinationOrderService;
 import com.redescooter.ses.mobile.rps.vo.combinorder.CombinationListDTO;
@@ -130,6 +133,9 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
 
     @Autowired
     private QcOrderMapper qcOrderMapper;
+
+    @Autowired
+    private OpeCodebaseRsnService opeCodebaseRsnService;
 
     @Override
     public Map<Integer, Integer> getCombinationOrderTypeCount(GeneralEnter enter) {
@@ -347,6 +353,17 @@ public class CombinationOrderServiceImpl implements CombinationOrderService {
                 // 获取后台生成车辆序列号
                 serialNum = getProductSerialNum(paramDTO.getProductType());
                 resultDTO.setSerialNum(serialNum);
+
+                // 新增码库rsn表
+                OpeCodebaseRsn codebaseRsn = new OpeCodebaseRsn();
+                codebaseRsn.setId(idAppService.getId(SequenceName.OPE_CODEBASE_RSN));
+                codebaseRsn.setDr(Constant.DR_FALSE);
+                codebaseRsn.setRsn(serialNum);
+                codebaseRsn.setStatus(1);
+                codebaseRsn.setCreatedBy(paramDTO.getUserId());
+                codebaseRsn.setCreatedTime(new Date());
+                opeCodebaseRsnService.save(codebaseRsn);
+
                 // 查询ECU仪表部件序列号绑定信息
                 OpeCombinListPartsSerialBind opeCombinListPartsSerialBind = combinationListPartsSerialBindMapper.getEcuPartsSerialBindByOrderBId(paramDTO.getProductId());
                 RpsAssert.isNull(opeCombinListPartsSerialBind, ExceptionCodeEnums.SCOOTER_HAS_NO_ECU.getCode(),

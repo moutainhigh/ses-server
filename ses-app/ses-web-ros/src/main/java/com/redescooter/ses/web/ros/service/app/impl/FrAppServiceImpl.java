@@ -54,7 +54,6 @@ import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
-import com.redescooter.ses.web.ros.enums.assign.ProductTypeEnum;
 import com.redescooter.ses.web.ros.enums.distributor.StatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;

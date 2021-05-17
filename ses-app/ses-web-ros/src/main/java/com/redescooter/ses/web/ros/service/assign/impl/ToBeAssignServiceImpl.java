@@ -5,6 +5,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.assign.FactoryEnum;
+import com.redescooter.ses.api.common.enums.assign.ProductTypeEnum;
+import com.redescooter.ses.api.common.enums.assign.ScooterTypeEnum;
+import com.redescooter.ses.api.common.enums.assign.YearEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
@@ -56,13 +60,9 @@ import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.web.ros.enums.assign.CustomerFormEnum;
-import com.redescooter.ses.web.ros.enums.assign.FactoryEnum;
 import com.redescooter.ses.web.ros.enums.assign.FlagEnum;
 import com.redescooter.ses.web.ros.enums.assign.IndustryTypeEnum;
 import com.redescooter.ses.web.ros.enums.assign.NodeEnum;
-import com.redescooter.ses.web.ros.enums.assign.ProductTypeEnum;
-import com.redescooter.ses.web.ros.enums.assign.ScooterTypeEnum;
-import com.redescooter.ses.web.ros.enums.assign.YearEnum;
 import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
@@ -96,7 +96,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description 车辆待分配ServiceImpl

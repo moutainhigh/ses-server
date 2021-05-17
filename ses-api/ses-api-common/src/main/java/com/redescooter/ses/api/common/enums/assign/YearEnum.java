@@ -1,4 +1,4 @@
-package com.redescooter.ses.web.ros.enums.assign;
+package com.redescooter.ses.api.common.enums.assign;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

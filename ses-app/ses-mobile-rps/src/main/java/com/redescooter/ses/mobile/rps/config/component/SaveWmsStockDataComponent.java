@@ -1,6 +1,12 @@
 package com.redescooter.ses.mobile.rps.config.component;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.collect.Lists;
+import com.redescooter.ses.api.common.enums.assign.FactoryEnum;
+import com.redescooter.ses.api.common.enums.assign.ProductTypeEnum;
+import com.redescooter.ses.api.common.enums.assign.ScooterTypeEnum;
+import com.redescooter.ses.api.common.enums.assign.YearEnum;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.InWhTypeEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
@@ -11,6 +17,7 @@ import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
+import com.redescooter.ses.mobile.rps.dao.base.OpeCarDistributeMapper;
 import com.redescooter.ses.mobile.rps.dao.base.OpeWmsStockRecordMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionCombinBomMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
@@ -19,6 +26,8 @@ import com.redescooter.ses.mobile.rps.dao.wms.WmsCombinStockMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsPartsStockMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsScooterStockMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper;
+import com.redescooter.ses.mobile.rps.dm.OpeCarDistribute;
+import com.redescooter.ses.mobile.rps.dm.OpeCodebaseVin;
 import com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrderSerialBind;
 import com.redescooter.ses.mobile.rps.dm.OpeProductionCombinBom;
 import com.redescooter.ses.mobile.rps.dm.OpeProductionParts;
@@ -29,18 +38,25 @@ import com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock;
 import com.redescooter.ses.mobile.rps.dm.OpeWmsStockRecord;
 import com.redescooter.ses.mobile.rps.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
+import com.redescooter.ses.mobile.rps.service.base.OpeCodebaseRelationService;
+import com.redescooter.ses.mobile.rps.service.base.OpeCodebaseVinService;
 import com.redescooter.ses.mobile.rps.service.base.OpeInWhouseOrderSerialBindService;
+import com.redescooter.ses.mobile.rps.service.base.OpeSpecificatTypeService;
 import com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -78,6 +94,18 @@ public class SaveWmsStockDataComponent {
 
     @Autowired
     private OpeInWhouseOrderSerialBindService opeInWhouseOrderSerialBindService;
+
+    @Autowired
+    private OpeCarDistributeMapper opeCarDistributeMapper;
+
+    @Autowired
+    private OpeCodebaseVinService opeCodebaseVinService;
+
+    @Autowired
+    private OpeCodebaseRelationService opeCodebaseRelationService;
+
+    @Autowired
+    private OpeSpecificatTypeService opeSpecificatTypeService;
 
 
     /**
@@ -178,6 +206,27 @@ public class SaveWmsStockDataComponent {
              * 保存库存产品序列号信息
              */
             wmsStockSerialNumberMapper.batchInsertWmsStockSerialNumber(buildOpeWmsStockSerialNumber(inWhouseOrderSerialBinds, stockMap, userId));
+
+            // 产生4条vin,保存到码库 E50一座 E50两座 E100一座 E100两座
+            List<OpeCodebaseVin> vinList = Lists.newArrayList();
+
+
+
+
+            //generateVINCode();
+
+
+
+
+
+
+
+            opeCodebaseVinService.saveBatch(vinList);
+
+
+
+
+
 
         } else {
             for (Map.Entry<Long, List<OutWarehouseOrderProductDTO>> map : outWhOrderProductMap.entrySet()) {
@@ -596,6 +645,232 @@ public class SaveWmsStockDataComponent {
         }
 
         return stockId;
+    }
+
+    /**
+     * 从指定数组中生成随机数
+     */
+    public String generateRangeRandom() {
+        String[] array = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "X"};
+        int index = (int) (Math.random() * array.length);
+        return array[index];
+    }
+
+    /**
+     * 生成VIN Code
+     * @param specificatId 车辆型号id
+     * @param specificatName 车辆型号名称
+     * @param seatNumber 座位数
+     * @return
+     */
+    public String generateVINCode(Long specificatId, String specificatName, Integer seatNumber) {
+        String msg = "VXS";
+        StringBuffer result = new StringBuffer();
+
+        // 世界工厂代码和车辆类型
+        result.append(msg);
+        result.append(ScooterTypeEnum.R2A.getCode());
+
+        // 车型编号和座位数量
+        String productType = ProductTypeEnum.showCode(specificatName);
+        result.append(productType);
+        result.append(seatNumber);
+
+        // 指定随机数
+        String random = generateRangeRandom();
+        result.append(random);
+
+        // 年份字母和工厂编号
+        Calendar cal = Calendar.getInstance();
+        String year = String.valueOf(cal.get(Calendar.YEAR));
+        String value = YearEnum.showValue(year);
+        result.append(value);
+        result.append(FactoryEnum.AOGE.getCode());
+
+        // 6位数递增序列号
+        List<Integer> codeList = Lists.newArrayList();
+        LambdaQueryWrapper<OpeCarDistribute> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeCarDistribute::getSpecificatTypeId, specificatId);
+        wrapper.eq(OpeCarDistribute::getSeatNumber, seatNumber);
+        List<OpeCarDistribute> list = opeCarDistributeMapper.selectList(wrapper);
+        if (CollectionUtils.isNotEmpty(list)) {
+            // 得到自增编号,从倒数第6位开始截取
+            for (OpeCarDistribute o : list) {
+                String vinCode = o.getVinCode();
+                if (StringUtils.isNotBlank(vinCode)) {
+                    String sub = vinCode.substring(vinCode.length() - 6);
+                    codeList.add(Integer.valueOf(sub));
+                }
+            }
+            if (CollectionUtils.isNotEmpty(codeList)) {
+                // 倒序排列
+                codeList.sort(Comparator.reverseOrder());
+                NumberFormat nf = NumberFormat.getInstance();
+                nf.setGroupingUsed(false);
+                nf.setMaximumIntegerDigits(6);
+                nf.setMinimumIntegerDigits(6);
+                String code = nf.format(new Double(codeList.get(0) + 1));
+                result.append(code);
+            } else {
+                result.append("000001");
+            }
+        } else {
+            result.append("000001");
+        }
+        // 根据生成的vin得到正确的第九位数字
+        String nineCode = checkVIN(result.toString());
+        // 用正确的第九位数字替换之前随机生成的第九位数字
+        result.replace(8,9, nineCode);
+        return result.toString();
+    }
+
+    /**
+     * 替换Vin的第九位数字（校验vin）
+     *
+     * @param vin
+     * @return
+     */
+    public static String checkVIN(String vin) {
+        Map vinMapWeighting = null;
+
+        Map vinMapValue = null;
+
+        vinMapWeighting = new HashMap();
+
+        vinMapValue = new HashMap();
+
+        vinMapWeighting.put(1, 8);
+
+        vinMapWeighting.put(2, 7);
+
+        vinMapWeighting.put(3, 6);
+
+        vinMapWeighting.put(4, 5);
+
+        vinMapWeighting.put(5, 4);
+
+        vinMapWeighting.put(6, 3);
+
+        vinMapWeighting.put(7, 2);
+
+        vinMapWeighting.put(8, 10);
+
+        vinMapWeighting.put(9, 0);
+
+        vinMapWeighting.put(10, 9);
+
+        vinMapWeighting.put(11, 8);
+
+        vinMapWeighting.put(12, 7);
+
+        vinMapWeighting.put(13, 6);
+
+        vinMapWeighting.put(14, 5);
+
+        vinMapWeighting.put(15, 4);
+
+        vinMapWeighting.put(16, 3);
+
+        vinMapWeighting.put(17, 2);
+
+        vinMapValue.put('0', 0);
+
+        vinMapValue.put('1', 1);
+
+        vinMapValue.put('2', 2);
+
+        vinMapValue.put('3', 3);
+
+        vinMapValue.put('4', 4);
+
+        vinMapValue.put('5', 5);
+
+        vinMapValue.put('6', 6);
+
+        vinMapValue.put('7', 7);
+
+        vinMapValue.put('8', 8);
+
+        vinMapValue.put('9', 9);
+
+        vinMapValue.put('A', 1);
+
+        vinMapValue.put('B', 2);
+
+        vinMapValue.put('C', 3);
+
+        vinMapValue.put('D', 4);
+
+        vinMapValue.put('E', 5);
+
+        vinMapValue.put('F', 6);
+
+        vinMapValue.put('G', 7);
+
+        vinMapValue.put('H', 8);
+
+        vinMapValue.put('J', 1);
+
+        vinMapValue.put('K', 2);
+
+        vinMapValue.put('M', 4);
+
+        vinMapValue.put('L', 3);
+
+        vinMapValue.put('N', 5);
+
+        vinMapValue.put('P', 7);
+
+        vinMapValue.put('R', 9);
+
+        vinMapValue.put('S', 2);
+
+        vinMapValue.put('T', 3);
+
+        vinMapValue.put('U', 4);
+
+        vinMapValue.put('V', 5);
+
+        vinMapValue.put('W', 6);
+
+        vinMapValue.put('X', 7);
+
+        vinMapValue.put('Y', 8);
+
+        vinMapValue.put('Z', 9);
+
+        boolean reultFlag = false;
+
+        String uppervin = vin.toUpperCase();
+
+//排除字母O、I
+
+        if (vin == null || uppervin.indexOf("O") >= 0 || uppervin.indexOf("I") >= 0) {
+            reultFlag = false;
+
+        } else {
+//1:长度为17
+
+            if (vin.length() == 17) {
+                int amount = 0;
+                char[] vinArr = uppervin.toCharArray();
+                for (int i = 0; i < vinArr.length; i++) {
+
+//VIN码从从第一位开始，码数字的对应值×该位的加权值，计算全部17位的乘积值相加
+                    Object o = vinMapValue.get(vinArr[i]);
+                    Object o2 = vinMapWeighting.get(i + 1);
+                    amount += Integer.parseInt(o == null ? "" : o.toString()) * Integer.parseInt(o2 == null ? "" : o2.toString());
+
+                }
+                if (amount % 11 == 10) {
+                    return "X";
+                } else {
+                    int result = amount % 11;
+                    return String.valueOf(result);
+                }
+            }
+        }
+        return null;
     }
 
 }
