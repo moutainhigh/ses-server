@@ -66,5 +66,13 @@
         </if>
     </sql>
 
+    <!-- 导出rsn -->
+    <select id="exportRsn" resultType="com.redescooter.ses.web.ros.vo.codebase.ExportRSNResult">
+        select rsn, status, created_time as generateDate, updated_time as finishDate
+        from ope_codebase_rsn
+        where dr = 0
+        <include refid="condition"/>
+        order by created_time desc
+    </select>
 
 </mapper>

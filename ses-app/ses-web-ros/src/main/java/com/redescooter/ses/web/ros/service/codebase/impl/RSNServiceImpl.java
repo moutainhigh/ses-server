@@ -1,11 +1,16 @@
 package com.redescooter.ses.web.ros.service.codebase.impl;
 
+import com.aliyun.oss.ClientConfiguration;
+import com.aliyun.oss.OSSClient;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.oss.ProtocolEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.starter.common.config.OssConfig;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCodebaseRsnMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
@@ -15,14 +20,25 @@ import com.redescooter.ses.web.ros.service.base.OpeCodebaseRsnService;
 import com.redescooter.ses.web.ros.service.base.OpeCodebaseVinService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
 import com.redescooter.ses.web.ros.service.codebase.RSNService;
+import com.redescooter.ses.web.ros.utils.ExcelUtil;
+import com.redescooter.ses.web.ros.vo.codebase.ExportRSNResult;
 import com.redescooter.ses.web.ros.vo.codebase.RSNDetailResult;
 import com.redescooter.ses.web.ros.vo.codebase.RSNDetailScooterResult;
 import com.redescooter.ses.web.ros.vo.codebase.RSNListEnter;
 import com.redescooter.ses.web.ros.vo.codebase.RSNListResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +65,12 @@ public class RSNServiceImpl implements RSNService {
 
     @Autowired
     private OpeCarDistributeMapper opeCarDistributeMapper;
+
+    @Value("${excel.folder}")
+    private String excelFolder;
+
+    @Autowired
+    private OssConfig ossConfig;
 
     /**
      * 列表
@@ -146,7 +168,66 @@ public class RSNServiceImpl implements RSNService {
      */
     @Override
     public GeneralResult export(RSNListEnter enter) {
-        return null;
+        String excelPath = "";
+        List<ExportRSNResult> list = opeCodebaseRsnMapper.exportRsn(enter);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (ExportRSNResult item : list) {
+                if ("1".equals(item.getStatus())) {
+                    item.setStatus("待分配");
+                } else if ("2".equals(item.getStatus())) {
+                    item.setStatus("已分配");
+                }
+            }
+        }
+
+        List<Map<String, Object>> dataMap = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(list)) {
+            Integer i = 1;
+            for (ExportRSNResult item : list) {
+                item.setGenerateDate(DateUtil.dateAddHour(item.getGenerateDate(), 8));
+                item.setFinishDate(DateUtil.dateAddHour(item.getFinishDate(), 8));
+                dataMap.add(toMap(item, i));
+                i++;
+            }
+            String sheetName = "RSN";
+            String[] headers = {"id", "rsn", "status", "generateDate", "finishDate"};
+            String exportExcelName = String.valueOf(System.currentTimeMillis());
+            try {
+                String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName, excelFolder);
+                // 文件夹不存在，则进行创建
+                if (!new File(excelFolder).exists()) {
+                    new File(excelFolder).mkdir();
+                }
+                File file = new File(path);
+                FileInputStream in = new FileInputStream(file);
+                MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(), ContentType.APPLICATION_OCTET_STREAM.toString(), in);
+
+                ClientConfiguration conf = new ClientConfiguration();
+                conf.setProtocol(ProtocolEnums.getProtocol(ossConfig.getProtocol()));
+                OSSClient ossClient;
+                ossClient = new OSSClient(ossConfig.getInternalEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getSecretAccesskey(), conf);
+                String fileName = System.currentTimeMillis() + ".xlsx";
+                ossClient.putObject(ossConfig.getDefaultBucketName(), fileName, multipartFile.getInputStream());
+                String bucket = ossConfig.getDefaultBucketName();
+                excelPath = "https://" + bucket + "." + ossConfig.getPublicEndpointDomain() + "/" + fileName;
+                if (file.exists()) {
+                    file.delete();
+                }
+            } catch (Exception e) {
+                log.error("导出RSN异常", e);
+            }
+        }
+        return new GeneralResult(excelPath);
+    }
+
+    private Map<String, Object> toMap(ExportRSNResult param, Integer i) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("id", i);
+        map.put("rsn", param.getRsn() == null ? "--" : param.getRsn());
+        map.put("status", param.getStatus() == null ? "--" : param.getStatus());
+        map.put("generateDate", param.getGenerateDate() == null ? "--" : param.getGenerateDate());
+        map.put("finishDate", param.getFinishDate() == null ? "--" : param.getFinishDate());
+        return map;
     }
 
 }

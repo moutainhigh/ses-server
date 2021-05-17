@@ -49,6 +49,9 @@ import com.redescooter.ses.web.ros.dao.base.OpeWmsStockRecordMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
 import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseRelation;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseVin;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
 import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
@@ -60,6 +63,9 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.app.FrAppService;
 import com.redescooter.ses.web.ros.service.assign.impl.ToBeAssignServiceImpl;
+import com.redescooter.ses.web.ros.service.base.OpeCodebaseRelationService;
+import com.redescooter.ses.web.ros.service.base.OpeCodebaseRsnService;
+import com.redescooter.ses.web.ros.service.base.OpeCodebaseVinService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeWarehouseAccountService;
@@ -142,6 +148,15 @@ public class FrAppServiceImpl implements FrAppService {
 
     @Autowired
     private ToBeAssignServiceImpl toBeAssignService;
+
+    @Autowired
+    private OpeCodebaseRsnService opeCodebaseRsnService;
+
+    @Autowired
+    private OpeCodebaseVinService opeCodebaseVinService;
+
+    @Autowired
+    private OpeCodebaseRelationService opeCodebaseRelationService;
 
     @Value("${Request.privateKey}")
     private String privateKey;
@@ -412,6 +427,20 @@ public class FrAppServiceImpl implements FrAppService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DEAL.getCode(), ExceptionCodeEnums.ORDER_HAS_DEAL.getMessage());
         }
 
+        // 修改码库此RSN为已用
+        LambdaQueryWrapper<OpeCodebaseRsn> rsnWrapper = new LambdaQueryWrapper<>();
+        rsnWrapper.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
+        rsnWrapper.eq(OpeCodebaseRsn::getStatus, 1);
+        rsnWrapper.eq(OpeCodebaseRsn::getRsn, rsn);
+        rsnWrapper.last("limit 1");
+        OpeCodebaseRsn codebaseRsn = opeCodebaseRsnService.getOne(rsnWrapper);
+        if (null != codebaseRsn) {
+            codebaseRsn.setStatus(2);
+            codebaseRsn.setUpdatedBy(userId);
+            codebaseRsn.setUpdatedTime(new Date());
+            opeCodebaseRsnService.updateById(codebaseRsn);
+        }
+
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();
         distribute.setWarehouseAccountId(userId);
@@ -560,6 +589,34 @@ public class FrAppServiceImpl implements FrAppService {
         OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
         if (null != checkModel) {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_HAS_INPUT.getCode(), ExceptionCodeEnums.VIN_HAS_INPUT.getMessage());
+        }
+
+        // 修改码库此VIN为已用
+        LambdaQueryWrapper<OpeCodebaseVin> vinWrapper = new LambdaQueryWrapper<>();
+        vinWrapper.eq(OpeCodebaseVin::getDr, Constant.DR_FALSE);
+        vinWrapper.eq(OpeCodebaseVin::getStatus, 1);
+        vinWrapper.eq(OpeCodebaseVin::getVin, vinCode);
+        vinWrapper.last("limit 1");
+        OpeCodebaseVin codebaseVin = opeCodebaseVinService.getOne(vinWrapper);
+        if (null != codebaseVin) {
+            codebaseVin.setStatus(2);
+            codebaseVin.setUpdatedBy(userId);
+            codebaseVin.setUpdatedTime(new Date());
+            opeCodebaseVinService.updateById(codebaseVin);
+        }
+
+        // 修改码库关系表
+        LambdaQueryWrapper<OpeCodebaseRelation> relationWrapper = new LambdaQueryWrapper<>();
+        relationWrapper.eq(OpeCodebaseRelation::getDr, Constant.DR_FALSE);
+        relationWrapper.eq(OpeCodebaseRelation::getStatus, 1);
+        relationWrapper.eq(OpeCodebaseRelation::getVin, vinCode);
+        relationWrapper.last("limit 1");
+        OpeCodebaseRelation codebaseRelation = opeCodebaseRelationService.getOne(relationWrapper);
+        if (null != codebaseRelation) {
+            codebaseRelation.setStatus(2);
+            codebaseRelation.setUpdatedBy(userId);
+            codebaseRelation.setUpdatedTime(new Date());
+            opeCodebaseRelationService.updateById(codebaseRelation);
         }
 
         // 修改主表

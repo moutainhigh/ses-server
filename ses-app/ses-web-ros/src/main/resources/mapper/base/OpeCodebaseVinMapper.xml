@@ -72,5 +72,13 @@
         </if>
     </sql>
 
+    <!-- vin导出 -->
+    <select id="exportVin" resultType="com.redescooter.ses.web.ros.vo.codebase.ExportVINResult">
+        select vin, status, created_time as generateDate, updated_time as finishDate
+        from ope_codebase_vin
+        where dr = 0
+        <include refid="condition"/>
+        order by created_time desc
+    </select>
 
 </mapper>

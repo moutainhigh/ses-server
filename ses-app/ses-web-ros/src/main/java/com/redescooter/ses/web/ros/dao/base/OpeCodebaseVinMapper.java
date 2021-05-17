@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.dao.base;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.web.ros.dm.OpeCodebaseVin;
+import com.redescooter.ses.web.ros.vo.codebase.ExportVINResult;
 import com.redescooter.ses.web.ros.vo.codebase.VINListEnter;
 import com.redescooter.ses.web.ros.vo.codebase.VINListResult;
 import org.apache.ibatis.annotations.Mapper;
@@ -30,6 +31,9 @@ public interface OpeCodebaseVinMapper extends BaseMapper<OpeCodebaseVin> {
      */
     List<VINListResult> getVinList(@Param("enter") VINListEnter enter);
 
-
+    /**
+     * vin导出
+     */
+    List<ExportVINResult> exportVin(@Param("enter") VINListEnter enter);
 
 }
