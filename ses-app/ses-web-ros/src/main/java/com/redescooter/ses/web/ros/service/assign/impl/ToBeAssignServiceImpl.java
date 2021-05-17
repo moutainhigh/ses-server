@@ -343,10 +343,11 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             String specificatName = o.getSpecificatName();
             Integer seatNumber = o.getSeatNumber();
             Integer qty = o.getQty();
+            String vinCode = o.getVinCode();
 
             // 生成VIN Code,只需车型名称和座位数量这两个变量
-            String vinCode = generateVINCode(specificatId, specificatName, seatNumber);
-            logger.info("生成的VIN Code是:[{}]", vinCode);
+            //String vinCode = generateVINCode(specificatId, specificatName, seatNumber);
+            //logger.info("生成的VIN Code是:[{}]", vinCode);
 
             // 修改主表
             OpeCarDistribute model = new OpeCarDistribute();
