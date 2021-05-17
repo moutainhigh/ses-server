@@ -23,7 +23,7 @@ class ToBeAssignServiceImplTest extends SesWebRosApplicationTests {
         for (int i = 0; i < 400; i++) {
             //int index = (int) (Math.random() * array.length);
             Integer seat = 2;
-            String s = toBeAssignService.show(Long.valueOf("102104071540736"), ProductTypeEnum.E50.getMsg(), seat, i + 1);
+            String s = toBeAssignService.show(Long.valueOf("102104071540736"), "E50", seat, i + 1);
             list.add(s);
         }
         log.info(list.toString());
