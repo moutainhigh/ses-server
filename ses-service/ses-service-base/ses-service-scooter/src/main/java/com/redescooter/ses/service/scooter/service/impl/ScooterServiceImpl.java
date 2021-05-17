@@ -346,7 +346,9 @@ public class ScooterServiceImpl implements ScooterService {
         wrapper.orderByDesc(ScoScooter::getCreatedTime);
         wrapper.last("limit 1");
         ScoScooter scooter = scoScooterService.getOne(wrapper);
-        BeanUtils.copyProperties(scooter, result);
+        if (null != scooter) {
+            BeanUtils.copyProperties(scooter, result);
+        }
         return result;
     }
 

@@ -300,7 +300,7 @@ public class FrAppServiceImpl implements FrAppService {
                 Integer webNode = item.getWebNode();
 
                 // 这里的逻辑要和sql逻辑保持一致
-                boolean todoFlag = (flag == 0 || flag == 1) && ( (appNode == 0) || (webNode == 0) );
+                boolean todoFlag = flag == 0 && ( (appNode == 0) || (webNode == 0) );
                 boolean dealFlag = flag == 1 && (appNode == 1 || appNode == 2 || appNode == 3);
                 boolean doneFlag = flag == 2 && appNode == 4;
 
@@ -525,6 +525,27 @@ public class FrAppServiceImpl implements FrAppService {
     public GeneralResult bindVin(BindVinEnter enter) {
         Long userId = getUserId(enter);
         String vinCode = enter.getVinCode();
+        Integer seatNumber = enter.getSeatNumber();
+
+        if (vinCode.length() != 17) {
+            throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+        }
+        if (!vinCode.startsWith("VXSR2A")) {
+            throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+        }
+
+        String productType = ProductTypeEnum.showCode(enter.getScooterName());
+        // 截取第7位,车型编号
+        String productTypeSub = vinCode.substring(6, 7);
+        if (!StringUtils.equals(productType, productTypeSub)) {
+            throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+        }
+
+        // 截取第8位,座位数量
+        String seatNumberSub = vinCode.substring(7, 8);
+        if (!StringUtils.equals(String.valueOf(seatNumber), seatNumberSub)) {
+            throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+        }
 
         LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
         checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
@@ -533,24 +554,6 @@ public class FrAppServiceImpl implements FrAppService {
         OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
         if (null != checkModel) {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_HAS_INPUT.getCode(), ExceptionCodeEnums.VIN_HAS_INPUT.getMessage());
-        }
-
-        if (vinCode.length() != 17) {
-            throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
-        }
-
-        String productType = ProductTypeEnum.showCode(enter.getScooterName());
-        // 截取第7位,车型编号
-        String productTypeSub = vinCode.substring(0, 8);
-        if (!StringUtils.equals(productType, productTypeSub)) {
-            throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
-        }
-
-        Integer seatNumber = enter.getSeatNumber();
-        // 截取第8位,座位数量
-        String seatNumberSub = vinCode.substring(0, 9);
-        if (!StringUtils.equals(String.valueOf(seatNumber), seatNumberSub)) {
-            throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
         }
 
         // 修改主表

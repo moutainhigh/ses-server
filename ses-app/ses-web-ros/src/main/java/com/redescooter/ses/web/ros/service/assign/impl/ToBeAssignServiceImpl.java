@@ -222,7 +222,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             node.setUserId(enter.getUserId());
             node.setCustomerId(enter.getCustomerId());
             node.setNode(NodeEnum.NONE.getCode());
-            node.setFlag(FlagEnum.NOT.getCode());
+            node.setFlag(0);
             node.setCreatedBy(enter.getUserId());
             node.setCreatedTime(new Date());
             opeCarDistributeNodeMapper.insert(node);
@@ -361,6 +361,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
         OpeCarDistributeNode node = new OpeCarDistributeNode();
         node.setNode(NodeEnum.BIND_LICENSE_PLATE.getCode());
+        node.setFlag(FlagEnum.NOT.getCode());
         node.setUpdatedBy(enter.getUserId());
         node.setUpdatedTime(new Date());
         opeCarDistributeNodeMapper.update(node, nodeWrapper);
