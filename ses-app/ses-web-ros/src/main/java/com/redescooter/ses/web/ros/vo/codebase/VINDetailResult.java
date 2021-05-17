@@ -63,7 +63,7 @@ public class VINDetailResult extends GeneralResult {
     private String orderNo;
 
     @ApiModelProperty(value = "车型名称")
-    private Long specificatTypeName;
+    private String specificatTypeName;
 
     @ApiModelProperty(value = "颜色名称")
     private String colorName;
