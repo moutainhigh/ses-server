@@ -1,8 +1,13 @@
 package com.redescooter.ses.web.ros.dao.base;
 
-import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
+import com.redescooter.ses.web.ros.vo.codebase.RSNListEnter;
+import com.redescooter.ses.web.ros.vo.codebase.RSNListResult;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,5 +19,15 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface OpeCodebaseRsnMapper extends BaseMapper<OpeCodebaseRsn> {
+
+    /**
+     * rsn列表count
+     */
+    int getRsnListCount(@Param("enter") RSNListEnter enter);
+
+    /**
+     * rsn列表
+     */
+    List<RSNListResult> getRsnList(@Param("enter") RSNListEnter enter);
 
 }

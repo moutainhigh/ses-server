@@ -29,8 +29,8 @@ public class RSNDetailScooterResult {
     @ApiModelProperty(value = "仪表")
     private String meter;
 
-    @ApiModelProperty(value = "IMEL")
-    private String imel;
+    @ApiModelProperty(value = "IMEI")
+    private String imei;
 
     @ApiModelProperty(value = "蓝牙地址")
     private String bluetoothAddress;

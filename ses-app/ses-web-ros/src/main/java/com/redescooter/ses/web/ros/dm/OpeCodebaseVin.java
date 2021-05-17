@@ -45,6 +45,12 @@ public class OpeCodebaseVin implements Serializable {
     @ApiModelProperty(value = "整车车架码")
     private String vin;
 
+    @ApiModelProperty(value = "车型id")
+    private Long specificatTypeId;
+
+    @ApiModelProperty(value = "座位数")
+    private Integer seatNumber;
+
     @ApiModelProperty(value = "状态 1待分配 2已分配")
     private Integer status;
 

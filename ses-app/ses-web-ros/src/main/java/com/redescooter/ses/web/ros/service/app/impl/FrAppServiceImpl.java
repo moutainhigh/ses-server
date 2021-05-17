@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.SpecificDefNameConstant;
+import com.redescooter.ses.api.common.enums.assign.ProductTypeEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.date.DayCodeEnum;
 import com.redescooter.ses.api.common.enums.date.MonthCodeEnum;
@@ -420,6 +421,8 @@ public class FrAppServiceImpl implements FrAppService {
         distribute.setBluetoothAddress(bluetoothAddress);
         distribute.setTabletSn(tabletSn);
         distribute.setColorId(enter.getColorId());
+        distribute.setCreatedTime(new Date());
+
         // 条件
         LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
@@ -477,6 +480,8 @@ public class FrAppServiceImpl implements FrAppService {
                 // 第一次扫描电池
                 OpeCarDistribute distribute = new OpeCarDistribute();
                 distribute.setBattery(enter.getBattery());
+                distribute.setUpdatedBy(userId);
+                distribute.setUpdatedTime(new Date());
                 LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
                 qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
                 qw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
@@ -485,6 +490,8 @@ public class FrAppServiceImpl implements FrAppService {
                 // 之前已经扫描过电池,在电池后追加
                 OpeCarDistribute distribute = new OpeCarDistribute();
                 distribute.setBattery(modelBattery + "," + enter.getBattery());
+                distribute.setUpdatedBy(userId);
+                distribute.setUpdatedTime(new Date());
                 LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
                 qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
                 qw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
@@ -558,6 +565,8 @@ public class FrAppServiceImpl implements FrAppService {
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();
         distribute.setVinCode(vinCode);
+        distribute.setUpdatedBy(userId);
+        distribute.setUpdatedTime(new Date());
         // 条件
         LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);

@@ -80,6 +80,21 @@ public class OpeCarDistribute implements Serializable {
     @ApiModelProperty(value = "电池码 多个时通过逗号分隔")
     private String battery;
 
+    @ApiModelProperty(value = "BBI")
+    private String bbi;
+
+    @ApiModelProperty(value = "控制器")
+    private String controller;
+
+    @ApiModelProperty(value = "电机")
+    private String electricMachinery;
+
+    @ApiModelProperty(value = "仪表")
+    private String meter;
+
+    @ApiModelProperty(value = "IMEI")
+    private String imei;
+
     @ApiModelProperty(value = "颜色id")
     private Long colorId;
 

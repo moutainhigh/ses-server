@@ -7,7 +7,9 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.web.ros.dao.base.OpeCodebaseVinMapper;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
+import com.redescooter.ses.web.ros.service.base.OpeCodebaseVinService;
 import com.redescooter.ses.web.ros.service.base.OpeSpecificatTypeService;
 import com.redescooter.ses.web.ros.service.codebase.VINService;
 import com.redescooter.ses.web.ros.vo.codebase.SpecificatResult;
@@ -32,6 +34,12 @@ public class VINServiceImpl implements VINService {
 
     @Autowired
     private OpeSpecificatTypeService opeSpecificatTypeService;
+
+    @Autowired
+    private OpeCodebaseVinService opeCodebaseVinService;
+
+    @Autowired
+    private OpeCodebaseVinMapper opeCodebaseVinMapper;
 
     /**
      * 车型数据源
@@ -58,7 +66,12 @@ public class VINServiceImpl implements VINService {
      */
     @Override
     public PageResult<VINListResult> getList(VINListEnter enter) {
-        return null;
+        int count = opeCodebaseVinMapper.getVinListCount(enter);
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        List<VINListResult> list = opeCodebaseVinMapper.getVinList(enter);
+        return PageResult.create(enter, count, list);
     }
 
     /**
@@ -66,6 +79,18 @@ public class VINServiceImpl implements VINService {
      */
     @Override
     public VINDetailResult getDetail(StringEnter enter) {
+
+
+
+
+
+
+
+
+
+
+
+
         return null;
     }
 

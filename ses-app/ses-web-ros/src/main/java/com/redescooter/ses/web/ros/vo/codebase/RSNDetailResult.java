@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,7 +23,7 @@ import java.util.Map;
 public class RSNDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "节点记录")
-    private List<Map<String, String>> nodeRecord;
+    private Map<String, String> nodeRecord;
 
     @ApiModelProperty(value = "车辆信息")
     private RSNDetailScooterResult scooterInfo;

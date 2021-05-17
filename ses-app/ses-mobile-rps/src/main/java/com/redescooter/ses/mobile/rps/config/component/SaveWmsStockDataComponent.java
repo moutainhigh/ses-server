@@ -234,6 +234,8 @@ public class SaveWmsStockDataComponent {
             vin1Model.setId(idAppService.getId(SequenceName.OPE_CODEBASE_VIN));
             vin1Model.setDr(Constant.DR_FALSE);
             vin1Model.setVin(vin1);
+            vin1Model.setSpecificatTypeId(typeE50.getId());
+            vin1Model.setSeatNumber(1);
             vin1Model.setStatus(1);
             vin1Model.setCreatedBy(userId);
             vin1Model.setCreatedTime(new Date());
@@ -242,6 +244,8 @@ public class SaveWmsStockDataComponent {
             vin2Model.setId(idAppService.getId(SequenceName.OPE_CODEBASE_VIN));
             vin2Model.setDr(Constant.DR_FALSE);
             vin2Model.setVin(vin2);
+            vin2Model.setSpecificatTypeId(typeE50.getId());
+            vin2Model.setSeatNumber(2);
             vin2Model.setStatus(1);
             vin2Model.setCreatedBy(userId);
             vin2Model.setCreatedTime(new Date());
@@ -250,6 +254,8 @@ public class SaveWmsStockDataComponent {
             vin3Model.setId(idAppService.getId(SequenceName.OPE_CODEBASE_VIN));
             vin3Model.setDr(Constant.DR_FALSE);
             vin3Model.setVin(vin3);
+            vin3Model.setSpecificatTypeId(typeE100.getId());
+            vin3Model.setSeatNumber(1);
             vin3Model.setStatus(1);
             vin3Model.setCreatedBy(userId);
             vin3Model.setCreatedTime(new Date());
@@ -258,6 +264,8 @@ public class SaveWmsStockDataComponent {
             vin4Model.setId(idAppService.getId(SequenceName.OPE_CODEBASE_VIN));
             vin4Model.setDr(Constant.DR_FALSE);
             vin4Model.setVin(vin4);
+            vin4Model.setSpecificatTypeId(typeE100.getId());
+            vin4Model.setSeatNumber(2);
             vin4Model.setStatus(1);
             vin4Model.setCreatedBy(userId);
             vin4Model.setCreatedTime(new Date());
