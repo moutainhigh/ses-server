@@ -3,6 +3,7 @@ package com.redescooter.ses.mobile.rps.config.component;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.assign.FactoryEnum;
 import com.redescooter.ses.api.common.enums.assign.ProductTypeEnum;
 import com.redescooter.ses.api.common.enums.assign.ScooterTypeEnum;
@@ -27,11 +28,13 @@ import com.redescooter.ses.mobile.rps.dao.wms.WmsPartsStockMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsScooterStockMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper;
 import com.redescooter.ses.mobile.rps.dm.OpeCarDistribute;
+import com.redescooter.ses.mobile.rps.dm.OpeCodebaseRelation;
 import com.redescooter.ses.mobile.rps.dm.OpeCodebaseVin;
 import com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrderSerialBind;
 import com.redescooter.ses.mobile.rps.dm.OpeProductionCombinBom;
 import com.redescooter.ses.mobile.rps.dm.OpeProductionParts;
 import com.redescooter.ses.mobile.rps.dm.OpeProductionScooterBom;
+import com.redescooter.ses.mobile.rps.dm.OpeSpecificatType;
 import com.redescooter.ses.mobile.rps.dm.OpeWmsCombinStock;
 import com.redescooter.ses.mobile.rps.dm.OpeWmsPartsStock;
 import com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock;
@@ -202,6 +205,7 @@ public class SaveWmsStockDataComponent {
             }
             scooterService.syncScooterData(scooterDataDTOList);
             opeInWhouseOrderSerialBindService.updateBatchById(serialBindList);
+
             /**
              * 保存库存产品序列号信息
              */
@@ -210,24 +214,105 @@ public class SaveWmsStockDataComponent {
             // 产生4条vin,保存到码库 E50一座 E50两座 E100一座 E100两座
             List<OpeCodebaseVin> vinList = Lists.newArrayList();
 
+            LambdaQueryWrapper<OpeSpecificatType> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeSpecificatType::getDr, Constant.DR_FALSE);
+            qw.eq(OpeSpecificatType::getSpecificatName, ProductTypeEnum.E50.getMsg());
+            qw.last("limit 1");
+            OpeSpecificatType typeE50 = opeSpecificatTypeService.getOne(qw);
+            String vin1 = generateVINCode(typeE50.getId(), typeE50.getSpecificatName(), 1);
+            String vin2 = generateVINCode(typeE50.getId(), typeE50.getSpecificatName(), 2);
 
+            LambdaQueryWrapper<OpeSpecificatType> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeSpecificatType::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeSpecificatType::getSpecificatName, ProductTypeEnum.E100.getMsg());
+            lqw.last("limit 1");
+            OpeSpecificatType typeE100 = opeSpecificatTypeService.getOne(lqw);
+            String vin3 = generateVINCode(typeE100.getId(), typeE100.getSpecificatName(), 1);
+            String vin4 = generateVINCode(typeE100.getId(), typeE100.getSpecificatName(), 2);
 
+            OpeCodebaseVin vin1Model = new OpeCodebaseVin();
+            vin1Model.setId(idAppService.getId(SequenceName.OPE_CODEBASE_VIN));
+            vin1Model.setDr(Constant.DR_FALSE);
+            vin1Model.setVin(vin1);
+            vin1Model.setStatus(1);
+            vin1Model.setCreatedBy(userId);
+            vin1Model.setCreatedTime(new Date());
 
-            //generateVINCode();
+            OpeCodebaseVin vin2Model = new OpeCodebaseVin();
+            vin2Model.setId(idAppService.getId(SequenceName.OPE_CODEBASE_VIN));
+            vin2Model.setDr(Constant.DR_FALSE);
+            vin2Model.setVin(vin2);
+            vin2Model.setStatus(1);
+            vin2Model.setCreatedBy(userId);
+            vin2Model.setCreatedTime(new Date());
 
+            OpeCodebaseVin vin3Model = new OpeCodebaseVin();
+            vin3Model.setId(idAppService.getId(SequenceName.OPE_CODEBASE_VIN));
+            vin3Model.setDr(Constant.DR_FALSE);
+            vin3Model.setVin(vin3);
+            vin3Model.setStatus(1);
+            vin3Model.setCreatedBy(userId);
+            vin3Model.setCreatedTime(new Date());
 
+            OpeCodebaseVin vin4Model = new OpeCodebaseVin();
+            vin4Model.setId(idAppService.getId(SequenceName.OPE_CODEBASE_VIN));
+            vin4Model.setDr(Constant.DR_FALSE);
+            vin4Model.setVin(vin4);
+            vin4Model.setStatus(1);
+            vin4Model.setCreatedBy(userId);
+            vin4Model.setCreatedTime(new Date());
 
-
-
-
-
+            vinList.add(vin1Model);
+            vinList.add(vin2Model);
+            vinList.add(vin3Model);
+            vinList.add(vin4Model);
             opeCodebaseVinService.saveBatch(vinList);
 
+            // 保存到码库关系表
+            List<OpeCodebaseRelation> relationList = Lists.newArrayList();
+            String rsn = scooterDataDTOList.get(0).getScooterNo();
 
+            OpeCodebaseRelation relation1 = new OpeCodebaseRelation();
+            relation1.setId(idAppService.getId(SequenceName.OPE_CODEBASE_RELATION));
+            relation1.setDr(Constant.DR_FALSE);
+            relation1.setRsn(rsn);
+            relation1.setVin(vin1);
+            relation1.setStatus(1);
+            relation1.setCreatedBy(userId);
+            relation1.setCreatedTime(new Date());
 
+            OpeCodebaseRelation relation2 = new OpeCodebaseRelation();
+            relation2.setId(idAppService.getId(SequenceName.OPE_CODEBASE_RELATION));
+            relation2.setDr(Constant.DR_FALSE);
+            relation2.setRsn(rsn);
+            relation2.setVin(vin2);
+            relation2.setStatus(1);
+            relation2.setCreatedBy(userId);
+            relation2.setCreatedTime(new Date());
 
+            OpeCodebaseRelation relation3 = new OpeCodebaseRelation();
+            relation3.setId(idAppService.getId(SequenceName.OPE_CODEBASE_RELATION));
+            relation3.setDr(Constant.DR_FALSE);
+            relation3.setRsn(rsn);
+            relation3.setVin(vin3);
+            relation3.setStatus(1);
+            relation3.setCreatedBy(userId);
+            relation3.setCreatedTime(new Date());
 
+            OpeCodebaseRelation relation4 = new OpeCodebaseRelation();
+            relation4.setId(idAppService.getId(SequenceName.OPE_CODEBASE_RELATION));
+            relation4.setDr(Constant.DR_FALSE);
+            relation4.setRsn(rsn);
+            relation4.setVin(vin4);
+            relation4.setStatus(1);
+            relation4.setCreatedBy(userId);
+            relation4.setCreatedTime(new Date());
 
+            relationList.add(relation1);
+            relationList.add(relation2);
+            relationList.add(relation3);
+            relationList.add(relation4);
+            opeCodebaseRelationService.saveBatch(relationList);
         } else {
             for (Map.Entry<Long, List<OutWarehouseOrderProductDTO>> map : outWhOrderProductMap.entrySet()) {
                 // 车辆成品库信息

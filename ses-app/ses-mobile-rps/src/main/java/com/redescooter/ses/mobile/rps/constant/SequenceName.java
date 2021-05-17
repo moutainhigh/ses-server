@@ -135,4 +135,8 @@ public interface SequenceName {
 
     String OPE_CODEBASE_RSN = "OPE_CODEBASE_RSN";
 
+    String OPE_CODEBASE_VIN = "OPE_CODEBASE_VIN";
+
+    String OPE_CODEBASE_RELATION = "OPE_CODEBASE_RELATION";
+
 }
