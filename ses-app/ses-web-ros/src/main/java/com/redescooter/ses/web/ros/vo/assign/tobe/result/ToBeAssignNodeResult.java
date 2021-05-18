@@ -27,7 +27,7 @@ public class ToBeAssignNodeResult extends GeneralResult implements Serializable 
 
     private static final long serialVersionUID = -1831570953621686198L;
 
-    @ApiModelProperty(value = "节点 1VIN Code 2Bind License Plate 3Bind R.SN")
+    @ApiModelProperty(value = "节点 1绑定VIN 2绑定车牌 3录入车辆 4录入电池 5完成")
     private Integer node;
 
     @ApiModelProperty(value = "客户信息")

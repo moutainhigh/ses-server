@@ -46,7 +46,7 @@ public class ToBeAssignListResult extends GeneralResult implements Serializable 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date generateDate;
 
-    @ApiModelProperty(value = "节点 0未开始 1VIN Code 2Bind License Plate 3Bind R.SN 4Finish")
+    @ApiModelProperty(value = "节点 1绑定VIN 2绑定车牌 3录入车辆 4录入电池 5完成")
     private Integer node;
 
 }
