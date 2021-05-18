@@ -183,10 +183,13 @@
     <!-- app询价单详情 -->
     <select id="getInquiryDetail" resultType="com.redescooter.ses.web.ros.vo.app.InquiryDetailResult">
         select
+            ost.id as specificatTypeId,
+            oci.customer_id,
             ost.specificat_name as scooterName,
             oc.color_name,
+            oc.id as colorId,
             ocib.product_qty as batteryNum,
-            ocd.seat_number,
+            IFNULL(ocd.seat_number, 2) as seatNumber,
             ocd.rsn,
             ocd.tablet_sn,
             ocd.bluetooth_address,
