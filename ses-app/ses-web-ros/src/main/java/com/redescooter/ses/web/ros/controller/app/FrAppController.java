@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.service.app.FrAppService;
 import com.redescooter.ses.web.ros.vo.app.AppLoginEnter;
+import com.redescooter.ses.web.ros.vo.app.BindLicensePlateEnter;
 import com.redescooter.ses.web.ros.vo.app.BindVinEnter;
 import com.redescooter.ses.web.ros.vo.app.InputBatteryEnter;
 import com.redescooter.ses.web.ros.vo.app.InputScooterEnter;
@@ -91,6 +92,26 @@ public class FrAppController {
     }
 
     /**
+     * 绑定VIN
+     */
+    @PostMapping("/bind")
+    @ApiOperation(value = "绑定VIN", notes = "绑定VIN")
+    @IgnoreLoginCheck
+    public Response<GeneralResult> bindVin(@ModelAttribute BindVinEnter enter) {
+        return new Response<>(frAppService.bindVin(enter));
+    }
+
+    /**
+     * 绑定车牌
+     */
+    @PostMapping("/plate")
+    @ApiOperation(value = "绑定车牌", notes = "绑定车牌")
+    @IgnoreLoginCheck
+    public Response<GeneralResult> bindLicensePlate(@ModelAttribute BindLicensePlateEnter enter) {
+        return new Response<>(frAppService.bindLicensePlate(enter));
+    }
+
+    /**
      * 录入车辆
      */
     @PostMapping("/scooter")
@@ -108,16 +129,6 @@ public class FrAppController {
     @IgnoreLoginCheck
     public Response<GeneralResult> inputBattery(@ModelAttribute InputBatteryEnter enter) {
         return new Response<>(frAppService.inputBattery(enter));
-    }
-
-    /**
-     * 绑定VIN
-     */
-    @PostMapping("/bind")
-    @ApiOperation(value = "绑定VIN", notes = "绑定VIN")
-    @IgnoreLoginCheck
-    public Response<GeneralResult> bindVin(@ModelAttribute BindVinEnter enter) {
-        return new Response<>(frAppService.bindVin(enter));
     }
 
     /**

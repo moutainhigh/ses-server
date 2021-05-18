@@ -8,7 +8,7 @@
         from ope_customer_inquiry a
         left join ope_car_distribute_node b on a.customer_id = b.customer_id
         left join ope_customer c on a.customer_id = c.id
-        where a.dr = 0 and c.dr = 0 and c.status = 2 and (b.flag is null or b.flag = 0) and ( (b.app_node is null or b.app_node = 0) or (b.node is null or b.node = 0) )
+        where a.dr = 0 and c.dr = 0 and c.status = 2 and (b.flag is null or b.flag = 0) and ( (b.app_node is null or b.app_node = 1) or (b.node is null or b.node = 1) )
         <include refid="toBeAssignList"/>
     </select>
 
@@ -24,7 +24,7 @@
         from ope_customer_inquiry a
         left join ope_car_distribute_node b on a.customer_id = b.customer_id
         left join ope_customer c on a.customer_id = c.id
-        where a.dr = 0 and c.dr = 0 and c.status = 2 and (b.flag is null or b.flag = 0) and ( (b.app_node is null or b.app_node = 0) or (b.node is null or b.node = 0) )
+        where a.dr = 0 and c.dr = 0 and c.status = 2 and (b.flag is null or b.flag = 0) and ( (b.app_node is null or b.app_node = 1) or (b.node is null or b.node = 1) )
         <include refid="toBeAssignList"/>
         order by a.updated_time desc
         limit #{param.startRow}, #{param.pageSize}
@@ -42,7 +42,7 @@
         from ope_customer_inquiry a
         left join ope_car_distribute_node b on a.customer_id = b.customer_id
         left join ope_customer c on a.customer_id = c.id
-        where a.dr = 0 and c.dr = 0 and c.status = 2 and (b.flag is null or b.flag = 0) and ( (b.app_node is null or b.app_node = 0) or (b.node is null or b.node = 0) )
+        where a.dr = 0 and c.dr = 0 and c.status = 2 and (b.flag is null or b.flag = 0) and ( (b.app_node is null or b.app_node = 1) or (b.node is null or b.node = 1) )
         order by a.updated_time desc
     </select>
 
@@ -95,7 +95,7 @@
         from ope_customer_inquiry a
         left join ope_car_distribute_node b on a.customer_id = b.customer_id
         left join ope_customer c on a.customer_id = c.id and c.dr = 0
-        where a.dr = 0 and c.status = 2 and b.flag = 1 and (b.app_node in (1, 2, 3) or b.node in (2, 3))
+        where a.dr = 0 and c.status = 2 and b.flag = 1 and (b.app_node in (2, 3, 4, 5) or b.node in (2, 3, 4))
         <include refid="toBeAssignList"/>
     </select>
 
@@ -110,7 +110,7 @@
         from ope_customer_inquiry a
         left join ope_car_distribute_node b on a.customer_id = b.customer_id
         left join ope_customer c on a.customer_id = c.id and c.dr = 0
-        where a.dr = 0 and c.status = 2 and b.flag = 1 and (b.app_node in (1, 2, 3) or b.node in (2, 3))
+        where a.dr = 0 and c.status = 2 and b.flag = 1 and (b.app_node in (2, 3, 4, 5) or b.node in (2, 3, 4))
         <include refid="toBeAssignList"/>
         order by a.updated_time desc
         limit #{param.startRow}, #{param.pageSize}
@@ -136,8 +136,8 @@
         select
             oci.id,
             oci.order_no,
-            IFNULL(ocdn.app_node, 0) as appNode,
-            IFNULL(ocdn.node, 0) as webNode,
+            IFNULL(ocdn.app_node, 1) as appNode,
+            IFNULL(ocdn.node, 1) as webNode,
             IFNULL(ocdn.flag, 0) as flag,
             ost.id as specificatTypeId,
             ost.specificat_name as scooterName,
@@ -165,13 +165,13 @@
 
     <sql id="condition">
         <if test="param.status != null and param.status == 1">
-            and (ocdn.flag is null or ocdn.flag = 0) and ( (ocdn.app_node is null or ocdn.app_node = 0 ) or (ocdn.node is null or ocdn.node = 0 ) )
+            and (ocdn.flag is null or ocdn.flag = 0) and ( (ocdn.app_node is null or ocdn.app_node = 1 ) or (ocdn.node is null or ocdn.node = 1 ) )
         </if>
         <if test="param.status != null and param.status == 2">
-            and ocd.warehouse_account_id = #{warehouseAccountId} and ocdn.flag = 1 and ocdn.app_node in (1, 2, 3)
+            and ocd.warehouse_account_id = #{warehouseAccountId} and ocdn.flag = 1 and ocdn.app_node in (2, 3, 4, 5)
         </if>
         <if test="param.status != null and param.status == 3">
-            and ocd.warehouse_account_id = #{warehouseAccountId} and ocdn.flag = 2 and ocdn.app_node = 4
+            and ocd.warehouse_account_id = #{warehouseAccountId} and ocdn.flag = 2 and ocdn.app_node = 6
         </if>
         <if test="param.keyword != null and param.keyword != ''">
             and (

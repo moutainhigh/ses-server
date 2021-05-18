@@ -29,6 +29,21 @@ public class InputScooterEnter extends GeneralEnter {
     @ApiModelProperty(value = "蓝牙地址")
     private String bluetoothAddress;
 
+    @ApiModelProperty(value = "BBI")
+    private String bbi;
+
+    @ApiModelProperty(value = "控制器")
+    private String controller;
+
+    @ApiModelProperty(value = "电机")
+    private String electricMachinery;
+
+    @ApiModelProperty(value = "仪表")
+    private String meter;
+
+    @ApiModelProperty(value = "IMEI")
+    private String imei;
+
     @ApiModelProperty(value = "客户id")
     private Long customerId;
 
