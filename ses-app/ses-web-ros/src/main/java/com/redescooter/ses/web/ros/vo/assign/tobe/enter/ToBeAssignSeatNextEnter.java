@@ -26,7 +26,7 @@ public class ToBeAssignSeatNextEnter extends GeneralEnter implements Serializabl
 
     private static final long serialVersionUID = 6858844507056189548L;
 
-    @ApiModelProperty(value = "车辆信息 给json字符串 格式:specificatId:型号id,specificatName:型号名称,seatNumber:座位数,qty:待分配车辆数量", required = true)
+    @ApiModelProperty(value = "车辆信息 给json字符串 格式:specificatId:型号id,specificatName:型号名称,seatNumber:座位数,qty:待分配车辆数量,vin:VIN Code", required = true)
     private String list;
 
     @ApiModelProperty(value = "客户id", required = true)

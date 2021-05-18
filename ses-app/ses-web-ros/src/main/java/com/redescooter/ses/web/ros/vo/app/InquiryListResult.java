@@ -62,7 +62,7 @@ public class InquiryListResult extends PageResult {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdTime;
 
-    @ApiModelProperty(value = "处理中走到哪一步 0车辆信息 1电池信息 2绑定VIN 3设置软体 4完成")
+    @ApiModelProperty(value = "处理中走到哪一步 1绑定VIN 2绑定车牌 3录入车辆 4录入电池 5设置软体 6完成")
     private Integer appNode;
 
     private Integer flag;
