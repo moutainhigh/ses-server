@@ -68,7 +68,7 @@
 
     <!-- 导出rsn -->
     <select id="exportRsn" resultType="com.redescooter.ses.web.ros.vo.codebase.ExportRSNResult">
-        select rsn, status, created_time as generateDate, updated_time as finishDate
+        select rsn, case when status = 1  then '待分配' when status = 2 then '已分配' end as status, created_time as generateDate, updated_time as finishDate
         from ope_codebase_rsn
         where dr = 0
         <include refid="condition"/>
