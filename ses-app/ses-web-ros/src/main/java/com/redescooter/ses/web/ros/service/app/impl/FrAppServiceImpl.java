@@ -54,7 +54,6 @@ import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
-import com.redescooter.ses.web.ros.enums.assign.ProductTypeEnum;
 import com.redescooter.ses.web.ros.enums.distributor.StatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
@@ -393,7 +392,7 @@ public class FrAppServiceImpl implements FrAppService {
         String vinCode = enter.getVinCode();
         Integer seatNumber = enter.getSeatNumber();
 
-        if (vinCode.length() != 17) {
+        /*if (vinCode.length() != 17) {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
         }
         if (!vinCode.startsWith("VXSR2A")) {
@@ -420,7 +419,7 @@ public class FrAppServiceImpl implements FrAppService {
         OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
         if (null != checkModel) {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_HAS_INPUT.getCode(), ExceptionCodeEnums.VIN_HAS_INPUT.getMessage());
-        }
+        }*/
 
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();
@@ -495,7 +494,7 @@ public class FrAppServiceImpl implements FrAppService {
         String meter = enter.getMeter();
         String imei = enter.getImei();
 
-        LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
+        /*LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
         lqw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
         lqw.eq(OpeCarDistribute::getRsn, rsn);
         lqw.last("limit 1");
@@ -511,7 +510,7 @@ public class FrAppServiceImpl implements FrAppService {
         OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
         if (null != checkModel && null != checkModel.getWarehouseAccountId() && StringUtils.isNotBlank(checkModel.getRsn())) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DEAL.getCode(), ExceptionCodeEnums.ORDER_HAS_DEAL.getMessage());
-        }
+        }*/
 
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();
@@ -554,14 +553,14 @@ public class FrAppServiceImpl implements FrAppService {
         Long userId = getUserId(enter);
         Long inquiryId = enter.getId();
 
-        LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
+        /*LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
         checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
         checkWrapper.like(OpeCarDistribute::getBattery, enter.getBattery());
         checkWrapper.last("limit 1");
         OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
         if (null != checkModel) {
             throw new SesWebRosException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
-        }
+        }*/
 
         // 得到询价单的电池数量
         LambdaQueryWrapper<OpeCustomerInquiryB> lqw = new LambdaQueryWrapper<>();
