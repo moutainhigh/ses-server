@@ -675,6 +675,10 @@ public class FrAppServiceImpl implements FrAppService {
             Integer ableStockQty = stock.getAbleStockQty();
             Integer usedStockQty = stock.getUsedStockQty();
 
+            if (ableStockQty < 1) {
+                throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getCode(), ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getMessage());
+            }
+
             // 原先库存的可用库存数量-1,已用库存数量+1
             OpeWmsScooterStock param = new OpeWmsScooterStock();
             param.setId(stockId);
