@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.assign.ToBeAssignService;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignInputBatteryEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignListEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignSeatNextEnter;
@@ -94,6 +95,15 @@ public class ToBeAssignController {
     @PostMapping("/submit")
     public Response<GeneralResult> submit(@ModelAttribute ToBeAssignSubmitEnter enter) {
         return new Response<>(toBeAssignService.submit(enter));
+    }
+
+    /**
+     * 录入电池
+     */
+    @ApiOperation(value = "录入电池", notes = "录入电池")
+    @PostMapping("/battery")
+    public Response<GeneralResult> inputBattery(@ModelAttribute ToBeAssignInputBatteryEnter enter) {
+        return new Response<>(toBeAssignService.inputBattery(enter));
     }
 
     /**

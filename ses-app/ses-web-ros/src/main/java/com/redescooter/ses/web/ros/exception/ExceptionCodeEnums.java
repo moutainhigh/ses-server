@@ -562,7 +562,9 @@ public enum ExceptionCodeEnums {
 
     SCOOTER_NOT_CLOSED(10272, "车辆未关闭"),
 
-    SELECT_SCOOTER_MODEL_ERROR(10273, "选择的车辆型号有误")
+    SELECT_SCOOTER_MODEL_ERROR(10273, "选择的车辆型号有误"),
+
+    BATTERY_NOT_EMPTY(10274, "电池不能为空")
 
 
 
