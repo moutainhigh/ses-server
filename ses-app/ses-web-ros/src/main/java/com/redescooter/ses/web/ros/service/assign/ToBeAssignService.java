@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignInputBatteryEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignListEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignSeatNextEnter;
@@ -56,6 +57,11 @@ public interface ToBeAssignService {
     GeneralResult submit(ToBeAssignSubmitEnter enter);
 
     /**
+     * 录入电池
+     */
+    GeneralResult inputBattery(ToBeAssignInputBatteryEnter enter);
+
+    /**
      * 查询客户走到哪个节点并带出数据
      */
     ToBeAssignNodeResult getNode(CustomerIdEnter enter);
@@ -76,4 +82,5 @@ public interface ToBeAssignService {
     List<String> testGenerateVINCode(GeneralEnter enter);
 
     String show(Long specificatId, String specificatName, Integer seatNumber, int i);
+
 }

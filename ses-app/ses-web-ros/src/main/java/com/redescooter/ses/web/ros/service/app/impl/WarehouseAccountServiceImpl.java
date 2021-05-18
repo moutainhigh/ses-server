@@ -231,7 +231,7 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
                             Integer nodeFlag = node.getFlag();
                             Integer appNode = node.getAppNode();
 
-                            boolean e = nodeFlag == 1 && (appNode == 1 || appNode == 2 || appNode == 3);
+                            boolean e = nodeFlag == 1 && (appNode == 2 || appNode == 3 || appNode == 4 || appNode == 5);
                             if (e) {
                                 flag = true;
                                 break;

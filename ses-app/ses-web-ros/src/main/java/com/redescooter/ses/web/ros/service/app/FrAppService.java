@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.vo.app.AppLoginEnter;
+import com.redescooter.ses.web.ros.vo.app.BindLicensePlateEnter;
 import com.redescooter.ses.web.ros.vo.app.BindVinEnter;
 import com.redescooter.ses.web.ros.vo.app.InputBatteryEnter;
 import com.redescooter.ses.web.ros.vo.app.InputScooterEnter;
@@ -66,5 +67,10 @@ public interface FrAppService {
      * 设置软体
      */
     GeneralResult setScooterModel(CustomerIdEnter enter);
+
+    /**
+     * 绑定车牌
+     */
+    GeneralResult bindLicensePlate(BindLicensePlateEnter enter);
 
 }

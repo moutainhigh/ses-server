@@ -35,4 +35,19 @@ public class ToBeAssignSubmitDetailEnter extends GeneralEnter implements Seriali
     @ApiModelProperty(value = "颜色id", required = true)
     private Long colorId;
 
+    @ApiModelProperty(value = "BBI", required = true)
+    private String bbi;
+
+    @ApiModelProperty(value = "控制器", required = true)
+    private String controller;
+
+    @ApiModelProperty(value = "电机", required = true)
+    private String electricMachinery;
+
+    @ApiModelProperty(value = "仪表", required = true)
+    private String meter;
+
+    @ApiModelProperty(value = "IMEI", required = true)
+    private String imei;
+
 }

@@ -36,7 +36,7 @@ public class ToBeAssignSeatNextDetailEnter extends GeneralEnter implements Seria
     private Integer seatNumber;
 
     @ApiModelProperty(value = "VIN 从码库获取", required = true)
-    private String vinCode;
+    private String vin;
 
     @ApiModelProperty(value = "待分配车辆数量", required = true)
     private Integer qty;
