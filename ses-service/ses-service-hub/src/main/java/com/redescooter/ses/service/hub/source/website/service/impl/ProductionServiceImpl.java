@@ -4,7 +4,6 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Maps;
-import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.service.website.ProductionService;
 import com.redescooter.ses.api.hub.vo.website.SyncProductionDataEnter;
@@ -81,14 +80,20 @@ public class ProductionServiceImpl implements ProductionService {
         if (product != null) {
             // 这里表示这里是关闭销售状态 直接把之前的数据删除
             // 删除site_product_model
-            siteProductModelService.removeById(product.getId());
+            //siteProductModelService.removeById(product.getId());
+            product.setStatus(-1);
+            siteProductModelService.updateById(product);
 
             // 删除site_product
             QueryWrapper<SiteProduct> productQueryWrapper = new QueryWrapper<>();
             productQueryWrapper.eq(SiteProduct.COL_PRODUCT_MODEL_ID, product.getId());
             List<SiteProduct> productList = siteProductService.list(productQueryWrapper);
             if (CollectionUtils.isNotEmpty(productList)) {
-                siteProductService.removeByIds(productList.stream().map(SiteProduct::getId).collect(Collectors.toList()));
+                for (SiteProduct item : productList) {
+                    item.setStatus(-1);
+                    siteProductService.updateById(item);
+                }
+                //siteProductService.removeByIds(productList.stream().map(SiteProduct::getId).collect(Collectors.toList()));
             }
 
             // 删除site_product_colour
@@ -104,8 +109,12 @@ public class ProductionServiceImpl implements ProductionService {
             wrapper.eq(SiteProductPrice::getProductModelId, product.getId());
             List<SiteProductPrice> list = siteProductPriceService.list(wrapper);
             if (CollectionUtils.isNotEmpty(list)) {
-                List<Long> ids = list.stream().map(o -> o.getId()).collect(Collectors.toList());
-                siteProductPriceService.removeByIds(ids);
+                for (SiteProductPrice item : list) {
+                    item.setStatus(-1);
+                    siteProductPriceService.updateById(item);
+                }
+                /*List<Long> ids = list.stream().map(o -> o.getId()).collect(Collectors.toList());
+                siteProductPriceService.removeByIds(ids);*/
             }
 
             //salePriceService.deleteSalePrice(product.getProductModelName());
@@ -181,18 +190,20 @@ public class ProductionServiceImpl implements ProductionService {
             productModel.setUpdatedTime(new Date());
             siteProductModelService.saveOrUpdate(productModel);
         } else {
+            log.info("productModel不存在");
+
             LambdaQueryWrapper<SiteProductPrice> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(SiteProductPrice::getProductModelId, productModel.getId());
-            wrapper.eq(SiteProductPrice::getDr, Constant.DR_TRUE);
+            wrapper.eq(SiteProductPrice::getStatus, -1);
             List<SiteProductPrice> list = siteProductPriceService.list(wrapper);
             if (CollectionUtils.isNotEmpty(list)) {
                 for (SiteProductPrice item : list) {
-                    item.setDr(Constant.DR_FALSE);
+                    item.setStatus(1);
                     siteProductPriceService.updateById(item);
                 }
             }
 
-            productModel.setDr(Constant.DR_FALSE);
+            productModel.setStatus(1);
             siteProductModelService.updateById(productModel);
         }
 
@@ -214,7 +225,8 @@ public class ProductionServiceImpl implements ProductionService {
             product.setProductModelId(productModel.getId());
             siteProductService.saveOrUpdate(product);
         } else {
-            product.setDr(Constant.DR_FALSE);
+            log.info("product不存在");
+            product.setStatus(1);
             siteProductService.updateById(product);
         }
 
