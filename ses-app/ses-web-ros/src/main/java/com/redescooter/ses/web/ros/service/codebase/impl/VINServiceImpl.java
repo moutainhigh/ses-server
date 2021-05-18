@@ -210,15 +210,6 @@ public class VINServiceImpl implements VINService {
     public GeneralResult export(VINListEnter enter) {
         String excelPath = "";
         List<ExportVINResult> list = opeCodebaseVinMapper.exportVin(enter);
-        if (CollectionUtils.isNotEmpty(list)) {
-            for (ExportVINResult item : list) {
-                if ("1".equals(item.getStatus())) {
-                    item.setStatus("待分配");
-                } else if ("2".equals(item.getStatus())) {
-                    item.setStatus("已分配");
-                }
-            }
-        }
 
         List<Map<String, Object>> dataMap = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(list)) {
