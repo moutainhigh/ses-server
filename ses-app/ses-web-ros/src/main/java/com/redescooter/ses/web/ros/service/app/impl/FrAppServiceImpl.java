@@ -22,6 +22,7 @@ import com.redescooter.ses.api.common.vo.scooter.SpecificGroupDTO;
 import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
 import com.redescooter.ses.api.common.vo.specification.SpecificDefDTO;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
+import com.redescooter.ses.api.foundation.service.scooter.AssignScooterService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.api.hub.service.admin.ScooterModelService;
@@ -98,6 +99,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -189,6 +191,9 @@ public class FrAppServiceImpl implements FrAppService {
 
     @DubboReference
     private ScooterEmqXService scooterEmqXService;
+
+    @DubboReference
+    private AssignScooterService assignScooterService;
 
     /**
      * 登录
@@ -358,7 +363,21 @@ public class FrAppServiceImpl implements FrAppService {
                 }
             }
         }
-        return PageResult.create(enter, count, list);
+
+        // 正式客户且点击了创建账号的才能流转到待分配列表
+        if (CollectionUtils.isNotEmpty(list)) {
+            Iterator<InquiryListResult> iterator = list.iterator();
+            while (iterator.hasNext()) {
+                InquiryListResult next = iterator.next();
+                String email = next.getEmail();
+                // 拿着email去pla_user表查询,如果存在,说明已创建账号 flag:存在就是true,不存在就是false
+                Boolean flag = assignScooterService.getPlaUserIsExistByEmail(email);
+                if (!flag) {
+                    iterator.remove();
+                }
+            }
+        }
+        return PageResult.create(enter, list.size(), list);
     }
 
     /**
