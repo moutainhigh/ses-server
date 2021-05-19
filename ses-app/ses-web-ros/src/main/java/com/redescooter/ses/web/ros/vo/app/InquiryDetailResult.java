@@ -22,11 +22,20 @@ import java.util.List;
 @EqualsAndHashCode
 public class InquiryDetailResult extends GeneralResult {
 
+    @ApiModelProperty(value = "车型id")
+    private Long specificatTypeId;
+
+    @ApiModelProperty(value = "客户id")
+    private Long customerId;
+
     @ApiModelProperty(value = "车型名称")
     private String scooterName;
 
     @ApiModelProperty(value = "颜色名称")
     private String colorName;
+
+    @ApiModelProperty(value = "颜色id")
+    private Long colorId;
 
     @ApiModelProperty(value = "电池数量")
     private Integer batteryNum;

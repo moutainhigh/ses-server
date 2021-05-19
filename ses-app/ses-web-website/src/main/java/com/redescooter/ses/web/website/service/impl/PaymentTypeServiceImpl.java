@@ -9,7 +9,6 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.code.MainCode;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dm.SitePaymentType;
-import com.redescooter.ses.web.website.dm.SiteProductModel;
 import com.redescooter.ses.web.website.dm.SiteProductPrice;
 import com.redescooter.ses.web.website.enums.CommonStatusEnums;
 import com.redescooter.ses.web.website.service.PaymentTypeService;
@@ -113,22 +112,30 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
     public PaymentTypeResult getPaymentTypeList(PaymentTypeEnter enter) {
         PaymentTypeResult result = new PaymentTypeResult();
 
-        Long modelId = enter.getModelId();
-        SiteProductModel productModel = siteProductModelService.getById(modelId);
-        // 如果此型号已被删除
-        if (null != productModel && productModel.getDr() == Constant.DR_TRUE) {
-            String modelName = productModel.getProductModelName();
-            LambdaQueryWrapper<SiteProductModel> qw = new LambdaQueryWrapper<>();
-            qw.eq(SiteProductModel::getDr, Constant.DR_FALSE);
-            qw.eq(SiteProductModel::getStatus, 1);
-            qw.eq(SiteProductModel::getProductModelName, modelName);
-            qw.orderByDesc(SiteProductModel::getCreatedTime);
-            qw.last("limit 1");
-            SiteProductModel model = siteProductModelService.getOne(qw);
-            if (null != model) {
-                enter.setModelId(model.getId());
+        // 得到正确的model信息
+        /*SiteProductModel productModel = siteProductModelService.getById(modelId);
+        String name = productModel.getProductModelName();*/
+
+        // 同名已删除的model信息
+        /*LambdaQueryWrapper<SiteProductModel> modelWrapper = new LambdaQueryWrapper<>();
+        modelWrapper.eq(SiteProductModel::getDr, Constant.DR_TRUE);
+        modelWrapper.eq(SiteProductModel::getProductModelName, name);
+        List<SiteProductModel> deleteList = siteProductModelService.list(modelWrapper);
+        if (CollectionUtils.isNotEmpty(deleteList)) {
+            for (SiteProductModel item : deleteList) {
+                LambdaQueryWrapper<SiteProductPrice> conWrapper = new LambdaQueryWrapper<>();
+                conWrapper.eq(SiteProductPrice::getDr, Constant.DR_TRUE);
+                conWrapper.eq(SiteProductPrice::getProductModelId, item.getId());
+                List<SiteProductPrice> priceList = siteProductPriceService.list(conWrapper);
+                if (CollectionUtils.isNotEmpty(priceList)) {
+                    for (SiteProductPrice price : priceList) {
+                        price.setDr(Constant.DR_FALSE);
+                        price.setProductModelId(modelId);
+                        siteProductPriceService.updateById(price);
+                    }
+                }
             }
-        }
+        }*/
 
         // 租赁的集合
         List<LeaseResult> leaseList = Lists.newArrayList();
