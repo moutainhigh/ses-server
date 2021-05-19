@@ -52,6 +52,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import redis.clients.jedis.JedisCluster;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.*;
@@ -66,43 +67,30 @@ import java.util.*;
 @Slf4j
 @Service
 public class InquiryServiceImpl implements InquiryService {
-
-
     @Autowired
     private OpeCustomerInquiryService opeCustomerInquiryService;
-
     @Autowired
     private JedisCluster jedisCluster;
-
     @Autowired
     private InquiryServiceMapper inquiryServiceMapper;
-
     @Autowired
     private OpeCustomerService opeCustomerService;
-
-    @Reference
-    private MailMultiTaskService mailMultiTaskService;
-
-    @Reference
-    private CityBaseService cityBaseService;
-
-    @Reference
-    private IdAppService idAppService;
-
-    @Value("${Request.privateKey}")
-    private String privateKey;
-
-    @Value("${excel.folder}")
-    private String excelFolder;
-
-    @Autowired
+    @Resource
     private MondayService mondayService;
-
     @Autowired
     private OssConfig ossConfig;
-
     @Autowired
     private ContactUsService contactUsService;
+    @Reference
+    private MailMultiTaskService mailMultiTaskService;
+    @Reference
+    private CityBaseService cityBaseService;
+    @Reference
+    private IdAppService idAppService;
+    @Value("${Request.privateKey}")
+    private String privateKey;
+    @Value("${excel.folder}")
+    private String excelFolder;
 
     @Override
     public Map<String, Integer> countStatus(GeneralEnter enter) {

@@ -46,8 +46,8 @@ import java.util.Map;
  * @author: Alex @Version：1.3
  * @create: 2020/07/09 16:46
  */
-@Service
 @Slf4j
+@Service
 public class MondayServiceImpl implements MondayService {
     // 预订单板子模板
     private static Map<String, String> bookOrderMap = new HashMap<>();
