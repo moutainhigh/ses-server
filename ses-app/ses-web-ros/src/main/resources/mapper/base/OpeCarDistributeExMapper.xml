@@ -183,10 +183,13 @@
     <!-- app询价单详情 -->
     <select id="getInquiryDetail" resultType="com.redescooter.ses.web.ros.vo.app.InquiryDetailResult">
         select
+            ost.id as specificatTypeId,
+            oci.customer_id,
             ost.specificat_name as scooterName,
             oc.color_name,
+            oc.id as colorId,
             ocib.product_qty as batteryNum,
-            ocd.seat_number,
+            IFNULL(ocd.seat_number, 2) as seatNumber,
             ocd.rsn,
             ocd.tablet_sn,
             ocd.bluetooth_address,
@@ -198,8 +201,8 @@
         left join ope_car_distribute ocd on oci.customer_id = ocd.customer_id and ocd.dr = 0
         left join ope_car_distribute_node ocdn on ocdn.customer_id = oci.customer_id and ocdn.dr = 0
         left join ope_sale_scooter oss on oss.id = oci.product_id and oss.dr = 0
-        left join ope_specificat_type ost on ost.id = oss.specificat_id and ost.dr = 0
-        left join ope_color oc on oc.id = oss.color_id and oc.dr = 0
+        left join ope_specificat_type ost on ost.id = ocd.specificat_type_id and ost.dr = 0
+        left join ope_color oc on oc.id = ocd.color_id and oc.dr = 0
         where oci.id = #{param.id}
     </select>
 

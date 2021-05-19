@@ -82,7 +82,7 @@
                sp.en_name,
                sp.price * spp.qty as price
         from site_product_parts spp
-        left join site_parts sp on spp.parts_id = sp.id and sp.dr = 0
+        left join site_parts sp on spp.parts_id = sp.id and sp.dr = 0 and sp.`status` = 1
         where spp.dr = 0 and spp.`status` = 1 and sp.parts_type = 3
         <if test="id != null">
             and spp.product_id = #{id}

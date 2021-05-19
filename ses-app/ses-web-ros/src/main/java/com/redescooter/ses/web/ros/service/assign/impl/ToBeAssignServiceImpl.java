@@ -554,6 +554,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
         // 客户和车辆产生绑定关系
         List<HubSaveScooterEnter> saveRelationList = Lists.newArrayList();
+        boolean stockFlag = false;
 
         for (ToBeAssignInputBatteryDetailEnter o : list) {
             Long id = o.getId();
@@ -595,6 +596,12 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 Long stockId = stock.getId();
                 Integer ableStockQty = stock.getAbleStockQty();
                 Integer usedStockQty = stock.getUsedStockQty();
+
+                // 如果原先库存不足,抛出异常
+                if (ableStockQty < 1) {
+                    stockFlag = true;
+                    break;
+                }
 
                 // 原先库存的可用库存数量-1,已用库存数量+1
                 OpeWmsScooterStock param = new OpeWmsScooterStock();
@@ -707,6 +714,10 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                     }
                 }
             }
+        }
+
+        if (stockFlag) {
+            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getCode(), ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getMessage());
         }
 
         // node表node字段+1
