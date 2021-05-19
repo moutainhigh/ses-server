@@ -384,7 +384,7 @@ public class FrAppServiceImpl implements FrAppService {
             node.setCustomerId(enter.getCustomerId());
             node.setAppNode(1);
             node.setFlag(0);
-            node.setCreatedBy(userId);
+            node.setCreatedBy(userId == null ? 0L : userId);
             node.setCreatedTime(new Date());
             opeCarDistributeNodeMapper.insert(node);
 
@@ -397,7 +397,7 @@ public class FrAppServiceImpl implements FrAppService {
             distribute.setColorId(colorId);
             distribute.setSeatNumber(2);
             distribute.setQty(1);
-            distribute.setCreatedBy(userId);
+            distribute.setCreatedBy(userId == null ? 0L : userId);
             distribute.setCreatedTime(new Date());
             opeCarDistributeMapper.insert(distribute);
         }
