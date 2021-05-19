@@ -124,8 +124,8 @@
         left join ope_car_distribute ocd on oci.customer_id = ocd.customer_id and ocd.dr = 0
         left join ope_car_distribute_node ocdn on ocdn.customer_id = oci.customer_id and ocdn.dr = 0
         left join ope_sale_scooter oss on oss.id = oci.product_id and oss.dr = 0
-        left join ope_specificat_type ost on ost.id = ocd.specificat_type_id and ost.dr = 0
-        left join ope_color oc on oc.id = ocd.color_id and oc.dr = 0
+        left join ope_specificat_type ost on ost.id = oss.specificat_id and ost.dr = 0
+        left join ope_color oc on oc.id = oss.color_id and oc.dr = 0
         left join ope_customer customer on customer.id = oci.customer_id and customer.dr = 0
         where oci.dr = 0 and customer.status = 2
         <include refid="condition"/>
@@ -154,8 +154,8 @@
         left join ope_car_distribute ocd on oci.customer_id = ocd.customer_id and ocd.dr = 0
         left join ope_car_distribute_node ocdn on ocdn.customer_id = oci.customer_id and ocdn.dr = 0
         left join ope_sale_scooter oss on oss.id = oci.product_id and oss.dr = 0
-        left join ope_specificat_type ost on ost.id = ocd.specificat_type_id and ost.dr = 0
-        left join ope_color oc on oc.id = ocd.color_id and oc.dr = 0
+        left join ope_specificat_type ost on ost.id = oss.specificat_id and ost.dr = 0
+        left join ope_color oc on oc.id = oss.color_id and oc.dr = 0
         left join ope_customer customer on customer.id = oci.customer_id and customer.dr = 0
         where oci.dr = 0 and customer.status = 2
         <include refid="condition"/>

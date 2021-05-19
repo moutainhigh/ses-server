@@ -49,7 +49,9 @@ import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMappe
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
 import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
+import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
@@ -61,6 +63,7 @@ import com.redescooter.ses.web.ros.service.app.FrAppService;
 import com.redescooter.ses.web.ros.service.assign.impl.ToBeAssignServiceImpl;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
+import com.redescooter.ses.web.ros.service.base.OpeSaleScooterService;
 import com.redescooter.ses.web.ros.service.base.OpeWarehouseAccountService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
 import com.redescooter.ses.web.ros.vo.app.AppLoginEnter;
@@ -142,6 +145,9 @@ public class FrAppServiceImpl implements FrAppService {
 
     @Autowired
     private ToBeAssignServiceImpl toBeAssignService;
+
+    @Autowired
+    private OpeSaleScooterService opeSaleScooterService;
 
     @Value("${Request.privateKey}")
     private String privateKey;
@@ -336,28 +342,27 @@ public class FrAppServiceImpl implements FrAppService {
      */
     @Override
     public InquiryDetailResult getDetail(InquiryDetailEnter enter) {
-        Long userId = getUserId(enter);
-        InquiryDetailResult result = opeCarDistributeExMapper.getInquiryDetail(enter);
-        if (null != result) {
-            String battery = result.getBattery();
-            if (StringUtils.isBlank(battery)) {
-                result.setBatteryNumber(0);
-                result.setBatteryList(new ArrayList<>());
-            } else {
-                String[] split = battery.split(",");
-                List<String> batteryList = new ArrayList<>(Arrays.asList(split));
-                batteryList.removeAll(Collections.singleton(null));
-                result.setBatteryNumber(batteryList.size());
-                result.setBatteryList(batteryList);
-            }
-        }
-
         // 先查看客户在node表是否存在数据,不存在就新建
+        Long userId = getUserId(enter);
         LambdaQueryWrapper<OpeCarDistributeNode> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
         qw.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
         List<OpeCarDistributeNode> nodeList = opeCarDistributeNodeMapper.selectList(qw);
         if (CollectionUtils.isEmpty(nodeList)) {
+
+            OpeCustomerInquiry inquiry = opeCustomerInquiryService.getById(enter.getId());
+            if (null == inquiry) {
+                throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+            }
+            Long productId = inquiry.getProductId();
+            OpeSaleScooter saleScooter = opeSaleScooterService.getById(productId);
+            if (null == saleScooter) {
+                throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
+            }
+            // 根据询价单id获得车辆型号id和颜色id
+            Long specificatId = saleScooter.getSpecificatId();
+            Long colorId = saleScooter.getColorId();
+
             // 新增node表
             OpeCarDistributeNode node = new OpeCarDistributeNode();
             node.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE_NODE));
@@ -374,10 +379,28 @@ public class FrAppServiceImpl implements FrAppService {
             distribute.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE));
             distribute.setDr(Constant.DR_FALSE);
             distribute.setCustomerId(enter.getCustomerId());
+            distribute.setSpecificatTypeId(specificatId);
+            distribute.setColorId(colorId);
+            distribute.setSeatNumber(2);
             distribute.setQty(1);
             distribute.setCreatedBy(userId);
             distribute.setCreatedTime(new Date());
             opeCarDistributeMapper.insert(distribute);
+        }
+
+        InquiryDetailResult result = opeCarDistributeExMapper.getInquiryDetail(enter);
+        if (null != result) {
+            String battery = result.getBattery();
+            if (StringUtils.isBlank(battery)) {
+                result.setBatteryNumber(0);
+                result.setBatteryList(new ArrayList<>());
+            } else {
+                String[] split = battery.split(",");
+                List<String> batteryList = new ArrayList<>(Arrays.asList(split));
+                batteryList.removeAll(Collections.singleton(null));
+                result.setBatteryNumber(batteryList.size());
+                result.setBatteryList(batteryList);
+            }
         }
         return result;
     }
