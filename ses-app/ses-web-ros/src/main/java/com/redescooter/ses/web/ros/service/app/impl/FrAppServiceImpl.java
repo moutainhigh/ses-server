@@ -452,6 +452,19 @@ public class FrAppServiceImpl implements FrAppService {
         String vinCode = enter.getVinCode();
         Integer seatNumber = enter.getSeatNumber();
 
+        // 校验此询价单是否已分配给其他仓库账号
+        LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        lqw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+        lqw.last("limit 1");
+        OpeCarDistribute instance = opeCarDistributeMapper.selectOne(lqw);
+        if (null != instance) {
+            Long warehouseAccountId = instance.getWarehouseAccountId();
+            if (null != warehouseAccountId) {
+                throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getCode(), ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getMessage());
+            }
+        }
+
         if (vinCode.length() != 17) {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
         }
