@@ -545,6 +545,15 @@ public class FrAppServiceImpl implements FrAppService {
         String licensePlate = enter.getLicensePlate();
         Long customerId = enter.getCustomerId();
 
+        LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
+        checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        checkWrapper.eq(OpeCarDistribute::getLicensePlate, licensePlate);
+        checkWrapper.last("limit 1");
+        OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
+        if (null != checkModel) {
+            throw new SesWebRosException(ExceptionCodeEnums.PLATE_HAS_USED.getCode(), ExceptionCodeEnums.PLATE_HAS_USED.getMessage());
+        }
+
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();
         distribute.setLicensePlate(licensePlate);
