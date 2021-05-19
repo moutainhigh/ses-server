@@ -75,7 +75,7 @@ sendinblue:
 
 monday:
   url: https://api.monday.com/v2
-  authorization: eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjI5MjE5MzMxLCJ1aWQiOjUwODM2NTksImlhZCI6IjIwMTktMTItMzBUMTA6NTU6MTEuMDAwWiIsInBlciI6Im1lOndyaXRlIn0.Z_dXLUCgiEUoHQXzeFlOqeG2jfSeiyKIdBNdwaAOKrA
+  authorization: eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjk2MTY4NDA4LCJ1aWQiOjE1NDMyNzY0LCJpYWQiOiIyMDIxLTAxLTE2VDE4OjM2OjA5LjAwMFoiLCJwZXIiOiJtZTp3cml0ZSIsImFjdGlkIjoyMzA1NzkyLCJyZ24iOiJ1c2UxIn0.LeuBK3I5r12akLyeKFA0yzHUcXLm3SNxpVC6o6Mzix8
   paramQuery: query
   paramVariables: variables
   httpMethod: POST
