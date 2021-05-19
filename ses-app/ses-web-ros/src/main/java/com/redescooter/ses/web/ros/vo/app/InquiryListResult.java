@@ -77,4 +77,7 @@ public class InquiryListResult extends PageResult {
     @ApiModelProperty(value = "处理中 未录入的电池数量")
     private Integer noInputBatteryNum;
 
+    @ApiModelProperty(value = "邮箱")
+    private String email;
+
 }
