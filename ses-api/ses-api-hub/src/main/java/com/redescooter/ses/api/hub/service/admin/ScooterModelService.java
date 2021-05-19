@@ -1,6 +1,7 @@
 package com.redescooter.ses.api.hub.service.admin;
 
 import com.redescooter.ses.api.hub.vo.admin.AdmScooter;
+import com.redescooter.ses.api.hub.vo.admin.AdmScooterUpdateEnter;
 
 /**
  * @Description
@@ -24,7 +25,9 @@ public interface ScooterModelService {
      */
     AdmScooter getScooterById(Long id);
 
-
-
+    /**
+     * 修改adm_scooter
+     */
+    void updateAdmScooter(AdmScooterUpdateEnter enter);
 
 }

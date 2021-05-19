@@ -29,6 +29,7 @@ import com.redescooter.ses.api.hub.service.operation.ColorService;
 import com.redescooter.ses.api.hub.service.operation.SpecificService;
 import com.redescooter.ses.api.hub.vo.HubSaveScooterEnter;
 import com.redescooter.ses.api.hub.vo.admin.AdmScooter;
+import com.redescooter.ses.api.hub.vo.admin.AdmScooterUpdateEnter;
 import com.redescooter.ses.api.hub.vo.operation.SpecificTypeDTO;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
@@ -821,7 +822,7 @@ public class FrAppServiceImpl implements FrAppService {
         scooter.setGroupId(specificatId);
         scooter.setColorId(inquiryColorId);
         scooter.setMacAddress(model.getBluetoothAddress());
-        scooter.setScooterController(ScooterModelEnum.SCOOTER_E50.getType());
+        scooter.setScooterController(ScooterModelEnum.getScooterModelType(specificatName));
         scooter.setCreatedBy(0L);
         scooter.setCreatedTime(new Date());
         scooter.setUpdatedBy(0L);
@@ -851,7 +852,7 @@ public class FrAppServiceImpl implements FrAppService {
         if (ScooterLockStatusEnums.UNLOCK.getValue().equals(status)) {
             throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_CLOSED.getCode(), ExceptionCodeEnums.SCOOTER_NOT_CLOSED.getMessage());
         }
-        SpecificTypeDTO specificType = specificService.getSpecificTypeByName(ScooterModelEnum.SCOOTER_E50.getModel());
+        SpecificTypeDTO specificType = specificService.getSpecificTypeByName(specificatName);
         if (null == specificType) {
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
         }
@@ -859,6 +860,7 @@ public class FrAppServiceImpl implements FrAppService {
         if (type == 0) {
             throw new SesWebRosException(ExceptionCodeEnums.SELECT_SCOOTER_MODEL_ERROR.getCode(), ExceptionCodeEnums.SELECT_SCOOTER_MODEL_ERROR.getMessage());
         }
+
         // 如果设置的型号与当前车辆的型号一致则不做操作
         if (null != scooterModel.getScooterController() && scooterModel.getScooterController().equals(type)) {
             log.info("设置的型号与当前车辆的型号一致,直接返回");
@@ -875,6 +877,17 @@ public class FrAppServiceImpl implements FrAppService {
             opeCarDistributeNodeMapper.update(node, lqw);
             return new GeneralResult(enter.getRequestId());
         }
+
+        // 更新车辆型号信息
+        AdmScooterUpdateEnter param = new AdmScooterUpdateEnter();
+        param.setId(scooterModel.getId());
+        param.setScooterController(type);
+        param.setGroupId(specificType.getGroupId());
+        param.setGroupName(specificType.getGroupName());
+        scooterModelService.updateAdmScooter(param);
+        log.info("更新车辆型号信息");
+        scooterService.syncScooterModel(scooterModel.getSn(), type);
+        log.info("同步车辆型号");
 
         List<SpecificDefGroupPublishDTO> list = buildSetScooterModelData(specificType.getId());
         if (CollectionUtils.isNotEmpty(list)) {
