@@ -75,7 +75,7 @@ sendinblue:
 
 monday:
   url: https://api.monday.com/v2
-  authorization: eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjk2MTY4NDA4LCJ1aWQiOjE1NDMyNzY0LCJpYWQiOiIyMDIxLTAxLTE2VDE4OjM2OjA5LjAwMFoiLCJwZXIiOiJtZTp3cml0ZSIsImFjdGlkIjoyMzA1NzkyLCJyZ24iOiJ1c2UxIn0.LeuBK3I5r12akLyeKFA0yzHUcXLm3SNxpVC6o6Mzix8
+  authorization: eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjExMDU1MTY1OSwidWlkIjoxOTkwNTk5OSwiaWFkIjoiMjAyMS0wNS0xOVQwNDoxNDoyMi4wMDBaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6MjMwNTc5MiwicmduIjoidXNlMSJ9.NJNXguGo9MqukNZV7zUvJKaeNxcUv5U3Z3RzbDoHS4U
   paramQuery: query
   paramVariables: variables
   httpMethod: POST
@@ -97,7 +97,7 @@ monday:
   workspaceBackId: 199275
   #模板Id
   templeteId: 581923336
-  load-template: true
+  load-template: false
 
 constant-us-email:
   sale-principal:

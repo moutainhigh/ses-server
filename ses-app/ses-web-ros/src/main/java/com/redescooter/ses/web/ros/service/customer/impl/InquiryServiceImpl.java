@@ -75,7 +75,7 @@ public class InquiryServiceImpl implements InquiryService {
     private InquiryServiceMapper inquiryServiceMapper;
     @Autowired
     private OpeCustomerService opeCustomerService;
-    @Resource
+    @Autowired
     private MondayService mondayService;
     @Autowired
     private OssConfig ossConfig;
