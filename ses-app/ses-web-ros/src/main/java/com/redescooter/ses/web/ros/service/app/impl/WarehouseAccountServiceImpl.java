@@ -253,7 +253,9 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
             OpeWarehouseAccount model = opeWarehouseAccountService.getById(enter.getId());
             if (model.getStatus() == 2) {
                 // 调用法国仓库app登出接口
-                frAppService.logout(enter);
+                GeneralEnter generalEnter = new GeneralEnter();
+                generalEnter.setToken(model.getLastLoginToken());
+                frAppService.logout(generalEnter);
             }
         }
         return new GeneralResult(enter.getRequestId());
@@ -285,7 +287,9 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
         boolean flag = opeWarehouseAccountService.updateById(account);
         if (flag) {
             // 调用法国仓库app登出接口
-            frAppService.logout(enter);
+            GeneralEnter generalEnter = new GeneralEnter();
+            generalEnter.setToken(account.getLastLoginToken());
+            frAppService.logout(generalEnter);
         }
         return new GeneralResult(enter.getRequestId());
     }
@@ -303,7 +307,9 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
         boolean flag = opeWarehouseAccountService.removeById(enter.getId());
         if (flag) {
             // 调用法国仓库app登出接口
-            frAppService.logout(enter);
+            GeneralEnter generalEnter = new GeneralEnter();
+            generalEnter.setToken(account.getLastLoginToken());
+            frAppService.logout(generalEnter);
         }
         return new GeneralResult(enter.getRequestId());
     }

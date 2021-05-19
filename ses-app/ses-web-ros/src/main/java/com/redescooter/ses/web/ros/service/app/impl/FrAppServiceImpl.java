@@ -243,6 +243,10 @@ public class FrAppServiceImpl implements FrAppService {
             log.error("设置token失败", ex);
         }
 
+        // 修改db,更新lastLoginToken
+        account.setLastLoginToken(token);
+        opeWarehouseAccountService.updateById(account);
+
         TokenResult result = new TokenResult();
         result.setToken(token);
         result.setRequestId(enter.getRequestId());
