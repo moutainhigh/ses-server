@@ -774,6 +774,7 @@ public class FrAppServiceImpl implements FrAppService {
         if (null != admScooter) {
             throw new SesWebRosException(ExceptionCodeEnums.SN_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.SN_ALREADY_EXISTS.getMessage());
         }
+        log.info("车辆不存在");
         SpecificGroupDTO group = specificService.getSpecificGroupById(specificatId);
         ColorDTO color = colorService.getColorInfoById(inquiryColorId);
         if (null == group) {
@@ -801,10 +802,12 @@ public class FrAppServiceImpl implements FrAppService {
         scooter.setGroupName(group.getGroupName());
         scooter.setMacName(model.getBluetoothAddress());
         scooterModelService.insertScooter(scooter);
+        log.info("新增adm_scooter表成功");
 
         // 根据平板序列号(sn)查询在sco_scooter表是否存在 不存在返回true 存在返回false
         Boolean flag = scooterService.getSnIsExist(scooter.getSn());
         if (flag) {
+            log.info("sn在sco_scooter表不存在");
             String scooterNo = generateScooterNo();
             scooterService.syncScooterData(buildData(scooter.getId(), scooter.getSn(), scooter.getScooterController(), userId, scooterNo));
         }
@@ -829,6 +832,18 @@ public class FrAppServiceImpl implements FrAppService {
         }
         // 如果设置的型号与当前车辆的型号一致则不做操作
         if (null != scooterModel.getScooterController() && scooterModel.getScooterController().equals(type)) {
+            log.info("设置的型号与当前车辆的型号一致,直接返回");
+            // node表appNode字段
+            OpeCarDistributeNode node = new OpeCarDistributeNode();
+            node.setAppNode(6);
+            node.setFlag(2);
+            node.setUpdatedBy(userId);
+            node.setUpdatedTime(new Date());
+            // 条件
+            LambdaQueryWrapper<OpeCarDistributeNode> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
+            opeCarDistributeNodeMapper.update(node, lqw);
             return new GeneralResult(enter.getRequestId());
         }
 
