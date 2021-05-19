@@ -564,7 +564,17 @@ public enum ExceptionCodeEnums {
 
     SELECT_SCOOTER_MODEL_ERROR(10273, "选择的车辆型号有误"),
 
-    BATTERY_NOT_EMPTY(10274, "电池不能为空")
+    BATTERY_NOT_EMPTY(10274, "电池不能为空"),
+
+    VIN_HAS_USED(10275, "该VIN已被使用,请重新输入"),
+
+    PLATE_HAS_USED(10276, "该车牌已被使用,请重新输入"),
+
+    RSN_HAS_USED(10277, "该RSN已被使用,请重新输入"),
+
+    BATTERY_HAS_USED(10278, "该电池信息已被使用,请重新输入")
+
+
 
 
 

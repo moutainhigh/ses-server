@@ -348,6 +348,40 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             /*String vinCode = generateVINCode(specificatId, specificatName, seatNumber);
             logger.info("生成的VIN Code是:[{}]", vinCode);*/
 
+            if (vinCode.length() != 17) {
+                throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+            }
+            if (!vinCode.startsWith("VXSR2A")) {
+                throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+            }
+
+            // 根据车型id获得车型名称
+            OpeSpecificatType specificatType = opeSpecificatTypeMapper.selectById(specificatId);
+            if (null == specificatType) {
+                throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
+            }
+            String productType = ProductTypeEnum.showCode(specificatType.getSpecificatName());
+            // 截取第7位,车型编号
+            String productTypeSub = vinCode.substring(6, 7);
+            if (!StringUtils.equals(productType, productTypeSub)) {
+                throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+            }
+
+            // 截取第8位,座位数量
+            String seatNumberSub = vinCode.substring(7, 8);
+            if (!StringUtils.equals(String.valueOf(seatNumber), seatNumberSub)) {
+                throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+            }
+
+            LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
+            checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+            checkWrapper.eq(OpeCarDistribute::getVinCode, vinCode);
+            checkWrapper.last("limit 1");
+            OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
+            if (null != checkModel) {
+                throw new SesWebRosException(ExceptionCodeEnums.VIN_HAS_USED.getCode(), ExceptionCodeEnums.VIN_HAS_USED.getMessage());
+            }
+
             // 修改主表
             OpeCarDistribute model = new OpeCarDistribute();
             model.setSpecificatTypeId(specificatId);
@@ -399,6 +433,15 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         for (ToBeAssignLicensePlateNextDetailEnter o : list) {
             Long id = o.getId();
             String licensePlate = o.getLicensePlate();
+
+            LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
+            checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+            checkWrapper.eq(OpeCarDistribute::getLicensePlate, licensePlate);
+            checkWrapper.last("limit 1");
+            OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
+            if (null != checkModel) {
+                throw new SesWebRosException(ExceptionCodeEnums.PLATE_HAS_USED.getCode(), ExceptionCodeEnums.PLATE_HAS_USED.getMessage());
+            }
 
             // 修改主表
             OpeCarDistribute model = new OpeCarDistribute();
@@ -488,6 +531,15 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             String meter = o.getMeter();
             String imei = o.getImei();
 
+            LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeCarDistribute::getRsn, rsn);
+            lqw.last("limit 1");
+            OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(lqw);
+            if (null != checkModel) {
+                throw new SesWebRosException(ExceptionCodeEnums.RSN_HAS_USED.getCode(), ExceptionCodeEnums.RSN_HAS_USED.getMessage());
+            }
+
             // 修改主表
             OpeCarDistribute model = new OpeCarDistribute();
             model.setId(id);
@@ -559,6 +611,15 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         for (ToBeAssignInputBatteryDetailEnter o : list) {
             Long id = o.getId();
             String battery = o.getBattery();
+
+            LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
+            checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+            checkWrapper.like(OpeCarDistribute::getBattery, battery);
+            checkWrapper.last("limit 1");
+            OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
+            if (null != checkModel) {
+                throw new SesWebRosException(ExceptionCodeEnums.BATTERY_HAS_USED.getCode(), ExceptionCodeEnums.BATTERY_HAS_USED.getMessage());
+            }
 
             // 修改主表
             OpeCarDistribute model = new OpeCarDistribute();
