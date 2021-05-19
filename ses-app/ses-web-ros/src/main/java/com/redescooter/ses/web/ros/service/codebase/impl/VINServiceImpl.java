@@ -1,39 +1,23 @@
 package com.redescooter.ses.web.ros.service.codebase.impl;
 
-import com.aliyun.oss.ClientConfiguration;
-import com.aliyun.oss.OSSClient;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.constant.Constant;
-import com.redescooter.ses.api.common.enums.oss.ProtocolEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
-import com.redescooter.ses.starter.common.config.OssConfig;
+import com.redescooter.ses.app.common.service.FileAppService;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCodebaseVinMapper;
-import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
-import com.redescooter.ses.web.ros.dm.OpeCodebaseVin;
-import com.redescooter.ses.web.ros.dm.OpeColor;
-import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
-import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
-import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.base.OpeCodebaseVinService;
-import com.redescooter.ses.web.ros.service.base.OpeColorService;
-import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
-import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
-import com.redescooter.ses.web.ros.service.base.OpeSpecificatTypeService;
+import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.codebase.VINService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
-import com.redescooter.ses.web.ros.vo.codebase.ExportVINResult;
-import com.redescooter.ses.web.ros.vo.codebase.SpecificatResult;
-import com.redescooter.ses.web.ros.vo.codebase.VINDetailResult;
-import com.redescooter.ses.web.ros.vo.codebase.VINListEnter;
-import com.redescooter.ses.web.ros.vo.codebase.VINListResult;
+import com.redescooter.ses.web.ros.vo.codebase.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -46,12 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Description
@@ -86,8 +65,11 @@ public class VINServiceImpl implements VINService {
     @Value("${excel.folder}")
     private String excelFolder;
 
+    /**
+     * 文件上传oss
+     */
     @Autowired
-    private OssConfig ossConfig;
+    private FileAppService fileAppService;
 
     /**
      * 车型数据源
@@ -210,43 +192,33 @@ public class VINServiceImpl implements VINService {
     public GeneralResult export(VINListEnter enter) {
         String excelPath = "";
         List<ExportVINResult> list = opeCodebaseVinMapper.exportVin(enter);
-
+        if (CollectionUtils.isEmpty(list)) {
+            return new GeneralResult(excelPath);
+        }
         List<Map<String, Object>> dataMap = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(list)) {
-            Integer i = 1;
-            for (ExportVINResult item : list) {
-                item.setGenerateDate(DateUtil.dateAddHour(item.getGenerateDate(), 8));
-                item.setFinishDate(DateUtil.dateAddHour(item.getFinishDate(), 8));
-                dataMap.add(toMap(item, i));
-                i++;
-            }
-            String sheetName = "VIN";
-            String[] headers = {"id", "vin", "status", "generateDate", "finishDate"};
-            String exportExcelName = String.valueOf(System.currentTimeMillis());
-            try {
-                String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName, excelFolder);
-                // 文件夹不存在，则进行创建
-                if (!new File(excelFolder).exists()) {
-                    new File(excelFolder).mkdir();
-                }
-                File file = new File(path);
-                FileInputStream in = new FileInputStream(file);
-                MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(), ContentType.APPLICATION_OCTET_STREAM.toString(), in);
 
-                ClientConfiguration conf = new ClientConfiguration();
-                conf.setProtocol(ProtocolEnums.getProtocol(ossConfig.getProtocol()));
-                OSSClient ossClient;
-                ossClient = new OSSClient(ossConfig.getInternalEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getSecretAccesskey(), conf);
-                String fileName = System.currentTimeMillis() + ".xlsx";
-                ossClient.putObject(ossConfig.getDefaultBucketName(), fileName, multipartFile.getInputStream());
-                String bucket = ossConfig.getDefaultBucketName();
-                excelPath = "https://" + bucket + "." + ossConfig.getPublicEndpointDomain() + "/" + fileName;
-                if (file.exists()) {
-                    file.delete();
-                }
-            } catch (Exception e) {
-                log.error("导出VIN异常", e);
+        Integer i = 1;
+        for (ExportVINResult item : list) {
+            item.setGenerateDate(DateUtil.dateAddHour(item.getGenerateDate(), 8));
+            item.setFinishDate(DateUtil.dateAddHour(item.getFinishDate(), 8));
+            dataMap.add(toMap(item, i));
+            i++;
+        }
+        String sheetName = "VIN";
+        String[] headers = {"id", "vin", "status", "generateDate", "finishDate"};
+        String exportExcelName = String.valueOf(System.currentTimeMillis());
+        try {
+            String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName, excelFolder);
+            File file = new File(path);
+            FileInputStream in = new FileInputStream(file);
+            MultipartFile multipartFile = new MockMultipartFile(file.getName(), file.getName(), ContentType.APPLICATION_OCTET_STREAM.toString(), in);
+            String uplaod = fileAppService.uplaod(null, null, multipartFile);
+            if (file.exists()) {
+                file.delete();
             }
+            return new GeneralResult(uplaod);
+        } catch (Exception e) {
+            log.error("导出VIN异常", e);
         }
         return new GeneralResult(excelPath);
     }
@@ -256,8 +228,8 @@ public class VINServiceImpl implements VINService {
         map.put("id", i);
         map.put("vin", param.getVin() == null ? "--" : param.getVin());
         map.put("status", param.getStatus() == null ? "--" : param.getStatus());
-        map.put("generateDate", param.getGenerateDate() == null ? "--" : param.getGenerateDate());
-        map.put("finishDate", param.getFinishDate() == null ? "--" : param.getFinishDate());
+        map.put("generateDate", param.getGenerateDate() == null ? "--" : DateUtil.getTimeStr(param.getGenerateDate(), DateUtil.DEFAULT_DATETIME_FORMAT));
+        map.put("finishDate", param.getFinishDate() == null ? "--" : DateUtil.getTimeStr(param.getFinishDate(), DateUtil.DEFAULT_DATETIME_FORMAT));
         return map;
     }
 

@@ -5,10 +5,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
@@ -107,6 +104,10 @@ public class ExcelUtil {
         OutputStream out = null;
         String tmpPath = "";
         try {
+            File file = new File(path);
+            if(!file.exists()){
+                file.mkdirs();
+            }
             tmpPath =new StringBuilder(path).append("/").append(exportExcelName).append(".xlsx").toString();
             out = new FileOutputStream(tmpPath);
             workbook.write(out);
