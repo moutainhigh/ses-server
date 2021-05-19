@@ -63,6 +63,9 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
     @Autowired
     private OpeCarDistributeNodeMapper opeCarDistributeNodeMapper;
 
+    @Autowired
+    private FrAppServiceImpl frAppService;
+
     @DubboReference
     private IdAppService idAppService;
 
@@ -245,7 +248,14 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
             }
         }
         account.setStatus(status == 1 ? 2 : 1);
-        opeWarehouseAccountService.updateById(account);
+        boolean flag = opeWarehouseAccountService.updateById(account);
+        if (flag) {
+            OpeWarehouseAccount model = opeWarehouseAccountService.getById(enter.getId());
+            if (model.getStatus() == 2) {
+                // 调用法国仓库app登出接口
+                frAppService.logout(enter);
+            }
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -272,7 +282,11 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
         String pwd = DigestUtils.md5Hex(decryptPassword + salt);
         account.setEmail(enter.getEmail());
         account.setPassword(pwd);
-        opeWarehouseAccountService.updateById(account);
+        boolean flag = opeWarehouseAccountService.updateById(account);
+        if (flag) {
+            // 调用法国仓库app登出接口
+            frAppService.logout(enter);
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -286,7 +300,11 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
         if (null == account) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
-        opeWarehouseAccountService.removeById(enter.getId());
+        boolean flag = opeWarehouseAccountService.removeById(enter.getId());
+        if (flag) {
+            // 调用法国仓库app登出接口
+            frAppService.logout(enter);
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
