@@ -376,6 +376,7 @@ public class FrAppServiceImpl implements FrAppService {
         if (!jedisCluster.exists(enter.getToken())) {
             throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
         }
+        Long userId = getUserId(enter);
 
         // 校验此询价单是否已分配给其他仓库账号
         LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
@@ -385,13 +386,12 @@ public class FrAppServiceImpl implements FrAppService {
         OpeCarDistribute instance = opeCarDistributeMapper.selectOne(lqw);
         if (null != instance) {
             Long warehouseAccountId = instance.getWarehouseAccountId();
-            if (null != warehouseAccountId) {
+            if (null != warehouseAccountId && !userId.equals(warehouseAccountId)) {
                 throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getCode(), ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getMessage());
             }
         }
 
         // 先查看客户在node表是否存在数据,不存在就新建
-        Long userId = getUserId(enter);
         LambdaQueryWrapper<OpeCarDistributeNode> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
         qw.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
