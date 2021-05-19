@@ -49,9 +49,7 @@ import com.redescooter.ses.web.ros.dao.base.OpeWmsStockRecordMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
 import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
-import com.redescooter.ses.web.ros.dm.OpeCodebaseRelation;
 import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
-import com.redescooter.ses.web.ros.dm.OpeCodebaseVin;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
@@ -152,6 +150,9 @@ public class FrAppServiceImpl implements FrAppService {
 
     @Autowired
     private ToBeAssignServiceImpl toBeAssignService;
+
+    @Autowired
+    private OpeSaleScooterService opeSaleScooterService;
 
     @Autowired
     private OpeCodebaseRsnService opeCodebaseRsnService;
