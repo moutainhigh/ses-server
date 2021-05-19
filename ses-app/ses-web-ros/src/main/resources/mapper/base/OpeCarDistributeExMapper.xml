@@ -174,8 +174,7 @@
             and ocd.warehouse_account_id = #{warehouseAccountId} and ocdn.flag = 2 and ocdn.app_node = 6
         </if>
         <if test="param.keyword != null and param.keyword != ''">
-            and ocd.warehouse_account_id = #{warehouseAccountId} and
-            (
+            and (
                 oci.order_no like concat('%', #{param.keyword}, '%') or
                 oci.full_name like concat('%', #{param.keyword}, '%'))
         </if>
