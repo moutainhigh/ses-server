@@ -276,7 +276,7 @@ public class SaveWmsStockDataComponent {
             vinList.add(vin4Model);
             opeCodebaseVinService.saveBatch(vinList);
 
-            // 保存到码库关系表
+            /*// 保存到码库关系表
             List<OpeCodebaseRelation> relationList = Lists.newArrayList();
             String rsn = scooterDataDTOList.get(0).getScooterNo();
 
@@ -320,7 +320,7 @@ public class SaveWmsStockDataComponent {
             relationList.add(relation2);
             relationList.add(relation3);
             relationList.add(relation4);
-            opeCodebaseRelationService.saveBatch(relationList);
+            opeCodebaseRelationService.saveBatch(relationList);*/
         } else {
             for (Map.Entry<Long, List<OutWarehouseOrderProductDTO>> map : outWhOrderProductMap.entrySet()) {
                 // 车辆成品库信息
