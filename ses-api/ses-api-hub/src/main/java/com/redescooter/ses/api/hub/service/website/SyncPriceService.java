@@ -20,4 +20,9 @@ public interface SyncPriceService {
      */
     GeneralResult syncSalePrice(SyncSalePriceDataEnter enter);
 
+    /**
+     * 同步定金
+     */
+    GeneralResult synchronizeDeposit(SyncSalePriceDataEnter enter);
+
 }

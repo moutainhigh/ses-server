@@ -50,6 +50,7 @@ import com.redescooter.ses.web.website.vo.order.AddPartListEnter;
 import com.redescooter.ses.web.website.vo.order.AddUpdateOrderEnter;
 import com.redescooter.ses.web.website.vo.order.OrderDetailsResult;
 import io.seata.spring.annotation.GlobalTransactional;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -262,12 +263,38 @@ public class OrderServiceImpl implements OrderService {
         addSiteOrderVO.setFreight(new BigDecimal("199"));
         //整车价格
         addSiteOrderVO.setProductPrice(productPrice.getPrice());
-        //没有选着其他配件前，只是整车的价格+运费
-        BigDecimal totalPrice = new BigDecimal("199").add(productPrice.getPrice().multiply(new BigDecimal(enter.getScooterQuantity())));
         //实际付款电池数: 选配电池总数-产品最小电池数
         int paidBattery = scooterBatteryParts.getQty() - product.getMinBatteryNum();
-        //加上选购电池的价格
-        totalPrice = totalPrice.add(battery.getPrice().multiply(new BigDecimal(String.valueOf(paidBattery))));
+        BigDecimal totalPrice = new BigDecimal("0");
+        //根据付款类型id查询是什么付款方式
+        SitePaymentType sitePaymentType = sitePaymentTypeService.getById(id);
+
+        LambdaQueryWrapper<SiteProduct> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SiteProduct::getId, addSiteOrderVO.getProductId());
+        SiteProduct siteProduct = siteProductService.getOne(queryWrapper);
+        if (product == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.PRODUCT_NOT_EXIST_EXIST.getCode(),
+                    ExceptionCodeEnums.PRODUCT_NOT_EXIST_EXIST.getMessage());
+        }
+        LambdaQueryWrapper<SiteProductPrice> queryWrapper1 = new LambdaQueryWrapper<>();
+        queryWrapper1.eq(SiteProductPrice::getProductModelId, product.getProductModelId());
+        queryWrapper1.eq(SiteProductPrice::getDr, Constant.DR_FALSE);
+        queryWrapper1.eq(SiteProductPrice::getPrice, sitePaymentType.getPaymentCode());
+        SiteProductPrice siteProductPrice = siteProductPriceService.getOne(queryWrapper1);
+        //判断是分期，租赁还是全款支付
+        if (productPrice.getPriceType() == 1 || productPrice.getPriceType() == 3) {
+            //还没有支付过的情况  //分期和租赁没选择其他配件的时候 只是定金+运费
+            if (addSiteOrderVO.getDef1() == null) {
+                totalPrice = new BigDecimal("199").add(productPrice.getPrepaidDeposit());
+            } else {
+                totalPrice = siteProductPrice.getShouldPayPeriod().add(new BigDecimal(String.valueOf(paidBattery)).divide(new BigDecimal(siteProductPrice.getInstallmentTime())));
+            }
+        } else {
+            //没有选着其他配件前，只是整车的价格+运费
+            totalPrice = new BigDecimal("199").add(productPrice.getPrice().multiply(new BigDecimal(enter.getScooterQuantity())));
+            //加上选购电池的价格
+            totalPrice = totalPrice.add(battery.getPrice().multiply(new BigDecimal(String.valueOf(paidBattery))));
+        }
         //设置总价（未包含其他部件）
         addSiteOrderVO.setTotalPrice(totalPrice);
         //已付金额
@@ -311,7 +338,6 @@ public class OrderServiceImpl implements OrderService {
         return result;
     }
 
-
     /**
      * 询价单号生成规则
      */
@@ -343,7 +369,7 @@ public class OrderServiceImpl implements OrderService {
      * @param addSiteOrderVO
      */
     @Async
-    public void syncdataToRos(SiteOrder addSiteOrderVO, String email ,String bankCardName) {
+    public void syncdataToRos(SiteOrder addSiteOrderVO, String email, String bankCardName) {
         // 构造请求的参数
         SiteWebInquiryEnter enter = new SiteWebInquiryEnter();
         BeanUtils.copyProperties(addSiteOrderVO, enter);
@@ -431,11 +457,11 @@ public class OrderServiceImpl implements OrderService {
                 partAllTotalPrice = partAllTotalPrice.add(partPriceSun);
             }
 
-            // 不包含+,说明是分期支付
+            // 不包含+,说明是分期支付和租赁
             BigDecimal shouldPayPeriod = new BigDecimal("0");
-            if (!enter.getPaymentTypeId().contains("+")) {
+            if (enter.getPaymentTypeId().contains("+")) {
                 SitePaymentType paymentType = sitePaymentTypeService.getById(enter.getPaymentTypeId());
-                if ("3".equals(paymentType.getPaymentCode())) {
+                if ("3".equals(paymentType.getPaymentCode()) || "1".equals(paymentType.getPaymentCode())) {
                     LambdaQueryWrapper<SiteProductPrice> qw = new LambdaQueryWrapper<>();
                     qw.eq(SiteProductPrice::getDr, Constant.DR_FALSE);
                     qw.eq(SiteProductPrice::getStatus, 1);
@@ -447,9 +473,11 @@ public class OrderServiceImpl implements OrderService {
                     SiteProductPrice productPrice = siteProductPriceService.getOne(qw);
                     if (null != productPrice) {
                         String installmentTime = productPrice.getInstallmentTime();
-                        Integer count = Integer.valueOf(installmentTime) - 1;
-                        // 配件总额 /（分期-1）  平均分到每期
+//                        Integer count = Integer.valueOf(installmentTime) - 1;
+                        Integer count = Integer.valueOf(installmentTime);
+                        // 配件总额  平均分到每期
                         shouldPayPeriod = shouldPayPeriod.add(partAllTotalPrice.divide(new BigDecimal(String.valueOf(count)), 2, BigDecimal.ROUND_DOWN));
+                        log.info(shouldPayPeriod+"{>>>>>>>>>>>进入这里}");
                     }
                 }
             }
@@ -458,14 +486,18 @@ public class OrderServiceImpl implements OrderService {
                 shouldPayPeriod = shouldPayPeriod.add(partAllTotalPrice);
             }
 
-            BigDecimal orderTotalPrice = order.getTotalPrice().add(partAllTotalPrice);
+//            BigDecimal orderTotalPrice = order.getTotalPrice().add(partAllTotalPrice);
+            BigDecimal orderTotalPrice = order.getTotalPrice();
             //更新总金额
             order.setTotalPrice(orderTotalPrice);
             //更新待付金额
-            BigDecimal amountObligation = order.getTotalPrice().add(shouldPayPeriod);
-            order.setAmountObligation(amountObligation);
+//            BigDecimal amountObligation = order.getTotalPrice().add(shouldPayPeriod);
+//            order.setAmountObligation(amountObligation);
+            order.setAmountObligation(order.getAmountObligation());
             //所选择配件总价格做备份记录
             order.setDef1(partAllTotalPrice.toPlainString());
+            //如果是分期的情况配件每期应付的价格
+            orderB.setDef2(String.valueOf(shouldPayPeriod));
             //更新主订单金额
             siteOrderService.updateById(order);
             //创建子订单
@@ -535,6 +567,7 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * 删除订单
+     *
      * @param enter
      * @return
      */
@@ -543,19 +576,19 @@ public class OrderServiceImpl implements OrderService {
     public GeneralResult deleteOrder(IdEnter enter) {
         SiteOrder siteOrder = siteOrderService.getById(enter.getId());
         if (siteOrder == null) {
-            throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(),ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
+            throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
         }
         siteOrderService.removeById(enter.getId());
         QueryWrapper<SiteOrderB> qw = new QueryWrapper<>();
-        qw.eq(SiteOrderB.COL_ORDER_ID,enter.getId());
+        qw.eq(SiteOrderB.COL_ORDER_ID, enter.getId());
         List<SiteOrderB> orderBS = siteOrderBService.list(qw);
-        if (CollectionUtils.isNotEmpty(orderBS)){
+        if (CollectionUtils.isNotEmpty(orderBS)) {
             siteOrderBService.removeByIds(orderBS.stream().map(SiteOrderB::getId).collect(Collectors.toList()));
         }
         // 官网数据删除  需要把ROS那边对应的订单删除
         try {
             deleRosOrder(siteOrder);
-        }catch (Exception e) {
+        } catch (Exception e) {
 
         }
         return new GeneralResult(enter.getRequestId());
@@ -563,9 +596,9 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Async
-    public void deleRosOrder(SiteOrder siteOrder){
+    public void deleRosOrder(SiteOrder siteOrder) {
         QueryWrapper<SiteCustomer> qw = new QueryWrapper<>();
-        qw.eq(SiteCustomer.COL_ID,siteOrder.getCustomerId());
+        qw.eq(SiteCustomer.COL_ID, siteOrder.getCustomerId());
         qw.last("limit 1");
         SiteCustomer customer = siteCustomerService.getOne(qw);
         if (customer == null) {
@@ -575,7 +608,6 @@ public class OrderServiceImpl implements OrderService {
         siteWebInquiryService.webDeleteOrderAsynRos(customer.getEmail());
 
     }
-
 
 
     /**

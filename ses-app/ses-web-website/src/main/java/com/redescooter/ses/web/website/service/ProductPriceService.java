@@ -44,4 +44,6 @@ public interface ProductPriceService {
      */
     List<ProductPriceDetailsResult> getProductPriceList(GeneralEnter enter);
 
+    List<String> modelPriceList(GeneralEnter generalEnter);
+
 }

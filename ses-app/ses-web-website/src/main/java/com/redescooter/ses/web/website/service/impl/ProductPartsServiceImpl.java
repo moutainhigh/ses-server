@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.website.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -53,12 +54,13 @@ public class ProductPartsServiceImpl implements ProductPartsService {
         }
         SiteProductParts addProductPartsVO = new SiteProductParts();
         List<String> list = Arrays.asList(enter.getPartsId().split(","));
-        QueryWrapper<SiteProductParts> wrapper = new QueryWrapper<SiteProductParts>().eq("product_id",enter.getProductId()).eq("dr",0);
+        LambdaQueryWrapper<SiteProductParts> wrapper = new LambdaQueryWrapper<SiteProductParts>()
+                .eq(SiteProductParts::getProductId, enter.getProductId()).eq(SiteProductParts::getDr, Constant.DR_FALSE);
         List<SiteProductParts> list1 = siteProductPartsService.list(wrapper);
-        if(list1.size()>0){
-           siteProductPartsService.remove(wrapper);
+        if (list1.size() > 0) {
+            siteProductPartsService.remove(wrapper);
         }
-        list.stream().forEach(item->{
+        list.stream().forEach(item -> {
             addProductPartsVO.setId(idAppService.getId(SequenceName.SITE_PRODUCT_PARTS));
             addProductPartsVO.setDr(Constant.DR_FALSE);
             addProductPartsVO.setStatus(CommonStatusEnums.NORMAL.getValue());

@@ -574,9 +574,13 @@ public enum ExceptionCodeEnums {
 
     BATTERY_HAS_USED(10278, "该电池信息已被使用,请重新输入"),
 
-    ORDER_HAS_DISTRIBUTED(10279, "此询价单已分配给其他账户");
+    ORDER_HAS_DISTRIBUTED(10279, "此询价单已分配给其他账户"),
 
+    NOT_FOUND_BATTERY(10280,"配件中不存在电池"),
 
+    NOT_FOUND_PARTS(10281,"销售配件表中找不到电池配件"),
+
+    EDIT_FAIL(10282,"修改失败")
 
 
     ;

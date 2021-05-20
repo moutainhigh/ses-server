@@ -100,6 +100,42 @@ public class DateUtil {
     }
 
     /**
+     * 指定日期加上天数后的日期
+     *
+     * @param num     为增加的天数
+     * @param newDate 创建时间
+     * @return
+     * @throws ParseException
+     */
+    public static String plusDay(int num, String newDate) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date currdate = format.parse(newDate);
+        System.out.println("现在的日期是：" + currdate);
+        Calendar ca = Calendar.getInstance();
+        ca.add(Calendar.DATE, num);// num为增加的天数，可以改变的
+        currdate = ca.getTime();
+        String enddate = format.format(currdate);
+        System.out.println("增加天数以后的日期：" + enddate);
+        return enddate;
+    }
+
+    /****
+     * 传入具体日期 ，返回具体日期增加一个月。
+     * @param date 日期(2017-04-13)
+     * @return 2017-05-13
+     * @throws ParseException
+     */
+    public static Date subMonth(Date date,Integer num) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date dt = date;
+        Calendar rightNow = Calendar.getInstance();
+        rightNow.setTime(dt);
+        rightNow.add(Calendar.MONTH, num);
+        Date dt1 = rightNow.getTime();
+        return dt1;
+
+    }
+    /**
      * 获取指定时间字符串
      *
      * @param date

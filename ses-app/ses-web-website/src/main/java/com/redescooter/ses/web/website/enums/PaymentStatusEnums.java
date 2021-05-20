@@ -16,6 +16,8 @@ public enum PaymentStatusEnums {
 
     UNPAID_PAID("待支付", "UNPAID_PAID", 1),
     DEPOSIT_PAID("定金已支付", "DEPOSIT_PAID", 2),
+    ON_INSTALMENT("分期租赁支付中", "ON_INSTALMENT", 4),
+    FINISHED_INSTALMENT("分期租赁支付完成", "FINISHED_INSTALMENT", 5),
     BALANCE_PAID("尾款已支付", "BALANCE_PAID", 3),
     REFUNDED("已退款", "REFUNDED", 0),
     ;
