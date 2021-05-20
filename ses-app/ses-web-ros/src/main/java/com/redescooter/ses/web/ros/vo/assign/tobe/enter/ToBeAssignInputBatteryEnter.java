@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class ToBeAssignInputBatteryEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "电池信息 给json字符串 格式:id:主键,battery:电池,多个时逗号分隔", required = true)
+    @ApiModelProperty(value = "id:主键,battery:电池,多个时逗号分隔", required = true)
     private String list;
 
     @ApiModelProperty(value = "客户id", required = true)
