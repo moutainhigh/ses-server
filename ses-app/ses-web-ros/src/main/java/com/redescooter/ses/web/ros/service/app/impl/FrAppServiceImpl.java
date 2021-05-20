@@ -51,7 +51,9 @@ import com.redescooter.ses.web.ros.dao.base.OpeWmsStockRecordMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
 import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseRelation;
 import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseVin;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
@@ -551,6 +553,30 @@ public class FrAppServiceImpl implements FrAppService {
         wrapper.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
         wrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
         opeCarDistributeNodeMapper.update(node, wrapper);
+
+        // 修改码库此vin为已用
+        LambdaQueryWrapper<OpeCodebaseVin> vinWrapper = new LambdaQueryWrapper<>();
+        vinWrapper.eq(OpeCodebaseVin::getDr, Constant.DR_FALSE);
+        vinWrapper.eq(OpeCodebaseVin::getStatus, 1);
+        vinWrapper.eq(OpeCodebaseVin::getVin, vinCode);
+        vinWrapper.last("limit 1");
+        OpeCodebaseVin codebaseVin = opeCodebaseVinService.getOne(vinWrapper);
+        if (null != codebaseVin) {
+            codebaseVin.setStatus(2);
+            codebaseVin.setUpdatedBy(userId);
+            codebaseVin.setUpdatedTime(new Date());
+            opeCodebaseVinService.updateById(codebaseVin);
+        }
+
+        // 码库关系表,rsn和vin绑定,先给vin,rsn在绑定车辆时给
+        OpeCodebaseRelation relation = new OpeCodebaseRelation();
+        relation.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
+        relation.setDr(Constant.DR_FALSE);
+        relation.setVin(vinCode);
+        relation.setStatus(1);
+        relation.setCreatedBy(userId);
+        relation.setCreatedTime(new Date());
+        opeCodebaseRelationService.save(relation);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -636,20 +662,6 @@ public class FrAppServiceImpl implements FrAppService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DEAL.getCode(), ExceptionCodeEnums.ORDER_HAS_DEAL.getMessage());
         }
 
-        // 修改码库此RSN为已用
-        LambdaQueryWrapper<OpeCodebaseRsn> rsnWrapper = new LambdaQueryWrapper<>();
-        rsnWrapper.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
-        rsnWrapper.eq(OpeCodebaseRsn::getStatus, 1);
-        rsnWrapper.eq(OpeCodebaseRsn::getRsn, rsn);
-        rsnWrapper.last("limit 1");
-        OpeCodebaseRsn codebaseRsn = opeCodebaseRsnService.getOne(rsnWrapper);
-        if (null != codebaseRsn) {
-            codebaseRsn.setStatus(2);
-            codebaseRsn.setUpdatedBy(userId);
-            codebaseRsn.setUpdatedTime(new Date());
-            opeCodebaseRsnService.updateById(codebaseRsn);
-        }
-
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();
         distribute.setSpecificatTypeId(enter.getSpecificatTypeId());
@@ -681,6 +693,31 @@ public class FrAppServiceImpl implements FrAppService {
         wrapper.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
         wrapper.eq(OpeCarDistributeNode::getCustomerId, customerId);
         opeCarDistributeNodeMapper.update(node, wrapper);
+
+        // 修改码库此RSN为已用
+        LambdaQueryWrapper<OpeCodebaseRsn> rsnWrapper = new LambdaQueryWrapper<>();
+        rsnWrapper.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
+        rsnWrapper.eq(OpeCodebaseRsn::getStatus, 1);
+        rsnWrapper.eq(OpeCodebaseRsn::getRsn, rsn);
+        rsnWrapper.last("limit 1");
+        OpeCodebaseRsn codebaseRsn = opeCodebaseRsnService.getOne(rsnWrapper);
+        if (null != codebaseRsn) {
+            codebaseRsn.setStatus(2);
+            codebaseRsn.setUpdatedBy(userId);
+            codebaseRsn.setUpdatedTime(new Date());
+            opeCodebaseRsnService.updateById(codebaseRsn);
+        }
+
+        // 修改码库关系表
+        OpeCodebaseRelation relation = new OpeCodebaseRelation();
+        relation.setRsn(rsn);
+        relation.setStatus(2);
+
+        LambdaQueryWrapper<OpeCodebaseRelation> relationWrapper = new LambdaQueryWrapper<>();
+        relationWrapper.eq(OpeCodebaseRelation::getDr, Constant.DR_FALSE);
+        relationWrapper.eq(OpeCodebaseRelation::getVin, enter.getVin());
+        relationWrapper.eq(OpeCodebaseRelation::getStatus, 1);
+        opeCodebaseRelationService.update(relation, relationWrapper);
         return new GeneralResult(enter.getRequestId());
     }
 
