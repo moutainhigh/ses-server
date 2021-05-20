@@ -864,7 +864,7 @@ public class FrAppServiceImpl implements FrAppService {
         log.info("分车流程完毕");
 
         // 创建车辆
-        AdmScooter admScooter = scooterModelService.getScooterBySn(model.getRsn());
+        AdmScooter admScooter = scooterModelService.getScooterBySn(model.getTabletSn());
         if (null != admScooter) {
             throw new SesWebRosException(ExceptionCodeEnums.SN_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.SN_ALREADY_EXISTS.getMessage());
         }
@@ -882,7 +882,7 @@ public class FrAppServiceImpl implements FrAppService {
         AdmScooter scooter = new AdmScooter();
         scooter.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE_NODE));
         scooter.setDr(Constant.DR_FALSE);
-        scooter.setSn(model.getRsn());
+        scooter.setSn(model.getTabletSn());
         scooter.setGroupId(specificatId);
         scooter.setColorId(inquiryColorId);
         scooter.setMacAddress(model.getBluetoothAddress());
@@ -927,7 +927,7 @@ public class FrAppServiceImpl implements FrAppService {
 
         // 如果设置的型号与当前车辆的型号一致则不做操作
         if (null != scooterModel.getScooterController() && scooterModel.getScooterController().equals(type)) {
-            log.info("设置的型号与当前车辆的型号一致,直接返回");
+            log.info("设置的型号与当前车辆的型号一致,直接返回,没有发送emq消息");
             // node表appNode字段
             OpeCarDistributeNode node = new OpeCarDistributeNode();
             node.setAppNode(6);
