@@ -261,8 +261,9 @@ public class ScooterServiceImpl implements ScooterService {
             scooter.setUpdatedTime(new Date());
             scooterList.add(scooter);
         });
-
-        return scooterServiceMapper.batchInsertScooter(scooterList);
+        scoScooterService.saveBatch(scooterList);
+        return 1;
+        //return scooterServiceMapper.batchInsertScooter(scooterList);
     }
 
     @Override
