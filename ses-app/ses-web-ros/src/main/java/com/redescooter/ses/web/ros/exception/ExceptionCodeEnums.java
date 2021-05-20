@@ -556,7 +556,7 @@ public enum ExceptionCodeEnums {
 
     VIN_NOT_MATCH(10269, "VIN与车型不符,请重新输入"),
 
-    ORDER_HAS_DEAL(10270, "该订单已在处理中")
+    ORDER_HAS_DEAL(10270, "该订单已在处理中"),
 
     BATTERY_HAS_USED(10278, "该电池信息已被使用,请重新输入"),
 
