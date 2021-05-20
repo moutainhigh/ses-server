@@ -3,6 +3,7 @@ package com.redescooter.ses.api.hub.service.operation;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryEnter;
+import com.redescooter.ses.api.hub.vo.website.SyncOrderDataEnter;
 
 public interface CustomerInquiryService {
     /**
@@ -15,7 +16,7 @@ public interface CustomerInquiryService {
     /**
      * 同步ros支付成功的订单状态
      */
-    BooleanResult synchronizationOfRosSuccess(IdEnter idEnter);
+    BooleanResult synchronizationOfRosSuccess(IdEnter idEnter, SyncOrderDataEnter syncOrderDataEnter);
 
     /**
      * 同步ros支付失败的订单状态
