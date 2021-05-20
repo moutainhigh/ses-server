@@ -572,10 +572,9 @@ public enum ExceptionCodeEnums {
 
     RSN_HAS_USED(10277, "该RSN已被使用,请重新输入"),
 
-    BATTERY_HAS_USED(10278, "该电池信息已被使用,请重新输入")
+    BATTERY_HAS_USED(10278, "该电池信息已被使用,请重新输入"),
 
-
-
+    ORDER_HAS_DISTRIBUTED(10279, "此询价单已分配给其他账户");
 
 
 

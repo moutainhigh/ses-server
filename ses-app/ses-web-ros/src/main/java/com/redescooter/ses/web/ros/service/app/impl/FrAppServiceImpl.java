@@ -389,8 +389,22 @@ public class FrAppServiceImpl implements FrAppService {
         if (!jedisCluster.exists(enter.getToken())) {
             throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
         }
-        // 先查看客户在node表是否存在数据,不存在就新建
         Long userId = getUserId(enter);
+
+        // 校验此询价单是否已分配给其他仓库账号
+        LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        lqw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+        lqw.last("limit 1");
+        OpeCarDistribute instance = opeCarDistributeMapper.selectOne(lqw);
+        if (null != instance) {
+            Long warehouseAccountId = instance.getWarehouseAccountId();
+            if (null != warehouseAccountId && !userId.equals(warehouseAccountId)) {
+                throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getCode(), ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getMessage());
+            }
+        }
+
+        // 先查看客户在node表是否存在数据,不存在就新建
         LambdaQueryWrapper<OpeCarDistributeNode> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
         qw.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
@@ -465,6 +479,19 @@ public class FrAppServiceImpl implements FrAppService {
         String vinCode = enter.getVinCode();
         Integer seatNumber = enter.getSeatNumber();
 
+        // 校验此询价单是否已分配给其他仓库账号
+        LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        lqw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+        lqw.last("limit 1");
+        OpeCarDistribute instance = opeCarDistributeMapper.selectOne(lqw);
+        if (null != instance) {
+            Long warehouseAccountId = instance.getWarehouseAccountId();
+            if (null != warehouseAccountId) {
+                throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getCode(), ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getMessage());
+            }
+        }
+
         if (vinCode.length() != 17) {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
         }
@@ -530,6 +557,15 @@ public class FrAppServiceImpl implements FrAppService {
         Long userId = getUserId(enter);
         String licensePlate = enter.getLicensePlate();
         Long customerId = enter.getCustomerId();
+
+        LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
+        checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        checkWrapper.eq(OpeCarDistribute::getLicensePlate, licensePlate);
+        checkWrapper.last("limit 1");
+        OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
+        if (null != checkModel) {
+            throw new SesWebRosException(ExceptionCodeEnums.PLATE_HAS_USED.getCode(), ExceptionCodeEnums.PLATE_HAS_USED.getMessage());
+        }
 
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();
