@@ -18,6 +18,8 @@ public enum InquiryPayStatusEnums {
 
     UNPAY_DEPOSIT("UNPAY_DEPOSIT", "定金未支付", "1"),
     PAY_DEPOSIT("PAY_DEPOSIT", "定金支付", "2"),
+    ON_INSTALMENT("分期租赁支付中", "ON_INSTALMENT", "4"),
+    FINISHED_INSTALMENT("分期租赁支付完成", "FINISHED_INSTALMENT", "5"),
     PAY_LAST_PARAGRAPH("PAY_LAST_PARAGRAPH", "尾款支付", "3"),
     ;
 

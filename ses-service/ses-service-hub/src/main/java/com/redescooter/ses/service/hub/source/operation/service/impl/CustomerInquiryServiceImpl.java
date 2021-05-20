@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.service.operation.CustomerInquiryService;
+import com.redescooter.ses.api.hub.vo.website.SyncOrderDataEnter;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomerInquiry;
@@ -49,11 +50,23 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
 
     @Override
     @DS("operation")
-    public BooleanResult synchronizationOfRosSuccess(IdEnter enter) {
+    public BooleanResult synchronizationOfRosSuccess(IdEnter enter, SyncOrderDataEnter syncOrderDataEnter) {
         log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>进入hub的synchronizationOfRosSuccess");
         OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getById(enter.getId());
         if (opeCustomerInquiry == null) {
             throw new SeSHubException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+        }
+        if (syncOrderDataEnter.getIsInstallment().equals("1") || syncOrderDataEnter.getIsInstallment().equals("3")){
+            if (InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue().equals(opeCustomerInquiry.getPayStatus())) {
+                opeCustomerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
+                opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_DEPOSIT.getValue());
+            }else{
+                opeCustomerInquiry.setStatus(InquiryStatusEnums.START_PAYMENT_INSTALLMENTS.getValue());
+                opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.ON_INSTALMENT.getValue());
+            }
+            opeCustomerInquiry.setAmountPaid(syncOrderDataEnter.getAmountPaid());
+            opeCustomerInquiry.setAmountObligation(syncOrderDataEnter.getAmountObligation());
+            opeCustomerInquiry.setTotalPrice(syncOrderDataEnter.getTotalPrice());
         }
         // 判断这次是预定金的支付 还是尾款的支付
         if (InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue().equals(opeCustomerInquiry.getPayStatus())) {
