@@ -524,6 +524,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         for (ToBeAssignSubmitDetailEnter o : list) {
             Long id = o.getId();
             String rsn = o.getRsn();
+            String bluetoothAddress = o.getBluetoothAddress();
+            String tabletSn = o.getTabletSn();
             Long colorId = o.getColorId();
             String bbi = o.getBbi();
             String controller = o.getController();
@@ -544,6 +546,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             OpeCarDistribute model = new OpeCarDistribute();
             model.setId(id);
             model.setRsn(rsn);
+            model.setBluetoothAddress(bluetoothAddress);
+            model.setTabletSn(tabletSn);
             model.setColorId(colorId);
             model.setBbi(bbi);
             model.setController(controller);
