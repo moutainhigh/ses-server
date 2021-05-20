@@ -926,7 +926,7 @@ public class FrAppServiceImpl implements FrAppService {
         }
 
         // 如果设置的型号与当前车辆的型号一致则不做操作
-        if (null != scooterModel.getScooterController() && scooterModel.getScooterController().equals(type)) {
+        /*if (null != scooterModel.getScooterController() && scooterModel.getScooterController().equals(type)) {
             log.info("设置的型号与当前车辆的型号一致,直接返回,没有发送emq消息");
             // node表appNode字段
             OpeCarDistributeNode node = new OpeCarDistributeNode();
@@ -940,7 +940,7 @@ public class FrAppServiceImpl implements FrAppService {
             lqw.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
             opeCarDistributeNodeMapper.update(node, lqw);
             return new GeneralResult(enter.getRequestId());
-        }
+        }*/
 
         // 更新车辆型号信息
         AdmScooterUpdateEnter param = new AdmScooterUpdateEnter();
