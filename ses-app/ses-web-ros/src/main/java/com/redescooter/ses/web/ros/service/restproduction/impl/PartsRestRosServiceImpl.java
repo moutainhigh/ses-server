@@ -41,6 +41,7 @@ import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
 import com.redescooter.ses.web.ros.service.base.OpeSupplierService;
 import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
 import com.redescooter.ses.web.ros.service.restproduction.PartsRosService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.verifyhandler.RosExcelParse;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.DraftAnnounEnter;
@@ -497,7 +498,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
                 throw new SesWebRosException(ExceptionCodeEnums.WEIGHT_ILLEGAL.getCode(), ExceptionCodeEnums.WEIGHT_ILLEGAL.getMessage());
             }
             try {
-                draft.setPartsQty(data.getQuantity() == null ? 0 : Integer.parseInt(data.getQuantity()));
+                draft.setPartsQty(NumberUtil.getStrToNum(data.getQuantity()));
             } catch (Exception e) {
                 throw new SesWebRosException(ExceptionCodeEnums.QUANTITY_ILLEGAL.getCode(), ExceptionCodeEnums.QUANTITY_ILLEGAL.getMessage());
             }

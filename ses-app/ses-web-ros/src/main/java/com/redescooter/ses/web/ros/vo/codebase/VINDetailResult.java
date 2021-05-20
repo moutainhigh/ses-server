@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.vo.codebase;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -26,9 +28,11 @@ public class VINDetailResult extends GeneralResult {
     @ApiModelProperty(value = "VIN")
     private String vin;
 
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     @ApiModelProperty(value = "生成时间")
     private Date generateDate;
 
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     @ApiModelProperty(value = "更新时间")
     private Date finishDate;
 
