@@ -51,7 +51,9 @@ import com.redescooter.ses.web.ros.dao.base.OpeWmsStockRecordMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
 import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseRelation;
 import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseVin;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
@@ -551,6 +553,30 @@ public class FrAppServiceImpl implements FrAppService {
         wrapper.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
         wrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
         opeCarDistributeNodeMapper.update(node, wrapper);
+
+        // 修改码库此vin为已用
+        LambdaQueryWrapper<OpeCodebaseVin> vinWrapper = new LambdaQueryWrapper<>();
+        vinWrapper.eq(OpeCodebaseVin::getDr, Constant.DR_FALSE);
+        vinWrapper.eq(OpeCodebaseVin::getStatus, 1);
+        vinWrapper.eq(OpeCodebaseVin::getVin, vinCode);
+        vinWrapper.last("limit 1");
+        OpeCodebaseVin codebaseVin = opeCodebaseVinService.getOne(vinWrapper);
+        if (null != codebaseVin) {
+            codebaseVin.setStatus(2);
+            codebaseVin.setUpdatedBy(userId);
+            codebaseVin.setUpdatedTime(new Date());
+            opeCodebaseVinService.updateById(codebaseVin);
+        }
+
+        // 码库关系表,rsn和vin绑定,先给vin,rsn在绑定车辆时给
+        OpeCodebaseRelation relation = new OpeCodebaseRelation();
+        relation.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
+        relation.setDr(Constant.DR_FALSE);
+        relation.setVin(vinCode);
+        relation.setStatus(1);
+        relation.setCreatedBy(userId);
+        relation.setCreatedTime(new Date());
+        opeCodebaseRelationService.save(relation);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -636,20 +662,6 @@ public class FrAppServiceImpl implements FrAppService {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DEAL.getCode(), ExceptionCodeEnums.ORDER_HAS_DEAL.getMessage());
         }
 
-        // 修改码库此RSN为已用
-        LambdaQueryWrapper<OpeCodebaseRsn> rsnWrapper = new LambdaQueryWrapper<>();
-        rsnWrapper.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
-        rsnWrapper.eq(OpeCodebaseRsn::getStatus, 1);
-        rsnWrapper.eq(OpeCodebaseRsn::getRsn, rsn);
-        rsnWrapper.last("limit 1");
-        OpeCodebaseRsn codebaseRsn = opeCodebaseRsnService.getOne(rsnWrapper);
-        if (null != codebaseRsn) {
-            codebaseRsn.setStatus(2);
-            codebaseRsn.setUpdatedBy(userId);
-            codebaseRsn.setUpdatedTime(new Date());
-            opeCodebaseRsnService.updateById(codebaseRsn);
-        }
-
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();
         distribute.setSpecificatTypeId(enter.getSpecificatTypeId());
@@ -681,6 +693,30 @@ public class FrAppServiceImpl implements FrAppService {
         wrapper.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
         wrapper.eq(OpeCarDistributeNode::getCustomerId, customerId);
         opeCarDistributeNodeMapper.update(node, wrapper);
+
+        // 修改码库此RSN为已用
+        LambdaQueryWrapper<OpeCodebaseRsn> rsnWrapper = new LambdaQueryWrapper<>();
+        rsnWrapper.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
+        rsnWrapper.eq(OpeCodebaseRsn::getStatus, 1);
+        rsnWrapper.eq(OpeCodebaseRsn::getRsn, rsn);
+        rsnWrapper.last("limit 1");
+        OpeCodebaseRsn codebaseRsn = opeCodebaseRsnService.getOne(rsnWrapper);
+        if (null != codebaseRsn) {
+            codebaseRsn.setStatus(2);
+            codebaseRsn.setUpdatedBy(userId);
+            codebaseRsn.setUpdatedTime(new Date());
+            opeCodebaseRsnService.updateById(codebaseRsn);
+        }
+
+        // 修改码库关系表
+        OpeCodebaseRelation relation = new OpeCodebaseRelation();
+        relation.setRsn(rsn);
+        relation.setStatus(2);
+        LambdaQueryWrapper<OpeCodebaseRelation> relationWrapper = new LambdaQueryWrapper<>();
+        relationWrapper.eq(OpeCodebaseRelation::getDr, Constant.DR_FALSE);
+        relationWrapper.eq(OpeCodebaseRelation::getVin, enter.getVin());
+        relationWrapper.eq(OpeCodebaseRelation::getStatus, 1);
+        opeCodebaseRelationService.update(relation, relationWrapper);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -821,27 +857,29 @@ public class FrAppServiceImpl implements FrAppService {
         wrapper.orderByDesc(OpeWmsScooterStock::getCreatedTime);
         List<OpeWmsScooterStock> stockList = opeWmsScooterStockMapper.selectList(wrapper);
         OpeWmsScooterStock stock = null;
-        if (CollectionUtils.isNotEmpty(stockList)) {
-            stock = stockList.get(0);
-            log.info("当前库存信息为:[{}]", stock);
-            // 得到原先库存的可用库存数量和已用库存数量
-            Long stockId = stock.getId();
-            Integer ableStockQty = stock.getAbleStockQty();
-            Integer usedStockQty = stock.getUsedStockQty();
-
-            if (ableStockQty < 1) {
-                throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getCode(), ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getMessage());
-            }
-
-            // 原先库存的可用库存数量-1,已用库存数量+1
-            OpeWmsScooterStock param = new OpeWmsScooterStock();
-            param.setId(stockId);
-            param.setAbleStockQty(ableStockQty - 1);
-            param.setUsedStockQty(usedStockQty + 1);
-            param.setUpdatedBy(userId);
-            param.setUpdatedTime(new Date());
-            opeWmsScooterStockMapper.updateById(param);
+        if (CollectionUtils.isEmpty(stockList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
         }
+
+        stock = stockList.get(0);
+        log.info("当前库存信息为:[{}]", stock);
+        // 得到原先库存的可用库存数量和已用库存数量
+        Long stockId = stock.getId();
+        Integer ableStockQty = stock.getAbleStockQty();
+        Integer usedStockQty = stock.getUsedStockQty();
+
+        if (ableStockQty < 1) {
+            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getCode(), ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getMessage());
+        }
+
+        // 原先库存的可用库存数量-1,已用库存数量+1
+        OpeWmsScooterStock scooterStock = new OpeWmsScooterStock();
+        scooterStock.setId(stockId);
+        scooterStock.setAbleStockQty(ableStockQty - 1);
+        scooterStock.setUsedStockQty(usedStockQty + 1);
+        scooterStock.setUpdatedBy(userId);
+        scooterStock.setUpdatedTime(new Date());
+        opeWmsScooterStockMapper.updateById(scooterStock);
 
         // 新增出库记录
         if (null != stock) {
@@ -868,6 +906,9 @@ public class FrAppServiceImpl implements FrAppService {
             throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
         }
         Long scooterId = scoScooter.getId();
+        if (null == scooterId) {
+            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
+        }
         HubSaveScooterEnter item = new HubSaveScooterEnter();
         item.setScooterId(scooterId);
         item.setModel(ScooterModelEnums.showValueByCode(specificatName));
@@ -897,7 +938,7 @@ public class FrAppServiceImpl implements FrAppService {
         log.info("分车流程完毕");
 
         // 创建车辆
-        AdmScooter admScooter = scooterModelService.getScooterBySn(model.getRsn());
+        AdmScooter admScooter = scooterModelService.getScooterBySn(model.getTabletSn());
         if (null != admScooter) {
             throw new SesWebRosException(ExceptionCodeEnums.SN_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.SN_ALREADY_EXISTS.getMessage());
         }
@@ -915,7 +956,7 @@ public class FrAppServiceImpl implements FrAppService {
         AdmScooter scooter = new AdmScooter();
         scooter.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE_NODE));
         scooter.setDr(Constant.DR_FALSE);
-        scooter.setSn(model.getRsn());
+        scooter.setSn(model.getTabletSn());
         scooter.setGroupId(specificatId);
         scooter.setColorId(inquiryColorId);
         scooter.setMacAddress(model.getBluetoothAddress());
@@ -959,8 +1000,8 @@ public class FrAppServiceImpl implements FrAppService {
         }
 
         // 如果设置的型号与当前车辆的型号一致则不做操作
-        if (null != scooterModel.getScooterController() && scooterModel.getScooterController().equals(type)) {
-            log.info("设置的型号与当前车辆的型号一致,直接返回");
+        /*if (null != scooterModel.getScooterController() && scooterModel.getScooterController().equals(type)) {
+            log.info("设置的型号与当前车辆的型号一致,直接返回,没有发送emq消息");
             // node表appNode字段
             OpeCarDistributeNode node = new OpeCarDistributeNode();
             node.setAppNode(6);
@@ -973,7 +1014,7 @@ public class FrAppServiceImpl implements FrAppService {
             lqw.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
             opeCarDistributeNodeMapper.update(node, lqw);
             return new GeneralResult(enter.getRequestId());
-        }
+        }*/
 
         // 更新车辆型号信息
         AdmScooterUpdateEnter param = new AdmScooterUpdateEnter();

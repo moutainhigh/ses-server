@@ -56,4 +56,7 @@ public class InputScooterEnter extends GeneralEnter {
     @ApiModelProperty(value = "车座")
     private Integer seatNumber;
 
+    @ApiModelProperty(value = "VIN")
+    private String vin;
+
 }
