@@ -49,6 +49,9 @@ import com.redescooter.ses.web.ros.dao.restproductionorder.OpeInWhouseOrderSeria
 import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
 import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseRelation;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseVin;
 import com.redescooter.ses.web.ros.dm.OpeColor;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
@@ -66,6 +69,9 @@ import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.assign.ToBeAssignService;
+import com.redescooter.ses.web.ros.service.base.OpeCodebaseRelationService;
+import com.redescooter.ses.web.ros.service.base.OpeCodebaseRsnService;
+import com.redescooter.ses.web.ros.service.base.OpeCodebaseVinService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
 import com.redescooter.ses.web.ros.vo.assign.done.enter.AssignedListEnter;
@@ -160,6 +166,15 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
     @Autowired
     private OpeCustomerInquiryBService opeCustomerInquiryBService;
+
+    @Autowired
+    private OpeCodebaseVinService opeCodebaseVinService;
+
+    @Autowired
+    private OpeCodebaseRsnService opeCodebaseRsnService;
+
+    @Autowired
+    private OpeCodebaseRelationService opeCodebaseRelationService;
 
     @DubboReference
     private IdAppService idAppService;
@@ -408,6 +423,20 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             LambdaQueryWrapper<OpeCarDistribute> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
             opeCarDistributeMapper.update(model, wrapper);
+
+            // 修改码库此vin为已用
+            LambdaQueryWrapper<OpeCodebaseVin> vinWrapper = new LambdaQueryWrapper<>();
+            vinWrapper.eq(OpeCodebaseVin::getDr, Constant.DR_FALSE);
+            vinWrapper.eq(OpeCodebaseVin::getStatus, 1);
+            vinWrapper.eq(OpeCodebaseVin::getVin, vinCode);
+            vinWrapper.last("limit 1");
+            OpeCodebaseVin codebaseVin = opeCodebaseVinService.getOne(vinWrapper);
+            if (null != codebaseVin) {
+                codebaseVin.setStatus(2);
+                codebaseVin.setUpdatedBy(enter.getUserId());
+                codebaseVin.setUpdatedTime(new Date());
+                opeCodebaseVinService.updateById(codebaseVin);
+            }
         }
 
         // node表node字段+1
@@ -572,6 +601,30 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             model.setUpdatedBy(enter.getUserId());
             model.setUpdatedTime(new Date());
             opeCarDistributeMapper.updateById(model);
+
+            // 修改码库此RSN为已用
+            LambdaQueryWrapper<OpeCodebaseRsn> rsnWrapper = new LambdaQueryWrapper<>();
+            rsnWrapper.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
+            rsnWrapper.eq(OpeCodebaseRsn::getStatus, 1);
+            rsnWrapper.eq(OpeCodebaseRsn::getRsn, rsn);
+            rsnWrapper.last("limit 1");
+            OpeCodebaseRsn codebaseRsn = opeCodebaseRsnService.getOne(rsnWrapper);
+            if (null != codebaseRsn) {
+                codebaseRsn.setStatus(2);
+                codebaseRsn.setUpdatedBy(enter.getUserId());
+                codebaseRsn.setUpdatedTime(new Date());
+                opeCodebaseRsnService.updateById(codebaseRsn);
+            }
+
+            // 修改码库关系表
+            OpeCodebaseRelation relation = new OpeCodebaseRelation();
+            relation.setRsn(rsn);
+            relation.setStatus(2);
+            LambdaQueryWrapper<OpeCodebaseRelation> relationWrapper = new LambdaQueryWrapper<>();
+            relationWrapper.eq(OpeCodebaseRelation::getDr, Constant.DR_FALSE);
+            relationWrapper.eq(OpeCodebaseRelation::getVin, o.getVin());
+            relationWrapper.eq(OpeCodebaseRelation::getStatus, 1);
+            opeCodebaseRelationService.update(relation, relationWrapper);
         }
 
         // node表node字段+1

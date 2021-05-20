@@ -712,7 +712,6 @@ public class FrAppServiceImpl implements FrAppService {
         OpeCodebaseRelation relation = new OpeCodebaseRelation();
         relation.setRsn(rsn);
         relation.setStatus(2);
-
         LambdaQueryWrapper<OpeCodebaseRelation> relationWrapper = new LambdaQueryWrapper<>();
         relationWrapper.eq(OpeCodebaseRelation::getDr, Constant.DR_FALSE);
         relationWrapper.eq(OpeCodebaseRelation::getVin, enter.getVin());
