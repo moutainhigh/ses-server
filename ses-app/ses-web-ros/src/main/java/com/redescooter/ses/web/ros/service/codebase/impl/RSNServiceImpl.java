@@ -21,6 +21,7 @@ import com.redescooter.ses.web.ros.utils.ExcelUtil;
 import com.redescooter.ses.web.ros.vo.codebase.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -87,7 +88,7 @@ public class RSNServiceImpl implements RSNService {
     @Override
     public RSNDetailResult getDetail(StringEnter enter) {
         RSNDetailResult result = new RSNDetailResult();
-        Map<String, String> map = Maps.newHashMap();
+        List<Node> nodes = Lists.newArrayList();
         RSNDetailScooterResult scooterInfo = new RSNDetailScooterResult();
         String rsn = enter.getKeyword();
 
@@ -97,7 +98,7 @@ public class RSNServiceImpl implements RSNService {
         qw.eq(OpeCodebaseRsn::getRsn, rsn);
         qw.last("limit 1");
         OpeCodebaseRsn codebaseRsn = opeCodebaseRsnService.getOne(qw);
-        map.put("1", codebaseRsn == null ? "-" : DateUtil.getTimeStr(codebaseRsn.getCreatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
+        nodes.add(new Node("1",codebaseRsn == null ? "-" : DateUtil.getTimeStr(codebaseRsn.getCreatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
 
         // 入正式库
         LambdaQueryWrapper<OpeWmsStockSerialNumber> lqw = new LambdaQueryWrapper<>();
@@ -106,7 +107,7 @@ public class RSNServiceImpl implements RSNService {
         lqw.eq(OpeWmsStockSerialNumber::getRsn, rsn);
         lqw.last("limit 1");
         OpeWmsStockSerialNumber chSerialNumber = opeWmsStockSerialNumberService.getOne(lqw);
-        map.put("2", chSerialNumber == null ? "-" : DateUtil.getTimeStr(chSerialNumber.getCreatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
+        nodes.add(new Node("2",codebaseRsn == null ? "-" : DateUtil.getTimeStr(chSerialNumber.getCreatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
 
         // 进入法国仓库
         LambdaQueryWrapper<OpeWmsStockSerialNumber> wrapper = new LambdaQueryWrapper<>();
@@ -115,7 +116,7 @@ public class RSNServiceImpl implements RSNService {
         wrapper.eq(OpeWmsStockSerialNumber::getRsn, rsn);
         wrapper.last("limit 1");
         OpeWmsStockSerialNumber frSerialNumber = opeWmsStockSerialNumberService.getOne(wrapper);
-        map.put("3", frSerialNumber == null ? "-" : DateUtil.getTimeStr(frSerialNumber.getCreatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
+        nodes.add(new Node("3", frSerialNumber == null ? "-" : DateUtil.getTimeStr(frSerialNumber.getCreatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
 
         // 绑定询价单
         LambdaQueryWrapper<OpeCarDistribute> inquiryWrapper = new LambdaQueryWrapper<>();
@@ -124,7 +125,7 @@ public class RSNServiceImpl implements RSNService {
         inquiryWrapper.isNotNull(OpeCarDistribute::getWarehouseAccountId);
         inquiryWrapper.last("limit 1");
         OpeCarDistribute inquiryDistribute = opeCarDistributeMapper.selectOne(inquiryWrapper);
-        map.put("4", inquiryDistribute == null ? "-" : DateUtil.getTimeStr(inquiryDistribute.getCreatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
+        nodes.add(new Node("4", inquiryDistribute == null ? "-" : DateUtil.getTimeStr(inquiryDistribute.getCreatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
 
         // 绑定VIN
         LambdaQueryWrapper<OpeCarDistribute> vinWrapper = new LambdaQueryWrapper<>();
@@ -133,10 +134,10 @@ public class RSNServiceImpl implements RSNService {
         vinWrapper.isNotNull(OpeCarDistribute::getVinCode);
         vinWrapper.last("limit 1");
         OpeCarDistribute vinDistribute = opeCarDistributeMapper.selectOne(vinWrapper);
-        map.put("5", vinDistribute == null || null == vinDistribute.getUpdatedTime() ? "-" : DateUtil.getTimeStr(vinDistribute.getUpdatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
+        nodes.add(new Node("5", vinDistribute == null || null == vinDistribute.getUpdatedTime() ? "-" : DateUtil.getTimeStr(vinDistribute.getUpdatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
 
         // 设置软体
-        map.put("6", vinDistribute == null || null == vinDistribute.getUpdatedTime() ? "-" : DateUtil.getTimeStr(vinDistribute.getUpdatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT));
+        nodes.add(new Node("6", vinDistribute == null || null == vinDistribute.getUpdatedTime() ? "-" : DateUtil.getTimeStr(vinDistribute.getUpdatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
 
         // 车辆信息
         LambdaQueryWrapper<OpeCarDistribute> scooterWrapper = new LambdaQueryWrapper<>();
@@ -154,7 +155,7 @@ public class RSNServiceImpl implements RSNService {
             scooterInfo.setRsn(distribute.getRsn());
             scooterInfo.setVin(distribute.getVinCode());
         }
-        result.setNodeRecord(map);
+        result.setNodes(nodes);
         result.setScooterInfo(scooterInfo);
         return result;
     }

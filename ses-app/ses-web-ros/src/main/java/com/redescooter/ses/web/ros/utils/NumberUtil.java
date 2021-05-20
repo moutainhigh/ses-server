@@ -22,7 +22,7 @@ public class NumberUtil {
 
         try {
             if (!str.contains(".")) {
-                num = Integer.parseInt(str);
+                return Integer.parseInt(str);
             }
             String afterNum = str.substring(str.indexOf(".") + 1);
             int anInt = Integer.parseInt(afterNum);
