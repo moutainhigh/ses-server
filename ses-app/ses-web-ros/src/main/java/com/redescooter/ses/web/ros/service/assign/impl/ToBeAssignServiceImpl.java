@@ -302,6 +302,10 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 sub.setColorValue(map.get("colorValue"));
                 sub.setColorId(colorId);
             }
+
+            // 电池数量
+
+
             sub.setToBeAssignCount(o.getScooterQuantity());
             scooter.setTotalCount(o.getScooterQuantity());
 
