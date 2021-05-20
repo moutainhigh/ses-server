@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.hub.service.website.SyncPriceService;
 import com.redescooter.ses.api.hub.vo.website.SyncSalePriceDataEnter;
 import com.redescooter.ses.service.hub.constant.SequenceName;
+import com.redescooter.ses.service.hub.source.website.dao.SiteProductPriceMapper;
 import com.redescooter.ses.service.hub.source.website.dm.SitePaymentType;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProductModel;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProductPrice;
@@ -43,6 +44,9 @@ public class SyncPriceServiceImpl implements SyncPriceService {
 
     @Autowired
     private SitePaymentTypeService sitePaymentTypeService;
+
+    @Autowired
+    private SiteProductPriceMapper siteProductPriceMapper;
 
     @DubboReference
     private IdAppService idAppService;
@@ -128,7 +132,9 @@ public class SyncPriceServiceImpl implements SyncPriceService {
                 // 定金
                 BigDecimal deposit = enter.getDeposit();
                 // 期数(期数-定金的1个月)
-                Integer period = enter.getPeriod() - 1;
+                //Integer period = enter.getPeriod() - 1;
+                // 期数
+                Integer period = enter.getPeriod() ;
                 // 每期应付*期数
                 BigDecimal balance = enter.getShouldPayPeriod().multiply(new BigDecimal(String.valueOf(period)));
                 BigDecimal price = deposit.add(balance);
@@ -187,6 +193,16 @@ public class SyncPriceServiceImpl implements SyncPriceService {
             sitePaymentTypeService.saveBatch(modelList);
         }
         return new GeneralResult();
+    }
+
+    @GlobalTransactional(rollbackFor = Exception.class)
+    @DS("website")
+    @Override
+    public GeneralResult synchronizeDeposit(SyncSalePriceDataEnter enter) {
+        SiteProductPrice siteProductPrice = new SiteProductPrice();
+        siteProductPrice.setPrepaidDeposit(enter.getDeposit());
+        siteProductPriceMapper.synchronizeDeposit(siteProductPrice);
+        return new GeneralResult(enter.getRequestId());
     }
 
 }

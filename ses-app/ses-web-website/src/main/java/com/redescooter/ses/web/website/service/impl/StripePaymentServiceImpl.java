@@ -2,6 +2,8 @@ package com.redescooter.ses.web.website.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.gson.JsonSyntaxException;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
@@ -12,15 +14,15 @@ import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.api.hub.service.operation.CustomerInquiryService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.crypt.RsaUtils;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.website.config.RequestsKeyProperties;
 import com.redescooter.ses.web.website.config.StripeConfigProperties;
 import com.redescooter.ses.web.website.constant.SequenceName;
-import com.redescooter.ses.web.website.dm.SiteCustomer;
-import com.redescooter.ses.web.website.dm.SiteOrder;
-import com.redescooter.ses.web.website.dm.SitePaymentRecords;
-import com.redescooter.ses.web.website.dm.SiteProductModel;
+import com.redescooter.ses.web.website.dao.base.SiteOrderBMapper;
+import com.redescooter.ses.web.website.dm.*;
 import com.redescooter.ses.web.website.enums.CommonStatusEnums;
 import com.redescooter.ses.web.website.enums.PaymentStatusEnums;
+import com.redescooter.ses.web.website.enums.PaymentTimeEnums;
 import com.redescooter.ses.web.website.enums.SiteOrderStatusEnums;
 import com.redescooter.ses.web.website.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.website.exception.SesWebsiteException;
@@ -28,12 +30,10 @@ import com.redescooter.ses.web.website.service.StripePaymentService;
 import com.redescooter.ses.web.website.service.base.*;
 import com.redescooter.ses.web.website.vo.stripe.PayResponseBody;
 import com.stripe.Stripe;
-import com.stripe.model.Event;
-import com.stripe.model.EventDataObjectDeserializer;
-import com.stripe.model.PaymentIntent;
-import com.stripe.model.StripeObject;
+import com.stripe.model.*;
 import com.stripe.net.ApiResource;
 import com.stripe.param.PaymentIntentCreateParams;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +42,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @Author jerry
@@ -94,6 +93,15 @@ public class StripePaymentServiceImpl implements StripePaymentService {
     @Autowired
     private SiteProductService siteProductService;
 
+    @Autowired
+    private SiteProductPriceService siteProductPriceService;
+
+    @Autowired
+    private SitePaymentTypeService sitePaymentTypeService;
+
+    @Autowired
+    private SiteOrderBMapper siteOrderBMapper;
+
     @DubboReference
     private MailMultiTaskService mailMultiTaskService;
 
@@ -114,9 +122,8 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         StringResult result = new StringResult();
 
         Stripe.apiKey = API_SECRET_KEY;
-        log.info(Stripe.apiKey+"{>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>}");
+        log.info(Stripe.apiKey + "{>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>}");
         SiteOrder order = siteOrderService.getById(enter.getId());
-
         if (order == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getMessage());
@@ -127,9 +134,44 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         map.put("order_no", order.getOrderNo());
         map.put("product_id", String.valueOf(order.getProductId()));
         BigDecimal amout = null;
-        if (order.getPayStatus() == PaymentStatusEnums.UNPAID_PAID.getValue()){
+        LambdaQueryWrapper<SiteProduct> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SiteProduct::getProductModelId, order.getProductId());
+        SiteProduct product = siteProductService.getOne(queryWrapper);
+        if (product == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.PRODUCT_NOT_EXIST_EXIST.getCode(),
+                    ExceptionCodeEnums.PRODUCT_NOT_EXIST_EXIST.getMessage());
+        }
+        SitePaymentType byId = sitePaymentTypeService.getById(order.getPaymentTypeId());
+        LambdaQueryWrapper<SiteProductPrice> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SiteProductPrice::getProductModelId, product.getProductModelId());
+        wrapper.eq(SiteProductPrice::getDr, Constant.DR_FALSE);
+        wrapper.eq(SiteProductPrice::getPriceType, byId.getPaymentCode());
+        wrapper.like(SiteProductPrice::getBattery,order.getBatteryQty());
+        SiteProductPrice siteProductPrice = siteProductPriceService.getOne(wrapper);
+        if (siteProductPrice == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.NOT_FOUNT_PRODUCT_PRICE.getCode(),
+                    ExceptionCodeEnums.NOT_FOUNT_PRODUCT_PRICE.getMessage());
+        }
+        if (siteProductPrice.getPriceType() == 1 || siteProductPrice.getPriceType() == 3) {
+            if (order.getPayStatus() == PaymentStatusEnums.UNPAID_PAID.getValue()) {
+                amout = order.getPrepaidDeposit().add(order.getFreight());
+            } else if (order.getPayStatus() == PaymentStatusEnums.DEPOSIT_PAID.getValue() || order.getPayStatus() == PaymentStatusEnums.ON_INSTALMENT.getValue()) {
+                //判断累计的支付次数和分期数是否相等 如果相等证明分期支付完成
+                if (order.getDef1().equals(siteProductPrice.getInstallmentTime())) {
+                    throw new SesWebsiteException(ExceptionCodeEnums.INSTALLMENT_COMPLETION.getCode(),
+                            ExceptionCodeEnums.INSTALLMENT_COMPLETION.getMessage());
+                }
+                LambdaQueryWrapper<SiteOrderB> wrapper1 = new LambdaQueryWrapper<>();
+                wrapper1.eq(SiteOrderB::getOrderId, order.getId());
+                wrapper1.isNotNull(SiteOrderB::getDef2);
+                SiteOrderB siteOrderB = siteOrderBMapper.selectOne(wrapper1);
+                //这里需要做一个判断 看看这个订单号能不能在这个子订单中找到
+                amout = siteProductPrice.getShouldPayPeriod().add(new BigDecimal(siteOrderB.getDef2()));
+            }
+        }
+        if (order.getPayStatus() == PaymentStatusEnums.UNPAID_PAID.getValue()) {
             amout = order.getPrepaidDeposit();
-        }else if (order.getPayStatus() == PaymentStatusEnums.DEPOSIT_PAID.getValue()){
+        } else if (order.getPayStatus() == PaymentStatusEnums.DEPOSIT_PAID.getValue()) {
             amout = order.getAmountObligation();
         }
         try {
@@ -142,6 +184,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                     .build();
 
             PaymentIntent intent = PaymentIntent.create(params);
+            log.info(intent+"{>>>>>>>>>>>>>>>>>>>>>>>>>>intent}");
             String clientSecret = intent.getClientSecret();
             log.info("===========" + clientSecret);
             result.setValue(clientSecret);
@@ -151,6 +194,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         }
         return result;
     }
+
 
     /**
      * 网络钩子 成功时
@@ -245,7 +289,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
      */
     @Override
     public BooleanResult payAgainCheck(IdEnter enter) {
-       return customerInquiryService.payAgainCheck(enter);
+        return customerInquiryService.payAgainCheck(enter);
     }
 
     private PayResponseBody generateResponse(PaymentIntent intent, PayResponseBody response, String stripeJson) {
@@ -302,24 +346,81 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             //TODO 邮件发送给我
             throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
         }
+        LambdaQueryWrapper<SiteProduct> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SiteProduct::getProductModelId, siteOrder.getProductId());
+        SiteProduct product = siteProductService.getOne(queryWrapper);
+        if (product == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.PRODUCT_NOT_EXIST_EXIST.getCode(),
+                    ExceptionCodeEnums.PRODUCT_NOT_EXIST_EXIST.getMessage());
+        }
+        SitePaymentType sitePaymentType = sitePaymentTypeService.getById(siteOrder.getPaymentTypeId());
+        LambdaQueryWrapper<SiteProductPrice> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SiteProductPrice::getProductModelId, product.getProductModelId());
+        wrapper.eq(SiteProductPrice::getDr, Constant.DR_FALSE);
+        wrapper.eq(SiteProductPrice::getPriceType, sitePaymentType.getPaymentCode());
+        wrapper.like(SiteProductPrice::getBattery,siteOrder.getBatteryQty());
+        SiteProductPrice siteProductPrice = siteProductPriceService.getOne(wrapper);
+        if (siteProductPrice == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.NOT_FOUNT_PRODUCT_PRICE.getCode(),
+                    ExceptionCodeEnums.NOT_FOUNT_PRODUCT_PRICE.getMessage());
+        }
+        LambdaQueryWrapper<SiteOrderB> wrapper1 = new LambdaQueryWrapper<>();
+        wrapper1.eq(SiteOrderB::getOrderId, siteOrder.getId());
+        wrapper1.isNotNull(SiteOrderB::getDef2);
+        SiteOrderB siteOrderB = siteOrderBMapper.selectOne(wrapper1);
+        if (siteOrderB == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.NOT_FOUNT_ORDER_B.getCode(),
+                    ExceptionCodeEnums.NOT_FOUNT_ORDER_B.getMessage());
+        }
+        //时间判断 判断当前时间是不是处于分期时间
+        if (new Date().before(DateUtil.subMonth(siteOrder.getCreatedTime(), Integer.parseInt(siteOrder.getDef2())))) {
+            siteOrder.setDef3(PaymentTimeEnums.ADVANCE.getRemark());
+        } else if (new Date().after(DateUtil.subMonth(siteOrder.getCreatedTime(), Integer.parseInt(siteOrder.getDef2())))) {
+            siteOrder.setDef3(PaymentTimeEnums.POSTPONE.getRemark());
+        } else {
+            siteOrder.setDef3(PaymentTimeEnums.PUNCTUALITY.getRemark());
+        }
         // 判断是预定金支付 还是尾款支付
-        if (siteOrder.getPayStatus() == PaymentStatusEnums.UNPAID_PAID.getValue()){
+        if (siteOrder.getPayStatus() == PaymentStatusEnums.UNPAID_PAID.getValue()) {
             // 这是预定金支付 只需要更改已付金额和待付款金额
-            siteOrder.setAmountPaid(siteOrder.getPrepaidDeposit());
-            siteOrder.setAmountObligation(siteOrder.getTotalPrice().subtract(siteOrder.getPrepaidDeposit()));
+            if (siteProductPrice.getPriceType() == 1 || siteProductPrice.getPriceType() == 3) {
+                siteOrder.setAmountPaid(siteOrder.getPrepaidDeposit().add(siteOrder.getFreight()));
+                siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(new BigDecimal(siteOrderB.getDef2())));
+                Integer restPeriods = Integer.parseInt(siteOrder.getDef2()) + 1;
+                siteOrder.setDef1(restPeriods.toString());
+            } else {
+                siteOrder.setAmountPaid(siteOrder.getPrepaidDeposit());
+                siteOrder.setAmountObligation(siteOrder.getTotalPrice().subtract(siteOrder.getPrepaidDeposit()));
+            }
             siteOrder.setPayStatus(PaymentStatusEnums.DEPOSIT_PAID.getValue());
             siteOrder.setStatus(SiteOrderStatusEnums.IN_PROGRESS.getValue());
-        }else if(siteOrder.getPayStatus() == PaymentStatusEnums.DEPOSIT_PAID.getValue()){
-            // 这是尾款支付
-            siteOrder.setAmountPaid(siteOrder.getTotalPrice());
-            siteOrder.setAmountObligation(siteOrder.getAmountObligation().subtract(siteOrder.getAmountObligation()));
-            siteOrder.setPayStatus(PaymentStatusEnums.BALANCE_PAID.getValue());
-            siteOrder.setStatus(SiteOrderStatusEnums.COMPLETED.getValue());
+        } else if (siteOrder.getPayStatus() == PaymentStatusEnums.DEPOSIT_PAID.getValue() || siteOrder.getPayStatus() == PaymentStatusEnums.ON_INSTALMENT.getValue()) {
+            if (siteProductPrice.getPriceType() == 1 || siteProductPrice.getPriceType() == 3) {
+                siteOrder.setAmountPaid(new BigDecimal(siteOrder.getDef1()).multiply(siteProductPrice.getShouldPayPeriod()));
+                if (Integer.parseInt(siteOrder.getDef2()) == Integer.parseInt(siteProductPrice.getInstallmentTime())) {
+                    siteOrder.setPayStatus(PaymentStatusEnums.FINISHED_INSTALMENT.getValue());
+                    siteOrder.setStatus(SiteOrderStatusEnums.COMPLETED.getValue());
+                    siteOrder.setAmountObligation(new BigDecimal("0"));
+                } else {
+                    siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(new BigDecimal(siteOrderB.getDef2())));
+                    Integer restPeriods = Integer.parseInt(siteOrder.getDef2()) + 1;
+                    siteOrder.setPayStatus(PaymentStatusEnums.ON_INSTALMENT.getValue());
+                    siteOrder.setStatus(SiteOrderStatusEnums.IN_PROGRESS.getValue());
+                    siteOrder.setDef2(restPeriods.toString());
+                }
+            } else {
+                // 这是尾款支付
+                siteOrder.setAmountPaid(siteOrder.getTotalPrice());
+                siteOrder.setAmountObligation(siteOrder.getAmountObligation().subtract(siteOrder.getAmountObligation()));
+                siteOrder.setPayStatus(PaymentStatusEnums.BALANCE_PAID.getValue());
+                siteOrder.setStatus(SiteOrderStatusEnums.COMPLETED.getValue());
+            }
+
         }
         //获取已付金额
         //BigDecimal price = siteOrder.getPrepaidDeposit();
         //更新已付金额
-       // siteOrder.setAmountPaid(siteOrder.getAmountPaid().add(price));
+        // siteOrder.setAmountPaid(siteOrder.getAmountPaid().add(price));
         //减少待付金额：代付金额=总金额-已付金额-优惠价
         //siteOrder.setAmountObligation(siteOrder.getAmountObligation().subtract(price).subtract(siteOrder.getAmountDiscount()));
         siteOrder.setUpdatedTime(new Date());
@@ -338,8 +439,6 @@ public class StripePaymentServiceImpl implements StripePaymentService {
 
 
     }
-
-
 
 
     /**
@@ -366,23 +465,23 @@ public class StripePaymentServiceImpl implements StripePaymentService {
 
 
     @Async
-    public void synchronizationOfRosSuccess(IdEnter idEnter){
+    public void synchronizationOfRosSuccess(IdEnter idEnter) {
         customerInquiryService.synchronizationOfRosSuccess(idEnter);
     }
 
     @Async
-    public void synchronizationOfRosFail(IdEnter idEnter){
+    public void synchronizationOfRosFail(IdEnter idEnter) {
         customerInquiryService.synchronizationOfRosFail(idEnter);
     }
 
     private void sendmail(SiteOrder order) {
-        log.info(order+"{>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>sendEmail order}");
+        log.info(order + "{>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>sendEmail order}");
 
         SiteCustomer customer = siteCustomerService.getById(order.getCustomerId());
-        log.info(customer+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>customer");
+        log.info(customer + ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>customer");
 //        SiteProduct product = siteProductService.getById(order.getProductId());
         SiteProductModel productModel = siteProductModelService.getById(order.getProductId());
-        log.info(productModel+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>productModel");
+        log.info(productModel + ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>productModel");
 
         String eamil = customer.getEmail();
         String name = eamil.substring(0, eamil.indexOf("@"));

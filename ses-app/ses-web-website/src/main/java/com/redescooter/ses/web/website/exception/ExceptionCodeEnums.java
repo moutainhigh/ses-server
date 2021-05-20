@@ -97,7 +97,15 @@ public enum ExceptionCodeEnums {
 
     EMAIL_TOO_LONG(10038, "邮箱长度过长"),
 
-    EMAIL_ERROR(10039, "邮箱格式错误")
+    EMAIL_ERROR(10039, "邮箱格式错误"),
+
+    INSTALLMENT_COMPLETION(10040,"分期支付完成"),
+
+    NOT_DUE_FOR_PAYMENT(10041,"未到支付时间"),
+
+    NOT_FOUNT_PRODUCT_PRICE(10042,"未找到产品价格"),
+
+    NOT_FOUNT_ORDER_B(10043,"未找到子订单")
 
 
 
