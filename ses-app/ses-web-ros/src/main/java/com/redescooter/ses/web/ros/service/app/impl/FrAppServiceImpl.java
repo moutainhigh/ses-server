@@ -857,27 +857,29 @@ public class FrAppServiceImpl implements FrAppService {
         wrapper.orderByDesc(OpeWmsScooterStock::getCreatedTime);
         List<OpeWmsScooterStock> stockList = opeWmsScooterStockMapper.selectList(wrapper);
         OpeWmsScooterStock stock = null;
-        if (CollectionUtils.isNotEmpty(stockList)) {
-            stock = stockList.get(0);
-            log.info("当前库存信息为:[{}]", stock);
-            // 得到原先库存的可用库存数量和已用库存数量
-            Long stockId = stock.getId();
-            Integer ableStockQty = stock.getAbleStockQty();
-            Integer usedStockQty = stock.getUsedStockQty();
-
-            if (ableStockQty < 1) {
-                throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getCode(), ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getMessage());
-            }
-
-            // 原先库存的可用库存数量-1,已用库存数量+1
-            OpeWmsScooterStock param = new OpeWmsScooterStock();
-            param.setId(stockId);
-            param.setAbleStockQty(ableStockQty - 1);
-            param.setUsedStockQty(usedStockQty + 1);
-            param.setUpdatedBy(userId);
-            param.setUpdatedTime(new Date());
-            opeWmsScooterStockMapper.updateById(param);
+        if (CollectionUtils.isEmpty(stockList)) {
+            throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
         }
+
+        stock = stockList.get(0);
+        log.info("当前库存信息为:[{}]", stock);
+        // 得到原先库存的可用库存数量和已用库存数量
+        Long stockId = stock.getId();
+        Integer ableStockQty = stock.getAbleStockQty();
+        Integer usedStockQty = stock.getUsedStockQty();
+
+        if (ableStockQty < 1) {
+            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getCode(), ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getMessage());
+        }
+
+        // 原先库存的可用库存数量-1,已用库存数量+1
+        OpeWmsScooterStock scooterStock = new OpeWmsScooterStock();
+        scooterStock.setId(stockId);
+        scooterStock.setAbleStockQty(ableStockQty - 1);
+        scooterStock.setUsedStockQty(usedStockQty + 1);
+        scooterStock.setUpdatedBy(userId);
+        scooterStock.setUpdatedTime(new Date());
+        opeWmsScooterStockMapper.updateById(scooterStock);
 
         // 新增出库记录
         if (null != stock) {
@@ -904,6 +906,9 @@ public class FrAppServiceImpl implements FrAppService {
             throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
         }
         Long scooterId = scoScooter.getId();
+        if (null == scooterId) {
+            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
+        }
         HubSaveScooterEnter item = new HubSaveScooterEnter();
         item.setScooterId(scooterId);
         item.setModel(ScooterModelEnums.showValueByCode(specificatName));
