@@ -66,6 +66,12 @@ public class OpeWarehouseAccount implements Serializable {
     @ApiModelProperty(value = "状态 1开启 2关闭")
     private Integer status;
 
+    @ApiModelProperty(value = "最后登录token")
+    private String lastLoginToken;
+
+    @ApiModelProperty(value = "刷新token")
+    private String refreshToken;
+
     @ApiModelProperty(value = "创建人")
     private Long createdBy;
 

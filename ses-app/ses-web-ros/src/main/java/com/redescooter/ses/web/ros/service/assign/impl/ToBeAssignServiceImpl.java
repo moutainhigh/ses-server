@@ -48,6 +48,7 @@ import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
 import com.redescooter.ses.web.ros.dm.OpeColor;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
 import com.redescooter.ses.web.ros.dm.OpeInWhouseOrderSerialBind;
 import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
 import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
@@ -57,9 +58,7 @@ import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.web.ros.enums.assign.CustomerFormEnum;
 import com.redescooter.ses.web.ros.enums.assign.FactoryEnum;
-import com.redescooter.ses.web.ros.enums.assign.FlagEnum;
 import com.redescooter.ses.web.ros.enums.assign.IndustryTypeEnum;
-import com.redescooter.ses.web.ros.enums.assign.NodeEnum;
 import com.redescooter.ses.web.ros.enums.assign.ProductTypeEnum;
 import com.redescooter.ses.web.ros.enums.assign.ScooterTypeEnum;
 import com.redescooter.ses.web.ros.enums.assign.YearEnum;
@@ -67,9 +66,12 @@ import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.assign.ToBeAssignService;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
 import com.redescooter.ses.web.ros.vo.assign.done.enter.AssignedListEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignInputBatteryDetailEnter;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignInputBatteryEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextDetailEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignListEnter;
@@ -96,7 +98,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description 车辆待分配ServiceImpl
@@ -149,6 +157,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
     @Autowired
     private OpeWmsStockSerialNumberService opeWmsStockSerialNumberService;
+
+    @Autowired
+    private OpeCustomerInquiryBService opeCustomerInquiryBService;
 
     @DubboReference
     private IdAppService idAppService;
@@ -221,8 +232,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             node.setTenantId(enter.getTenantId());
             node.setUserId(enter.getUserId());
             node.setCustomerId(enter.getCustomerId());
-            node.setNode(NodeEnum.NONE.getCode());
-            node.setFlag(FlagEnum.NOT.getCode());
+            node.setNode(1);
+            node.setFlag(0);
             node.setCreatedBy(enter.getUserId());
             node.setCreatedTime(new Date());
             opeCarDistributeNodeMapper.insert(node);
@@ -296,6 +307,16 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 sub.setColorValue(map.get("colorValue"));
                 sub.setColorId(colorId);
             }
+
+            // 询价单电池数量
+            LambdaQueryWrapper<OpeCustomerInquiryB> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(OpeCustomerInquiryB::getDr, Constant.DR_FALSE);
+            wrapper.eq(OpeCustomerInquiryB::getInquiryId, o.getId());
+            wrapper.last("limit 1");
+            OpeCustomerInquiryB inquiryB = opeCustomerInquiryBService.getOne(wrapper);
+            if (null != inquiryB) {
+                sub.setBatteryNum(inquiryB.getProductQty());
+            }
             sub.setToBeAssignCount(o.getScooterQuantity());
             scooter.setTotalCount(o.getScooterQuantity());
 
@@ -334,13 +355,47 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
         for (ToBeAssignSeatNextDetailEnter o : list) {
             Long specificatId = o.getSpecificatId();
-            String specificatName = o.getSpecificatName();
             Integer seatNumber = o.getSeatNumber();
+            String vinCode = o.getVin();
             Integer qty = o.getQty();
 
             // 生成VIN Code,只需车型名称和座位数量这两个变量
-            String vinCode = generateVINCode(specificatId, specificatName, seatNumber);
-            logger.info("生成的VIN Code是:[{}]", vinCode);
+            /*String vinCode = generateVINCode(specificatId, specificatName, seatNumber);
+            logger.info("生成的VIN Code是:[{}]", vinCode);*/
+
+            if (vinCode.length() != 17) {
+                throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+            }
+            if (!vinCode.startsWith("VXSR2A")) {
+                throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+            }
+
+            // 根据车型id获得车型名称
+            OpeSpecificatType specificatType = opeSpecificatTypeMapper.selectById(specificatId);
+            if (null == specificatType) {
+                throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
+            }
+            String productType = ProductTypeEnum.showCode(specificatType.getSpecificatName());
+            // 截取第7位,车型编号
+            String productTypeSub = vinCode.substring(6, 7);
+            if (!StringUtils.equals(productType, productTypeSub)) {
+                throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+            }
+
+            // 截取第8位,座位数量
+            String seatNumberSub = vinCode.substring(7, 8);
+            if (!StringUtils.equals(String.valueOf(seatNumber), seatNumberSub)) {
+                throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+            }
+
+            LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
+            checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+            checkWrapper.eq(OpeCarDistribute::getVinCode, vinCode);
+            checkWrapper.last("limit 1");
+            OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
+            if (null != checkModel) {
+                throw new SesWebRosException(ExceptionCodeEnums.VIN_HAS_USED.getCode(), ExceptionCodeEnums.VIN_HAS_USED.getMessage());
+            }
 
             // 修改主表
             OpeCarDistribute model = new OpeCarDistribute();
@@ -360,7 +415,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         nodeWrapper.eq(OpeCarDistributeNode::getDr, DelStatusEnum.VALID.getCode());
         nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
         OpeCarDistributeNode node = new OpeCarDistributeNode();
-        node.setNode(NodeEnum.BIND_LICENSE_PLATE.getCode());
+        node.setNode(2);
+        node.setFlag(1);
         node.setUpdatedBy(enter.getUserId());
         node.setUpdatedTime(new Date());
         opeCarDistributeNodeMapper.update(node, nodeWrapper);
@@ -393,6 +449,15 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             Long id = o.getId();
             String licensePlate = o.getLicensePlate();
 
+            LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
+            checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+            checkWrapper.eq(OpeCarDistribute::getLicensePlate, licensePlate);
+            checkWrapper.last("limit 1");
+            OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
+            if (null != checkModel) {
+                throw new SesWebRosException(ExceptionCodeEnums.PLATE_HAS_USED.getCode(), ExceptionCodeEnums.PLATE_HAS_USED.getMessage());
+            }
+
             // 修改主表
             OpeCarDistribute model = new OpeCarDistribute();
             model.setId(id);
@@ -407,7 +472,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         nodeWrapper.eq(OpeCarDistributeNode::getDr, DelStatusEnum.VALID.getCode());
         nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
         OpeCarDistributeNode node = new OpeCarDistributeNode();
-        node.setNode(NodeEnum.BIND_RSN.getCode());
+        node.setNode(3);
         node.setUpdatedBy(enter.getUserId());
         node.setUpdatedTime(new Date());
         opeCarDistributeNodeMapper.update(node, nodeWrapper);
@@ -471,6 +536,78 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
+        for (ToBeAssignSubmitDetailEnter o : list) {
+            Long id = o.getId();
+            String rsn = o.getRsn();
+            String bluetoothAddress = o.getBluetoothAddress();
+            String tabletSn = o.getTabletSn();
+            Long colorId = o.getColorId();
+            String bbi = o.getBbi();
+            String controller = o.getController();
+            String electricMachinery = o.getElectricMachinery();
+            String meter = o.getMeter();
+            String imei = o.getImei();
+
+            LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeCarDistribute::getRsn, rsn);
+            lqw.last("limit 1");
+            OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(lqw);
+            if (null != checkModel) {
+                throw new SesWebRosException(ExceptionCodeEnums.RSN_HAS_USED.getCode(), ExceptionCodeEnums.RSN_HAS_USED.getMessage());
+            }
+
+            // 修改主表
+            OpeCarDistribute model = new OpeCarDistribute();
+            model.setId(id);
+            model.setRsn(rsn);
+            model.setBluetoothAddress(bluetoothAddress);
+            model.setTabletSn(tabletSn);
+            model.setColorId(colorId);
+            model.setBbi(bbi);
+            model.setController(controller);
+            model.setElectricMachinery(electricMachinery);
+            model.setMeter(meter);
+            model.setImei(imei);
+            model.setUpdatedBy(enter.getUserId());
+            model.setUpdatedTime(new Date());
+            opeCarDistributeMapper.updateById(model);
+        }
+
+        // node表node字段+1
+        LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
+        nodeWrapper.eq(OpeCarDistributeNode::getDr, DelStatusEnum.VALID.getCode());
+        nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
+        OpeCarDistributeNode node = new OpeCarDistributeNode();
+        node.setNode(4);
+        node.setUpdatedBy(enter.getUserId());
+        node.setUpdatedTime(new Date());
+        opeCarDistributeNodeMapper.update(node, nodeWrapper);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 录入电池
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult inputBattery(ToBeAssignInputBatteryEnter enter) {
+        logger.info("录入电池的入参是:[{}]", enter);
+        if (null == enter || StringUtils.isBlank(enter.getList())) {
+            throw new SesWebRosException(ExceptionCodeEnums.BATTERY_NOT_EMPTY.getCode(), ExceptionCodeEnums.BATTERY_NOT_EMPTY.getMessage());
+        }
+
+        // 解析
+        List<ToBeAssignInputBatteryDetailEnter> list;
+        try {
+            list = JSONArray.parseArray(enter.getList(), ToBeAssignInputBatteryDetailEnter.class);
+        } catch (Exception ex) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        if (CollectionUtils.isEmpty(list)) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+
         // 客户信息
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getCustomerId());
         if (null == opeCustomer) {
@@ -488,17 +625,25 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
         // 客户和车辆产生绑定关系
         List<HubSaveScooterEnter> saveRelationList = Lists.newArrayList();
+        boolean stockFlag = false;
 
-        for (ToBeAssignSubmitDetailEnter o : list) {
+        for (ToBeAssignInputBatteryDetailEnter o : list) {
             Long id = o.getId();
-            String rsn = o.getRsn();
-            Long colorId = o.getColorId();
+            String battery = o.getBattery();
+
+            LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
+            checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+            checkWrapper.like(OpeCarDistribute::getBattery, battery);
+            checkWrapper.last("limit 1");
+            OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
+            if (null != checkModel) {
+                throw new SesWebRosException(ExceptionCodeEnums.BATTERY_HAS_USED.getCode(), ExceptionCodeEnums.BATTERY_HAS_USED.getMessage());
+            }
 
             // 修改主表
             OpeCarDistribute model = new OpeCarDistribute();
             model.setId(id);
-            model.setRsn(rsn);
-            model.setColorId(colorId);
+            model.setBattery(battery);
             model.setUpdatedBy(enter.getUserId());
             model.setUpdatedTime(new Date());
             opeCarDistributeMapper.updateById(model);
@@ -506,6 +651,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             // 获得车牌号
             OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectById(id);
             String licensePlate = opeCarDistribute.getLicensePlate();
+            String rsn = opeCarDistribute.getRsn();
 
             // 修改成品库车辆库存
             // 获得询价单型号id和颜色id
@@ -530,6 +676,12 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 Long stockId = stock.getId();
                 Integer ableStockQty = stock.getAbleStockQty();
                 Integer usedStockQty = stock.getUsedStockQty();
+
+                // 如果原先库存不足,抛出异常
+                if (ableStockQty < 1) {
+                    stockFlag = true;
+                    break;
+                }
 
                 // 原先库存的可用库存数量-1,已用库存数量+1
                 OpeWmsScooterStock param = new OpeWmsScooterStock();
@@ -570,7 +722,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             // 修改sco_scooter的牌照
             scooterService.updateScooterNo(scooterId, licensePlate);
 
-            // 将数据存储到corporate库
+            // 将数据存储到corporate库(tob)
             logger.info("客户类型是:[{}]", opeCustomer.getCustomerType());
             if (StringUtils.equals(opeCustomer.getCustomerType(), CustomerTypeEnum.ENTERPRISE.getValue())) {
                 // 新增cor_tenant_scooter表
@@ -611,7 +763,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 scooter.setCreatedTime(new Date());
                 scooterMobileBService.addCorDriverScooter(scooter);
             }
-            // 将数据存储到consumer库
+            // 将数据存储到consumer库(toc)
             if (StringUtils.equals(opeCustomer.getCustomerType(), CustomerTypeEnum.PERSONAL.getValue())) {
                 HubSaveScooterEnter item = new HubSaveScooterEnter();
                 item.setScooterId(scooterId);
@@ -644,13 +796,17 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             }
         }
 
-        // node表node字段+1,flag标识改为已分配完
+        if (stockFlag) {
+            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getCode(), ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getMessage());
+        }
+
+        // node表node字段+1
         LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
-        nodeWrapper.eq(OpeCarDistributeNode::getDr, DelStatusEnum.VALID.getCode());
+        nodeWrapper.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
         nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
         OpeCarDistributeNode node = new OpeCarDistributeNode();
-        node.setNode(NodeEnum.FINISH.getCode());
-        node.setFlag(FlagEnum.YES.getCode());
+        node.setNode(5);
+        node.setFlag(2);
         node.setUpdatedBy(enter.getUserId());
         node.setUpdatedTime(new Date());
         opeCarDistributeNodeMapper.update(node, nodeWrapper);
@@ -676,7 +832,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         }
         OpeCarDistributeNode opeCarDistributeNode = nodeList.get(0);
         Integer node = opeCarDistributeNode.getNode();
-        node = null == node ? 0 : node;
+        node = null == node ? 1 : node;
 
         // 客户信息
         ToBeAssignDetailCustomerInfoResult customerInfo = opeCarDistributeExMapper.getCustomerInfo(enter.getCustomerId());
@@ -734,6 +890,16 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 sub.setColorName(map.get("colorName"));
                 sub.setColorValue(map.get("colorValue"));
                 sub.setColorId(colorId);
+            }
+
+            // 询价单电池数量
+            LambdaQueryWrapper<OpeCustomerInquiryB> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeCustomerInquiryB::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeCustomerInquiryB::getInquiryId, o.getId());
+            lqw.last("limit 1");
+            OpeCustomerInquiryB inquiryB = opeCustomerInquiryBService.getOne(lqw);
+            if (null != inquiryB) {
+                sub.setBatteryNum(inquiryB.getProductQty());
             }
             sub.setToBeAssignCount(o.getScooterQuantity());
             task.setTotalCount(o.getScooterQuantity());

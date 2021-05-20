@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.hub.source.admin.dao.base.AdmScooterMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.api.hub.vo.admin.AdmScooter">
+        <id column="id" property="id"/>
+        <result column="dr" property="dr"/>
+        <result column="sn" property="sn"/>
+        <result column="group_id" property="groupId"/>
+        <result column="color_id" property="colorId"/>
+        <result column="mac_address" property="macAddress"/>
+        <result column="scooter_controller" property="scooterController"/>
+        <result column="remark" property="remark"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_time" property="updatedTime"/>
+        <result column="def1" property="def1"/>
+        <result column="def2" property="def2"/>
+        <result column="def3" property="def3"/>
+        <result column="def4" property="def4"/>
+        <result column="def5" property="def5"/>
+        <result column="color_name" property="colorName"/>
+        <result column="color_value" property="colorValue"/>
+        <result column="group_name" property="groupName"/>
+        <result column="mac_name" property="macName"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, dr, sn, group_id, color_id, mac_address, scooter_controller, remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5, color_name, color_value, group_name, mac_name
+    </sql>
+</mapper>

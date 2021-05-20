@@ -29,6 +29,16 @@ spring:
           url: jdbc:mysql://172.31.6.136:2116/consumer_pre?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
           username: redpre
           password: pre.1qaz2wsx
+        website:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://172.31.6.136:2116/website_pre?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          username: redpre
+          password: pre.1qaz2wsx
+        admin:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://172.31.6.136:2116/admin_dev_pre?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          username: redpre
+          password: pre.1qaz2wsx
   redis:
     cluster:
       nodes:

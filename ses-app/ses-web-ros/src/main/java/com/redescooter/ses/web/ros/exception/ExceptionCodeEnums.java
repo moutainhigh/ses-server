@@ -558,6 +558,20 @@ public enum ExceptionCodeEnums {
 
     ORDER_HAS_DEAL(10270, "该订单已在处理中"),
 
+    SN_ALREADY_EXISTS(10271, "车辆平板已存在"),
+
+    SCOOTER_NOT_CLOSED(10272, "车辆未关闭"),
+
+    SELECT_SCOOTER_MODEL_ERROR(10273, "选择的车辆型号有误"),
+
+    BATTERY_NOT_EMPTY(10274, "电池不能为空"),
+
+    VIN_HAS_USED(10275, "该VIN已被使用,请重新输入"),
+
+    PLATE_HAS_USED(10276, "该车牌已被使用,请重新输入"),
+
+    RSN_HAS_USED(10277, "该RSN已被使用,请重新输入"),
+
     BATTERY_HAS_USED(10278, "该电池信息已被使用,请重新输入"),
 
     ORDER_HAS_DISTRIBUTED(10279, "此询价单已分配给其他账户"),

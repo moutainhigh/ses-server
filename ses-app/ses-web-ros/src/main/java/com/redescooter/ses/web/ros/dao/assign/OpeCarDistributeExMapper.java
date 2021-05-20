@@ -67,15 +67,15 @@ public interface OpeCarDistributeExMapper {
     /**
      * app询价单列表count
      */
-    int getInquiryListCount(@Param("param") InquiryListAppEnter enter);
+    int getInquiryListCount(@Param("param") InquiryListAppEnter enter, @Param("warehouseAccountId") Long warehouseAccountId);
 
     /**
      * app询价单列表
      */
-    List<InquiryListResult> getInquiryList(@Param("param") InquiryListAppEnter enter);
+    List<InquiryListResult> getInquiryList(@Param("param") InquiryListAppEnter enter, @Param("warehouseAccountId") Long warehouseAccountId);
 
     /**
-     * 询价单详情
+     * app询价单详情
      */
     InquiryDetailResult getInquiryDetail(@Param("param") InquiryDetailEnter enter);
 

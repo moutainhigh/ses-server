@@ -50,10 +50,10 @@ public class OpeCarDistributeNode implements Serializable {
     @ApiModelProperty(value = "客户id")
     private Long customerId;
 
-    @ApiModelProperty(value = "节点 1VIN Code 2Bind License Plate 3Bind R.SN")
+    @ApiModelProperty(value = "节点 1绑定VIN 2绑定车牌 3录入车辆 4录入电池 5完成")
     private Integer node;
 
-    @ApiModelProperty(value = "app节点 0车辆信息 1电池信息 2绑定VIN 3设置软体 4完成")
+    @ApiModelProperty(value = "app节点 1绑定VIN 2绑定车牌 3录入车辆 4录入电池 5设置软体 6完成")
     private Integer appNode;
 
     @ApiModelProperty(value = "是否全部分配完标识 1未全分配完 2全分配完")
