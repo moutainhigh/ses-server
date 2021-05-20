@@ -48,6 +48,7 @@ import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
 import com.redescooter.ses.web.ros.dm.OpeColor;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
 import com.redescooter.ses.web.ros.dm.OpeInWhouseOrderSerialBind;
 import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
 import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
@@ -65,6 +66,7 @@ import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.assign.ToBeAssignService;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
 import com.redescooter.ses.web.ros.vo.assign.done.enter.AssignedListEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
@@ -155,6 +157,9 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
     @Autowired
     private OpeWmsStockSerialNumberService opeWmsStockSerialNumberService;
+
+    @Autowired
+    private OpeCustomerInquiryBService opeCustomerInquiryBService;
 
     @DubboReference
     private IdAppService idAppService;
@@ -303,9 +308,15 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 sub.setColorId(colorId);
             }
 
-            // 电池数量
-
-
+            // 询价单电池数量
+            LambdaQueryWrapper<OpeCustomerInquiryB> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(OpeCustomerInquiryB::getDr, Constant.DR_FALSE);
+            wrapper.eq(OpeCustomerInquiryB::getInquiryId, o.getId());
+            wrapper.last("limit 1");
+            OpeCustomerInquiryB inquiryB = opeCustomerInquiryBService.getOne(wrapper);
+            if (null != inquiryB) {
+                sub.setBatteryNum(inquiryB.getProductQty());
+            }
             sub.setToBeAssignCount(o.getScooterQuantity());
             scooter.setTotalCount(o.getScooterQuantity());
 
@@ -879,6 +890,16 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 sub.setColorName(map.get("colorName"));
                 sub.setColorValue(map.get("colorValue"));
                 sub.setColorId(colorId);
+            }
+
+            // 询价单电池数量
+            LambdaQueryWrapper<OpeCustomerInquiryB> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeCustomerInquiryB::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeCustomerInquiryB::getInquiryId, o.getId());
+            lqw.last("limit 1");
+            OpeCustomerInquiryB inquiryB = opeCustomerInquiryBService.getOne(lqw);
+            if (null != inquiryB) {
+                sub.setBatteryNum(inquiryB.getProductQty());
             }
             sub.setToBeAssignCount(o.getScooterQuantity());
             task.setTotalCount(o.getScooterQuantity());
