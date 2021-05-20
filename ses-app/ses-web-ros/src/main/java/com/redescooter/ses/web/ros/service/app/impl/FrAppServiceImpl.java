@@ -222,6 +222,15 @@ public class FrAppServiceImpl implements FrAppService {
             throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
         }
 
+        String lastLoginToken = account.getLastLoginToken();
+        if (StringUtils.isNotBlank(lastLoginToken)) {
+            // 说明之前登录过
+            Boolean flag = jedisCluster.exists(lastLoginToken);
+            if (flag) {
+                jedisCluster.del(lastLoginToken);
+            }
+        }
+
         String token = UUID.randomUUID().toString().replaceAll("-", "");
         UserToken userToken = new UserToken();
         userToken.setToken(token);
