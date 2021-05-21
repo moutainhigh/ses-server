@@ -13,7 +13,6 @@ import com.redescooter.ses.api.common.enums.inquiry.InquirySourceEnums;
 import com.redescooter.ses.api.common.enums.inquiry.InquiryStatusEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
 import com.redescooter.ses.api.common.enums.website.AccessoryTypeEnums;
-import com.redescooter.ses.api.common.enums.website.ProductColorEnums;
 import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.vo.base.*;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
@@ -29,10 +28,7 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
-import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.service.website.WebsiteOrderFormService;
-import com.redescooter.ses.web.ros.vo.monday.enter.MondayBookOrderEnter;
-import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
 import com.redescooter.ses.web.ros.vo.website.*;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
@@ -94,16 +90,13 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     private OpeSysUserService opeSysUserService;
 
     @Autowired
-    private MondayService mondayService;
+    private SendinBlueConfig sendinBlueConfig;
+
+    @Reference
+    private MailMultiTaskService mailMultiTaskService;
 
     @Value("${Request.privateKey}")
     private String privatekey;
-
-    @Autowired
-    private SendinBlueConfig sendinBlueConfig;
-
-    @Autowired
-    private MailMultiTaskService mailMultiTaskService;
 
     /**
      * 车辆型号
@@ -168,6 +161,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Transactional
     @Override
     public SaveOrderFormResult saveOrderForm(SaveSaleOrderEnter enter) {
+        log.info("保存订单入参>>>>>>>>>{}", enter.toString());
         //入参对象去空格
         SesStringUtils.objStringTrim(enter);
 
@@ -177,7 +171,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail, opeSysUser.getLoginName()).eq(OpeCustomer::getCustomerSource,
-                CustomerSourceEnum.WEBSITE.getValue()));
+                CustomerSourceEnum.WEBSITE.getValue()).last("limit 1"));
         if (opeCustomer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
@@ -191,14 +185,14 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getCode(), ExceptionCodeEnums.CUSTOMER_ALREADY_EXIST_ORDER_FORM.getMessage());
         }
 
-        //后备箱 校验
-        OpeCustomerAccessories topCase = null;
-        if (enter.getBuyTopCase()) {
-            topCase = opeCustomerAccessoriesService.getById(enter.getTopCaseId());
-            if (topCase == null) {
-                throw new SesWebRosException(ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getMessage());
-            }
-        }
+//        //后备箱 校验
+//        OpeCustomerAccessories topCase = null;
+//        if (enter.getBuyTopCase()) {
+//            topCase = opeCustomerAccessoriesService.getById(enter.getTopCaseId());
+//            if (topCase == null) {
+//                throw new SesWebRosException(ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getMessage());
+//            }
+//        }
 
         //电池的校验
         OpeCustomerAccessories battery = opeCustomerAccessoriesService.getById(enter.getAccessoryBatteryId());
@@ -213,12 +207,14 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         }
         //配件保存集合
         List<OpeCustomerInquiryB> opeCustomerInquiryBList = new ArrayList<>();
-        //todo 总价格=产品价格+附属配件总金额
+        /**
+         *  总价格=产品价格+附属配件总金额
+         */
         BigDecimal totalPrice = product.getPrice().add(checkBatteryQty(enter, product, battery.getPrice()));
-        //是否购买后备箱
-        if (enter.getBuyTopCase()) {
-            totalPrice = totalPrice.add(topCase.getPrice());
-        }
+//        //是否购买后备箱
+//        if (enter.getBuyTopCase()) {
+//            totalPrice = totalPrice.add(topCase.getPrice());
+//        }
 
         //生成主订单
         OpeCustomerInquiry opeCustomerInquiry = buildOpeCustomerInquiry(enter, product, totalPrice, idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
@@ -226,10 +222,10 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiry.setCreatedTime(new Date());
 
         //生成子订单
-        if (enter.getBuyTopCase()) {
-            //后备箱形成子表记录
-            opeCustomerInquiryBList.add(buildAccessory(enter, opeCustomerInquiry.getId(), topCase.getPrice(), AccessoryTypeEnums.TOP_CASE.getValue()));
-        }
+//        if (enter.getBuyTopCase()) {
+//            //后备箱形成子表记录
+//            opeCustomerInquiryBList.add(buildAccessory(enter, opeCustomerInquiry.getId(), topCase.getPrice(), AccessoryTypeEnums.TOP_CASE.getValue()));
+//        }
         //电池记录
         opeCustomerInquiryBList.add(buildAccessory(enter, opeCustomerInquiry.getId(), battery.getPrice(), AccessoryTypeEnums.BATTERY.getValue()));
         //子表数据 保存
@@ -240,39 +236,37 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiry.setSource("2");
         opeCustomerInquiryService.save(opeCustomerInquiry);
 
-        //发送数据到Monday
-        mondayData(product.getColor(), enter.getAccessoryBatteryQty(), product.getProductModel(), opeCustomerInquiry);
         return SaveOrderFormResult.builder().id(opeCustomerInquiry.getId()).build();
     }
 
-    /**
-     * 发送数据到Monday
-     *
-     * @param productModel
-     * @param opeCustomerInquiry
-     */
-    private void mondayData(String productColor, int batteryQty, String productModel, OpeCustomerInquiry opeCustomerInquiry) {
-        MondayGeneralEnter mondayGeneralEnter = new MondayGeneralEnter();
-        mondayGeneralEnter.setFirstName(opeCustomerInquiry.getFirstName());
-        mondayGeneralEnter.setLastName(opeCustomerInquiry.getLastName());
-        mondayGeneralEnter.setTelephone(opeCustomerInquiry.getTelephone());
-        mondayGeneralEnter.setCreatedTime(new Date());
-        mondayGeneralEnter.setUpdatedTime(new Date());
-        mondayGeneralEnter.setEmail(opeCustomerInquiry.getEmail());
-        mondayGeneralEnter.setCity(opeCustomerInquiry.getDef2());
-        mondayGeneralEnter.setDistant(String.valueOf(opeCustomerInquiry.getDistrict()));
-        mondayGeneralEnter.setRemarks(opeCustomerInquiry.getRemarks());
-        mondayGeneralEnter.setAddress(opeCustomerInquiry.getAddress());
-        MondayBookOrderEnter mondayBookOrderEnter = new MondayBookOrderEnter();
-        mondayBookOrderEnter.setProductColor(ProductColorEnums.getProductColorEnumsByValue(productColor).getMessage());
-        mondayBookOrderEnter.setBatteryQty(batteryQty);
-        mondayBookOrderEnter.setProducModeltName(ProductModelEnums.getProductModelEnumsByValue(productModel).getMessage());
-        mondayBookOrderEnter.setQty(1);
-        mondayGeneralEnter.setT(mondayBookOrderEnter);
-
-        //Monday 同步数据
-        mondayService.websiteBookOrder(mondayGeneralEnter);
-    }
+//    /**
+//     * 发送数据到Monday
+//     *
+//     * @param productModel
+//     * @param opeCustomerInquiry
+//     */
+//    private void mondayData(String productColor, int batteryQty, String productModel, OpeCustomerInquiry opeCustomerInquiry) {
+//        MondayGeneralEnter mondayGeneralEnter = new MondayGeneralEnter();
+//        mondayGeneralEnter.setFirstName(opeCustomerInquiry.getFirstName());
+//        mondayGeneralEnter.setLastName(opeCustomerInquiry.getLastName());
+//        mondayGeneralEnter.setTelephone(opeCustomerInquiry.getTelephone());
+//        mondayGeneralEnter.setCreatedTime(new Date());
+//        mondayGeneralEnter.setUpdatedTime(new Date());
+//        mondayGeneralEnter.setEmail(opeCustomerInquiry.getEmail());
+//        mondayGeneralEnter.setCity(opeCustomerInquiry.getDef2());
+//        mondayGeneralEnter.setDistant(String.valueOf(opeCustomerInquiry.getDistrict()));
+//        mondayGeneralEnter.setRemarks(opeCustomerInquiry.getRemarks());
+//        mondayGeneralEnter.setAddress(opeCustomerInquiry.getAddress());
+//        MondayBookOrderEnter mondayBookOrderEnter = new MondayBookOrderEnter();
+//        mondayBookOrderEnter.setProductColor(ProductColorEnums.getProductColorEnumsByValue(productColor).getMessage());
+//        mondayBookOrderEnter.setBatteryQty(batteryQty);
+//        mondayBookOrderEnter.setProducModeltName(ProductModelEnums.getProductModelEnumsByValue(productModel).getMessage());
+//        mondayBookOrderEnter.setQty(1);
+//        mondayGeneralEnter.setT(mondayBookOrderEnter);
+//
+//        //Monday 同步数据
+//        mondayService.websiteBookOrder(mondayGeneralEnter);
+//    }
 
     /**
      * 修改 预订单
@@ -757,7 +751,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         mailMultiTaskService.subscribeToEmailSuccessfully(enter);
 
         //数据同步Monday
-        mondayService.websiteSubscriptionEmail(email);
+        //mondayService.websiteSubscriptionEmail(email);
     }
 
     /**

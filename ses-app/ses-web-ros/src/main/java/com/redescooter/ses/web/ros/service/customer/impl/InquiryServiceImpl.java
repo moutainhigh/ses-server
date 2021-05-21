@@ -31,14 +31,12 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.customer.InquiryService;
-import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.service.website.ContactUsService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryExportResult;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryListEnter;
 import com.redescooter.ses.web.ros.vo.inquiry.InquiryResult;
 import com.redescooter.ses.web.ros.vo.website.SaveAboutUsEnter;
-import com.redescooter.ses.web.ros.vo.monday.enter.MondayGeneralEnter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -52,7 +50,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import redis.clients.jedis.JedisCluster;
 
-import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.*;
@@ -75,8 +72,8 @@ public class InquiryServiceImpl implements InquiryService {
     private InquiryServiceMapper inquiryServiceMapper;
     @Autowired
     private OpeCustomerService opeCustomerService;
-    @Autowired
-    private MondayService mondayService;
+//    @Autowired
+//    private MondayService mondayService;
     @Autowired
     private OssConfig ossConfig;
     @Autowired
@@ -161,19 +158,19 @@ public class InquiryServiceImpl implements InquiryService {
         // 官网联系我们
         contactUsService.websiteContactUs(enter);
 
-        //Monday 同步数据
-        MondayGeneralEnter mondayGeneralEnter = new MondayGeneralEnter();
-        mondayGeneralEnter.setFirstName(enter.getFirstName());
-        mondayGeneralEnter.setLastName(enter.getLastName());
-        mondayGeneralEnter.setTelephone(enter.getTelephone());
-        mondayGeneralEnter.setCreatedTime(new Date());
-        mondayGeneralEnter.setUpdatedTime(new Date());
-        mondayGeneralEnter.setEmail(enter.getEmail());
-        mondayGeneralEnter.setCity(enter.getCity());
-        mondayGeneralEnter.setDistant(enter.getDistrust());
-        mondayGeneralEnter.setRemarks(enter.getRemark());
-        mondayGeneralEnter.setAddress(enter.getAddress());
-        mondayService.websiteContantUs(mondayGeneralEnter);
+//        //Monday 同步数据
+//        MondayGeneralEnter mondayGeneralEnter = new MondayGeneralEnter();
+//        mondayGeneralEnter.setFirstName(enter.getFirstName());
+//        mondayGeneralEnter.setLastName(enter.getLastName());
+//        mondayGeneralEnter.setTelephone(enter.getTelephone());
+//        mondayGeneralEnter.setCreatedTime(new Date());
+//        mondayGeneralEnter.setUpdatedTime(new Date());
+//        mondayGeneralEnter.setEmail(enter.getEmail());
+//        mondayGeneralEnter.setCity(enter.getCity());
+//        mondayGeneralEnter.setDistant(enter.getDistrust());
+//        mondayGeneralEnter.setRemarks(enter.getRemark());
+//        mondayGeneralEnter.setAddress(enter.getAddress());
+//        mondayService.websiteContantUs(mondayGeneralEnter);
         return new GeneralResult(enter.getRequestId());
     }
 

@@ -3,10 +3,8 @@ package com.redescooter.ses.web.ros.controller.website;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.annotation.WebsiteSignIn;
 import com.redescooter.ses.api.common.vo.base.*;
-import com.redescooter.ses.api.foundation.vo.common.CityPostResult;
 import com.redescooter.ses.api.foundation.vo.common.CountryCityResult;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
-import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.service.website.WebSiteTokenService;
 import com.redescooter.ses.web.ros.vo.website.SignUpEnter;
 import com.redescooter.ses.web.ros.vo.website.WebEditCustomerEnter;
@@ -14,7 +12,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.log4j.Log4j2;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
