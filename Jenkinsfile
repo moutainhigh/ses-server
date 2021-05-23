@@ -34,4 +34,22 @@ pipeline {
                   }
             }
       }
+
+      post {
+      		success {
+      			dingTalk accessToken:'https://oapi.dingtalk.com/robot/send?access_token=f9088064f2541cacabc6d4df24ce3c09a4de482e12b041d7e813cf4ffa9e3b9c',
+      			imageUrl:'图片地址',
+      			jenkinsUrl:'https://ci.redelectric.tech/',
+      			message:'PRE环境已部署完成!!!',
+      			notifyPeople:''
+      		}
+      		failure {
+      			dingTalk accessToken:'https://oapi.dingtalk.com/robot/send?access_token=f9088064f2541cacabc6d4df24ce3c09a4de482e12b041d7e813cf4ffa9e3b9c',
+      			imageUrl:'图片地址',
+      			jenkinsUrl:'https://ci.redelectric.tech/',
+      			message:'PRE环境部署失败，请登录检查失败原因!!!',
+      			notifyPeople:''
+      		}
+      }
+
 }
