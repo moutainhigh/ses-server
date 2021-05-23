@@ -9,9 +9,7 @@ pipeline {
                     echo '代码拉取完成'
                   }
             }
-      }
 
-      stages {
             stage ('Build Code') {
                   steps {
                     echo '开始编译代码'
@@ -21,9 +19,7 @@ pipeline {
                     echo '代码编译完成'
                   }
             }
-      }
 
-      stages {
             stage ('Deploy Code') {
                   steps {
                     echo '开始部署代码'
@@ -31,9 +27,7 @@ pipeline {
                     sh 'pwd'
                   }
             }
-      }
 
-      stages {
             stage ('Message notification') {
                   steps {
                     echo '即将发布消息通知'
