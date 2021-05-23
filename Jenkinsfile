@@ -12,7 +12,7 @@ pipeline {
             stage ('Build Code') {
                   steps {
                     echo '----------------------执行编译-----------------------'
-                    sh 'ps -ef | grep ses- | grep -v grep | awk '{print $2}' | xargs kill -9'
+                    'ps -ef | grep ses- | grep -v grep | awk '{print $2}' | xargs kill -9'
                     sh 'pwd'
                     sh 'rm -rf /root/java_service/pre/libs'
                     sh 'mvn clean package -Dmaven.test.skip=true -Ppre'
