@@ -26,6 +26,10 @@ pipeline {
                     echo '开始部署代码'
                     sh 'cd /root/java_service/pre'
                     sh 'pwd'
+                    sh 'sh ./deploy.sh rinit'
+                    sh 'sh ./deploy.sh start'
+                    sh 'sh ./deploy.sh status'
+                    echo '开始部署代码'
                   }
             }
 
