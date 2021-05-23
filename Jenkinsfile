@@ -9,33 +9,37 @@ pipeline {
                     echo '代码拉取完成'
                   }
             }
-
+            agent any
             stage ('Build Code') {
                   steps {
-                    echo '开始编译代码'
+                    echo '----------------------执行编译-----------------------'
+                    sh 'ps -ef | grep ses- | grep -v grep | awk '{print $2}' | xargs kill -9'
                     sh 'pwd'
                     sh 'rm -rf /root/java_service/pre/libs'
                     sh 'mvn clean package -Dmaven.test.skip=true -Ppre'
                     sh 'tree /root/java_service/pre/libs'
-                    echo '代码编译完成'
+                    echo '----------------------编译完成-----------------------'
                   }
             }
-
+            agent any
             stage ('Deploy Code') {
                   steps {
-                    echo '开始部署代码'
+                    echo '-----------------------执行部署----------------------'
+                    sh 'pwd'
                     sh 'cd /root/java_service/pre'
                     sh 'pwd'
                     sh 'sh /root/java_service/pre/deploy.sh rinit'
                     sh 'sh /root/java_service/pre/deploy.sh start'
                     sh 'sh /root/java_service/pre/deploy.sh status'
-                    echo '开始部署代码'
+                    echo '-----------------------部署完成----------------------'
                   }
             }
-
-            stage ('Message notification') {
+            agent any
+            stage ('Send Message') {
                   steps {
-                    echo '即将发布消息通知'
+                    echo '-----------------------链接钉钉----------------------'
+                    echo '-----------------------执行消息推送----------------------'
+                    echo '-----------------------消息下发完成----------------------'
                   }
             }
       }
