@@ -14,6 +14,7 @@ pipeline {
                   steps {
                     echo '开始编译代码'
                     sh 'pwd'
+                    sh 'rm -rf /root/java_service/pre/libs'
                     sh 'mvn clean package -Dmaven.test.skip=true -Ppre'
                     sh 'tree /root/java_service/pre/libs'
                     echo '代码编译完成'
