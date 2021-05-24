@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.assign.FactoryEnum;
 import com.redescooter.ses.api.common.enums.assign.ProductTypeEnum;
 import com.redescooter.ses.api.common.enums.assign.ScooterTypeEnum;
@@ -27,19 +28,7 @@ import com.redescooter.ses.mobile.rps.dao.wms.WmsCombinStockMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsPartsStockMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsScooterStockMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper;
-import com.redescooter.ses.mobile.rps.dm.OpeCarDistribute;
-import com.redescooter.ses.mobile.rps.dm.OpeCodebaseRelation;
-import com.redescooter.ses.mobile.rps.dm.OpeCodebaseVin;
-import com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrderSerialBind;
-import com.redescooter.ses.mobile.rps.dm.OpeProductionCombinBom;
-import com.redescooter.ses.mobile.rps.dm.OpeProductionParts;
-import com.redescooter.ses.mobile.rps.dm.OpeProductionScooterBom;
-import com.redescooter.ses.mobile.rps.dm.OpeSpecificatType;
-import com.redescooter.ses.mobile.rps.dm.OpeWmsCombinStock;
-import com.redescooter.ses.mobile.rps.dm.OpeWmsPartsStock;
-import com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock;
-import com.redescooter.ses.mobile.rps.dm.OpeWmsStockRecord;
-import com.redescooter.ses.mobile.rps.dm.OpeWmsStockSerialNumber;
+import com.redescooter.ses.mobile.rps.dm.*;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.rps.service.base.OpeCodebaseRelationService;
 import com.redescooter.ses.mobile.rps.service.base.OpeCodebaseVinService;
@@ -50,20 +39,13 @@ import com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import redis.clients.jedis.JedisCluster;
 
 import javax.annotation.Resource;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 保存库存信息公共组件
@@ -109,6 +91,9 @@ public class SaveWmsStockDataComponent {
 
     @Autowired
     private OpeSpecificatTypeService opeSpecificatTypeService;
+
+    @Autowired
+    private JedisCluster jedisCluster;
 
 
     /**
@@ -779,8 +764,10 @@ public class SaveWmsStockDataComponent {
         String value = YearEnum.showValue(year);
         result.append(value);
         result.append(FactoryEnum.AOGE.getCode());
+        // redis 生成自增vin
+        result.append(incrVin(JedisConstant.INCR_VIN));
 
-        // 6位数递增序列号
+        /*// 6位数递增序列号
         List<Integer> codeList = Lists.newArrayList();
         LambdaQueryWrapper<OpeCarDistribute> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeCarDistribute::getSpecificatTypeId, specificatId);
@@ -788,6 +775,7 @@ public class SaveWmsStockDataComponent {
         List<OpeCarDistribute> list = opeCarDistributeMapper.selectList(wrapper);
         if (CollectionUtils.isNotEmpty(list)) {
             // 得到自增编号,从倒数第6位开始截取
+            // 问题点没绑定之前是没有vincode，这样会出现重复数据
             for (OpeCarDistribute o : list) {
                 String vinCode = o.getVinCode();
                 if (StringUtils.isNotBlank(vinCode)) {
@@ -809,7 +797,7 @@ public class SaveWmsStockDataComponent {
             }
         } else {
             result.append("000001");
-        }
+        }*/
         // 根据生成的vin得到正确的第九位数字
         String nineCode = checkVIN(result.toString());
         // 用正确的第九位数字替换之前随机生成的第九位数字
@@ -966,4 +954,41 @@ public class SaveWmsStockDataComponent {
         return null;
     }
 
+    /**
+     * @Title: incrVin
+     * @Description: // vin 自增 后期改动
+     * @Param: [key]
+     * @Return: java.lang.String
+     * @Date: 2021/5/24 9:53 下午
+     * @Author: Charles
+     */
+    public String incrVin(String key) {
+        Boolean flag = jedisCluster.exists(key);
+        if (flag) {
+            jedisCluster.incr(key);
+        } else {
+            jedisCluster.incrBy(key, 1);
+        }
+        String redisVin = jedisCluster.get(key);
+        int redisVinLen = redisVin.length();
+        String num = "";
+        switch (redisVinLen) {
+            case 1:
+                num = "00000" + redisVin;
+                break;
+            case 2:
+                num = "0000" + redisVin;
+                break;
+            case 3:
+                num = "000" + redisVin;
+                break;
+            case 4:
+                num = "00" + redisVin;
+                break;
+            case 5:
+                num = "0" + redisVin;
+                break;
+        }
+        return num;
+    }
 }
