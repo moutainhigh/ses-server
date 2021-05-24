@@ -1,7 +1,7 @@
 pipeline {
       agent any
       stages {
-            stage ('Pull Code') {
+            stage ('PULL CODE') {
                   steps {
                     echo '从github上获取源码'
                     sh 'pwd'
@@ -9,10 +9,20 @@ pipeline {
                     echo '代码拉取完成'
                   }
             }
-            stage ('Build Code') {
+
+            stage ('INIT ENV') {
+                  steps {
+                    echo '-----------------------资源回收----------------------'
+                    sh 'pwd'
+                    sh 'cd /root/java_service/pre'
+                    sh 'pwd'
+                    sh 'sh /root/java_service/pre/deploy.sh stop'
+                    echo '-----------------------回收完成----------------------'
+                  }
+            }
+            stage ('BUILD CODE') {
                   steps {
                     echo '----------------------执行编译-----------------------'
-                    sh 'sh /root/java_service/pre/deploy.sh stop'
                     sh 'pwd'
                     sh 'rm -rf /root/java_service/pre/libs'
                     sh 'mvn clean package -Dmaven.test.skip=true -Ppre'
@@ -20,10 +30,10 @@ pipeline {
                     echo '----------------------编译完成-----------------------'
                   }
             }
-            stage ('Deploy Code') {
+
+            stage ('DEPLOY CODE') {
                   steps {
                     echo '-----------------------执行部署----------------------'
-                    sh 'pwd'
                     sh 'cd /root/java_service/pre'
                     sh 'pwd'
                     sh 'sh /root/java_service/pre/deploy.sh rinit'
@@ -32,13 +42,55 @@ pipeline {
                     echo '-----------------------部署完成----------------------'
                   }
             }
-            stage ('Send Message') {
+            stage ('SEND MESSAGE') {
                   steps {
                     echo '-----------------------链接钉钉----------------------'
                     echo '-----------------------执行消息推送----------------------'
+                       dingtalk (
+                            robot: 'RedEGroup',
+                            type: 'LINK',
+                            title: '部署成功通知',
+                            atAll: true,
+                            text: [
+                                'AWS PRE环境【ses服务】',
+                                '部署成功'
+                            ],
+                            messageUrl: 'https://pre.redelectric.fr/',
+                            picUrl: 'https://rede.oss-cn-shanghai.aliyuncs.com/1621830838698.png'
+                        )
                     echo '-----------------------消息下发完成----------------------'
                   }
             }
+      }
+
+      post{
+          success{
+               dingtalk (
+                    robot: 'RedEGroup',
+                    type: 'LINK',
+                    title: '部署成功通知',
+                    text: [
+                        'AWS PRE环境【ses服务】',
+                        '部署成功'
+                    ],
+                    messageUrl: 'https://pre.redelectric.fr/',
+                    picUrl: 'https://rede.oss-cn-shanghai.aliyuncs.com/1621830838698.png'
+                )
+          }
+          failure{
+               dingtalk (
+                    robot: 'RedEGroup',
+                    type: 'LINK',
+                    title: '部署失败通知',
+                    text: [
+                        'AWS PRE环境【ses服务】',
+                        '部署失败',
+                        '请登录检查'
+                    ],
+                    messageUrl: 'https://ci.redelectric.tech/',
+                    picUrl: 'https://rede.oss-cn-shanghai.aliyuncs.com/1621830862654.png'
+                )
+          }
       }
 
 }
