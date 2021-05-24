@@ -846,6 +846,7 @@ public class FrAppServiceImpl implements FrAppService {
 
         // 获得车牌
         String licensePlate = model.getLicensePlate();
+        log.info("设置软体车牌是:[{}]", licensePlate);
 
         // 修改成品库车辆库存
         // 获得询价单型号id和颜色id
@@ -919,7 +920,9 @@ public class FrAppServiceImpl implements FrAppService {
         }
 
         // 修改sco_scooter的牌照
+        log.info("开始修改sco_scooter的牌照,入参分别是:[{},{}]", scooterId, licensePlate);
         scooterService.updateScooterNo(scooterId, licensePlate);
+        log.info("修改sco_scooter的牌照结束");
 
         HubSaveScooterEnter item = new HubSaveScooterEnter();
         item.setScooterId(scooterId);

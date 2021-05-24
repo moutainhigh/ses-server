@@ -354,7 +354,7 @@ public class ScooterServiceImpl implements ScooterService {
     }
 
     /**
-     * 修改sco_scooter的scooter_no为整车rsn
+     * 修改sco_scooter的牌照
      */
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
