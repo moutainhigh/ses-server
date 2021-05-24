@@ -158,7 +158,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                 amout = order.getPrepaidDeposit().add(order.getFreight());
             } else if (order.getPayStatus() == PaymentStatusEnums.DEPOSIT_PAID.getValue() || order.getPayStatus() == PaymentStatusEnums.ON_INSTALMENT.getValue()) {
                 //判断累计的支付次数和分期数是否相等 如果相等证明分期支付完成
-                if (order.getDef2().equals(siteProductPrice.getInstallmentTime())) {
+                if (Integer.parseInt(order.getDef2()) == Integer.parseInt(siteProductPrice.getInstallmentTime()) + 1) {
                     throw new SesWebsiteException(ExceptionCodeEnums.INSTALLMENT_COMPLETION.getCode(),
                             ExceptionCodeEnums.INSTALLMENT_COMPLETION.getMessage());
                 }
@@ -397,7 +397,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             siteOrder.setStatus(SiteOrderStatusEnums.IN_PROGRESS.getValue());
         } else if (siteOrder.getPayStatus() == PaymentStatusEnums.DEPOSIT_PAID.getValue() || siteOrder.getPayStatus() == PaymentStatusEnums.ON_INSTALMENT.getValue()) {
             if (siteProductPrice.getPriceType() == 1 || siteProductPrice.getPriceType() == 3) {
-                if (Integer.parseInt(siteOrder.getDef2()) == Integer.parseInt(siteProductPrice.getInstallmentTime())) {
+                if (Integer.parseInt(siteOrder.getDef2()) == Integer.parseInt(siteProductPrice.getInstallmentTime()) + 1) {
                     siteOrder.setPayStatus(PaymentStatusEnums.FINISHED_INSTALMENT.getValue());
                     siteOrder.setStatus(SiteOrderStatusEnums.COMPLETED.getValue());
                     siteOrder.setAmountObligation(new BigDecimal("0"));
@@ -438,7 +438,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         syncOrderDataEnter.setTotalPrice(siteOrder.getTotalPrice());
         syncOrderDataEnter.setPayStatus(siteOrder.getPayStatus());
         syncOrderDataEnter.setIsInstallment(sitePaymentType.getPaymentCode());
-        synchronizationOfRosSuccess(idEnter,syncOrderDataEnter);
+        synchronizationOfRosSuccess(idEnter, syncOrderDataEnter);
 
         //TODO 将潜在客户预定客户转化为潜在客户
         //邮件发送
@@ -474,9 +474,9 @@ public class StripePaymentServiceImpl implements StripePaymentService {
 
 
     @Async
-    public void synchronizationOfRosSuccess(IdEnter idEnter,SyncOrderDataEnter syncOrderDataEnter) {
+    public void synchronizationOfRosSuccess(IdEnter idEnter, SyncOrderDataEnter syncOrderDataEnter) {
 
-        customerInquiryService.synchronizationOfRosSuccess(idEnter,syncOrderDataEnter);
+        customerInquiryService.synchronizationOfRosSuccess(idEnter, syncOrderDataEnter);
     }
 
     @Async
