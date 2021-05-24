@@ -23,7 +23,6 @@ pipeline {
             stage ('Build Code') {
                   steps {
                     echo '----------------------执行编译-----------------------'
-                    sh 'sh /root/java_service/pre/deploy.sh stop'
                     sh 'pwd'
                     sh 'rm -rf /root/java_service/pre/libs'
                     sh 'mvn clean package -Dmaven.test.skip=true -Ppre'
@@ -35,7 +34,6 @@ pipeline {
             stage ('Deploy Code') {
                   steps {
                     echo '-----------------------执行部署----------------------'
-                    sh 'pwd'
                     sh 'cd /root/java_service/pre'
                     sh 'pwd'
                     sh 'sh /root/java_service/pre/deploy.sh rinit'
@@ -52,12 +50,23 @@ pipeline {
                             robot: 'RedEGroup',
                             type: 'LINK',
                             title: '部署成功通知',
+                            atAll: true,
                             text: [
                                 'AWS PRE环境【ses服务】',
                                 '部署成功'
                             ],
                             messageUrl: 'https://pre.redelectric.fr/',
                             picUrl: 'https://rede.oss-cn-shanghai.aliyuncs.com/1621830838698.png'
+                            btns: [
+                                      [
+                                          title: '查看',
+                                          actionUrl: 'https://ros.redelectric.fr/'
+                                      ],
+                                      [
+                                          title: '忽略',
+                                          actionUrl: ''
+                                      ]
+                                  ]
                         )
                     echo '-----------------------消息下发完成----------------------'
                   }
