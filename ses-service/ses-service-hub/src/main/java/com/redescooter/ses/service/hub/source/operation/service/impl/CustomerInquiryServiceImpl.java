@@ -56,43 +56,44 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
         if (opeCustomerInquiry == null) {
             throw new SeSHubException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
-        if (syncOrderDataEnter.getIsInstallment().equals("1") || syncOrderDataEnter.getIsInstallment().equals("3")){
+        if (syncOrderDataEnter.getIsInstallment().equals("1") || syncOrderDataEnter.getIsInstallment().equals("3")) {
             if (InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue().equals(opeCustomerInquiry.getPayStatus())) {
                 opeCustomerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
                 opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_DEPOSIT.getValue());
-            }else if (InquiryPayStatusEnums.ON_INSTALMENT.getValue().equals(opeCustomerInquiry.getPayStatus())){
+            } else if (InquiryPayStatusEnums.ON_INSTALMENT.getValue().equals(opeCustomerInquiry.getPayStatus())) {
                 opeCustomerInquiry.setStatus(InquiryStatusEnums.START_PAYMENT_INSTALLMENTS.getValue());
                 opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.ON_INSTALMENT.getValue());
-            }else {
+            } else {
                 opeCustomerInquiry.setStatus(InquiryStatusEnums.FINISH_PAYMENT_INSTALLMENTS.getValue());
                 opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.FINISHED_INSTALMENT.getValue());
             }
             opeCustomerInquiry.setAmountPaid(syncOrderDataEnter.getAmountPaid());
             opeCustomerInquiry.setAmountObligation(syncOrderDataEnter.getAmountObligation());
             opeCustomerInquiry.setTotalPrice(syncOrderDataEnter.getTotalPrice());
-        }
-        // 判断这次是预定金的支付 还是尾款的支付
-        if (InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue().equals(opeCustomerInquiry.getPayStatus())) {
-            log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>这个时候是预定金的支付 需要改动已付金额 待付金额");
-            // 这个时候是预定金的支付 需要改动已付金额 待付金额
-            opeCustomerInquiry.setAmountPaid(opeCustomerInquiry.getPrepaidDeposit());
-            opeCustomerInquiry.setAmountObligation(opeCustomerInquiry.getAmountObligation().subtract(opeCustomerInquiry.getPrepaidDeposit()));
-            opeCustomerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
-            opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_DEPOSIT.getValue());
+        } else {
+            // 判断这次是预定金的支付 还是尾款的支付
+            if (InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue().equals(opeCustomerInquiry.getPayStatus())) {
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>这个时候是预定金的支付 需要改动已付金额 待付金额");
+                // 这个时候是预定金的支付 需要改动已付金额 待付金额
+                opeCustomerInquiry.setAmountPaid(opeCustomerInquiry.getPrepaidDeposit());
+                opeCustomerInquiry.setAmountObligation(opeCustomerInquiry.getAmountObligation().subtract(opeCustomerInquiry.getPrepaidDeposit()));
+                opeCustomerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
+                opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_DEPOSIT.getValue());
 
-        } else if (InquiryPayStatusEnums.PAY_DEPOSIT.getValue().equals(opeCustomerInquiry.getPayStatus())) {
-            log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>这个时候是尾款的支付 需要改动已付金额 待付金额");
-            // 这个时候是尾款的支付 需要改动已付金额 待付金额
-            opeCustomerInquiry.setAmountPaid(opeCustomerInquiry.getTotalPrice());
-            opeCustomerInquiry.setAmountObligation(opeCustomerInquiry.getAmountObligation().subtract(opeCustomerInquiry.getAmountObligation()));
-            opeCustomerInquiry.setStatus(InquiryStatusEnums.PAY_LAST_PARAGRAPH.getValue());
-            opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_LAST_PARAGRAPH.getValue());
+            } else if (InquiryPayStatusEnums.PAY_DEPOSIT.getValue().equals(opeCustomerInquiry.getPayStatus())) {
+                log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>这个时候是尾款的支付 需要改动已付金额 待付金额");
+                // 这个时候是尾款的支付 需要改动已付金额 待付金额
+                opeCustomerInquiry.setAmountPaid(opeCustomerInquiry.getTotalPrice());
+                opeCustomerInquiry.setAmountObligation(opeCustomerInquiry.getAmountObligation().subtract(opeCustomerInquiry.getAmountObligation()));
+                opeCustomerInquiry.setStatus(InquiryStatusEnums.PAY_LAST_PARAGRAPH.getValue());
+                opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_LAST_PARAGRAPH.getValue());
+            }
         }
         boolean inquiryResult = opeCustomerInquiryService.updateById(opeCustomerInquiry);
-        if (inquiryResult){
+        if (inquiryResult) {
             //订单同步完成之后，就同步customer的状态变为潜在用户
             OpeCustomer opeCustomer = opeCustomerService.getById(opeCustomerInquiry.getCustomerId());
-            if (opeCustomer==null){
+            if (opeCustomer == null) {
                 throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
             }
             opeCustomer.setStatus(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue());
@@ -107,7 +108,7 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
     @DS("operation")
     public BooleanResult synchronizationOfRosFail(IdEnter idEnter) {
         OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryService.getById(idEnter.getId());
-        if (opeCustomerInquiry==null){
+        if (opeCustomerInquiry == null) {
             throw new SeSHubException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
