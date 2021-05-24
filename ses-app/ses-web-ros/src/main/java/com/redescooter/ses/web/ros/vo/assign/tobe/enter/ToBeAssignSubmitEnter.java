@@ -30,7 +30,7 @@ public class ToBeAssignSubmitEnter extends GeneralEnter implements Serializable 
     private String list;
 
     @ApiModelProperty(value = "车辆信息", required = true)
-    private InputScooterEnter scooterInfo;
+    private ToBeInputScooterEnter scooterInfo;
 
     @ApiModelProperty(value = "客户id", required = true)
     private Long customerId;

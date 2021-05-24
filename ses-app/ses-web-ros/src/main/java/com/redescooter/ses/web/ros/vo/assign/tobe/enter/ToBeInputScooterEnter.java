@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class InputScooterEnter {
+public class ToBeInputScooterEnter {
 
     @ApiModelProperty(value = "BBI", required = true)
     private String bbi;
