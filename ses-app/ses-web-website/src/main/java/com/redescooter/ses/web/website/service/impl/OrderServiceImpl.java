@@ -50,7 +50,6 @@ import com.redescooter.ses.web.website.vo.order.AddPartListEnter;
 import com.redescooter.ses.web.website.vo.order.AddUpdateOrderEnter;
 import com.redescooter.ses.web.website.vo.order.OrderDetailsResult;
 import io.seata.spring.annotation.GlobalTransactional;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -346,6 +345,7 @@ public class OrderServiceImpl implements OrderService {
         // 先判断当前的日期有没有生成过单据号
         QueryWrapper<SiteOrder> queryWrapper = new QueryWrapper<>();
         queryWrapper.like(SiteOrder.COL_ORDER_NO, DateUtil.getSimpleDateStamp());
+        queryWrapper.like(SiteOrder.COL_ORDER_NO, "W");
         queryWrapper.orderByDesc(SiteOrder.COL_ORDER_NO);
         queryWrapper.last("limit 1");
         SiteOrder inquiry = siteOrderService.getOne(queryWrapper);

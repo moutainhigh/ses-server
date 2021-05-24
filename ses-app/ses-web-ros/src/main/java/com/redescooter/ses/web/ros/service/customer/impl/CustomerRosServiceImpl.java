@@ -314,6 +314,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         // 先判断当前的日期有没有生成过单据号
         QueryWrapper<OpeCustomerInquiry> queryWrapper = new QueryWrapper<>();
         queryWrapper.like(OpeCustomerInquiry.COL_ORDER_NO, DateUtil.getSimpleDateStamp());
+        queryWrapper.like(OpeCustomerInquiry.COL_ORDER_NO, "R");
         queryWrapper.orderByDesc(OpeCustomerInquiry.COL_ORDER_NO);
         queryWrapper.last("limit 1");
         OpeCustomerInquiry inquiry = opeCustomerInquiryService.getOne(queryWrapper);
