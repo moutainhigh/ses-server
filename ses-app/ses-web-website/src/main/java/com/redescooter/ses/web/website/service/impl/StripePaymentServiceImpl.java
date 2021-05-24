@@ -162,12 +162,16 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                     throw new SesWebsiteException(ExceptionCodeEnums.INSTALLMENT_COMPLETION.getCode(),
                             ExceptionCodeEnums.INSTALLMENT_COMPLETION.getMessage());
                 }
-                LambdaQueryWrapper<SiteOrderB> wrapper1 = new LambdaQueryWrapper<>();
-                wrapper1.eq(SiteOrderB::getOrderId, order.getId());
-                wrapper1.isNotNull(SiteOrderB::getDef2);
-                SiteOrderB siteOrderB = siteOrderBMapper.selectOne(wrapper1);
+//                LambdaQueryWrapper<SiteOrderB> wrapper1 = new LambdaQueryWrapper<>();
+//                wrapper1.eq(SiteOrderB::getOrderId, order.getId());
+//                wrapper1.isNotNull(SiteOrderB::getDef2);
+//                SiteOrderB siteOrderB = siteOrderBMapper.selectOne(wrapper1);
                 //这里需要做一个判断 看看这个订单号能不能在这个子订单中找到
-                amout = siteProductPrice.getShouldPayPeriod().add(new BigDecimal(siteOrderB.getDef2()));
+                if (order.getDef1().equals("0")){
+                    amout = siteProductPrice.getShouldPayPeriod();
+                }else {
+                    amout = siteProductPrice.getShouldPayPeriod().add(new BigDecimal(order.getDef1()));
+                }
             }
         }
         if (order.getPayStatus() == PaymentStatusEnums.UNPAID_PAID.getValue()) {
@@ -365,14 +369,13 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             throw new SesWebsiteException(ExceptionCodeEnums.NOT_FOUNT_PRODUCT_PRICE.getCode(),
                     ExceptionCodeEnums.NOT_FOUNT_PRODUCT_PRICE.getMessage());
         }
-        LambdaQueryWrapper<SiteOrderB> wrapper1 = new LambdaQueryWrapper<>();
-        wrapper1.eq(SiteOrderB::getOrderId, siteOrder.getId());
-        wrapper1.isNotNull(SiteOrderB::getDef2);
-        SiteOrderB siteOrderB = siteOrderBMapper.selectOne(wrapper1);
-        if (siteOrderB == null) {
-            throw new SesWebsiteException(ExceptionCodeEnums.NOT_FOUNT_ORDER_B.getCode(),
-                    ExceptionCodeEnums.NOT_FOUNT_ORDER_B.getMessage());
-        }
+//        LambdaQueryWrapper<SiteOrderB> wrapper1 = new LambdaQueryWrapper<>();
+//        wrapper1.eq(SiteOrderB::getOrderId, siteOrder.getId());
+//        wrapper1.isNotNull(SiteOrderB::getDef2);
+//        SiteOrderB siteOrderB = siteOrderBMapper.selectOne(wrapper1);
+//        if (siteOrderB == null) {
+//            siteOrderB.setDef2("0");
+//        }
         //时间判断 判断当前时间是不是处于分期时间
         if (new Date().before(DateUtil.subMonth(siteOrder.getCreatedTime(), Integer.parseInt(siteOrder.getDef2())))) {
             siteOrder.setDef3(PaymentTimeEnums.ADVANCE.getRemark());
@@ -386,7 +389,11 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             // 这是预定金支付 只需要更改已付金额和待付款金额
             if (siteProductPrice.getPriceType() == 1 || siteProductPrice.getPriceType() == 3) {
                 siteOrder.setAmountPaid(siteOrder.getPrepaidDeposit().add(siteOrder.getFreight()));
-                siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(new BigDecimal(siteOrderB.getDef2())));
+                if (siteOrder.getDef1().equals("0")){
+                    siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod());
+                }else {
+                    siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()))));
+                }
                 Integer restPeriods = Integer.parseInt(siteOrder.getDef2()) + 1;
                 siteOrder.setDef2(restPeriods.toString());
             } else {
@@ -402,7 +409,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                     siteOrder.setStatus(SiteOrderStatusEnums.COMPLETED.getValue());
                     siteOrder.setAmountObligation(new BigDecimal("0"));
                 } else {
-                    siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(new BigDecimal(siteOrderB.getDef2())));
+                    siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()))));
                     Integer restPeriods = Integer.parseInt(siteOrder.getDef2()) + 1;
                     siteOrder.setPayStatus(PaymentStatusEnums.ON_INSTALMENT.getValue());
                     siteOrder.setStatus(SiteOrderStatusEnums.IN_PROGRESS.getValue());
