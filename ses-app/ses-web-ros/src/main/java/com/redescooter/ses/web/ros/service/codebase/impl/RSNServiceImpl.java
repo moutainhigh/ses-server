@@ -91,6 +91,7 @@ public class RSNServiceImpl implements RSNService {
         List<Node> nodes = Lists.newArrayList();
         RSNDetailScooterResult scooterInfo = new RSNDetailScooterResult();
         String rsn = enter.getKeyword();
+        scooterInfo.setRsn(rsn);
 
         // rsn生成
         LambdaQueryWrapper<OpeCodebaseRsn> qw = new LambdaQueryWrapper<>();
@@ -152,7 +153,6 @@ public class RSNServiceImpl implements RSNService {
             scooterInfo.setMeter(distribute.getMeter());
             scooterInfo.setImei(distribute.getImei());
             scooterInfo.setBluetoothAddress(distribute.getBluetoothAddress());
-            scooterInfo.setRsn(distribute.getRsn());
             scooterInfo.setVin(distribute.getVinCode());
         }
         result.setNodes(nodes);
