@@ -408,6 +408,9 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                     siteOrder.setPayStatus(PaymentStatusEnums.FINISHED_INSTALMENT.getValue());
                     siteOrder.setStatus(SiteOrderStatusEnums.COMPLETED.getValue());
                     siteOrder.setAmountObligation(new BigDecimal("0"));
+                    //******************************
+                    Integer restPeriods = Integer.parseInt(siteOrder.getDef2()) + 1;
+                    //********************************
                 } else {
                     siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()))));
                     Integer restPeriods = Integer.parseInt(siteOrder.getDef2()) + 1;
