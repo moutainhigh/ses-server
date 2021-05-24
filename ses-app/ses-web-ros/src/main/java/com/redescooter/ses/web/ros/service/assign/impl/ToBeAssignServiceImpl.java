@@ -233,6 +233,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             node.setUserId(enter.getUserId());
             node.setCustomerId(enter.getCustomerId());
             node.setNode(1);
+            node.setAppNode(1);
             node.setFlag(0);
             node.setCreatedBy(enter.getUserId());
             node.setCreatedTime(new Date());
@@ -416,6 +417,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
         OpeCarDistributeNode node = new OpeCarDistributeNode();
         node.setNode(2);
+        node.setAppNode(2);
         node.setFlag(1);
         node.setUpdatedBy(enter.getUserId());
         node.setUpdatedTime(new Date());
@@ -473,6 +475,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
         OpeCarDistributeNode node = new OpeCarDistributeNode();
         node.setNode(3);
+        node.setAppNode(3);
         node.setUpdatedBy(enter.getUserId());
         node.setUpdatedTime(new Date());
         opeCarDistributeNodeMapper.update(node, nodeWrapper);
@@ -580,6 +583,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
         OpeCarDistributeNode node = new OpeCarDistributeNode();
         node.setNode(4);
+        node.setAppNode(4);
         node.setUpdatedBy(enter.getUserId());
         node.setUpdatedTime(new Date());
         opeCarDistributeNodeMapper.update(node, nodeWrapper);
@@ -806,6 +810,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
         OpeCarDistributeNode node = new OpeCarDistributeNode();
         node.setNode(5);
+        node.setAppNode(5);
         node.setFlag(2);
         node.setUpdatedBy(enter.getUserId());
         node.setUpdatedTime(new Date());
