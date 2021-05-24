@@ -56,7 +56,7 @@ pipeline {
                                 '部署成功'
                             ],
                             messageUrl: 'https://pre.redelectric.fr/',
-                            picUrl: 'https://rede.oss-cn-shanghai.aliyuncs.com/1621830838698.png'
+                            picUrl: 'https://rede.oss-cn-shanghai.aliyuncs.com/1621830838698.png',
                             btns: [
                                       [
                                           title: '查看',
