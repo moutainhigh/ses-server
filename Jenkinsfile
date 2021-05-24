@@ -56,17 +56,7 @@ pipeline {
                                 '部署成功'
                             ],
                             messageUrl: 'https://pre.redelectric.fr/',
-                            picUrl: 'https://rede.oss-cn-shanghai.aliyuncs.com/1621830838698.png',
-                            btns: [
-                                      [
-                                          title: '查看',
-                                          actionUrl: 'https://ros.redelectric.fr/'
-                                      ],
-                                      [
-                                          title: '忽略',
-                                          actionUrl: 'https://ros.redelectric.fr/'
-                                      ]
-                                  ]
+                            picUrl: 'https://rede.oss-cn-shanghai.aliyuncs.com/1621830838698.png'
                         )
                     echo '-----------------------消息下发完成----------------------'
                   }
