@@ -167,9 +167,9 @@ public class StripePaymentServiceImpl implements StripePaymentService {
 //                wrapper1.isNotNull(SiteOrderB::getDef2);
 //                SiteOrderB siteOrderB = siteOrderBMapper.selectOne(wrapper1);
                 //这里需要做一个判断 看看这个订单号能不能在这个子订单中找到
-                if (order.getDef1().equals("0")){
+                if (order.getDef1().equals("0")) {
                     amout = siteProductPrice.getShouldPayPeriod();
-                }else {
+                } else {
                     amout = siteProductPrice.getShouldPayPeriod().add(new BigDecimal(order.getDef1()));
                 }
             }
@@ -389,9 +389,9 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             // 这是预定金支付 只需要更改已付金额和待付款金额
             if (siteProductPrice.getPriceType() == 1 || siteProductPrice.getPriceType() == 3) {
                 siteOrder.setAmountPaid(siteOrder.getPrepaidDeposit().add(siteOrder.getFreight()));
-                if (siteOrder.getDef1().equals("0")){
+                if (siteOrder.getDef1().equals("0")) {
                     siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod());
-                }else {
+                } else {
                     siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()))));
                 }
                 Integer restPeriods = Integer.parseInt(siteOrder.getDef2());
@@ -404,7 +404,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             siteOrder.setStatus(SiteOrderStatusEnums.IN_PROGRESS.getValue());
         } else if (siteOrder.getPayStatus() == PaymentStatusEnums.DEPOSIT_PAID.getValue() || siteOrder.getPayStatus() == PaymentStatusEnums.ON_INSTALMENT.getValue()) {
             if (siteProductPrice.getPriceType() == 1 || siteProductPrice.getPriceType() == 3) {
-                if (Integer.parseInt(siteOrder.getDef2()) == Integer.parseInt(siteProductPrice.getInstallmentTime())) {
+                if (Integer.parseInt(siteOrder.getDef2()) == Integer.parseInt(siteProductPrice.getInstallmentTime()) - 1) {
                     siteOrder.setPayStatus(PaymentStatusEnums.FINISHED_INSTALMENT.getValue());
                     siteOrder.setStatus(SiteOrderStatusEnums.COMPLETED.getValue());
                     siteOrder.setAmountObligation(new BigDecimal("0"));
