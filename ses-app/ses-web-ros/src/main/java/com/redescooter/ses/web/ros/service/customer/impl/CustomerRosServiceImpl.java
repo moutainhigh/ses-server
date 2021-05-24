@@ -237,9 +237,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     }
 
 
-
     // 给客户生成一个询价单(低配的询价单)
-    public void creatInquiry(OpeCustomer customer){
+    public void creatInquiry(OpeCustomer customer) {
         OpeCustomerInquiry inquiry = new OpeCustomerInquiry();
         inquiry.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
         inquiry.setOrderNo(createOrderNo(OrderNumberTypeEnums.INQUIRY_ORDER.getValue()));
@@ -263,7 +262,11 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         inquiry.setContactLast(customer.getContactLastName());
         inquiry.setContantFullName(customer.getContactFullName());
         inquiry.setPayStatus(InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue());
-        inquiry.setScooterQuantity(1);
+        if (1 != customer.getScooterQuantity()) {
+            inquiry.setScooterQuantity(customer.getScooterQuantity());
+        } else {
+            inquiry.setScooterQuantity(1);
+        }
 //        inquiry.setRemarks();
         inquiry.setSource(InquirySourceEnums.SYS_FORM.getValue());
         inquiry.setBankCardName(null);
@@ -314,17 +317,17 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         queryWrapper.orderByDesc(OpeCustomerInquiry.COL_ORDER_NO);
         queryWrapper.last("limit 1");
         OpeCustomerInquiry inquiry = opeCustomerInquiryService.getOne(queryWrapper);
-        if(inquiry != null){
+        if (inquiry != null) {
             // 说明今天已经有过单据了  只需要流水号递增
-            code = OrderNoGenerateUtil.orderNoGenerate(inquiry.getOrderNo(),orderNoEnum);
-        }else {
+            code = OrderNoGenerateUtil.orderNoGenerate(inquiry.getOrderNo(), orderNoEnum);
+        } else {
             // 说明今天还没有产生过单据号，给今天的第一个就好
             code = orderNoEnum + DateUtil.getSimpleDateStamp() + "001";
         }
         //生成订单号之后 在流水号前面加上W（表示ROS的数据）
-        String frond = code.substring(0,code.length()-3);
-        String back = code.substring(code.length()-3,code.length());
-        return frond +"R"+back;
+        String frond = code.substring(0, code.length() - 3);
+        String back = code.substring(code.length() - 3, code.length());
+        return frond + "R" + back;
     }
 
 
@@ -697,13 +700,13 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             return new GeneralResult(enter.getRequestId());
         }
         // 检验客户是不是来自官网
-        if (CustomerSourceEnum.WEBSITE.getValue().equals(customer.getCustomerSource())){
+        if (CustomerSourceEnum.WEBSITE.getValue().equals(customer.getCustomerSource())) {
             // 对于来源于官网的客户 需要支付尾款 才能转为正式客户(这里判断当前客户 是否有支付完尾款的订单 有就好)
             QueryWrapper<OpeCustomerInquiry> query = new QueryWrapper<>();
-            query.eq(OpeCustomerInquiry.COL_CUSTOMER_ID,customer.getId());
-            query.eq(OpeCustomerInquiry.COL_PAY_STATUS,InquiryPayStatusEnums.PAY_LAST_PARAGRAPH.getValue());
+            query.eq(OpeCustomerInquiry.COL_CUSTOMER_ID, customer.getId());
+            query.eq(OpeCustomerInquiry.COL_PAY_STATUS, InquiryPayStatusEnums.PAY_LAST_PARAGRAPH.getValue());
             int count = opeCustomerInquiryService.count(query);
-            if (count == 0){
+            if (count == 0) {
                 // 说明当前客户没有支付完的订单
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ORDER_NOT_PAY.getCode(), ExceptionCodeEnums.CUSTOMER_ORDER_NOT_PAY.getMessage());
             }
@@ -713,18 +716,18 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         customer.setUpdatedTime(new Date());
         opeCustomerMapper.updateById(customer);
         // 2021 3 3 潜在客户转为正式客户的时候 把客户的询价单变为已支付状态
-        changeInquiryStatus(customer.getId(),enter.getUserId());
+        changeInquiryStatus(customer.getId(), enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 
 
     // 把客户的询价单变为已支付状态
-    public void changeInquiryStatus(Long customerId,Long userId){
+    public void changeInquiryStatus(Long customerId, Long userId) {
         QueryWrapper<OpeCustomerInquiry> inquiryQueryWrapper = new QueryWrapper<OpeCustomerInquiry>();
-        inquiryQueryWrapper.eq(OpeCustomerInquiry.COL_CUSTOMER_ID,customerId);
-        inquiryQueryWrapper.eq(OpeCustomerInquiry.COL_PAY_STATUS,InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue());
+        inquiryQueryWrapper.eq(OpeCustomerInquiry.COL_CUSTOMER_ID, customerId);
+        inquiryQueryWrapper.eq(OpeCustomerInquiry.COL_PAY_STATUS, InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue());
         List<OpeCustomerInquiry> inquiryList = opeCustomerInquiryService.list(inquiryQueryWrapper);
-        if (!CollectionUtils.isEmpty(inquiryList)){
+        if (!CollectionUtils.isEmpty(inquiryList)) {
             for (OpeCustomerInquiry inquiry : inquiryList) {
                 inquiry.setPayStatus(InquiryPayStatusEnums.PAY_LAST_PARAGRAPH.getValue());
                 inquiry.setStatus(InquiryStatusEnums.PAY_LAST_PARAGRAPH.getValue());

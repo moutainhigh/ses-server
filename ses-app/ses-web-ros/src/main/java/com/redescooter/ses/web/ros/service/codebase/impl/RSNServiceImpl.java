@@ -107,7 +107,7 @@ public class RSNServiceImpl implements RSNService {
         lqw.eq(OpeWmsStockSerialNumber::getRsn, rsn);
         lqw.last("limit 1");
         OpeWmsStockSerialNumber chSerialNumber = opeWmsStockSerialNumberService.getOne(lqw);
-        nodes.add(new Node("2",codebaseRsn == null ? "-" : DateUtil.getTimeStr(chSerialNumber.getCreatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
+        nodes.add(new Node("2",chSerialNumber == null ? "-" : DateUtil.getTimeStr(chSerialNumber.getCreatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
 
         // 进入法国仓库
         LambdaQueryWrapper<OpeWmsStockSerialNumber> wrapper = new LambdaQueryWrapper<>();
