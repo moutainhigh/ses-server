@@ -851,6 +851,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         resultDTO.setBluetoothMacAddress(paramDTO.getBluetoothMacAddress());
         resultDTO.setProductionDate(new Date());
         resultDTO.setQcResultFlag(qcResultFlag);
+        resultDTO.setTabletSn(paramDTO.getTabletSn());
         return resultDTO;
     }
 
