@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.service.customer.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.customer.CustomerAccountFlagEnum;
@@ -413,6 +415,15 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         update.setCustomerFullName(enter.getCustomerFirstName() + " " + enter.getCustomerLastName());
         update.setContactFullName(enter.getContactFirstName() + " " + enter.getContactLastName());
         opeCustomerMapper.updateById(update);
+
+        // 修改客户咨询
+        UpdateWrapper<OpeCustomerInquiry> updateWrapper = new UpdateWrapper();
+        updateWrapper.eq(OpeCustomerInquiry.COL_CUSTOMER_ID, enter.getId());
+        updateWrapper.eq(OpeCustomerInquiry.COL_DR, Constant.DR_FALSE);
+        updateWrapper.set(OpeCustomerInquiry.COL_SCOOTER_QUANTITY, enter.getScooterQuantity());
+        updateWrapper.set(OpeCustomerInquiry.COL_UPDATED_BY, enter.getUserId());
+        updateWrapper.set(OpeCustomerInquiry.COL_UPDATED_TIME, new Date());
+        opeCustomerInquiryService.update(updateWrapper);
 
         // 修改客户的时候，数据同步到platform数据库的租户表(这个方法异步执行，不影响现有逻辑)
         SynchTenantEnter tenantEnter = new SynchTenantEnter();
