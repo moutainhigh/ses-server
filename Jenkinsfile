@@ -1,7 +1,7 @@
 pipeline {
       agent any
       stages {
-            stage ('Pull Code') {
+            stage ('PULL CODE') {
                   steps {
                     echo '从github上获取源码'
                     sh 'pwd'
@@ -10,7 +10,7 @@ pipeline {
                   }
             }
 
-            stage ('Init ENV') {
+            stage ('INIT ENV') {
                   steps {
                     echo '-----------------------资源回收----------------------'
                     sh 'pwd'
@@ -20,7 +20,7 @@ pipeline {
                     echo '-----------------------回收完成----------------------'
                   }
             }
-            stage ('Build Code') {
+            stage ('BUILD CODE') {
                   steps {
                     echo '----------------------执行编译-----------------------'
                     sh 'pwd'
@@ -31,7 +31,7 @@ pipeline {
                   }
             }
 
-            stage ('Deploy Code') {
+            stage ('DEPLOY CODE') {
                   steps {
                     echo '-----------------------执行部署----------------------'
                     sh 'cd /root/java_service/pre'
@@ -42,7 +42,7 @@ pipeline {
                     echo '-----------------------部署完成----------------------'
                   }
             }
-            stage ('Send Message') {
+            stage ('SEND MESSAGE') {
                   steps {
                     echo '-----------------------链接钉钉----------------------'
                     echo '-----------------------执行消息推送----------------------'
@@ -64,7 +64,7 @@ pipeline {
                                       ],
                                       [
                                           title: '忽略',
-                                          actionUrl: ''
+                                          actionUrl: 'https://ros.redelectric.fr/'
                                       ]
                                   ]
                         )
