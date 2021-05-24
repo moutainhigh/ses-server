@@ -64,7 +64,7 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
                 opeCustomerInquiry.setStatus(InquiryStatusEnums.START_PAYMENT_INSTALLMENTS.getValue());
                 opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.ON_INSTALMENT.getValue());
             }else {
-                opeCustomerInquiry.setStatus(InquiryStatusEnums.START_PAYMENT_INSTALLMENTS.getValue());
+                opeCustomerInquiry.setStatus(InquiryStatusEnums.FINISH_PAYMENT_INSTALLMENTS.getValue());
                 opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.FINISHED_INSTALMENT.getValue());
             }
             opeCustomerInquiry.setAmountPaid(syncOrderDataEnter.getAmountPaid());
