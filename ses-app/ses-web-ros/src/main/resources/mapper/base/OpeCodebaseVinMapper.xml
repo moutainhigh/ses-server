@@ -74,7 +74,13 @@
 
     <!-- vin导出 -->
     <select id="exportVin" resultType="com.redescooter.ses.web.ros.vo.codebase.ExportVINResult">
-        select vin, case when status = 1  then '待分配' when status = 2 then '已分配' end as status, created_time as generateDate, updated_time as finishDate
+        select vin,
+        case
+        when #{enter.language} = 'en' and status = 1  then 'To be assigned'
+        when #{enter.language} = 'en' and status = 2 then 'Assigned'
+        when #{enter.language} = 'fr' and status = 1  then 'À attribuer'
+        when #{enter.language} = 'fr' and status = 2 then 'Attribué'
+        end as status, created_time as generateDate, updated_time as finishDate
         from ope_codebase_vin
         where dr = 0
         <include refid="condition"/>

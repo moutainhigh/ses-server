@@ -32,4 +32,7 @@ public interface JedisConstant {
     // 接口权限
     String PERMISSION = "permission:";
 
+    // 码库校验vin
+    String INCR_VIN = "check:vin:";
+
 }
