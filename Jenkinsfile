@@ -9,6 +9,17 @@ pipeline {
                     echo '代码拉取完成'
                   }
             }
+
+            stage ('Init ENV') {
+                  steps {
+                    echo '-----------------------资源回收----------------------'
+                    sh 'pwd'
+                    sh 'cd /root/java_service/pre'
+                    sh 'pwd'
+                    sh 'sh /root/java_service/pre/deploy.sh stop'
+                    echo '-----------------------回收完成----------------------'
+                  }
+            }
             stage ('Build Code') {
                   steps {
                     echo '----------------------执行编译-----------------------'
@@ -20,6 +31,7 @@ pipeline {
                     echo '----------------------编译完成-----------------------'
                   }
             }
+
             stage ('Deploy Code') {
                   steps {
                     echo '-----------------------执行部署----------------------'
@@ -36,9 +48,50 @@ pipeline {
                   steps {
                     echo '-----------------------链接钉钉----------------------'
                     echo '-----------------------执行消息推送----------------------'
+                       dingtalk (
+                            robot: 'RedEGroup',
+                            type: 'LINK',
+                            title: '部署成功通知',
+                            text: [
+                                'AWS PRE环境【ses服务】',
+                                '部署成功'
+                            ],
+                            messageUrl: 'https://pre.redelectric.fr/',
+                            picUrl: 'https://rede.oss-cn-shanghai.aliyuncs.com/1621830838698.png'
+                        )
                     echo '-----------------------消息下发完成----------------------'
                   }
             }
+      }
+
+      post{
+          success{
+               dingtalk (
+                    robot: 'RedEGroup',
+                    type: 'LINK',
+                    title: '部署成功通知',
+                    text: [
+                        'AWS PRE环境【ses服务】',
+                        '部署成功'
+                    ],
+                    messageUrl: 'https://pre.redelectric.fr/',
+                    picUrl: 'https://rede.oss-cn-shanghai.aliyuncs.com/1621830838698.png'
+                )
+          }
+          failure{
+               dingtalk (
+                    robot: 'RedEGroup',
+                    type: 'LINK',
+                    title: '部署失败通知',
+                    text: [
+                        'AWS PRE环境【ses服务】',
+                        '部署失败',
+                        '请登录检查'
+                    ],
+                    messageUrl: 'https://ci.redelectric.tech/',
+                    picUrl: 'https://rede.oss-cn-shanghai.aliyuncs.com/1621830862654.png'
+                )
+          }
       }
 
 }
