@@ -106,7 +106,8 @@
             IFNULL(a.full_name, c.company_name) as fullName,
             a.email,
             a.scooter_quantity,
-            a.updated_time as generateDate
+            a.updated_time as generateDate,
+            b.node
         from ope_customer_inquiry a
         left join ope_car_distribute_node b on a.customer_id = b.customer_id
         left join ope_customer c on a.customer_id = c.id and c.dr = 0
