@@ -844,6 +844,9 @@ public class FrAppServiceImpl implements FrAppService {
         // 客户和车辆产生绑定关系
         List<HubSaveScooterEnter> saveRelationList = Lists.newArrayList();
 
+        // 获得车牌
+        String licensePlate = model.getLicensePlate();
+
         // 修改成品库车辆库存
         // 获得询价单型号id和颜色id
         CustomerIdEnter customerIdEnter = new CustomerIdEnter();
@@ -914,6 +917,10 @@ public class FrAppServiceImpl implements FrAppService {
         if (null == scooterId) {
             throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
         }
+
+        // 修改sco_scooter的牌照
+        scooterService.updateScooterNo(scooterId, licensePlate);
+
         HubSaveScooterEnter item = new HubSaveScooterEnter();
         item.setScooterId(scooterId);
         item.setModel(ScooterModelEnums.showValueByCode(specificatName));
