@@ -440,6 +440,7 @@ public class FrAppServiceImpl implements FrAppService {
             node.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE_NODE));
             node.setDr(Constant.DR_FALSE);
             node.setCustomerId(enter.getCustomerId());
+            node.setNode(1);
             node.setAppNode(1);
             node.setFlag(0);
             node.setCreatedBy(userId == null ? 0L : userId);
@@ -544,6 +545,7 @@ public class FrAppServiceImpl implements FrAppService {
 
         // node表appNode字段
         OpeCarDistributeNode node = new OpeCarDistributeNode();
+        node.setNode(2);
         node.setAppNode(2);
         node.setFlag(1);
         node.setUpdatedBy(userId);
@@ -613,6 +615,7 @@ public class FrAppServiceImpl implements FrAppService {
 
         // node表appNode字段
         OpeCarDistributeNode node = new OpeCarDistributeNode();
+        node.setNode(3);
         node.setAppNode(3);
         node.setUpdatedBy(userId);
         node.setUpdatedTime(new Date());
@@ -685,6 +688,7 @@ public class FrAppServiceImpl implements FrAppService {
 
         // node表appNode字段
         OpeCarDistributeNode node = new OpeCarDistributeNode();
+        node.setNode(4);
         node.setAppNode(4);
         node.setUpdatedBy(userId);
         node.setUpdatedTime(new Date());
@@ -789,6 +793,7 @@ public class FrAppServiceImpl implements FrAppService {
                 if (batteryNum.equals(batteryList.size())) {
                     // node表appNode字段
                     OpeCarDistributeNode node = new OpeCarDistributeNode();
+                    node.setNode(5);
                     node.setAppNode(5);
                     node.setUpdatedBy(userId);
                     node.setUpdatedTime(new Date());
