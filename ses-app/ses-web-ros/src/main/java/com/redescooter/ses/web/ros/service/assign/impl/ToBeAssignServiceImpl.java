@@ -572,13 +572,13 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             Long id = o.getId();
             String rsn = o.getRsn();
             Long colorId = o.getColorId();
-            String bluetoothAddress = enter.getScooterInfo().getBluetoothAddress();
-            String tabletSn = enter.getScooterInfo().getTabletSn();
-            String bbi = enter.getScooterInfo().getBbi();
-            String controller = enter.getScooterInfo().getController();
-            String electricMachinery = enter.getScooterInfo().getElectricMachinery();
-            String meter = enter.getScooterInfo().getMeter();
-            String imei = enter.getScooterInfo().getImei();
+            String bluetoothAddress = o.getBluetoothAddress();
+            String tabletSn = o.getTabletSn();
+            String bbi = o.getBbi();
+            String controller = o.getController();
+            String electricMachinery = o.getElectricMachinery();
+            String meter = o.getMeter();
+            String imei = o.getImei();
 
             LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
             lqw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);

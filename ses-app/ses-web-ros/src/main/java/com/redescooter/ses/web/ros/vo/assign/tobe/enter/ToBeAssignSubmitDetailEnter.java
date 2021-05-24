@@ -38,7 +38,7 @@ public class ToBeAssignSubmitDetailEnter extends GeneralEnter implements Seriali
     @ApiModelProperty(value = "颜色id", required = true)
     private Long colorId;
 
-    /*@ApiModelProperty(value = "BBI", required = true)
+    @ApiModelProperty(value = "BBI", required = true)
     private String bbi;
 
     @ApiModelProperty(value = "控制器", required = true)
@@ -57,6 +57,6 @@ public class ToBeAssignSubmitDetailEnter extends GeneralEnter implements Seriali
     private String bluetoothAddress;
 
     @ApiModelProperty(value = "平板序列号", required = true)
-    private String tabletSn;*/
+    private String tabletSn;
 
 }
