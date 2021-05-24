@@ -3,7 +3,6 @@ package com.redescooter.ses.web.website.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.gson.JsonSyntaxException;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
@@ -34,17 +33,13 @@ import com.stripe.Stripe;
 import com.stripe.model.*;
 import com.stripe.net.ApiResource;
 import com.stripe.param.PaymentIntentCreateParams;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -57,21 +52,6 @@ import java.util.*;
 public class StripePaymentServiceImpl implements StripePaymentService {
 
     private final String integrationCheck = "integration_check";
-
-    @Value("${rede.stripe.secret_key}")
-    private String API_SECRET_KEY;
-
-    @Value("${rede.stripe.receipt_email}")
-    private String ReceiptEmail;
-
-    @Value("${rede.stripe.currency}")
-    private String Currency;
-
-    @Value("${rede.stripe.payment_method_types}")
-    private String PaymentMethodType;
-
-    @Value("${rede.stripe.payment_event}")
-    private String PaymentEvent;
 
     @Autowired
     private StripeConfigProperties stripeConfigProperties;
@@ -122,7 +102,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
     public StringResult paymentIntent(IdEnter enter) {
         StringResult result = new StringResult();
 
-        Stripe.apiKey = API_SECRET_KEY;
+        Stripe.apiKey = stripeConfigProperties.getSecretkey();
         log.info(Stripe.apiKey + "{>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>}");
         SiteOrder order = siteOrderService.getById(enter.getId());
         if (order == null) {
@@ -130,7 +110,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                     ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getMessage());
         }
         Map<String, String> map = new HashMap<>();
-        map.put(integrationCheck, PaymentEvent);
+        map.put(integrationCheck, stripeConfigProperties.getPaymentEvent());
         map.put("order_id", String.valueOf(order.getId()));
         map.put("order_no", order.getOrderNo());
         map.put("product_id", String.valueOf(order.getProductId()));
@@ -181,8 +161,8 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         }
         try {
             PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-                    .setReceiptEmail(ReceiptEmail)
-                    .setCurrency(Currency).addPaymentMethodType(PaymentMethodType)
+                    .setReceiptEmail(stripeConfigProperties.getReceiptEmail())
+                    .setCurrency(stripeConfigProperties.getCurrency()).addPaymentMethodType(stripeConfigProperties.getPaymentMethodTypes())
                     /**欧元转换欧分**/
                     .setAmount(amout.multiply(new BigDecimal("100")).longValue())
                     .putAllMetadata(map)

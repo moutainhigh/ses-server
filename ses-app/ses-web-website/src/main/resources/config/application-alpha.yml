@@ -63,7 +63,7 @@ spring:                                                                         
 
 ## stripe pay
 rede:
-  stripe:
+  stripe-config:
     currency: eur
     payment_method_types: card
     payment_event: payment_intent.succeeded

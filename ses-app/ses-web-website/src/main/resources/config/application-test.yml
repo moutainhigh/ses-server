@@ -298,7 +298,7 @@ spring:                                                                         
           url: https://github.com/mrjerryli
 ## stripe pay
 rede:
-  stripe:
+  stripe-config:
     currency: eur
     payment_method_types: card
     payment_event: accept_a_payment
