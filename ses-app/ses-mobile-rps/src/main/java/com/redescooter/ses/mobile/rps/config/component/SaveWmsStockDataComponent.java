@@ -232,6 +232,14 @@ public class SaveWmsStockDataComponent {
             String vin3 = generateVINCode(typeE100.getId(), typeE100.getSpecificatName(), 1);
             String vin4 = generateVINCode(typeE100.getId(), typeE100.getSpecificatName(), 2);
 
+            LambdaQueryWrapper<OpeSpecificatType> lqw125 = new LambdaQueryWrapper<>();
+            lqw125.eq(OpeSpecificatType::getDr, Constant.DR_FALSE);
+            lqw125.eq(OpeSpecificatType::getSpecificatName, ProductTypeEnum.E125.getMsg());
+            lqw125.last("limit 1");
+            OpeSpecificatType typeE125 = opeSpecificatTypeService.getOne(lqw125);
+            String vin5 = generateVINCode(typeE125.getId(), typeE125.getSpecificatName(), 1);
+            String vin6 = generateVINCode(typeE125.getId(), typeE125.getSpecificatName(), 2);
+
             OpeCodebaseVin vin1Model = new OpeCodebaseVin();
             vin1Model.setId(idAppService.getId(SequenceName.OPE_CODEBASE_VIN));
             vin1Model.setDr(Constant.DR_FALSE);
@@ -272,10 +280,32 @@ public class SaveWmsStockDataComponent {
             vin4Model.setCreatedBy(userId);
             vin4Model.setCreatedTime(new Date());
 
+            OpeCodebaseVin vin5Model = new OpeCodebaseVin();
+            vin5Model.setId(idAppService.getId(SequenceName.OPE_CODEBASE_VIN));
+            vin5Model.setDr(Constant.DR_FALSE);
+            vin5Model.setVin(vin5);
+            vin5Model.setSpecificatTypeId(typeE125.getId());
+            vin5Model.setSeatNumber(1);
+            vin5Model.setStatus(1);
+            vin5Model.setCreatedBy(userId);
+            vin5Model.setCreatedTime(new Date());
+
+            OpeCodebaseVin vin6Model = new OpeCodebaseVin();
+            vin6Model.setId(idAppService.getId(SequenceName.OPE_CODEBASE_VIN));
+            vin6Model.setDr(Constant.DR_FALSE);
+            vin6Model.setVin(vin6);
+            vin6Model.setSpecificatTypeId(typeE125.getId());
+            vin6Model.setSeatNumber(2);
+            vin6Model.setStatus(1);
+            vin6Model.setCreatedBy(userId);
+            vin6Model.setCreatedTime(new Date());
+
             vinList.add(vin1Model);
             vinList.add(vin2Model);
             vinList.add(vin3Model);
             vinList.add(vin4Model);
+            vinList.add(vin5Model);
+            vinList.add(vin6Model);
             opeCodebaseVinService.saveBatch(vinList);
 
             /*// 保存到码库关系表
