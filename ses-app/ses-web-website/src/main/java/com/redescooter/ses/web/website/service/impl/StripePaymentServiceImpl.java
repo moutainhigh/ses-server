@@ -428,12 +428,19 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         IdEnter idEnter = new IdEnter();
         idEnter.setId(siteOrder.getId());
         SyncOrderDataEnter syncOrderDataEnter = new SyncOrderDataEnter();
-        BigDecimal a = siteOrder.getPrepaidDeposit().add(siteOrder.getFreight());
-        BigDecimal add2 = new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime())).add(siteProductPrice.getShouldPayPeriod());
-        syncOrderDataEnter.setAmountPaid(add2.multiply(new BigDecimal(siteOrder1.getDef2())).add(a));
-        syncOrderDataEnter.setAmountDiscount(siteOrder.getAmountDiscount());
-        syncOrderDataEnter.setAmountObligation(add2.multiply(new BigDecimal(siteProductPrice.getInstallmentTime()).subtract(new BigDecimal(siteOrder1.getDef2()))).add(a));
-        syncOrderDataEnter.setTotalPrice(syncOrderDataEnter.getAmountObligation().add(syncOrderDataEnter.getAmountPaid()));
+        if (siteProductPrice.getPriceType() == 1 || siteProductPrice.getPriceType() == 3){
+            BigDecimal a = siteOrder.getPrepaidDeposit().add(siteOrder.getFreight());
+            BigDecimal add2 = new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime())).add(siteProductPrice.getShouldPayPeriod());
+            syncOrderDataEnter.setAmountPaid(add2.multiply(new BigDecimal(siteOrder1.getDef2())).add(a));
+            syncOrderDataEnter.setAmountDiscount(siteOrder.getAmountDiscount());
+            syncOrderDataEnter.setAmountObligation(add2.multiply(new BigDecimal(siteProductPrice.getInstallmentTime()).subtract(new BigDecimal(siteOrder1.getDef2()))).add(a));
+            syncOrderDataEnter.setTotalPrice(syncOrderDataEnter.getAmountObligation().add(syncOrderDataEnter.getAmountPaid()));
+        }else {
+            syncOrderDataEnter.setAmountPaid(siteOrder.getAmountPaid());
+            syncOrderDataEnter.setAmountDiscount(siteOrder.getAmountDiscount());
+            syncOrderDataEnter.setAmountObligation(siteOrder.getAmountObligation());
+            syncOrderDataEnter.setTotalPrice(siteOrder.getTotalPrice());
+        }
         syncOrderDataEnter.setPayStatus(siteOrder.getPayStatus());
         syncOrderDataEnter.setIsInstallment(sitePaymentType.getPaymentCode());
         synchronizationOfRosSuccess(idEnter, syncOrderDataEnter);
