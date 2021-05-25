@@ -416,10 +416,12 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         siteOrder.setUpdatedTime(new Date());
         siteOrderService.updateById(siteOrder);
         SiteOrder siteOrder1 = siteOrderService.getById(id);
-        if (Integer.parseInt(siteOrder.getDef2()) == Integer.parseInt(siteProductPrice.getInstallmentTime())) {
-            siteOrder.setPayStatus(PaymentStatusEnums.FINISHED_INSTALMENT.getValue());
-            siteOrder.setStatus(SiteOrderStatusEnums.COMPLETED.getValue());
-            siteOrder.setAmountObligation(new BigDecimal("0"));
+        if (siteProductPrice.getPriceType() == 1 || siteProductPrice.getPriceType() == 3){
+            if (Integer.parseInt(siteOrder.getDef2()) == Integer.parseInt(siteProductPrice.getInstallmentTime())) {
+                siteOrder.setPayStatus(PaymentStatusEnums.FINISHED_INSTALMENT.getValue());
+                siteOrder.setStatus(SiteOrderStatusEnums.COMPLETED.getValue());
+                siteOrder.setAmountObligation(new BigDecimal("0"));
+            }
         }
         siteOrderService.updateById(siteOrder);
         //同步ros订单状态
