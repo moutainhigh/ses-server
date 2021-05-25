@@ -428,10 +428,12 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         IdEnter idEnter = new IdEnter();
         idEnter.setId(siteOrder.getId());
         SyncOrderDataEnter syncOrderDataEnter = new SyncOrderDataEnter();
-        syncOrderDataEnter.setAmountPaid(siteOrder.getAmountPaid());
+        BigDecimal a = siteOrder.getPrepaidDeposit().add(siteOrder.getFreight());
+        BigDecimal add2 = new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime())).add(siteProductPrice.getShouldPayPeriod());
+        syncOrderDataEnter.setAmountPaid(add2.multiply(new BigDecimal(siteOrder1.getDef2())).add(a));
         syncOrderDataEnter.setAmountDiscount(siteOrder.getAmountDiscount());
-        syncOrderDataEnter.setAmountObligation(siteProductPrice.getShouldPayPeriod().multiply(new BigDecimal(siteProductPrice.getInstallmentTime()).subtract(new BigDecimal(siteOrder1.getDef2()))));
-        syncOrderDataEnter.setTotalPrice(siteOrder.getTotalPrice());
+        syncOrderDataEnter.setAmountObligation(add2.multiply(new BigDecimal(siteProductPrice.getInstallmentTime()).subtract(new BigDecimal(siteOrder1.getDef2()))).add(a));
+        syncOrderDataEnter.setTotalPrice(syncOrderDataEnter.getAmountObligation().add(syncOrderDataEnter.getAmountPaid()));
         syncOrderDataEnter.setPayStatus(siteOrder.getPayStatus());
         syncOrderDataEnter.setIsInstallment(sitePaymentType.getPaymentCode());
         synchronizationOfRosSuccess(idEnter, syncOrderDataEnter);
