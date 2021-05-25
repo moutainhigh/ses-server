@@ -438,6 +438,16 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 codebaseVin.setUpdatedTime(new Date());
                 opeCodebaseVinService.updateById(codebaseVin);
             }
+
+            // 码库关系表,rsn和vin绑定,先给vin,rsn在绑定车辆时给
+            OpeCodebaseRelation relation = new OpeCodebaseRelation();
+            relation.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
+            relation.setDr(Constant.DR_FALSE);
+            relation.setVin(vinCode);
+            relation.setStatus(1);
+            relation.setCreatedBy(enter.getUserId());
+            relation.setCreatedTime(new Date());
+            opeCodebaseRelationService.save(relation);
         }
 
         // node表node字段+1
