@@ -57,13 +57,13 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
             throw new SeSHubException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
         if (syncOrderDataEnter.getIsInstallment().equals("1") || syncOrderDataEnter.getIsInstallment().equals("3")) {
-            if (InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue().equals(opeCustomerInquiry.getPayStatus())) {
+            if (InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue().equals(syncOrderDataEnter.getPayStatus())) {
                 opeCustomerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
                 opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_DEPOSIT.getValue());
-            } else if (InquiryPayStatusEnums.ON_INSTALMENT.getValue().equals(opeCustomerInquiry.getPayStatus()) || InquiryPayStatusEnums.PAY_DEPOSIT.getValue().equals(opeCustomerInquiry.getPayStatus())) {
+            } else if (InquiryPayStatusEnums.ON_INSTALMENT.getValue().equals(syncOrderDataEnter.getPayStatus()) || InquiryPayStatusEnums.PAY_DEPOSIT.getValue().equals(syncOrderDataEnter.getPayStatus())) {
                 opeCustomerInquiry.setStatus(InquiryStatusEnums.START_PAYMENT_INSTALLMENTS.getValue());
                 opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.ON_INSTALMENT.getValue());
-            } else {
+            } else if (InquiryPayStatusEnums.FINISHED_INSTALMENT.getValue().equals(syncOrderDataEnter.getPayStatus())){
                 opeCustomerInquiry.setStatus(InquiryStatusEnums.FINISH_PAYMENT_INSTALLMENTS.getValue());
                 opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.FINISHED_INSTALMENT.getValue());
             }
