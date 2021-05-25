@@ -60,7 +60,7 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
             if (InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue().equals(opeCustomerInquiry.getPayStatus())) {
                 opeCustomerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
                 opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_DEPOSIT.getValue());
-            } else if (InquiryPayStatusEnums.ON_INSTALMENT.getValue().equals(opeCustomerInquiry.getPayStatus())) {
+            } else if (InquiryPayStatusEnums.ON_INSTALMENT.getValue().equals(opeCustomerInquiry.getPayStatus()) || InquiryPayStatusEnums.PAY_DEPOSIT.getValue().equals(opeCustomerInquiry.getPayStatus())) {
                 opeCustomerInquiry.setStatus(InquiryStatusEnums.START_PAYMENT_INSTALLMENTS.getValue());
                 opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.ON_INSTALMENT.getValue());
             } else {
