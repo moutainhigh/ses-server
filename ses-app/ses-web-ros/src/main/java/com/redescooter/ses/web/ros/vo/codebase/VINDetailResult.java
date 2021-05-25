@@ -28,11 +28,11 @@ public class VINDetailResult extends GeneralResult {
     @ApiModelProperty(value = "VIN")
     private String vin;
 
-    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
     @ApiModelProperty(value = "生成时间")
     private Date generateDate;
 
-    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
     @ApiModelProperty(value = "更新时间")
     private Date finishDate;
 

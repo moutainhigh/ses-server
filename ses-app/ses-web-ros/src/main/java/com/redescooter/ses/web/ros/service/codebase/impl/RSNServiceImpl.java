@@ -173,8 +173,8 @@ public class RSNServiceImpl implements RSNService {
         List<Map<String, Object>> dataMap = new ArrayList<>();
         Integer i = 1;
         for (ExportRSNResult item : list) {
-            item.setGenerateDate(DateUtil.dateAddHour(item.getGenerateDate(), 8));
-            item.setFinishDate(DateUtil.dateAddHour(item.getFinishDate(), 8));
+            /*item.setGenerateDate(DateUtil.dateAddHour(item.getGenerateDate(), 8));
+            item.setFinishDate(DateUtil.dateAddHour(item.getFinishDate(), 8));*/
             dataMap.add(toMap(item, i));
             i++;
         }

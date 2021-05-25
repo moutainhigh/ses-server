@@ -33,11 +33,11 @@ public class VINListResult extends GeneralResult {
     @ApiModelProperty(value = "状态 1待分配 2已分配")
     private Integer status;
 
-    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
     @ApiModelProperty(value = "生成时间")
     private Date generateDate;
 
-    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
     @ApiModelProperty(value = "更新时间")
     private Date finishDate;
 
