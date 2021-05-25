@@ -2,6 +2,7 @@ package com.redescooter.ses.mobile.rps.service.qc.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.qc.QcStatusEnum;
@@ -149,6 +150,9 @@ public class QcOrderServiceImpl implements QcOrderService {
 
     @Autowired
     private OpeCombinOrderCombinBService opeCombinOrderCombinBService;
+
+    @Autowired
+    private OpeCodebaseRsnService opeCodebaseRsnService;
 
 
 
@@ -834,6 +838,16 @@ public class QcOrderServiceImpl implements QcOrderService {
             opeWmsStockRecord.setUpdatedBy(paramDTO.getUserId());
             opeWmsStockRecord.setUpdatedTime(new Date());
             opeWmsStockRecordMapper.insertOrUpdateSelective(opeWmsStockRecord);
+
+            // rsn保存到码库,状态为已失效
+            OpeCodebaseRsn rsnModel = new OpeCodebaseRsn();
+            rsnModel.setId(idAppService.getId(SequenceName.OPE_CODEBASE_RSN));
+            rsnModel.setDr(Constant.DR_FALSE);
+            rsnModel.setRsn(paramDTO.getSerialNum());
+            rsnModel.setStatus(3);
+            rsnModel.setCreatedBy(paramDTO.getUserId());
+            rsnModel.setCreatedTime(new Date());
+            opeCodebaseRsnService.save(rsnModel);
         }
 
          // 保存产品质检记录
