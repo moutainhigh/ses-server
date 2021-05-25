@@ -205,7 +205,7 @@ public class VINServiceImpl implements VINService {
             i++;
         }
         String sheetName = "VIN";
-        String[] headers = {"id", "vin", "status", "generateDate", "finishDate"};
+        String[] headers = {"id", "vin", "status", "generateDate", "updaterTime"};
         String exportExcelName = String.valueOf(System.currentTimeMillis());
         try {
             String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName, excelFolder);

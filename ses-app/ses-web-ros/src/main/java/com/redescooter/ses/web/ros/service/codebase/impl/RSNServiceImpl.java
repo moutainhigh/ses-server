@@ -179,7 +179,7 @@ public class RSNServiceImpl implements RSNService {
             i++;
         }
         String sheetName = "RSN";
-        String[] headers = {"id", "rsn", "status", "generateDate", "finishDate"};
+        String[] headers = {"id", "rsn", "status", "generateDate", "updaterTime"};
         String exportExcelName = String.valueOf(System.currentTimeMillis());
         try {
             String path = ExcelUtil.exportExcel(sheetName, dataMap, headers, exportExcelName, excelFolder);
