@@ -229,7 +229,7 @@ public class VINServiceImpl implements VINService {
         map.put("vin", param.getVin() == null ? "--" : param.getVin());
         map.put("status", param.getStatus() == null ? "--" : param.getStatus());
         map.put("generateDate", param.getGenerateDate() == null ? "--" : DateUtil.getTimeStr(param.getGenerateDate(), DateUtil.DEFAULT_DATETIME_FORMAT));
-        map.put("finishDate", param.getFinishDate() == null ? "--" : DateUtil.getTimeStr(param.getFinishDate(), DateUtil.DEFAULT_DATETIME_FORMAT));
+        map.put("updaterTime", param.getFinishDate() == null ? "--" : DateUtil.getTimeStr(param.getFinishDate(), DateUtil.DEFAULT_DATETIME_FORMAT));
         return map;
     }
 
