@@ -33,6 +33,6 @@ public interface JedisConstant {
     String PERMISSION = "permission:";
 
     // 码库校验vin
-    String INCR_VIN = "check:vin:";
+    String INCR_VIN = "check:vin";
 
 }
