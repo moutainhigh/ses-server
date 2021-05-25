@@ -364,11 +364,13 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
          * 签收时,新增库存产品序列号表
          */
         // 根据委托单类型查询子表
+        log.info("签收时,开始新增库存产品序列号表");
         Integer entrustType = opeEntrustOrder.getEntrustType();
         Long id = null;
         String rsn = null;
         Integer relationType = null;
         if (ProductTypeEnums.SCOOTER.getValue().equals(entrustType)) {
+            log.info("进入车辆");
             LambdaQueryWrapper<OpeEntrustScooterB> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(OpeEntrustScooterB::getDr, DelStatusEnum.VALID.getCode());
             wrapper.eq(OpeEntrustScooterB::getEntrustId, opeEntrustOrder.getId());
@@ -397,6 +399,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
                 }
             }
         } else if (ProductTypeEnums.COMBINATION.getValue().equals(entrustType)) {
+            log.info("进入组装件");
             LambdaQueryWrapper<OpeEntrustCombinB> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(OpeEntrustCombinB::getDr, DelStatusEnum.VALID.getCode());
             wrapper.eq(OpeEntrustCombinB::getEntrustId, opeEntrustOrder.getId());
@@ -423,6 +426,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
                 }
             }
         } else if (ProductTypeEnums.PARTS.getValue().equals(entrustType)) {
+            log.info("进入部件");
             LambdaQueryWrapper<OpeEntrustPartsB> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(OpeEntrustPartsB::getDr, DelStatusEnum.VALID.getCode());
             wrapper.eq(OpeEntrustPartsB::getEntrustId, opeEntrustOrder.getId());
@@ -450,6 +454,8 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
             }
         }
 
+        log.info("参数分别为:[{},{},{}]", id, rsn, relationType);
+
         // 新增库存产品序列号表
         if (null != rsn && null != id && null != relationType) {
             List<OpeWmsStockSerialNumber> saveList = Lists.newArrayList();
@@ -462,7 +468,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
                 param.setDeptId(enter.getOpeDeptId());
                 param.setRelationType(relationType);
                 param.setRelationId(id);
-                param.setStockType(1);
+                param.setStockType(2);
                 param.setRsn(s);
                 param.setStockStatus(1);
                 param.setCreatedBy(enter.getUserId());
