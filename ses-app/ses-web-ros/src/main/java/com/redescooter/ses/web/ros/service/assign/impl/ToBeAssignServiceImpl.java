@@ -440,14 +440,21 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             }
 
             // 码库关系表,rsn和vin绑定,先给vin,rsn在绑定车辆时给
-            OpeCodebaseRelation relation = new OpeCodebaseRelation();
-            relation.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
-            relation.setDr(Constant.DR_FALSE);
-            relation.setVin(vinCode);
-            relation.setStatus(1);
-            relation.setCreatedBy(enter.getUserId());
-            relation.setCreatedTime(new Date());
-            opeCodebaseRelationService.save(relation);
+            LambdaQueryWrapper<OpeCodebaseRelation> relationWrapper = new LambdaQueryWrapper<>();
+            relationWrapper.eq(OpeCodebaseRelation::getDr, Constant.DR_FALSE);
+            relationWrapper.eq(OpeCodebaseRelation::getVin, vinCode);
+            relationWrapper.last("limit 1");
+            OpeCodebaseRelation codebaseRelation = opeCodebaseRelationService.getOne(relationWrapper);
+            if (null == codebaseRelation) {
+                OpeCodebaseRelation relation = new OpeCodebaseRelation();
+                relation.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
+                relation.setDr(Constant.DR_FALSE);
+                relation.setVin(vinCode);
+                relation.setStatus(1);
+                relation.setCreatedBy(enter.getUserId());
+                relation.setCreatedTime(new Date());
+                opeCodebaseRelationService.save(relation);
+            }
         }
 
         // node表node字段+1
