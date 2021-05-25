@@ -335,7 +335,10 @@ public class FrAppServiceImpl implements FrAppService {
         }
         Long userId = getUserId(enter);
         int count = opeCarDistributeExMapper.getInquiryListCount(enter, userId);
-        if (count == 0 || StringUtils.isBlank(enter.getKeyword())) {
+        if (count == 0) {
+            return PageResult.createZeroRowResult(enter);
+        }
+        if (StringUtils.isBlank(enter.getKeyword()) && null == enter.getStatus()) {
             return PageResult.createZeroRowResult(enter);
         }
         List<InquiryListResult> list = opeCarDistributeExMapper.getInquiryList(enter, userId);
