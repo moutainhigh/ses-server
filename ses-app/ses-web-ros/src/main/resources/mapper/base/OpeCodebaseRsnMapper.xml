@@ -28,7 +28,7 @@
     <select id="getRsnList" resultType="com.redescooter.ses.web.ros.vo.codebase.RSNListResult">
         select id, rsn, status, created_time as generateDate, updated_time as finishDate
         from ope_codebase_rsn
-        where dr = 0
+        where dr = 0 and status != 3
         <include refid="condition"/>
         order by created_time desc
         limit #{enter.startRow}, #{enter.pageSize}
@@ -38,7 +38,7 @@
     <select id="getRsnListCount" resultType="int">
         select count(*)
         from ope_codebase_rsn
-        where dr = 0
+        where dr = 0 and status != 3
         <include refid="condition"/>
     </select>
 
