@@ -199,8 +199,8 @@ public class VINServiceImpl implements VINService {
 
         Integer i = 1;
         for (ExportVINResult item : list) {
-            item.setGenerateDate(DateUtil.dateAddHour(item.getGenerateDate(), 8));
-            item.setFinishDate(DateUtil.dateAddHour(item.getFinishDate(), 8));
+            /*item.setGenerateDate(DateUtil.dateAddHour(item.getGenerateDate(), 8));
+            item.setFinishDate(DateUtil.dateAddHour(item.getFinishDate(), 8));*/
             dataMap.add(toMap(item, i));
             i++;
         }
