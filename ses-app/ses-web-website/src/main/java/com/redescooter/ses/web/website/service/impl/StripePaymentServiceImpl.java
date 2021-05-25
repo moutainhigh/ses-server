@@ -384,22 +384,19 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             siteOrder.setStatus(SiteOrderStatusEnums.IN_PROGRESS.getValue());
         } else if (siteOrder.getPayStatus() == PaymentStatusEnums.DEPOSIT_PAID.getValue() || siteOrder.getPayStatus() == PaymentStatusEnums.ON_INSTALMENT.getValue()) {
             if (siteProductPrice.getPriceType() == 1 || siteProductPrice.getPriceType() == 3) {
-                if (Integer.parseInt(siteOrder.getDef2()) == Integer.parseInt(siteProductPrice.getInstallmentTime()) - 1) {
+                if (Integer.parseInt(siteOrder.getDef2()) == Integer.parseInt(siteProductPrice.getInstallmentTime())) {
                     siteOrder.setPayStatus(PaymentStatusEnums.FINISHED_INSTALMENT.getValue());
                     siteOrder.setStatus(SiteOrderStatusEnums.COMPLETED.getValue());
                     siteOrder.setAmountObligation(new BigDecimal("0"));
-                    //******************************
-                    Integer restPeriods = Integer.parseInt(siteOrder.getDef2()) + 1;
-                    //********************************
                 } else {
                     siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()))));
                     Integer restPeriods = Integer.parseInt(siteOrder.getDef2()) + 1;
                     siteOrder.setPayStatus(PaymentStatusEnums.ON_INSTALMENT.getValue());
                     siteOrder.setStatus(SiteOrderStatusEnums.IN_PROGRESS.getValue());
                     siteOrder.setDef2(restPeriods.toString());
+                    siteOrder.setTotalPrice(siteOrder.getTotalPrice().add(siteOrder.getAmountObligation()));
+                    siteOrder.setAmountPaid(siteOrder.getAmountPaid().add(siteOrder.getAmountObligation()));
                 }
-                siteOrder.setTotalPrice(siteOrder.getTotalPrice().add(siteOrder.getAmountObligation()));
-                siteOrder.setAmountPaid(siteOrder.getAmountPaid().add(siteOrder.getAmountObligation()));
             } else {
                 // 这是尾款支付
                 siteOrder.setAmountPaid(siteOrder.getTotalPrice());
@@ -409,6 +406,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             }
 
         }
+
         //获取已付金额
         //BigDecimal price = siteOrder.getPrepaidDeposit();
         //更新已付金额
@@ -417,7 +415,13 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         //siteOrder.setAmountObligation(siteOrder.getAmountObligation().subtract(price).subtract(siteOrder.getAmountDiscount()));
         siteOrder.setUpdatedTime(new Date());
         siteOrderService.updateById(siteOrder);
-
+        SiteOrder siteOrder1 = siteOrderService.getById(id);
+        if (Integer.parseInt(siteOrder.getDef2()) == Integer.parseInt(siteProductPrice.getInstallmentTime())) {
+            siteOrder.setPayStatus(PaymentStatusEnums.FINISHED_INSTALMENT.getValue());
+            siteOrder.setStatus(SiteOrderStatusEnums.COMPLETED.getValue());
+            siteOrder.setAmountObligation(new BigDecimal("0"));
+        }
+        siteOrderService.updateById(siteOrder);
         //同步ros订单状态
         IdEnter idEnter = new IdEnter();
         idEnter.setId(siteOrder.getId());
