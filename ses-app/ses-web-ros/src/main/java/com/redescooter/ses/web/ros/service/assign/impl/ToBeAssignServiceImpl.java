@@ -934,8 +934,10 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
         List<ToBeAssignDetailScooterInfoResult> taskList = Lists.newArrayList();
         List<ToBeAssignDetailScooterInfoSubResult> taskSubList = Lists.newArrayList();
+        Long inquiryId = null;
 
         for (OpeCustomerInquiry o : tempList) {
+            inquiryId = o.getId();
             ToBeAssignDetailScooterInfoResult task = new ToBeAssignDetailScooterInfoResult();
             ToBeAssignDetailScooterInfoSubResult sub = new ToBeAssignDetailScooterInfoSubResult();
 
@@ -965,16 +967,6 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 sub.setColorName(map.get("colorName"));
                 sub.setColorValue(map.get("colorValue"));
                 sub.setColorId(colorId);
-            }
-
-            // 询价单电池数量
-            LambdaQueryWrapper<OpeCustomerInquiryB> lqw = new LambdaQueryWrapper<>();
-            lqw.eq(OpeCustomerInquiryB::getDr, Constant.DR_FALSE);
-            lqw.eq(OpeCustomerInquiryB::getInquiryId, o.getId());
-            lqw.last("limit 1");
-            OpeCustomerInquiryB inquiryB = opeCustomerInquiryBService.getOne(lqw);
-            if (null != inquiryB) {
-                sub.setBatteryNum(inquiryB.getProductQty());
             }
             sub.setToBeAssignCount(o.getScooterQuantity());
             task.setTotalCount(o.getScooterQuantity());
@@ -1012,6 +1004,17 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             sub.setVinCode(model.getVinCode());
             sub.setLicensePlate(model.getLicensePlate());
             sub.setRsn(model.getRsn());
+
+            // 询价单电池数量
+            LambdaQueryWrapper<OpeCustomerInquiryB> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeCustomerInquiryB::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeCustomerInquiryB::getInquiryId, inquiryId);
+            lqw.last("limit 1");
+            OpeCustomerInquiryB inquiryB = opeCustomerInquiryBService.getOne(lqw);
+            if (null != inquiryB) {
+                sub.setBatteryNum(inquiryB.getProductQty());
+            }
+
             if (null != model.getColorId()) {
                 Map<String, String> map = getColorNameAndValueById(model.getColorId());
                 sub.setColorId(model.getColorId());

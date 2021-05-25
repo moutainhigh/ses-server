@@ -53,4 +53,7 @@ public class ToBeAssignNodeScooterInfoSubResult extends GeneralResult implements
     @ApiModelProperty(value = "R.SN")
     private String rsn;
 
+    @ApiModelProperty(value = "电池数量")
+    private Integer batteryNum;
+
 }
