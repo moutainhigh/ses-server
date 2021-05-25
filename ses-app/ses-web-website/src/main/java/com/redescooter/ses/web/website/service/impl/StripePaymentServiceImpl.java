@@ -394,7 +394,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                     siteOrder.setPayStatus(PaymentStatusEnums.ON_INSTALMENT.getValue());
                     siteOrder.setStatus(SiteOrderStatusEnums.IN_PROGRESS.getValue());
                     siteOrder.setDef2(restPeriods.toString());
-                    siteOrder.setTotalPrice(siteOrder.getTotalPrice().add(siteOrder.getAmountObligation()));
+                    siteOrder.setTotalPrice(siteProductPrice.getShouldPayPeriod().multiply(new BigDecimal(siteProductPrice.getInstallmentTime()).add(new BigDecimal(siteOrder.getDef1()).add(siteOrder.getFreight()).add(siteOrder.getPrepaidDeposit()))));
                     siteOrder.setAmountPaid(siteOrder.getAmountPaid().add(siteOrder.getAmountObligation()));
                 }
             } else {
@@ -430,7 +430,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         SyncOrderDataEnter syncOrderDataEnter = new SyncOrderDataEnter();
         syncOrderDataEnter.setAmountPaid(siteOrder.getAmountPaid());
         syncOrderDataEnter.setAmountDiscount(siteOrder.getAmountDiscount());
-        syncOrderDataEnter.setAmountObligation(siteOrder.getAmountObligation());
+        syncOrderDataEnter.setAmountObligation(siteProductPrice.getShouldPayPeriod().multiply(new BigDecimal(siteProductPrice.getInstallmentTime()).subtract(new BigDecimal(siteOrder1.getDef2()))));
         syncOrderDataEnter.setTotalPrice(siteOrder.getTotalPrice());
         syncOrderDataEnter.setPayStatus(siteOrder.getPayStatus());
         syncOrderDataEnter.setIsInstallment(sitePaymentType.getPaymentCode());
