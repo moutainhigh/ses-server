@@ -33,11 +33,11 @@ public class RSNListResult extends GeneralResult {
     @ApiModelProperty(value = "状态 1待分配 2已分配")
     private Integer status;
 
-    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     @ApiModelProperty(value = "生成时间")
     private Date generateDate;
 
-    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT)
+    @JsonFormat(pattern = DateConstant.DEFAULT_DATETIME_FORMAT, timezone = DateConstant.UTC)
     @ApiModelProperty(value = "更新时间")
     private Date finishDate;
 

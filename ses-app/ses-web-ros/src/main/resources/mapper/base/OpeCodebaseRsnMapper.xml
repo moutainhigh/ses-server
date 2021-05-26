@@ -80,6 +80,7 @@
         where dr = 0 and status != 3
         <include refid="condition"/>
         order by created_time desc
+        limit #{enter.startRow}, #{enter.pageSize}
     </select>
 
 </mapper>
