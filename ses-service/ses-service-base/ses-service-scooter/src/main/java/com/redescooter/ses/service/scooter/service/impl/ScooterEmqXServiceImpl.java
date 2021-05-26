@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.scooter.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.base.AppVersionTypeEnum;
 import com.redescooter.ses.api.common.enums.base.BizType;
 import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
@@ -36,7 +37,9 @@ import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
 import com.redescooter.ses.service.scooter.dao.base.ScoScooterActionTraceMapper;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooterActionTrace;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooterNavigation;
+import com.redescooter.ses.service.scooter.dm.base.ScoScooterUpdateRecord;
 import com.redescooter.ses.service.scooter.exception.ExceptionCodeEnums;
+import com.redescooter.ses.service.scooter.service.base.ScoScooterUpdateRecordService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
 import com.redescooter.ses.tool.utils.map.MapUtil;
@@ -47,6 +50,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -66,24 +70,36 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
 
     @DubboReference
     private RideStatBService rideStatBService;
+
     @DubboReference
     private RideStatCService rideStatCService;
+
     @DubboReference
     private AppVersionService appVersionService;
+
     @DubboReference
     private AppVersionUpdateLogService appVersionUpdateLogService;
+
     @Resource
     private ScooterServiceMapper scooterMapper;
+
     @Resource
     private ScoScooterActionTraceMapper scooterActionTraceMapper;
+
     @Resource
     private ScooterNavigationMapper scooterNavigationMapper;
+
     @Resource
     private ScooterEcuMapper scooterEcuMapper;
+
     @Resource
     private MqttClientUtil mqttClientUtil;
-    @Resource
+
+    @DubboReference
     private IdAppService idAppService;
+
+    @Autowired
+    private ScoScooterUpdateRecordService scoScooterUpdateRecordService;
 
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
@@ -298,10 +314,23 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
             newTabletSns.forEach(sn -> {
                 tabletUpdatePublish.setTabletSn(sn);
                 tabletUpdatePublish.setUpdateCode(UUID.randomUUID().toString().replaceAll("-", ""));
-                log.info("消息通知下发,通知平板端进行升级操作 sn: "+sn);
+                log.info("消息通知下发,通知平板端进行升级操作 sn: " + sn);
                 log.info("下发的消息为:[{}]", tabletUpdatePublish);
                 mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_TABLET_UPDATE_TOPIC, sn),
                         JSONObject.toJSONString(tabletUpdatePublish));
+
+                // 新增平板升级更新记录表
+                ScoScooterUpdateRecord record = new ScoScooterUpdateRecord();
+                record.setId(idAppService.getId(SequenceName.SCO_SCOOTER));
+                record.setDr(Constant.DR_FALSE);
+                record.setTabletSn(tabletUpdatePublish.getTabletSn());
+                record.setDownloadLink(tabletUpdatePublish.getDownloadLink());
+                record.setVersionCode(tabletUpdatePublish.getVersionCode());
+                record.setUpdateCode(tabletUpdatePublish.getUpdateCode());
+                record.setCreatedBy(paramDTO.getUserId());
+                record.setCreatedTime(new Date());
+                log.info("新增平板升级更新记录表的入参是:[{}]", record);
+                scoScooterUpdateRecordService.save(record);
             });
         });
 
