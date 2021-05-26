@@ -1,16 +1,22 @@
 package com.redescooter.ses.mobile.client.controller;
 
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.ScooterLockDTO;
 import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
+import com.redescooter.ses.api.common.vo.scooter.ScooterUpdateRecordCheckEnter;
 import com.redescooter.ses.mobile.client.service.ScooterService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -69,6 +75,15 @@ public class ScooterController {
     @PostMapping(value = "/navigation")
     public Response<GeneralResult> scooterNavigation(@ModelAttribute ScooterNavigationDTO enter) {
         return new Response<>(scooterService.scooterNavigation(enter));
+    }
+
+    /**
+     * 校验平板升级更新记录
+     */
+    @ApiOperation(value = "校验平板升级更新记录")
+    @PostMapping(value = "/check")
+    public Response<BooleanResult> checkScooterUpdateRecord(@ModelAttribute ScooterUpdateRecordCheckEnter enter) {
+        return new Response<>(scooterService.checkScooterUpdateRecord(enter));
     }
 
 }
