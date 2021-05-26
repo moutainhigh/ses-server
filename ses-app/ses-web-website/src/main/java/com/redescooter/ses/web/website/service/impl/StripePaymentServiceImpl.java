@@ -129,7 +129,9 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         LambdaQueryWrapper<SiteProductPrice> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SiteProductPrice::getProductModelId, product.getProductModelId());
         wrapper.eq(SiteProductPrice::getDr, Constant.DR_FALSE);
+        wrapper.eq(SiteProductPrice::getInstallmentTime, order.getDef5());
         wrapper.eq(SiteProductPrice::getPriceType, byId.getPaymentCode());
+        wrapper.last("limit 1");
         SiteProductPrice siteProductPrice = siteProductPriceService.getOne(wrapper);
         if (siteProductPrice == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.NOT_FOUNT_PRODUCT_PRICE.getCode(),
@@ -343,8 +345,10 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         SitePaymentType sitePaymentType = sitePaymentTypeService.getById(siteOrder.getPaymentTypeId());
         LambdaQueryWrapper<SiteProductPrice> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SiteProductPrice::getProductModelId, product.getProductModelId());
+        wrapper.eq(SiteProductPrice::getInstallmentTime,siteOrder.getDef5());
         wrapper.eq(SiteProductPrice::getDr, Constant.DR_FALSE);
         wrapper.eq(SiteProductPrice::getPriceType, sitePaymentType.getPaymentCode());
+        wrapper.last("limit 1");
         SiteProductPrice siteProductPrice = siteProductPriceService.getOne(wrapper);
         if (siteProductPrice == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.NOT_FOUNT_PRODUCT_PRICE.getCode(),

@@ -324,6 +324,8 @@ public class OrderServiceImpl implements OrderService {
         addSiteOrderVO.setCityName(enter.getCityName());
         addSiteOrderVO.setPostcode(enter.getPostcode());
         addSiteOrderVO.setUpdatedBy(enter.getUserId());
+        //记录用户选择的期数
+        addSiteOrderVO.setDef5(enter.getInstallmentTime());
 
         siteOrderService.saveOrUpdate(addSiteOrderVO);
         AddOrderResult result = new AddOrderResult();
