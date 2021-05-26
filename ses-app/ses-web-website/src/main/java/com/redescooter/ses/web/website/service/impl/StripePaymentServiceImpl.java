@@ -418,7 +418,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                 if (batteryResult.compareTo(BigDecimal.ZERO)==0){
                     batteryResult2 = new BigDecimal("0");
                 }else {
-                    batteryResult2 = batteryResult.multiply(siteParts.getPrice()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()),2,BigDecimal.ROUND_UP);
+                    batteryResult2 = batteryResult.multiply(siteParts.getPrice());
                 }
                 // 这是尾款支付
                 siteOrder.setAmountPaid(siteOrder.getTotalPrice().add(batteryResult2));
