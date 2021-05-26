@@ -459,10 +459,10 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             syncOrderDataEnter.setAmountObligation(siteOrder1.getAmountObligation().multiply(new BigDecimal(siteProductPrice.getInstallmentTime()).subtract(new BigDecimal(siteOrder1.getDef2()))));
             syncOrderDataEnter.setTotalPrice(syncOrderDataEnter.getAmountObligation().add(syncOrderDataEnter.getAmountPaid()));
         }else {
-            syncOrderDataEnter.setAmountPaid(siteOrder1.getAmountPaid());
+            syncOrderDataEnter.setAmountPaid(siteOrder.getTotalPrice().add(new BigDecimal(siteOrder.getDef1())).add(batteryResult2));
+            syncOrderDataEnter.setAmountObligation(siteOrder.getAmountObligation().subtract(siteOrder.getAmountObligation()));
+            syncOrderDataEnter.setTotalPrice(siteOrder.getTotalPrice().add(new BigDecimal(siteOrder.getDef1())).add(batteryResult2));
             syncOrderDataEnter.setAmountDiscount(siteOrder1.getAmountDiscount());
-            syncOrderDataEnter.setAmountObligation(siteOrder1.getAmountObligation());
-            syncOrderDataEnter.setTotalPrice(siteOrder1.getTotalPrice());
         }
         syncOrderDataEnter.setPayStatus(siteOrder.getPayStatus());
         syncOrderDataEnter.setIsInstallment(sitePaymentType.getPaymentCode());
