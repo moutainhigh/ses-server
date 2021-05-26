@@ -775,31 +775,35 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         // todo 存在漏洞 先创建 Driver 账户 ---》 web或者TOC 账户是能够通过校验的
         BooleanResult checkMail = checkMail(opeCustomer.getEmail());
         BaseUserResult userResult = null;
-        if (checkMail.isSuccess()) {
-            BaseCustomerResult baseCustomer = new BaseCustomerResult();
-            BeanUtils.copyProperties(opeCustomer, baseCustomer);
 
-            DateTimeParmEnter<BaseCustomerResult> parmEnter = new DateTimeParmEnter();
-            BeanUtils.copyProperties(enter, parmEnter);
-            parmEnter.setStartDateTime(DateUtil.stringToDate(enter.getStartActivationTime()));
-            parmEnter.setEndDateTime(DateUtil.stringToDate(enter.getEndActivationTime()));
-            parmEnter.setT(baseCustomer);
-
-            userResult = accountBaseService.open(parmEnter);
-
-            opeCustomer.setTenantId(userResult.getTenantId());
-            opeCustomer.setAccountFlag(CustomerAccountFlagEnum.INACTIVATED.getValue());
-            opeCustomer.setUpdatedBy(enter.getUserId());
-            opeCustomer.setUpdatedTime(new Date());
-            opeCustomerMapper.updateById(opeCustomer);
-        } else {
+        if (!checkMail.isSuccess()) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
+
+        // 开始创建客户
+        BaseCustomerResult baseCustomer = new BaseCustomerResult();
+        BeanUtils.copyProperties(opeCustomer, baseCustomer);
+
+        DateTimeParmEnter<BaseCustomerResult> parmEnter = new DateTimeParmEnter();
+        BeanUtils.copyProperties(enter, parmEnter);
+        parmEnter.setStartDateTime(DateUtil.stringToDate(enter.getStartActivationTime()));
+        parmEnter.setEndDateTime(DateUtil.stringToDate(enter.getEndActivationTime()));
+        parmEnter.setT(baseCustomer);
+
+        // 开通账号,操作pla_user
+        userResult = accountBaseService.open(parmEnter);
+
+        // 修改客户账号使用标识字段为已使用
+        opeCustomer.setTenantId(userResult.getTenantId());
+        opeCustomer.setAccountFlag("1");
+        opeCustomer.setUpdatedBy(enter.getUserId());
+        opeCustomer.setUpdatedTime(new Date());
+        opeCustomerMapper.updateById(opeCustomer);
+
         //设置邮箱发送有效时间
         String key = new StringBuffer().append("send::").append(opeCustomer.getEmail()).toString();
         jedisCluster.set(key, DateUtil.getDate());
         jedisCluster.expire(key, new Long(RedisExpireEnum.MINUTES_3.getSeconds()).intValue());
-
         return new GeneralResult(enter.getRequestId());
     }
 
