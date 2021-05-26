@@ -430,10 +430,10 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         SyncOrderDataEnter syncOrderDataEnter = new SyncOrderDataEnter();
         if (siteProductPrice.getPriceType() == 1 || siteProductPrice.getPriceType() == 3){
             BigDecimal a = siteOrder.getPrepaidDeposit().add(siteOrder.getFreight());
-            BigDecimal add2 = new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime())).add(siteProductPrice.getShouldPayPeriod());
-            syncOrderDataEnter.setAmountPaid(add2.multiply(new BigDecimal(siteOrder1.getDef2())).add(a));
+            BigDecimal add2 = new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()).add(siteProductPrice.getShouldPayPeriod()));
+            syncOrderDataEnter.setAmountPaid(siteOrder1.getPrepaidDeposit().add(siteOrder1.getFreight()).add(add2.multiply(new BigDecimal(siteOrder1.getDef2()))));
             syncOrderDataEnter.setAmountDiscount(siteOrder.getAmountDiscount());
-            syncOrderDataEnter.setAmountObligation(add2.multiply(new BigDecimal(siteProductPrice.getInstallmentTime()).subtract(new BigDecimal(siteOrder1.getDef2()))).add(a));
+            syncOrderDataEnter.setAmountObligation(siteOrder1.getAmountObligation().multiply(new BigDecimal(siteProductPrice.getInstallmentTime())));
             syncOrderDataEnter.setTotalPrice(syncOrderDataEnter.getAmountObligation().add(syncOrderDataEnter.getAmountPaid()));
         }else {
             syncOrderDataEnter.setAmountPaid(siteOrder.getAmountPaid());
