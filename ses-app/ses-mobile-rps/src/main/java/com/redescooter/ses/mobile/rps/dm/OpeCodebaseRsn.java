@@ -51,8 +51,8 @@ public class OpeCodebaseRsn implements Serializable {
     @ApiModelProperty(value = "创建人")
     private Long createdBy;
 
-    @ApiModelProperty(value = "创建时间", hidden = true)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    @ApiModelProperty(value = "创建时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdTime;
 
@@ -60,7 +60,7 @@ public class OpeCodebaseRsn implements Serializable {
     private Long updatedBy;
 
     @ApiModelProperty(value = "更新时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updatedTime;
 
