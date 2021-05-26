@@ -15,16 +15,18 @@ import java.util.Map;
  * @Author Charles
  * @Date 2021/05/26 17:25
  */
-public class HmacUtl {
+public class HmacUtil {
 
     /**
      * MAC 算法
      */
     static final String ALGORITHM_MAC = "HmacSHA1";
 
-    static final String SIM_HASH = "hash";
+    public static final String SIM_HASH = "hash";
 
-    static final String SIM_TIMESTAMP = "timestamp";
+    public static final String SIM_TIMESTAMP = "timestamp";
+
+    public static final String SIM_UUID = "uuid";
 
     /**
      * 密钥
@@ -36,10 +38,10 @@ public class HmacUtl {
     static String ACCOUNT_UUID;
 
     @Value("${sim.user_uuid}")
-    static String USER_UUID;
+    public static String USER_UUID;
 
     @Value("${sim.api_link}")
-    static String API_LINK;
+    public static String API_LINK;
 
     /**
      * @Title: generateKey

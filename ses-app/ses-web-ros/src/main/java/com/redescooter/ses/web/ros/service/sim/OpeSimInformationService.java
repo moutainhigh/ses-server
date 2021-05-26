@@ -11,4 +11,6 @@ import com.redescooter.ses.web.ros.dm.OpeSimInformation;
  */
 public interface OpeSimInformationService extends IService<OpeSimInformation> {
 
+    void getCurrentBalance();
+
 }
