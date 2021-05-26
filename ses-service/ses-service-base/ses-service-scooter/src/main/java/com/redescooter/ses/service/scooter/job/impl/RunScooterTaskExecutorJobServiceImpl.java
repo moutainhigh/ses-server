@@ -13,6 +13,7 @@ import com.redescooter.ses.service.scooter.config.emqx.MqttClientUtil;
 import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
 import com.redescooter.ses.tool.utils.thread.ThreadPoolExecutorUtil;
 import io.seata.spring.annotation.GlobalTransactional;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -22,6 +23,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +31,7 @@ import java.util.stream.Collectors;
  * @date 2020/12/27 15:30
  */
 @DubboService
+@Slf4j
 public class RunScooterTaskExecutorJobServiceImpl implements RunScooterTaskExecutorJobService {
 
     @DubboReference
@@ -54,10 +57,12 @@ public class RunScooterTaskExecutorJobServiceImpl implements RunScooterTaskExecu
                 tabletUpdatePublish.setDownloadLink(updateLog.getUpdateLink());
                 tabletUpdatePublish.setVersionCode(updateLog.getVersionCode());
                 tabletUpdatePublish.setTabletSn(updateLog.getTabletSn());
+                tabletUpdatePublish.setUpdateCode(UUID.randomUUID().toString().replaceAll("-", ""));
 
                 /**
                  * 发送车载平板升级EMQ X消息, 不同车可能对应不同的版本
                  */
+                log.info("下发的消息为:[{}]", tabletUpdatePublish);
                 mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_TABLET_UPDATE_TOPIC, updateLog.getTabletSn()),
                         JSONObject.toJSONString(tabletUpdatePublish));
             });

@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author assert
@@ -296,7 +297,9 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
         ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
             newTabletSns.forEach(sn -> {
                 tabletUpdatePublish.setTabletSn(sn);
+                tabletUpdatePublish.setUpdateCode(UUID.randomUUID().toString().replaceAll("-", ""));
                 log.info("消息通知下发,通知平板端进行升级操作 sn: "+sn);
+                log.info("下发的消息为:[{}]", tabletUpdatePublish);
                 mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_TABLET_UPDATE_TOPIC, sn),
                         JSONObject.toJSONString(tabletUpdatePublish));
             });
