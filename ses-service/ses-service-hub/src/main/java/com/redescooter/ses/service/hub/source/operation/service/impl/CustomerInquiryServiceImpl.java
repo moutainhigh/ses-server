@@ -88,10 +88,11 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
             } else if (InquiryPayStatusEnums.PAY_DEPOSIT.getValue().equals(opeCustomerInquiry.getPayStatus())) {
                 log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>这个时候是尾款的支付 需要改动已付金额 待付金额");
                 // 这个时候是尾款的支付 需要改动已付金额 待付金额
-                opeCustomerInquiry.setAmountPaid(opeCustomerInquiry.getTotalPrice());
-                opeCustomerInquiry.setAmountObligation(opeCustomerInquiry.getAmountObligation().subtract(opeCustomerInquiry.getAmountObligation()));
+                opeCustomerInquiry.setAmountPaid(syncOrderDataEnter.getTotalPrice());
+                opeCustomerInquiry.setAmountObligation(syncOrderDataEnter.getAmountObligation());
                 opeCustomerInquiry.setStatus(InquiryStatusEnums.PAY_LAST_PARAGRAPH.getValue());
                 opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_LAST_PARAGRAPH.getValue());
+                opeCustomerInquiry.setTotalPrice(syncOrderDataEnter.getTotalPrice());
             }
         }
         boolean inquiryResult = opeCustomerInquiryService.updateById(opeCustomerInquiry);
