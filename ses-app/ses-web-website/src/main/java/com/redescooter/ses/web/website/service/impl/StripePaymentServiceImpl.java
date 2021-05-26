@@ -78,6 +78,9 @@ public class StripePaymentServiceImpl implements StripePaymentService {
     private SiteProductPriceService siteProductPriceService;
 
     @Autowired
+    private SitePartsService sitePartsService;
+
+    @Autowired
     private SitePaymentTypeService sitePaymentTypeService;
 
     @Autowired
@@ -347,6 +350,17 @@ public class StripePaymentServiceImpl implements StripePaymentService {
             throw new SesWebsiteException(ExceptionCodeEnums.NOT_FOUNT_PRODUCT_PRICE.getCode(),
                     ExceptionCodeEnums.NOT_FOUNT_PRODUCT_PRICE.getMessage());
         }
+        LambdaQueryWrapper<SiteParts> queryWrapper1 = new LambdaQueryWrapper<>();
+        queryWrapper1.eq(SiteParts::getPartsType,3);
+        queryWrapper1.last("limit 1");
+        SiteParts siteParts = sitePartsService.getOne(queryWrapper1);
+        if (siteParts == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.PARTS_NOT_EXIST_EXIST.getCode(),
+                    ExceptionCodeEnums.PARTS_NOT_EXIST_EXIST.getMessage());
+        }
+        String battery = siteProductPrice.getBattery().substring(0,1);
+        BigDecimal batteryResult = new BigDecimal(siteOrder.getBatteryQty()).subtract(new BigDecimal(battery));
+        BigDecimal batteryResult2 = new BigDecimal("0");
 //        LambdaQueryWrapper<SiteOrderB> wrapper1 = new LambdaQueryWrapper<>();
 //        wrapper1.eq(SiteOrderB::getOrderId, siteOrder.getId());
 //        wrapper1.isNotNull(SiteOrderB::getDef2);
@@ -387,7 +401,12 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                     siteOrder.setStatus(SiteOrderStatusEnums.COMPLETED.getValue());
                     siteOrder.setAmountObligation(new BigDecimal("0"));
                 } else {
-                    siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()))));
+                    if (batteryResult.compareTo(BigDecimal.ZERO)==0){
+                         batteryResult2 = new BigDecimal("0");
+                    }else {
+                         batteryResult2 = batteryResult.multiply(siteParts.getPrice()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()),2,BigDecimal.ROUND_UP);
+                    }
+                    siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()))).add(batteryResult2));
                     Integer restPeriods = Integer.parseInt(siteOrder.getDef2()) + 1;
                     siteOrder.setPayStatus(PaymentStatusEnums.ON_INSTALMENT.getValue());
                     siteOrder.setStatus(SiteOrderStatusEnums.IN_PROGRESS.getValue());
@@ -396,8 +415,13 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                     siteOrder.setAmountPaid(siteOrder.getAmountPaid().add(siteOrder.getAmountObligation()));
                 }
             } else {
+                if (batteryResult.compareTo(BigDecimal.ZERO)==0){
+                    batteryResult2 = new BigDecimal("0");
+                }else {
+                    batteryResult2 = batteryResult.multiply(siteParts.getPrice()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()),2,BigDecimal.ROUND_UP);
+                }
                 // 这是尾款支付
-                siteOrder.setAmountPaid(siteOrder.getTotalPrice());
+                siteOrder.setAmountPaid(siteOrder.getTotalPrice().add(batteryResult2));
                 siteOrder.setAmountObligation(siteOrder.getAmountObligation().subtract(siteOrder.getAmountObligation()));
                 siteOrder.setPayStatus(PaymentStatusEnums.BALANCE_PAID.getValue());
                 siteOrder.setStatus(SiteOrderStatusEnums.COMPLETED.getValue());
