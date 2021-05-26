@@ -421,10 +421,11 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                     batteryResult2 = batteryResult.multiply(siteParts.getPrice());
                 }
                 // 这是尾款支付
-                siteOrder.setAmountPaid(siteOrder.getTotalPrice().add(batteryResult2));
+                siteOrder.setAmountPaid(siteOrder.getTotalPrice().add(new BigDecimal(siteOrder.getDef1())).add(batteryResult2));
                 siteOrder.setAmountObligation(siteOrder.getAmountObligation().subtract(siteOrder.getAmountObligation()));
                 siteOrder.setPayStatus(PaymentStatusEnums.BALANCE_PAID.getValue());
                 siteOrder.setStatus(SiteOrderStatusEnums.COMPLETED.getValue());
+                siteOrder.setTotalPrice(siteOrder.getTotalPrice().add(new BigDecimal(siteOrder.getDef1())).add(batteryResult2));
             }
 
         }
