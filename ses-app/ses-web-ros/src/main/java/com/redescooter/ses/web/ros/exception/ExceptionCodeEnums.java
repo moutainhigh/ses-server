@@ -580,7 +580,9 @@ public enum ExceptionCodeEnums {
 
     NOT_FOUND_PARTS(10281,"销售配件表中找不到电池配件"),
 
-    EDIT_FAIL(10282,"修改失败")
+    EDIT_FAIL(10282,"修改失败"),
+
+    PLEASE_MAINTAIN(10283, "请先维护车型和颜色")
 
 
     ;

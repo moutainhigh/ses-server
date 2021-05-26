@@ -284,6 +284,9 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         // 找到E50的产品ID
         Long productId = customerServiceMapper.getProductId();
+        if (null == productId) {
+            throw new SesWebRosException(ExceptionCodeEnums.PLEASE_MAINTAIN.getCode(), ExceptionCodeEnums.PLEASE_MAINTAIN.getMessage());
+        }
         inquiry.setProductId(productId);
         inquiry.setProductModel(ProductModelEnums.SCOOTER_50_CC.getValue());
         inquiry.setProductPrice(new BigDecimal(3990.00));
