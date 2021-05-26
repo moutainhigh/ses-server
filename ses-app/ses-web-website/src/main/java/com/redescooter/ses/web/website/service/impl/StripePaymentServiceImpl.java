@@ -127,7 +127,6 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         wrapper.eq(SiteProductPrice::getProductModelId, product.getProductModelId());
         wrapper.eq(SiteProductPrice::getDr, Constant.DR_FALSE);
         wrapper.eq(SiteProductPrice::getPriceType, byId.getPaymentCode());
-        wrapper.like(SiteProductPrice::getBattery, order.getBatteryQty());
         SiteProductPrice siteProductPrice = siteProductPriceService.getOne(wrapper);
         if (siteProductPrice == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.NOT_FOUNT_PRODUCT_PRICE.getCode(),
@@ -343,7 +342,6 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         wrapper.eq(SiteProductPrice::getProductModelId, product.getProductModelId());
         wrapper.eq(SiteProductPrice::getDr, Constant.DR_FALSE);
         wrapper.eq(SiteProductPrice::getPriceType, sitePaymentType.getPaymentCode());
-        wrapper.like(SiteProductPrice::getBattery, siteOrder.getBatteryQty());
         SiteProductPrice siteProductPrice = siteProductPriceService.getOne(wrapper);
         if (siteProductPrice == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.NOT_FOUNT_PRODUCT_PRICE.getCode(),
