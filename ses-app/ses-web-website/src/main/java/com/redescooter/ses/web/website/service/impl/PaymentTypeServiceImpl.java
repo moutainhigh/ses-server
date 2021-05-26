@@ -144,7 +144,7 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
         qw.eq(SiteProductPrice::getStatus, 1);
         qw.eq(SiteProductPrice::getPriceType, 1);
         qw.eq(SiteProductPrice::getProductModelId, enter.getModelId());
-        qw.like(SiteProductPrice::getBattery, enter.getBattery());
+       // qw.like(SiteProductPrice::getBattery, enter.getBattery());
         List<SiteProductPrice> list = siteProductPriceService.list(qw);
         if (CollectionUtils.isNotEmpty(list)) {
             // 租赁的支付方式
@@ -172,7 +172,7 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
         lqw.eq(SiteProductPrice::getStatus, 1);
         lqw.eq(SiteProductPrice::getPriceType, 2);
         lqw.eq(SiteProductPrice::getProductModelId, enter.getModelId());
-        lqw.like(SiteProductPrice::getBattery, enter.getBattery());
+       // lqw.like(SiteProductPrice::getBattery, enter.getBattery());
         lqw.last("limit 1");
         SiteProductPrice price = siteProductPriceService.getOne(lqw);
         if (null != price) {
@@ -197,7 +197,7 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
         wrapper.eq(SiteProductPrice::getStatus, 1);
         wrapper.eq(SiteProductPrice::getPriceType, 3);
         wrapper.eq(SiteProductPrice::getProductModelId, enter.getModelId());
-        wrapper.like(SiteProductPrice::getBattery, enter.getBattery());
+        //wrapper.like(SiteProductPrice::getBattery, enter.getBattery());
         List<SiteProductPrice> priceList = siteProductPriceService.list(wrapper);
         if (CollectionUtils.isNotEmpty(priceList)) {
             // 分期支付的支付方式
