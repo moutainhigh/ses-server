@@ -968,6 +968,17 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 sub.setColorValue(map.get("colorValue"));
                 sub.setColorId(colorId);
             }
+
+            // 询价单电池数量
+            LambdaQueryWrapper<OpeCustomerInquiryB> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeCustomerInquiryB::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeCustomerInquiryB::getInquiryId, inquiryId);
+            lqw.last("limit 1");
+            OpeCustomerInquiryB inquiryB = opeCustomerInquiryBService.getOne(lqw);
+            if (null != inquiryB) {
+                sub.setBatteryNum(inquiryB.getProductQty());
+            }
+
             sub.setToBeAssignCount(o.getScooterQuantity());
             task.setTotalCount(o.getScooterQuantity());
 
