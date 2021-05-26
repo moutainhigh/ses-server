@@ -220,7 +220,7 @@ public class OrderServiceImpl implements OrderService {
         QueryWrapper<SiteProductPrice> qw = new QueryWrapper<>();
         qw.eq(SiteProductPrice.COL_DR, Constant.DR_FALSE);
         qw.eq(SiteProductPrice.COL_PRODUCT_MODEL_ID, product.getProductModelId());
-        qw.like(SiteProductPrice.COL_BATTERY, enter.getBatteryQty());
+        //qw.like(SiteProductPrice.COL_BATTERY, enter.getBatteryQty());
         qw.eq(SiteProductPrice.COL_PRICE_TYPE, code);
         if (null != installmentTime) {
             qw.eq(SiteProductPrice.COL_INSTALLMENT_TIME, installmentTime);
