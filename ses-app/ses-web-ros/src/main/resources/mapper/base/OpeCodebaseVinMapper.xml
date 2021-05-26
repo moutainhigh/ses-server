@@ -85,7 +85,6 @@
         where dr = 0
         <include refid="condition"/>
         order by created_time desc
-        limit #{enter.startRow}, #{enter.pageSize}
     </select>
 
 </mapper>
