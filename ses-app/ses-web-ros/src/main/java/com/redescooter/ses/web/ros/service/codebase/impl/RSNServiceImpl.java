@@ -9,8 +9,10 @@ import com.redescooter.ses.app.common.service.FileAppService;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
+import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeNodeMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCodebaseRsnMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
+import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
 import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.web.ros.service.base.OpeCodebaseRsnService;
@@ -60,6 +62,9 @@ public class RSNServiceImpl implements RSNService {
 
     @Autowired
     private OpeCarDistributeMapper opeCarDistributeMapper;
+
+    @Autowired
+    private OpeCarDistributeNodeMapper opeCarDistributeNodeMapper;
 
     @Value("${excel.folder}")
     private String excelFolder;
@@ -139,7 +144,25 @@ public class RSNServiceImpl implements RSNService {
         nodes.add(new Node("5", vinDistribute == null || null == vinDistribute.getUpdatedTime() ? "-" : DateUtil.getTimeStr(vinDistribute.getUpdatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
 
         // 设置软体
-        nodes.add(new Node("6", vinDistribute == null || null == vinDistribute.getUpdatedTime() ? "-" : DateUtil.getTimeStr(vinDistribute.getUpdatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
+        LambdaQueryWrapper<OpeCarDistribute> setWrapper = new LambdaQueryWrapper<>();
+        setWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        setWrapper.eq(OpeCarDistribute::getRsn, rsn);
+        setWrapper.last("limit 1");
+        OpeCarDistribute setModel = opeCarDistributeMapper.selectOne(setWrapper);
+        if (null != setModel) {
+            LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
+            nodeWrapper.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
+            nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, setModel.getCustomerId());
+            nodeWrapper.last("limit 1");
+            OpeCarDistributeNode node = opeCarDistributeNodeMapper.selectOne(nodeWrapper);
+            if (null != node && node.getAppNode() == 6 && node.getFlag() == 2) {
+                nodes.add(new Node("6", DateUtil.getTimeStr(setModel.getUpdatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
+            } else {
+                nodes.add(new Node("6", "-"));
+            }
+        } else {
+            nodes.add(new Node("6", "-"));
+        }
 
         // 车辆信息
         LambdaQueryWrapper<OpeCarDistribute> scooterWrapper = new LambdaQueryWrapper<>();
