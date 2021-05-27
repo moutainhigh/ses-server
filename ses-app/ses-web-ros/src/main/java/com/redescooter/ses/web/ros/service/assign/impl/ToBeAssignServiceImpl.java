@@ -108,7 +108,6 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -212,7 +211,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         List<ToBeAssignListResult> list = opeCarDistributeExMapper.getToBeAssignList(enter);
 
         // 正式客户且点击了创建账号的才能流转到待分配列表
-        if (CollectionUtils.isNotEmpty(list)) {
+        /*if (CollectionUtils.isNotEmpty(list)) {
             Iterator<ToBeAssignListResult> iterator = list.iterator();
             while (iterator.hasNext()) {
                 ToBeAssignListResult next = iterator.next();
@@ -223,8 +222,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                     iterator.remove();
                 }
             }
-        }
-        return PageResult.create(enter, list.size(), list);
+        }*/
+        return PageResult.create(enter, count, list);
     }
 
     /**
@@ -1081,7 +1080,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         Map<String, Object> result = Maps.newHashMapWithExpectedSize(3);
 
         // 待分配列表条数
-        List<ToBeAssignListResult> list = opeCarDistributeExMapper.getToBeAssignListNoPage(enter);
+        int toBeAssignCount = opeCarDistributeExMapper.getToBeAssignListCount(new ToBeAssignListEnter());
+        /*List<ToBeAssignListResult> list = opeCarDistributeExMapper.getToBeAssignListNoPage(enter);
         // 正式客户且点击了创建账号的才能流转到待分配列表
         if (CollectionUtils.isNotEmpty(list)) {
             Iterator<ToBeAssignListResult> iterator = list.iterator();
@@ -1094,12 +1094,12 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                     iterator.remove();
                 }
             }
-        }
+        }*/
         // 已分配列表条数
         int assignedCount = opeCarDistributeExMapper.getAssignedListCount(new AssignedListEnter());
         // 处理中列表条数
         int doingCount = opeCarDistributeExMapper.getDoingListCount(new ToBeAssignListEnter());
-        result.put("toBeAssignCount", list.size());
+        result.put("toBeAssignCount", toBeAssignCount);
         result.put("assignedCount", assignedCount);
         result.put("doingCount", doingCount);
         return result;
