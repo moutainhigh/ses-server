@@ -263,8 +263,8 @@ public class OrderServiceImpl implements OrderService {
         //整车价格
         addSiteOrderVO.setProductPrice(productPrice.getPrice());
         //实际付款电池数: 选配电池总数-产品最小电池数
-        //int paidBattery = scooterBatteryParts.getQty() - product.getMinBatteryNum();
-        int paidBattery = enter.getBatteryQty() - product.getMinBatteryNum();
+        int paidBattery = scooterBatteryParts.getQty() - product.getMinBatteryNum();
+        //int paidBattery = enter.getBatteryQty() - product.getMinBatteryNum();
         BigDecimal totalPrice = new BigDecimal("0");
         //根据付款类型id查询是什么付款方式
         SitePaymentType sitePaymentType = sitePaymentTypeService.getById(id);
