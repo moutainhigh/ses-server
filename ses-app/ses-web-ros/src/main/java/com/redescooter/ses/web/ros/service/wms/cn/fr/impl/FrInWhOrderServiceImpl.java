@@ -331,6 +331,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             LambdaQueryWrapper<OpeWmsStockSerialNumber> wmsWrapper = new LambdaQueryWrapper<>();
             wmsWrapper.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
             wmsWrapper.eq(OpeWmsStockSerialNumber::getRsn, rsn);
+            wmsWrapper.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
             wmsWrapper.last("limit 1");
             OpeWmsStockSerialNumber serialNumber = opeWmsStockSerialNumberService.getOne(wmsWrapper);
             if (null == serialNumber) {
