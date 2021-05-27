@@ -38,5 +38,5 @@ public interface OpeSalePriceMapper extends BaseMapper<OpeSalePrice> {
     /**
      * 拿到数据库里定金
      */
-    int findDeposit();
+    Integer findDeposit();
 }
