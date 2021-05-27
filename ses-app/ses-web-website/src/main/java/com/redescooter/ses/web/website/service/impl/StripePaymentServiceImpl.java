@@ -384,15 +384,21 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         if (siteOrder.getPayStatus() == PaymentStatusEnums.UNPAID_PAID.getValue()) {
             // 这是预定金支付 只需要更改已付金额和待付款金额
             if (siteProductPrice.getPriceType() == 1 || siteProductPrice.getPriceType() == 3) {
+                if (batteryResult.compareTo(BigDecimal.ZERO) == 0) {
+                    batteryResult2 = new BigDecimal("0");
+                } else {
+                    batteryResult2 = batteryResult.multiply(siteParts.getPrice()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()), 2, BigDecimal.ROUND_UP);
+                }
                 siteOrder.setAmountPaid(siteOrder.getPrepaidDeposit().add(siteOrder.getFreight()));
                 if (siteOrder.getDef1().equals("0")) {
-                    siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod());
+                    siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(batteryResult2));
                 } else {
-                    siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()))));
+                    siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(batteryResult2).add(new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()))));
                 }
                 Integer restPeriods = Integer.parseInt(siteOrder.getDef2());
                 siteOrder.setDef2(restPeriods.toString());
             } else {
+                siteOrder.setTotalPrice(siteOrder.getTotalPrice().add(new BigDecimal(siteOrder.getDef1())));
                 siteOrder.setAmountPaid(siteOrder.getPrepaidDeposit().add(siteOrder.getFreight()));
                 siteOrder.setAmountObligation(siteOrder.getTotalPrice().subtract(siteOrder.getAmountPaid()));
             }
@@ -419,11 +425,6 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                     siteOrder.setAmountPaid(siteOrder.getAmountPaid().add(siteOrder.getAmountObligation()));
                 }
             } else {
-                if (batteryResult.compareTo(BigDecimal.ZERO) == 0) {
-                    batteryResult2 = new BigDecimal("0");
-                } else {
-                    batteryResult2 = batteryResult.multiply(siteParts.getPrice());
-                }
                 // 这是尾款支付
                 siteOrder.setAmountPaid(siteOrder.getAmountPaid().add(siteOrder.getAmountObligation()));
                 siteOrder.setAmountObligation(siteOrder.getAmountObligation().subtract(siteOrder.getAmountObligation()));
