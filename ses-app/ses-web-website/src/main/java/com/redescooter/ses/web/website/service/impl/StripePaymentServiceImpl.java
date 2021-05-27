@@ -394,7 +394,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                 siteOrder.setDef2(restPeriods.toString());
             } else {
                 siteOrder.setAmountPaid(siteOrder.getPrepaidDeposit().add(siteOrder.getFreight()));
-                siteOrder.setAmountObligation(siteProductPrice.getPrice().subtract(siteOrder.getAmountPaid()));
+                siteOrder.setAmountObligation(siteOrder.getTotalPrice().subtract(siteOrder.getAmountPaid()));
             }
             siteOrder.setPayStatus(PaymentStatusEnums.DEPOSIT_PAID.getValue());
             siteOrder.setStatus(SiteOrderStatusEnums.IN_PROGRESS.getValue());
