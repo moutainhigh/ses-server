@@ -393,7 +393,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                 if (siteOrder.getDef1().equals("0")) {
                     siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(batteryResult2));
                 } else {
-                    siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(batteryResult2).add(new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()))));
+                    siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(batteryResult2).add(new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()), 2, BigDecimal.ROUND_UP)));
                 }
                 Integer restPeriods = Integer.parseInt(siteOrder.getDef2());
                 siteOrder.setDef2(restPeriods.toString());
@@ -416,7 +416,7 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                     } else {
                         batteryResult2 = batteryResult.multiply(siteParts.getPrice()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()), 2, BigDecimal.ROUND_UP);
                     }
-                    siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()))).add(batteryResult2));
+                    siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()), 2, BigDecimal.ROUND_UP)).add(batteryResult2));
                     Integer restPeriods = Integer.parseInt(siteOrder.getDef2()) + 1;
                     siteOrder.setPayStatus(PaymentStatusEnums.ON_INSTALMENT.getValue());
                     siteOrder.setStatus(SiteOrderStatusEnums.IN_PROGRESS.getValue());
