@@ -104,7 +104,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -1050,6 +1053,18 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 sub.setColorId(model.getColorId());
                 sub.setColorName(map.get("colorName"));
                 sub.setColorValue(map.get("colorValue"));
+            }
+
+            sub.setQty(model.getQty());
+            sub.setBluetoothAddress(model.getBluetoothAddress());
+            sub.setTabletSn(model.getTabletSn());
+            if (StringUtils.isBlank(model.getBattery())) {
+                sub.setBatteryList(new ArrayList<>());
+            } else {
+                String[] split = model.getBattery().split(",");
+                List<String> batteryList = new ArrayList<>(Arrays.asList(split));
+                batteryList.removeAll(Collections.singleton(null));
+                sub.setBatteryList(batteryList);
             }
             subList.add(sub);
 
