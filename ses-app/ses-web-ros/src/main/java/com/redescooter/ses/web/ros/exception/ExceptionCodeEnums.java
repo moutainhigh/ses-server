@@ -586,7 +586,9 @@ public enum ExceptionCodeEnums {
 
     VIN_NOT_EXISTS_CODEBASE(10284, "该VIN在码库中不存在"),
 
-    RSN_NOT_EXISTS_CODEBASE(10285, "该RSN在码库中不存在")
+    RSN_NOT_EXISTS_CODEBASE(10285, "该RSN在码库中不存在"),
+
+    ASSIGN_SCOOTER_WRONG(10286, "分车信息错误")
 
 
     ;
