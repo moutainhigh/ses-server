@@ -142,4 +142,18 @@
         </collection>
     </resultMap>
 
+   <select id="getPartsDetails" resultType="com.redescooter.ses.web.website.vo.product.PartsBatteryDetailsResult">
+       select id            as partsId,
+              case when (parts_qty is null ) then 1 else parts_qty end
+                            as qty,
+              en_name       as partsName,
+              picture,
+              price,
+              currency_unit as unit
+       from site_parts
+       where parts_type = 3
+         and status = 1
+         and dr = 0
+           limit 1
+   </select>
 </mapper>

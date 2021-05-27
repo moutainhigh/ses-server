@@ -6,10 +6,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.website.service.ScooterPurchaseService;
 import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
-import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
-import com.redescooter.ses.web.website.vo.product.ProductPartsDetailsResult;
-import com.redescooter.ses.web.website.vo.product.ProductsResult;
-import com.redescooter.ses.web.website.vo.product.ScooterPriceListResult;
+import com.redescooter.ses.web.website.vo.product.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -89,6 +86,14 @@ public class ScooterPurchaseController {
     public Response<List<ProductPartsDetailsResult>> getScooterBatterys(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(scooterPurchaseService.getScooterBatterysByProductId(enter));
     }
+
+    @IgnoreLoginCheck
+    @PostMapping(value = "/getPartsDetails")
+    @ApiOperation(value = "获取配件电池详情", response = ProductPartsDetailsResult.class)
+    public Response<PartsBatteryDetailsResult> getPartsDetails(@ModelAttribute @ApiParam("请求参数") GeneralEnter enter) {
+        return new Response<>(scooterPurchaseService.getPartsDetails(enter));
+    }
+
 
     /**
      * 官网车型价格列表

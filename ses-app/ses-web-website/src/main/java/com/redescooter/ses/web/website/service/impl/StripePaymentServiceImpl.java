@@ -459,15 +459,15 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         if (siteProductPrice.getPriceType() == 1 || siteProductPrice.getPriceType() == 3) {
             BigDecimal a = siteOrder.getPrepaidDeposit().add(siteOrder.getFreight());
             BigDecimal add2 = new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()), 2, BigDecimal.ROUND_UP).add(siteProductPrice.getShouldPayPeriod());
-            syncOrderDataEnter.setAmountPaid(siteOrder1.getPrepaidDeposit().add(siteOrder1.getFreight()).add(add2.multiply(new BigDecimal(siteOrder1.getDef2()))));
-            syncOrderDataEnter.setAmountDiscount(siteOrder1.getAmountDiscount());
-            syncOrderDataEnter.setAmountObligation(siteOrder1.getAmountObligation().multiply(new BigDecimal(siteProductPrice.getInstallmentTime()).subtract(new BigDecimal(siteOrder1.getDef2()))));
-            syncOrderDataEnter.setTotalPrice(syncOrderDataEnter.getAmountObligation().add(syncOrderDataEnter.getAmountPaid()));
+            syncOrderDataEnter.setAmountPaid(siteOrder.getPrepaidDeposit().add(siteOrder.getFreight()).add(add2.multiply(new BigDecimal(siteOrder.getDef2()))));
+            syncOrderDataEnter.setAmountDiscount(siteOrder.getAmountDiscount());
+            syncOrderDataEnter.setAmountObligation(siteOrder.getAmountObligation().multiply(new BigDecimal(siteProductPrice.getInstallmentTime()).subtract(new BigDecimal(siteOrder.getDef2()))));
+            syncOrderDataEnter.setTotalPrice(siteOrder1.getTotalPrice());
         } else {
             syncOrderDataEnter.setAmountPaid(siteOrder.getTotalPrice());
             syncOrderDataEnter.setAmountObligation(siteOrder.getAmountObligation());
             syncOrderDataEnter.setTotalPrice(siteOrder.getTotalPrice());
-            syncOrderDataEnter.setAmountDiscount(siteOrder1.getAmountDiscount());
+            syncOrderDataEnter.setAmountDiscount(siteOrder.getAmountDiscount());
         }
         syncOrderDataEnter.setPayStatus(siteOrder.getPayStatus());
         syncOrderDataEnter.setIsInstallment(sitePaymentType.getPaymentCode());

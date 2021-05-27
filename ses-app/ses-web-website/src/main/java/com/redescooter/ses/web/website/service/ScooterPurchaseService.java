@@ -3,10 +3,7 @@ package com.redescooter.ses.web.website.service;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
-import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
-import com.redescooter.ses.web.website.vo.product.ProductPartsDetailsResult;
-import com.redescooter.ses.web.website.vo.product.ProductsResult;
-import com.redescooter.ses.web.website.vo.product.ScooterPriceListResult;
+import com.redescooter.ses.web.website.vo.product.*;
 
 import java.util.List;
 
@@ -54,4 +51,10 @@ public interface ScooterPurchaseService {
      */
     List<ScooterPriceListResult> getScooterPriceList(GeneralEnter enter);
 
+    /**
+     * 获取电池配件详情
+     * @param enter
+     * @return
+     */
+    PartsBatteryDetailsResult getPartsDetails(GeneralEnter enter);
 }

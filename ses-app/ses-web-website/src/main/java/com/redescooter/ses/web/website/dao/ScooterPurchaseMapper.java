@@ -3,11 +3,9 @@ package com.redescooter.ses.web.website.dao;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
-import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
-import com.redescooter.ses.web.website.vo.product.ProductPartsDetailsResult;
-import com.redescooter.ses.web.website.vo.product.ProductsResult;
-import com.redescooter.ses.web.website.vo.product.ScooterPriceListResult;
+import com.redescooter.ses.web.website.vo.product.*;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -57,4 +55,10 @@ public interface ScooterPurchaseMapper {
      */
     List<ScooterPriceListResult> getScooterPriceList();
 
+    /**
+     * 获取电池配件信息
+     * @param enter
+     * @return
+     */
+    PartsBatteryDetailsResult getPartsDetails(@Param("enter") GeneralEnter enter);
 }
