@@ -413,6 +413,16 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 throw new SesWebRosException(ExceptionCodeEnums.VIN_HAS_USED.getCode(), ExceptionCodeEnums.VIN_HAS_USED.getMessage());
             }
 
+            // 查看vin在码库中是否存在
+            LambdaQueryWrapper<OpeCodebaseVin> existWrapper = new LambdaQueryWrapper<>();
+            existWrapper.eq(OpeCodebaseVin::getDr, Constant.DR_FALSE);
+            existWrapper.eq(OpeCodebaseVin::getStatus, 1);
+            existWrapper.eq(OpeCodebaseVin::getVin, vinCode);
+            int count = opeCodebaseVinService.count(existWrapper);
+            if (count == 0) {
+                throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getMessage());
+            }
+
             // 修改主表
             OpeCarDistribute model = new OpeCarDistribute();
             model.setSpecificatTypeId(specificatId);
@@ -604,6 +614,16 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(lqw);
             if (null != checkModel) {
                 throw new SesWebRosException(ExceptionCodeEnums.RSN_HAS_USED.getCode(), ExceptionCodeEnums.RSN_HAS_USED.getMessage());
+            }
+
+            // 查看rsn在码库中是否存在
+            LambdaQueryWrapper<OpeCodebaseRsn> existWrapper = new LambdaQueryWrapper<>();
+            existWrapper.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
+            existWrapper.eq(OpeCodebaseRsn::getStatus, 1);
+            existWrapper.eq(OpeCodebaseRsn::getRsn, rsn);
+            int count = opeCodebaseRsnService.count(existWrapper);
+            if (count == 0) {
+                throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getMessage());
             }
 
             // 修改主表

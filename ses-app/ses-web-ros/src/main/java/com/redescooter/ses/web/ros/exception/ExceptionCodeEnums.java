@@ -582,7 +582,11 @@ public enum ExceptionCodeEnums {
 
     EDIT_FAIL(10282,"修改失败"),
 
-    PLEASE_MAINTAIN(10283, "请先维护车型和颜色")
+    PLEASE_MAINTAIN(10283, "请先维护车型和颜色"),
+
+    VIN_NOT_EXISTS_CODEBASE(10284, "该VIN在码库中不存在"),
+
+    RSN_NOT_EXISTS_CODEBASE(10285, "该RSN在码库中不存在")
 
 
     ;

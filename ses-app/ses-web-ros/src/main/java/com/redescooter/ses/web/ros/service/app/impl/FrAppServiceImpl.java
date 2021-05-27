@@ -536,6 +536,16 @@ public class FrAppServiceImpl implements FrAppService {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_HAS_INPUT.getCode(), ExceptionCodeEnums.VIN_HAS_INPUT.getMessage());
         }
 
+        // 查看vin在码库中是否存在
+        LambdaQueryWrapper<OpeCodebaseVin> existWrapper = new LambdaQueryWrapper<>();
+        existWrapper.eq(OpeCodebaseVin::getDr, Constant.DR_FALSE);
+        existWrapper.eq(OpeCodebaseVin::getStatus, 1);
+        existWrapper.eq(OpeCodebaseVin::getVin, vinCode);
+        int count = opeCodebaseVinService.count(existWrapper);
+        if (count == 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getMessage());
+        }
+
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();
         distribute.setVinCode(vinCode);
@@ -673,6 +683,16 @@ public class FrAppServiceImpl implements FrAppService {
         OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
         if (null != checkModel && null != checkModel.getWarehouseAccountId() && StringUtils.isNotBlank(checkModel.getRsn())) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DEAL.getCode(), ExceptionCodeEnums.ORDER_HAS_DEAL.getMessage());
+        }
+
+        // 查看rsn在码库中是否存在
+        LambdaQueryWrapper<OpeCodebaseRsn> existWrapper = new LambdaQueryWrapper<>();
+        existWrapper.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
+        existWrapper.eq(OpeCodebaseRsn::getStatus, 1);
+        existWrapper.eq(OpeCodebaseRsn::getRsn, rsn);
+        int count = opeCodebaseRsnService.count(existWrapper);
+        if (count == 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getMessage());
         }
 
         // 修改主表
