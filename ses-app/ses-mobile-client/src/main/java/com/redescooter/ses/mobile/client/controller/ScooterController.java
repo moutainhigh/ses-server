@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.client.controller;
 
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -82,6 +83,7 @@ public class ScooterController {
      */
     @ApiOperation(value = "校验平板升级更新记录")
     @PostMapping(value = "/check")
+    @IgnoreLoginCheck
     public Response<BooleanResult> checkScooterUpdateRecord(@ModelAttribute ScooterUpdateRecordCheckEnter enter) {
         return new Response<>(scooterService.checkScooterUpdateRecord(enter));
     }
