@@ -13,6 +13,9 @@ import java.util.List;
 @Data
 public class AssigningDetailScooterInfoResult {
 
+    @ApiModelProperty(value = "id")
+    private Long id;
+
     @ApiModelProperty(value = "座位数")
     private Integer seatNumber;
 
