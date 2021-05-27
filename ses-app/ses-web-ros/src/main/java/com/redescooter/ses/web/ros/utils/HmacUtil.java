@@ -1,8 +1,8 @@
 package com.redescooter.ses.web.ros.utils;
 
 import com.google.common.collect.Maps;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
@@ -28,20 +28,18 @@ public class HmacUtil {
 
     public static final String SIM_UUID = "uuid";
 
+    public static final String COMMON_FILTER = "common_filter";
+
     /**
      * 密钥
      */
-    @Value("${sim.api_shared_key}")
-    static String API_SHARED_KEY;
+    static String API_SHARED_KEY = "3024547eba5d58a4af5b2209bd563d5e";
 
-    @Value("${sim.account_uuid}")
-    static String ACCOUNT_UUID;
+    static String ACCOUNT_UUID = "9c201f7882515413815be64ffe2217ec";
 
-    @Value("${sim.user_uuid}")
-    public static String USER_UUID;
+    public static String USER_UUID = "de485df22a9a5c9aa71faaf48c1bd57f";
 
-    @Value("${sim.api_link}")
-    public static String API_LINK;
+    public static String API_LINK = "https://platform.keepgo.com/api/9c201f7882515413815be64ffe2217ec/";
 
     /**
      * @Title: generateKey
@@ -54,8 +52,7 @@ public class HmacUtil {
     public static Map<String, String> generateKey() {
         try {
             Map<String, String> map = Maps.newHashMap();
-            long l = System.currentTimeMillis() / 1000;
-            String timestamp = String.format("%010d", l);
+            String timestamp = DateUtil.getTimestamp();
             String hash = encodeBase64(encryptionHMAC(timestamp + ACCOUNT_UUID));
             map.put(SIM_TIMESTAMP, timestamp);
             map.put(SIM_HASH, hash);

@@ -1,11 +1,11 @@
 package com.redescooter.ses.web.ros.vo.sim;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.dubbo.qos.command.impl.Ready;
 
 /**
  * @ClassName SimResult
@@ -15,6 +15,7 @@ import org.apache.dubbo.qos.command.impl.Ready;
  */
 @Data
 @Builder
+@ApiModel("sim 卡信息")
 @NoArgsConstructor
 @AllArgsConstructor
 public class SimResult {

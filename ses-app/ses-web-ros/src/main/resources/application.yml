@@ -156,9 +156,3 @@ sendinblue:
   url: https://api.sendinblue.com/v3/contacts
   mediaType: application/json
 
-# sim
-sim:
-  account_uuid: de485df22a9a5c9aa71faaf48c1bd57f
-  api_shared_key: 3024547eba5d58a4af5b2209bd563d5e
-  user_uuid: de485df22a9a5c9aa71faaf48c1bd57f
-  api_link: https://platform.keepgo.com/api/de485df22a9a5c9aa71faaf48c1bd57f/
