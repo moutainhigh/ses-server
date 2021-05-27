@@ -114,8 +114,22 @@ public class ScooterRecordsImpl implements ScooterRecordService {
             throw new ScooterException(ExceptionCodeEnums.VERSION_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.VERSION_CANNOT_EMPTY.getMessage());
         }
 
+        String tabletSn = enter.getTabletSn();
         String versionCode = enter.getVersionCode();
         String updateCode = enter.getUpdateCode();
+
+        // tabletSn记录的版本号和入参传的版本号不符,直接不合法
+        LambdaQueryWrapper<ScoScooterUpdateRecord> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ScoScooterUpdateRecord::getDr, Constant.DR_FALSE);
+        wrapper.eq(ScoScooterUpdateRecord::getTabletSn, tabletSn);
+        wrapper.last("limit 1");
+        ScoScooterUpdateRecord model = scoScooterUpdateRecordService.getOne(wrapper);
+        if (null == model) {
+            return new BooleanResult(Boolean.FALSE);
+        }
+        if (!versionCode.equals(model.getVersionCode())) {
+            return new BooleanResult(Boolean.FALSE);
+        }
 
         // 版本号为1,直接不合法
         if ("1".equals(versionCode)) {
@@ -140,14 +154,18 @@ public class ScooterRecordsImpl implements ScooterRecordService {
         LambdaQueryWrapper<ScoScooterUpdateRecord> qw = new LambdaQueryWrapper<>();
         qw.eq(ScoScooterUpdateRecord::getDr, Constant.DR_FALSE);
         qw.eq(ScoScooterUpdateRecord::getUpdateCode, record.getUpdateCode());
-        int count = scoScooterUpdateRecordService.count(qw);
-        if (count > 1) {
+        qw.eq(ScoScooterUpdateRecord::getFlag, 2);
+        List<ScoScooterUpdateRecord> list = scoScooterUpdateRecordService.list(qw);
+        if (CollectionUtils.isNotEmpty(list)) {
             return new BooleanResult(Boolean.FALSE);
         }
 
         // 只有db记录的版本号,updateCode和入参传的版本号,updateCode都相等,才合法
         if (StringUtils.equals(record.getVersionCode(), versionCode) && StringUtils.equals(record.getUpdateCode(), updateCode)) {
             log.info("两者都相等,返回true");
+            // 修改此uuid为已用
+            record.setFlag(2);
+            scoScooterUpdateRecordService.updateById(record);
             return new BooleanResult(Boolean.TRUE);
         }
         return new BooleanResult(Boolean.FALSE);

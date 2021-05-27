@@ -53,6 +53,9 @@ public class ScoScooterUpdateRecord implements Serializable {
     @ApiModelProperty(value = "表示这次升级推送的唯一性 用uuid")
     private String updateCode;
 
+    @ApiModelProperty(value = "标识此uuid是否使用 1未使用 2已使用")
+    private Integer flag;
+
     @ApiModelProperty(value = "创建人")
     private Long createdBy;
 

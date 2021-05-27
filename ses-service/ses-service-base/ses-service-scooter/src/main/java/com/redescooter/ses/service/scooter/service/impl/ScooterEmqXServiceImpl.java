@@ -327,6 +327,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
                 record.setDownloadLink(tabletUpdatePublish.getDownloadLink());
                 record.setVersionCode(tabletUpdatePublish.getVersionCode());
                 record.setUpdateCode(tabletUpdatePublish.getUpdateCode());
+                record.setFlag(1);
                 record.setCreatedBy(paramDTO.getUserId());
                 record.setCreatedTime(new Date());
                 log.info("新增平板升级更新记录表的入参是:[{}]", record);

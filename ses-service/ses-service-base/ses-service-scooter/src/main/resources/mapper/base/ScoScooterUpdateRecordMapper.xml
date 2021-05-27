@@ -9,6 +9,7 @@
         <result column="download_link" property="downloadLink"/>
         <result column="version_code" property="versionCode"/>
         <result column="update_code" property="updateCode"/>
+        <result column="flag" property="flag"/>
         <result column="created_by" property="createdBy"/>
         <result column="created_time" property="createdTime"/>
         <result column="updated_by" property="updatedBy"/>
@@ -21,6 +22,6 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, dr, tablet_sn, download_link, version_code, update_code, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+        id, dr, tablet_sn, download_link, version_code, update_code, flag, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
     </sql>
 </mapper>
