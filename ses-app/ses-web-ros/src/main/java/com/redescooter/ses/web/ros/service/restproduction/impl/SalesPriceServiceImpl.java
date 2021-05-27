@@ -2,7 +2,6 @@ package com.redescooter.ses.web.ros.service.restproduction.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
@@ -20,7 +19,10 @@ import com.redescooter.ses.web.ros.dao.base.OpePartsMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSalePartsMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSalePriceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSaleScooterMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeParts;
+import com.redescooter.ses.web.ros.dm.OpeSaleParts;
+import com.redescooter.ses.web.ros.dm.OpeSalePrice;
+import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 import com.redescooter.ses.web.ros.enums.distributor.StatusEnum;
 import com.redescooter.ses.web.ros.enums.salePrice.SalePriceEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -28,7 +30,6 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
 import com.redescooter.ses.web.ros.service.base.OpeSalePriceService;
 import com.redescooter.ses.web.ros.service.base.OpeSaleScooterBatteryRelationService;
-import com.redescooter.ses.web.ros.service.base.OpeSaleScooterService;
 import com.redescooter.ses.web.ros.service.restproduction.SalesPriceService;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePriceListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePriceSaveOrUpdateEnter;
@@ -43,7 +44,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -143,7 +148,8 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         boolean save = opeSalePriceService.save(price);
         //新增的同时要修改定金
         if (save) {
-            int deposit = opeSalePriceMapper.findDeposit();
+            Integer deposit = opeSalePriceMapper.findDeposit();
+            deposit = deposit == null ? 0 : deposit;
             OpeSalePrice opeSalePrice = new OpeSalePrice();
             opeSalePrice.setDeposit(new BigDecimal(deposit));
             opeSalePrice.setId(price.getId());
