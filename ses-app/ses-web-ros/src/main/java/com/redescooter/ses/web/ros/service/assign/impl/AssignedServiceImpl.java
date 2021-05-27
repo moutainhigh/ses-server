@@ -28,6 +28,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -112,6 +115,18 @@ public class AssignedServiceImpl implements AssignedService {
                 Map<String, String> map = toBeAssignServiceImpl.getColorNameAndValueById(o.getColorId());
                 scooter.setColorName(map.get("colorName"));
                 scooter.setColorValue(map.get("colorValue"));
+            }
+            scooter.setBluetoothAddress(o.getBluetoothAddress());
+            scooter.setTabletSn(o.getTabletSn());
+            if (StringUtils.isBlank(o.getBattery())) {
+                scooter.setBatteryNum(0);
+                scooter.setBatteryList(new ArrayList<>());
+            } else {
+                String[] split = o.getBattery().split(",");
+                List<String> batteryList = new ArrayList<>(Arrays.asList(split));
+                batteryList.removeAll(Collections.singleton(null));
+                scooter.setBatteryNum(batteryList.size());
+                scooter.setBatteryList(batteryList);
             }
             scooterList.add(scooter);
         }
