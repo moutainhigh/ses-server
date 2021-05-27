@@ -63,7 +63,7 @@ public class ToBeAssignNextStopDetailResult extends GeneralResult implements Ser
     @ApiModelProperty(value = "电池数")
     private Integer batteryNum;
 
-    @ApiModelProperty(value = "电池码")
+    @ApiModelProperty(value = "电池码 字符号数组 如果多个时逗号分隔")
     private List<String> batteryList;
 
 }
