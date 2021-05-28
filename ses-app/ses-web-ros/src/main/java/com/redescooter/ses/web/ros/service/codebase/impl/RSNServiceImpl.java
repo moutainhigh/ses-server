@@ -125,15 +125,6 @@ public class RSNServiceImpl implements RSNService {
         OpeWmsStockSerialNumber frSerialNumber = opeWmsStockSerialNumberService.getOne(wrapper);
         nodes.add(new Node("3", frSerialNumber == null ? "-" : DateUtil.getTimeStr(frSerialNumber.getCreatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
 
-        // 绑定询价单
-        LambdaQueryWrapper<OpeCarDistribute> inquiryWrapper = new LambdaQueryWrapper<>();
-        inquiryWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
-        inquiryWrapper.eq(OpeCarDistribute::getRsn, rsn);
-        inquiryWrapper.isNotNull(OpeCarDistribute::getWarehouseAccountId);
-        inquiryWrapper.last("limit 1");
-        OpeCarDistribute inquiryDistribute = opeCarDistributeMapper.selectOne(inquiryWrapper);
-        nodes.add(new Node("4", inquiryDistribute == null ? "-" : DateUtil.getTimeStr(inquiryDistribute.getCreatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
-
         // 绑定VIN
         LambdaQueryWrapper<OpeCarDistribute> vinWrapper = new LambdaQueryWrapper<>();
         vinWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
@@ -141,7 +132,18 @@ public class RSNServiceImpl implements RSNService {
         vinWrapper.isNotNull(OpeCarDistribute::getVinCode);
         vinWrapper.last("limit 1");
         OpeCarDistribute vinDistribute = opeCarDistributeMapper.selectOne(vinWrapper);
-        nodes.add(new Node("5", vinDistribute == null || null == vinDistribute.getUpdatedTime() ? "-" : DateUtil.getTimeStr(vinDistribute.getUpdatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
+        nodes.add(new Node("4", vinDistribute == null || null == vinDistribute.getUpdatedTime() ? "-" : DateUtil.getTimeStr(vinDistribute.getUpdatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
+
+        // 绑定询价单
+        LambdaQueryWrapper<OpeCarDistribute> inquiryWrapper = new LambdaQueryWrapper<>();
+        inquiryWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        inquiryWrapper.eq(OpeCarDistribute::getRsn, rsn);
+        inquiryWrapper.isNotNull(OpeCarDistribute::getRsn);
+        inquiryWrapper.isNotNull(OpeCarDistribute::getTabletSn);
+        inquiryWrapper.isNotNull(OpeCarDistribute::getBluetoothAddress);
+        inquiryWrapper.last("limit 1");
+        OpeCarDistribute inquiryDistribute = opeCarDistributeMapper.selectOne(inquiryWrapper);
+        nodes.add(new Node("5", inquiryDistribute == null || null == inquiryDistribute.getUpdatedTime() ? "-" : DateUtil.getTimeStr(inquiryDistribute.getUpdatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
 
         // 设置软体
         LambdaQueryWrapper<OpeCarDistribute> setWrapper = new LambdaQueryWrapper<>();
