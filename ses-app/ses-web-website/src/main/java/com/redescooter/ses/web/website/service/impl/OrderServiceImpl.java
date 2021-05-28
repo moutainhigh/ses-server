@@ -360,12 +360,16 @@ public class OrderServiceImpl implements OrderService {
         if (batteryResult.compareTo(BigDecimal.ZERO) == 0) {
             batteryResult2 = new BigDecimal("0");
         } else {
-            batteryResult2 = batteryResult.multiply(siteParts.getPrice()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()), 2, BigDecimal.ROUND_UP);
+            if (StringUtils.isBlank(enter.getInstallmentTime()) || "0".equals(enter.getInstallmentTime())){
+                batteryResult2 = batteryResult.multiply(siteParts.getPrice());
+            }else {
+                batteryResult2 = batteryResult.multiply(siteParts.getPrice()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()), 2, BigDecimal.ROUND_UP);
+                // BigDecimal peijian = new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()), 2, BigDecimal.ROUND_UP).multiply(new BigDecimal(siteProductPrice.getInstallmentTime()));
+                BigDecimal installmentTime2 = new BigDecimal(siteProductPrice.getInstallmentTime());
+                addSiteOrderVO.setTotalPrice(siteOrder.getPrepaidDeposit().add(siteOrder.getFreight()).add(siteProductPrice.getShouldPayPeriod().multiply(installmentTime2)).add(batteryResult2.multiply(installmentTime2)));
+                addSiteOrderVO.setAmountObligation(siteOrder.getTotalPrice().subtract(addSiteOrderVO.getAmountPaid()));
+            }
         }
-        // BigDecimal peijian = new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()), 2, BigDecimal.ROUND_UP).multiply(new BigDecimal(siteProductPrice.getInstallmentTime()));
-        BigDecimal installmentTime2 = new BigDecimal(siteProductPrice.getInstallmentTime());
-        addSiteOrderVO.setTotalPrice(siteOrder.getPrepaidDeposit().add(siteOrder.getFreight()).add(siteProductPrice.getShouldPayPeriod().multiply(installmentTime2)).add(batteryResult2.multiply(installmentTime2)));
-        addSiteOrderVO.setAmountObligation(siteOrder.getTotalPrice().subtract(addSiteOrderVO.getAmountPaid()));
         // 官网的订单数据 要同步到ROS系统中
         syncdataToRos(addSiteOrderVO, email, bankCardName);
 
