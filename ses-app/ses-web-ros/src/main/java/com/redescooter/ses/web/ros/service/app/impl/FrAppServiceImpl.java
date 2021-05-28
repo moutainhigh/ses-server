@@ -477,8 +477,12 @@ public class FrAppServiceImpl implements FrAppService {
         OpeCarDistribute instance = opeCarDistributeMapper.selectOne(lqw);
         if (null != instance) {
             Long warehouseAccountId = instance.getWarehouseAccountId();
+            String vin = instance.getVinCode();
             if (null != warehouseAccountId) {
                 throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getCode(), ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getMessage());
+            }
+            if (StringUtils.isNotBlank(vin)) {
+                throw new SesWebRosException(ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getCode(), ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getMessage());
             }
         }
 
@@ -590,6 +594,19 @@ public class FrAppServiceImpl implements FrAppService {
         String licensePlate = enter.getLicensePlate();
         Long customerId = enter.getCustomerId();
 
+        // 校验是否已被操作过
+        LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        lqw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+        lqw.last("limit 1");
+        OpeCarDistribute instance = opeCarDistributeMapper.selectOne(lqw);
+        if (null != instance) {
+            String plate = instance.getLicensePlate();
+            if (StringUtils.isNotBlank(plate)) {
+                throw new SesWebRosException(ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getCode(), ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getMessage());
+            }
+        }
+
         LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
         checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
         checkWrapper.eq(OpeCarDistribute::getLicensePlate, licensePlate);
@@ -641,6 +658,18 @@ public class FrAppServiceImpl implements FrAppService {
         String electricMachinery = enter.getElectricMachinery();
         String meter = enter.getMeter();
         String imei = enter.getImei();
+
+        // 校验是否已被操作过
+        LambdaQueryWrapper<OpeCarDistribute> scooterWrapper = new LambdaQueryWrapper<>();
+        scooterWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        scooterWrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+        scooterWrapper.last("limit 1");
+        OpeCarDistribute instance = opeCarDistributeMapper.selectOne(scooterWrapper);
+        if (null != instance) {
+            if (StringUtils.isNotBlank(instance.getRsn()) || StringUtils.isNotBlank(instance.getTabletSn()) || StringUtils.isNotBlank(instance.getBluetoothAddress())) {
+                throw new SesWebRosException(ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getCode(), ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getMessage());
+            }
+        }
 
         LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
         lqw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
@@ -744,6 +773,19 @@ public class FrAppServiceImpl implements FrAppService {
         checkToken(enter);
         Long userId = getUserId(enter);
         Long inquiryId = enter.getId();
+
+        // 校验是否已被操作过
+        LambdaQueryWrapper<OpeCarDistribute> batteryWrapper = new LambdaQueryWrapper<>();
+        batteryWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        batteryWrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+        batteryWrapper.last("limit 1");
+        OpeCarDistribute instance = opeCarDistributeMapper.selectOne(batteryWrapper);
+        if (null != instance) {
+            String battery = instance.getBattery();
+            if (StringUtils.isNotBlank(battery)) {
+                throw new SesWebRosException(ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getCode(), ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getMessage());
+            }
+        }
 
         LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
         checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
