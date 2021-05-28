@@ -12,6 +12,7 @@ import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.enums.wms.WmsStockTypeEnum;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
@@ -221,21 +222,27 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
      * 校验rsn在法国库存产品序列号表是否存在
      */
     @Override
-    public List<String> checkRsn(FrInWhOrderCheckEnter enter) {
-        if (null == enter || CollectionUtils.isEmpty(enter.getRsnList())) {
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+    public BooleanResult checkRsn(FrInWhOrderCheckEnter enter) {
+        BooleanResult result = new BooleanResult();
+
+        LambdaQueryWrapper<OpeInWhouseOrderSerialBind> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeInWhouseOrderSerialBind::getDr, Constant.DR_FALSE);
+        qw.eq(OpeInWhouseOrderSerialBind::getSerialNum, enter.getRsn());
+        int count = opeInWhouseOrderSerialBindService.count(qw);
+
+        LambdaQueryWrapper<OpeInWhouseOrderSerialBind> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(OpeInWhouseOrderSerialBind::getDr, Constant.DR_FALSE);
+        lqw.eq(OpeInWhouseOrderSerialBind::getTabletSn, enter.getTabletSn());
+        int tabletSnCount = opeInWhouseOrderSerialBindService.count(lqw);
+
+        if (count > 0 || tabletSnCount > 0) {
+            result.setSuccess(Boolean.FALSE);
+            result.setRequestId(enter.getRequestId());
+            return result;
         }
-        List<String> result = Lists.newLinkedList();
-        for (String rsn : enter.getRsnList()) {
-            LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
-            qw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
-            qw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
-            qw.eq(OpeWmsStockSerialNumber::getRsn, rsn);
-            int count = opeWmsStockSerialNumberService.count(qw);
-            if (count > 0) {
-                result.add(rsn);
-            }
-        }
+
+        result.setSuccess(Boolean.TRUE);
+        result.setRequestId(enter.getRequestId());
         return result;
     }
 

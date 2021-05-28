@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.controller.warehouse.fr;
 
 import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * @Description 法国仓库入库单控制器
@@ -57,7 +56,7 @@ public class FrInWhOrderController {
      */
     @PostMapping("/check")
     @ApiOperation(value = "校验rsn在法国库存产品序列号表是否存在")
-    public Response<List<String>> checkRsn(@ModelAttribute FrInWhOrderCheckEnter enter) {
+    public Response<BooleanResult> checkRsn(@ModelAttribute FrInWhOrderCheckEnter enter) {
         return new Response<>(frInWhOrderService.checkRsn(enter));
     }
 

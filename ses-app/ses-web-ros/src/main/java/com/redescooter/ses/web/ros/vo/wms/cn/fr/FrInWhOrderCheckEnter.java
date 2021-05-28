@@ -7,8 +7,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 /**
  * @Description
  * @Author Chris
@@ -20,7 +18,13 @@ import java.util.List;
 @EqualsAndHashCode
 public class FrInWhOrderCheckEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "车辆序列号集合", required = true)
-    private List<String> rsnList;
+    @ApiModelProperty(value = "整车序列号", required = true)
+    private String rsn;
+
+    @ApiModelProperty(value = "仪表序列号", required = true)
+    private String tabletSn;
+
+    @ApiModelProperty(value = "蓝牙地址", required = true)
+    private String bluetoothMacAddress;
 
 }
