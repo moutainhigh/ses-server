@@ -145,6 +145,22 @@ public class DateUtil {
         SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
         return dateFormat.format(date);
     }
+    /**
+     * @Title: getTimeAddHours
+     * @Description: // 加上固定时间转换指定字符串
+     * @Param: [date, pattern, hour]
+     * @Return: java.lang.String
+     * @Date: 2021/5/26 7:10 下午
+     * @Author: Charles
+     */
+    public static String getTimeAddHours(Date date, String pattern, int hour) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.HOUR, hour);// 24小时制
+        date = cal.getTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+        return dateFormat.format(date);
+    }
 
     /**
      * 判断时间字符串是否为默认格式

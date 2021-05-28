@@ -142,7 +142,7 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
         if (StringUtils.isNotBlank(enter.getEmail())) {
             String email = enter.getEmail();
             int firstIndex = email.indexOf("@");
-            int secondIndex = email.indexOf(".");
+            int secondIndex = email.lastIndexOf(".");
 
             // 1.必须包含@ 2.必须包含. 3.@必须在.之前 4..后至少要有一位
             if (firstIndex == -1 || secondIndex == -1 || firstIndex > secondIndex || email.endsWith(".")) {

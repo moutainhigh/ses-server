@@ -8,11 +8,7 @@ import com.redescooter.ses.web.website.service.ScooterPurchaseService;
 import com.redescooter.ses.web.website.service.base.SiteProductModelService;
 import com.redescooter.ses.web.website.service.base.SiteProductPriceService;
 import com.redescooter.ses.web.website.vo.parts.PartsDetailsResult;
-import com.redescooter.ses.web.website.vo.product.ModelPriceResult;
-import com.redescooter.ses.web.website.vo.product.ProductPartsDetailsResult;
-import com.redescooter.ses.web.website.vo.product.ProductsResult;
-import com.redescooter.ses.web.website.vo.product.ScooterPriceDetailResult;
-import com.redescooter.ses.web.website.vo.product.ScooterPriceListResult;
+import com.redescooter.ses.web.website.vo.product.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,6 +153,12 @@ public class ScooterPurchaseServiceImpl implements ScooterPurchaseService {
             });
         }
         return resultList;
+    }
+
+    @Override
+    public PartsBatteryDetailsResult getPartsDetails(GeneralEnter enter) {
+
+        return scooterPurchaseMapper.getPartsDetails(enter);
     }
 
 }

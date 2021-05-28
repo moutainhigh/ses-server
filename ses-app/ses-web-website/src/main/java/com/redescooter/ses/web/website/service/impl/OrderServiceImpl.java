@@ -17,6 +17,7 @@ import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dao.OrderMapper;
+import com.redescooter.ses.web.website.dao.ScooterPurchaseMapper;
 import com.redescooter.ses.web.website.dm.SiteCustomer;
 import com.redescooter.ses.web.website.dm.SiteOrder;
 import com.redescooter.ses.web.website.dm.SiteOrderB;
@@ -49,6 +50,7 @@ import com.redescooter.ses.web.website.vo.order.AddOrderResult;
 import com.redescooter.ses.web.website.vo.order.AddPartListEnter;
 import com.redescooter.ses.web.website.vo.order.AddUpdateOrderEnter;
 import com.redescooter.ses.web.website.vo.order.OrderDetailsResult;
+import com.redescooter.ses.web.website.vo.product.PartsBatteryDetailsResult;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -108,6 +110,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderMapper orderMapper;
+
+    @Autowired
+    private ScooterPurchaseMapper scooterPurchaseMapper;
 
     @DubboReference
     private IdAppService idAppService;
@@ -220,7 +225,7 @@ public class OrderServiceImpl implements OrderService {
         QueryWrapper<SiteProductPrice> qw = new QueryWrapper<>();
         qw.eq(SiteProductPrice.COL_DR, Constant.DR_FALSE);
         qw.eq(SiteProductPrice.COL_PRODUCT_MODEL_ID, product.getProductModelId());
-        qw.like(SiteProductPrice.COL_BATTERY, enter.getBatteryQty());
+        //qw.like(SiteProductPrice.COL_BATTERY, enter.getBatteryQty());
         qw.eq(SiteProductPrice.COL_PRICE_TYPE, code);
         if (null != installmentTime) {
             qw.eq(SiteProductPrice.COL_INSTALLMENT_TIME, installmentTime);
@@ -232,13 +237,14 @@ public class OrderServiceImpl implements OrderService {
         }
 
         //获取所选车辆电池数量
-        SiteProductParts scooterBatteryParts = siteProductPartsService.getById(enter.getProductPartsId());
-        if (scooterBatteryParts == null) {
-            throw new SesWebsiteException(ExceptionCodeEnums.BATTERIES_NUM_ERROR.getCode(),
-                    ExceptionCodeEnums.BATTERIES_NUM_ERROR.getMessage());
-        }
+//        SiteProductParts scooterBatteryParts = siteProductPartsService.getById(enter.getProductPartsId());
+//        if (scooterBatteryParts == null) {
+//            throw new SesWebsiteException(ExceptionCodeEnums.BATTERIES_NUM_ERROR.getCode(),
+//                    ExceptionCodeEnums.BATTERIES_NUM_ERROR.getMessage());
+//        }
         //获取电池
-        SiteParts battery = sitePartsService.getById(scooterBatteryParts.getPartsId());
+        PartsBatteryDetailsResult battery = scooterPurchaseMapper.getPartsDetails(new GeneralEnter());
+        //SiteParts battery = sitePartsService.getById(scooterBatteryParts.getPartsId());
         if (battery == null) {
             throw new SesWebsiteException(ExceptionCodeEnums.PARTS_NOT_EXIST_EXIST.getCode(),
                     ExceptionCodeEnums.PARTS_NOT_EXIST_EXIST.getMessage());
@@ -263,7 +269,8 @@ public class OrderServiceImpl implements OrderService {
         //整车价格
         addSiteOrderVO.setProductPrice(productPrice.getPrice());
         //实际付款电池数: 选配电池总数-产品最小电池数
-        int paidBattery = scooterBatteryParts.getQty() - product.getMinBatteryNum();
+        //int paidBattery = scooterBatteryParts.getQty() - product.getMinBatteryNum();
+        int paidBattery = enter.getBatteryQty() - product.getMinBatteryNum();
         BigDecimal totalPrice = new BigDecimal("0");
         //根据付款类型id查询是什么付款方式
         SitePaymentType sitePaymentType = sitePaymentTypeService.getById(id);
@@ -324,6 +331,8 @@ public class OrderServiceImpl implements OrderService {
         addSiteOrderVO.setCityName(enter.getCityName());
         addSiteOrderVO.setPostcode(enter.getPostcode());
         addSiteOrderVO.setUpdatedBy(enter.getUserId());
+        //记录用户选择的期数
+        addSiteOrderVO.setDef5(enter.getInstallmentTime());
 
         siteOrderService.saveOrUpdate(addSiteOrderVO);
         AddOrderResult result = new AddOrderResult();

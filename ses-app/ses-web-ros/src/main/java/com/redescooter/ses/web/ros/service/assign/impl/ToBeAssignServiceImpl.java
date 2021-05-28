@@ -92,11 +92,13 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.JedisCluster;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -209,7 +211,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         List<ToBeAssignListResult> list = opeCarDistributeExMapper.getToBeAssignList(enter);
 
         // 正式客户且点击了创建账号的才能流转到待分配列表
-        if (CollectionUtils.isNotEmpty(list)) {
+        /*if (CollectionUtils.isNotEmpty(list)) {
             Iterator<ToBeAssignListResult> iterator = list.iterator();
             while (iterator.hasNext()) {
                 ToBeAssignListResult next = iterator.next();
@@ -220,8 +222,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                     iterator.remove();
                 }
             }
-        }
-        return PageResult.create(enter, list.size(), list);
+        }*/
+        return PageResult.create(enter, count, list);
     }
 
     /**
@@ -409,6 +411,16 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             if (null != checkModel) {
                 throw new SesWebRosException(ExceptionCodeEnums.VIN_HAS_USED.getCode(), ExceptionCodeEnums.VIN_HAS_USED.getMessage());
             }
+
+            // 查看vin在码库中是否存在
+            /*LambdaQueryWrapper<OpeCodebaseVin> existWrapper = new LambdaQueryWrapper<>();
+            existWrapper.eq(OpeCodebaseVin::getDr, Constant.DR_FALSE);
+            existWrapper.eq(OpeCodebaseVin::getStatus, 1);
+            existWrapper.eq(OpeCodebaseVin::getVin, vinCode);
+            int count = opeCodebaseVinService.count(existWrapper);
+            if (count == 0) {
+                throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getMessage());
+            }*/
 
             // 修改主表
             OpeCarDistribute model = new OpeCarDistribute();
@@ -602,6 +614,16 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             if (null != checkModel) {
                 throw new SesWebRosException(ExceptionCodeEnums.RSN_HAS_USED.getCode(), ExceptionCodeEnums.RSN_HAS_USED.getMessage());
             }
+
+            // 查看rsn在码库中是否存在
+            /*LambdaQueryWrapper<OpeCodebaseRsn> existWrapper = new LambdaQueryWrapper<>();
+            existWrapper.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
+            existWrapper.eq(OpeCodebaseRsn::getStatus, 1);
+            existWrapper.eq(OpeCodebaseRsn::getRsn, rsn);
+            int count = opeCodebaseRsnService.count(existWrapper);
+            if (count == 0) {
+                throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getMessage());
+            }*/
 
             // 修改主表
             OpeCarDistribute model = new OpeCarDistribute();
@@ -1051,6 +1073,18 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 sub.setColorName(map.get("colorName"));
                 sub.setColorValue(map.get("colorValue"));
             }
+
+            sub.setQty(model.getQty());
+            sub.setBluetoothAddress(model.getBluetoothAddress());
+            sub.setTabletSn(model.getTabletSn());
+            if (StringUtils.isBlank(model.getBattery())) {
+                sub.setBatteryList(new ArrayList<>());
+            } else {
+                String[] split = model.getBattery().split(",");
+                List<String> batteryList = new ArrayList<>(Arrays.asList(split));
+                batteryList.removeAll(Collections.singleton(null));
+                sub.setBatteryList(batteryList);
+            }
             subList.add(sub);
 
             ToBeAssignNodeScooterInfoResult scooter = new ToBeAssignNodeScooterInfoResult();
@@ -1080,7 +1114,8 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         Map<String, Object> result = Maps.newHashMapWithExpectedSize(3);
 
         // 待分配列表条数
-        List<ToBeAssignListResult> list = opeCarDistributeExMapper.getToBeAssignListNoPage(enter);
+        int toBeAssignCount = opeCarDistributeExMapper.getToBeAssignListCount(new ToBeAssignListEnter());
+        /*List<ToBeAssignListResult> list = opeCarDistributeExMapper.getToBeAssignListNoPage(enter);
         // 正式客户且点击了创建账号的才能流转到待分配列表
         if (CollectionUtils.isNotEmpty(list)) {
             Iterator<ToBeAssignListResult> iterator = list.iterator();
@@ -1093,12 +1128,12 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                     iterator.remove();
                 }
             }
-        }
+        }*/
         // 已分配列表条数
         int assignedCount = opeCarDistributeExMapper.getAssignedListCount(new AssignedListEnter());
         // 处理中列表条数
         int doingCount = opeCarDistributeExMapper.getDoingListCount(new ToBeAssignListEnter());
-        result.put("toBeAssignCount", list.size());
+        result.put("toBeAssignCount", toBeAssignCount);
         result.put("assignedCount", assignedCount);
         result.put("doingCount", doingCount);
         return result;

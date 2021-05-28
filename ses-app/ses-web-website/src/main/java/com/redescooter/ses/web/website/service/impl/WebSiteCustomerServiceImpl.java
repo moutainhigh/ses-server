@@ -282,7 +282,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
     public void checkEditEmail(String email) {
         if (StringUtils.isNotBlank(email)) {
             int firstIndex = email.indexOf("@");
-            int secondIndex = email.indexOf(".");
+            int secondIndex = email.lastIndexOf(".");
             // 1.必须包含@ 2.必须包含. 3.@必须在.之前 4..后至少要有一位
             if (firstIndex == -1 || secondIndex == -1 || firstIndex > secondIndex || email.endsWith(".")) {
                 throw new SesWebsiteException(ExceptionCodeEnums.EMAIL_ERROR.getCode(), ExceptionCodeEnums.EMAIL_ERROR.getMessage());
@@ -330,7 +330,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         }
 
         int firstIndex = email.indexOf("@");
-        int secondIndex = email.indexOf(".");
+        int secondIndex = email.lastIndexOf(".");
         // 1.必须包含@ 2.必须包含. 3.@必须在.之前 4..后至少要有一位
         if (firstIndex == -1 || secondIndex == -1 || firstIndex > secondIndex || email.endsWith(".")) {
             throw new SesWebsiteException(ExceptionCodeEnums.EMAIL_ERROR.getCode(), ExceptionCodeEnums.EMAIL_ERROR.getMessage());

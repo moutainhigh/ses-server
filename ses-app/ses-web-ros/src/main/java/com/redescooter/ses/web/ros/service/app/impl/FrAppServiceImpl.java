@@ -48,6 +48,21 @@ import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeNodeMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWmsScooterStockMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWmsStockRecordMapper;
+import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
+import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseRelation;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseVin;
+import com.redescooter.ses.web.ros.dm.OpeColor;
+import com.redescooter.ses.web.ros.dm.OpeCustomer;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
+import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
+import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
+import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
+import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
+import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMapper;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.enums.distributor.StatusEnum;
@@ -55,6 +70,25 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.app.FrAppService;
 import com.redescooter.ses.web.ros.service.assign.impl.ToBeAssignServiceImpl;
+import com.redescooter.ses.web.ros.service.base.OpeCodebaseRelationService;
+import com.redescooter.ses.web.ros.service.base.OpeCodebaseRsnService;
+import com.redescooter.ses.web.ros.service.base.OpeCodebaseVinService;
+import com.redescooter.ses.web.ros.service.base.OpeColorService;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
+import com.redescooter.ses.web.ros.service.base.OpeSaleScooterService;
+import com.redescooter.ses.web.ros.service.base.OpeSpecificatGroupService;
+import com.redescooter.ses.web.ros.service.base.OpeWarehouseAccountService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
+import com.redescooter.ses.web.ros.vo.app.AppLoginEnter;
+import com.redescooter.ses.web.ros.vo.app.BindLicensePlateEnter;
+import com.redescooter.ses.web.ros.vo.app.BindVinEnter;
+import com.redescooter.ses.web.ros.vo.app.InputBatteryEnter;
+import com.redescooter.ses.web.ros.vo.app.InputScooterEnter;
+import com.redescooter.ses.web.ros.vo.app.InquiryDetailEnter;
+import com.redescooter.ses.web.ros.vo.app.InquiryDetailResult;
+import com.redescooter.ses.web.ros.vo.app.InquiryListAppEnter;
+import com.redescooter.ses.web.ros.vo.app.InquiryListResult;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.sim.OpeSimInformationService;
 import com.redescooter.ses.web.ros.vo.app.*;
@@ -108,9 +142,6 @@ public class FrAppServiceImpl implements FrAppService {
     private OpeWmsStockRecordMapper opeWmsStockRecordMapper;
 
     @Autowired
-    private OpeWmsStockSerialNumberMapper opeWmsStockSerialNumberMapper;
-
-    @Autowired
     private OpeWmsStockSerialNumberService opeWmsStockSerialNumberService;
 
     @Autowired
@@ -133,6 +164,12 @@ public class FrAppServiceImpl implements FrAppService {
 
     @Autowired
     private OpeCodebaseRelationService opeCodebaseRelationService;
+
+    @Autowired
+    private OpeSpecificatGroupService opeSpecificatGroupService;
+
+    @Autowired
+    private OpeColorService opeColorService;
 
     @Value("${Request.privateKey}")
     private String privateKey;
@@ -508,6 +545,16 @@ public class FrAppServiceImpl implements FrAppService {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_HAS_INPUT.getCode(), ExceptionCodeEnums.VIN_HAS_INPUT.getMessage());
         }
 
+        // 查看vin在码库中是否存在
+        LambdaQueryWrapper<OpeCodebaseVin> existWrapper = new LambdaQueryWrapper<>();
+        existWrapper.eq(OpeCodebaseVin::getDr, Constant.DR_FALSE);
+        existWrapper.eq(OpeCodebaseVin::getStatus, 1);
+        existWrapper.eq(OpeCodebaseVin::getVin, vinCode);
+        int count = opeCodebaseVinService.count(existWrapper);
+        if (count == 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getMessage());
+        }
+
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();
         distribute.setVinCode(vinCode);
@@ -646,6 +693,19 @@ public class FrAppServiceImpl implements FrAppService {
         if (null != checkModel && null != checkModel.getWarehouseAccountId() && StringUtils.isNotBlank(checkModel.getRsn())) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DEAL.getCode(), ExceptionCodeEnums.ORDER_HAS_DEAL.getMessage());
         }
+
+        // 查看rsn在码库中是否存在
+        LambdaQueryWrapper<OpeCodebaseRsn> existWrapper = new LambdaQueryWrapper<>();
+        existWrapper.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
+        existWrapper.eq(OpeCodebaseRsn::getStatus, 1);
+        existWrapper.eq(OpeCodebaseRsn::getRsn, rsn);
+        int count = opeCodebaseRsnService.count(existWrapper);
+        if (count == 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getMessage());
+        }
+
+        // 查看rsn对应的车型(低速/高速)和询价单对应的车型(低速/高速)是否相符,不相符抛出异常
+        check(rsn, customerId);
 
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();
@@ -923,7 +983,7 @@ public class FrAppServiceImpl implements FrAppService {
         qw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
         qw.eq(OpeWmsStockSerialNumber::getRsn, model.getRsn());
         qw.eq(OpeWmsStockSerialNumber::getStockStatus, WmsStockStatusEnum.AVAILABLE.getStatus());
-        List<OpeWmsStockSerialNumber> serialNumberList = opeWmsStockSerialNumberMapper.selectList(qw);
+        List<OpeWmsStockSerialNumber> serialNumberList = opeWmsStockSerialNumberService.list(qw);
         if (CollectionUtils.isNotEmpty(serialNumberList)) {
             for (OpeWmsStockSerialNumber serialNumber : serialNumberList) {
                 if (null != serialNumber) {
@@ -1152,6 +1212,62 @@ public class FrAppServiceImpl implements FrAppService {
         String number = String.format("%s%s%s", DayCodeEnum.getDayCodeByDay(day), "1", sub);
         sb.append(number);
         return sb.toString();
+    }
+
+    /**
+     * 查看rsn对应的车型(低速/高速)和询价单对应的车型(低速/高速)是否相符
+     */
+    private void check(String rsn, Long customerId) {
+        LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+        qw.eq(OpeWmsStockSerialNumber::getRelationType, 1);
+        qw.eq(OpeWmsStockSerialNumber::getRsn, rsn);
+        qw.last("limit 1");
+        OpeWmsStockSerialNumber serialNumber = opeWmsStockSerialNumberService.getOne(qw);
+        if (null == serialNumber) {
+            throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EXIST.getCode(), ExceptionCodeEnums.RSN_NOT_EXIST.getMessage());
+        }
+        Long relationId = serialNumber.getRelationId();
+        OpeWmsScooterStock stock = opeWmsScooterStockMapper.selectById(relationId);
+        if (null == stock) {
+            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_STOCK_IS_EMPTY.getCode(), ExceptionCodeEnums.SCOOTER_STOCK_IS_EMPTY.getMessage());
+        }
+        Long groupId = stock.getGroupId();
+        Long colorId = stock.getColorId();
+        OpeSpecificatGroup group = opeSpecificatGroupService.getById(groupId);
+        OpeColor color = opeColorService.getById(colorId);
+        if (null == group) {
+            throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
+        }
+        if (null == color) {
+            throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+        }
+
+        // 获得询价单产品是低速还是高速,以及颜色
+        OpeSaleScooter saleScooter = getSaleScooter(customerId);
+        if (!Objects.equals(groupId, saleScooter.getGroupId()) || !Objects.equals(colorId, saleScooter.getColorId())) {
+            throw new SesWebRosException(ExceptionCodeEnums.ASSIGN_SCOOTER_WRONG.getCode(), ExceptionCodeEnums.ASSIGN_SCOOTER_WRONG.getMessage());
+        }
+    }
+
+    /**
+     * 根据客户id获取询价单的销售车辆
+     */
+    private OpeSaleScooter getSaleScooter(Long customerId) {
+        LambdaQueryWrapper<OpeCustomerInquiry> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeCustomerInquiry::getDr, Constant.DR_FALSE);
+        qw.eq(OpeCustomerInquiry::getCustomerId, customerId);
+        qw.last("limit 1");
+        OpeCustomerInquiry inquiry = opeCustomerInquiryService.getOne(qw);
+        if (null == inquiry) {
+            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+        }
+        Long productId = inquiry.getProductId();
+        OpeSaleScooter saleScooter = opeSaleScooterService.getById(productId);
+        if (null == saleScooter) {
+            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
+        }
+        return saleScooter;
     }
 
 }

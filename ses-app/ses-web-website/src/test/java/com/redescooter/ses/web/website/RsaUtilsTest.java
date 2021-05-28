@@ -21,8 +21,8 @@ public class RsaUtilsTest extends SesWebsiteApplicationTests {
      */
     @Test
     public void decrypt() {
-        String email = RsaUtils.decrypt("Y/QA+11C0lPl6SHwx6bn7EesUWAZi5JD+iW+xBqL74tEvjKBiEkNSSpRPu4cglnW36uRrlcK2P1i9JziMXy0rDd3SHzk57/4Io5IGWBKt3dt6jB+yLThBWbDD3aLMrkY8OVxgPXhNLyj/onXcUk+MQE39GEyxyqSykpMY9wV6d8irMMk4U/U65A+yRN1kuukvNCu895nkaVhXKAxwGtjjMyg1Bm6x99SL960Irz17Y/puOsjPWq5DPGt6P1UdmuecYnPP19FJV6IfD5wne9hxHL7Sk6qRvFVU94yvprdkCU6RlbGRplM50AAkcRptBwz2qnXb7uxis+pDBVbgfyONA==", requestsKeyProperties.getPrivateKey());
-        System.out.println(email);
+        String email = RsaUtils.decrypt("LUcrNXNrBOUDIxCcw4FM+RzkG69rDdNcxLll5ssVUEoD4GBKlauS/3f7RsEAHO3Z/EI6YwBWNXnVDjBOUBEqaeJh5Ff6boracW9dVPmPHmbGSt5NRHa7E7cC0b6fZYRbdt2HqQqLs45JRHEfs0RjrRBaozJpWfepVBeP9FJHxpgSKzMS44bxzuyC29EOQNIxkk+HNPkqUf3o0OU9OMQcOCXHg3wJQ3bTNd5Urt5GZj8Lr3HkgzdkrIYvQy1LYpMwIGjuBAzcYJNgcQMUCM9IlcBg84+9BUxzv5YpaagEdMM+xFoxyWPHGD1RnRlQ+5E88ih0Nub7fXMjthMg4rQ5Lw==", requestsKeyProperties.getPrivateKey());
+        System.out.println(email+"{?????????????????????????????????}");
     }
 
     /**
@@ -31,14 +31,14 @@ public class RsaUtilsTest extends SesWebsiteApplicationTests {
     @SneakyThrows
     @Test
     public void encrypt() {
-        String email = RsaUtils.encrypt("jerry@redescooter.com", requestsKeyProperties.getPublicKey());
+        String email = RsaUtils.encrypt("jennie@redescooter.com", requestsKeyProperties.getPublicKey());
         System.out.println(email);
-        System.out.println("--------------------------------");
-        String password = RsaUtils.encrypt("456789", requestsKeyProperties.getPublicKey());
-        System.out.println(password);
+        System.out.println("---------dsfdfdfdfd-----------------------");
+        String password = RsaUtils.encrypt("13698653260", requestsKeyProperties.getPublicKey());
+        System.out.println(password+"{<>>>>>>><><><><><LKJKJKJKM}");
         System.out.println("--------------------------------");
         String password1 = RsaUtils.encrypt("123456789", requestsKeyProperties.getPublicKey());
-        System.out.println(password1);
+        System.out.println(password1+"{>>>>>>>>>>>>>>>>>>>>>>>>>>>>}");
     }
 
 }

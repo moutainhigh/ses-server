@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.app.common.service.FileAppService;
 import com.redescooter.ses.tool.utils.date.DateUtil;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCodebaseVinMapper;
 import com.redescooter.ses.web.ros.dm.*;
@@ -199,8 +200,10 @@ public class VINServiceImpl implements VINService {
 
         Integer i = 1;
         for (ExportVINResult item : list) {
-            /*item.setGenerateDate(DateUtil.dateAddHour(item.getGenerateDate(), 8));
-            item.setFinishDate(DateUtil.dateAddHour(item.getFinishDate(), 8));*/
+            if (StringUtils.isNotBlank(enter.getTimeZone()) && StringManaConstant.GMT_TIME_ZONE.equals(enter.getTimeZone())) {
+                item.setGenerateDate(DateUtil.dateAddHour(item.getGenerateDate(), 8));
+                item.setFinishDate(DateUtil.dateAddHour(item.getFinishDate(), 8));
+            }
             dataMap.add(toMap(item, i));
             i++;
         }

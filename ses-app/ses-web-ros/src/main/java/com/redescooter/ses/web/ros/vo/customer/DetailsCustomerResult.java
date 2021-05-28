@@ -149,7 +149,7 @@ public class DetailsCustomerResult extends GeneralResult {
     @ApiModelProperty(value = "合同附件")
     private String contractAnnex;
 
-    @ApiModelProperty(value = "账号使用标识，激活使用-1，未激活未使用-2")
+    @ApiModelProperty(value = "账号使用标识，即激活使用过1，未激活未使用0")
     private Integer accountFlag;
 
     @ApiModelProperty(value = "创建人名称")

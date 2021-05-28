@@ -1,16 +1,18 @@
 package com.redescooter.ses.web.ros.service.codebase.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.app.common.service.FileAppService;
 import com.redescooter.ses.tool.utils.date.DateUtil;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
+import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeNodeMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCodebaseRsnMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
+import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
 import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.web.ros.service.base.OpeCodebaseRsnService;
@@ -22,6 +24,7 @@ import com.redescooter.ses.web.ros.vo.codebase.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,6 +62,9 @@ public class RSNServiceImpl implements RSNService {
 
     @Autowired
     private OpeCarDistributeMapper opeCarDistributeMapper;
+
+    @Autowired
+    private OpeCarDistributeNodeMapper opeCarDistributeNodeMapper;
 
     @Value("${excel.folder}")
     private String excelFolder;
@@ -99,7 +105,7 @@ public class RSNServiceImpl implements RSNService {
         qw.eq(OpeCodebaseRsn::getRsn, rsn);
         qw.last("limit 1");
         OpeCodebaseRsn codebaseRsn = opeCodebaseRsnService.getOne(qw);
-        nodes.add(new Node("1",codebaseRsn == null ? "-" : DateUtil.getTimeStr(codebaseRsn.getCreatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
+        nodes.add(new Node("1", codebaseRsn == null ? "-" : DateUtil.getTimeStr(codebaseRsn.getCreatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
 
         // 入正式库
         LambdaQueryWrapper<OpeWmsStockSerialNumber> lqw = new LambdaQueryWrapper<>();
@@ -108,7 +114,7 @@ public class RSNServiceImpl implements RSNService {
         lqw.eq(OpeWmsStockSerialNumber::getRsn, rsn);
         lqw.last("limit 1");
         OpeWmsStockSerialNumber chSerialNumber = opeWmsStockSerialNumberService.getOne(lqw);
-        nodes.add(new Node("2",chSerialNumber == null ? "-" : DateUtil.getTimeStr(chSerialNumber.getCreatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
+        nodes.add(new Node("2", chSerialNumber == null ? "-" : DateUtil.getTimeStr(chSerialNumber.getCreatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
 
         // 进入法国仓库
         LambdaQueryWrapper<OpeWmsStockSerialNumber> wrapper = new LambdaQueryWrapper<>();
@@ -138,7 +144,25 @@ public class RSNServiceImpl implements RSNService {
         nodes.add(new Node("5", vinDistribute == null || null == vinDistribute.getUpdatedTime() ? "-" : DateUtil.getTimeStr(vinDistribute.getUpdatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
 
         // 设置软体
-        nodes.add(new Node("6", vinDistribute == null || null == vinDistribute.getUpdatedTime() ? "-" : DateUtil.getTimeStr(vinDistribute.getUpdatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
+        LambdaQueryWrapper<OpeCarDistribute> setWrapper = new LambdaQueryWrapper<>();
+        setWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        setWrapper.eq(OpeCarDistribute::getRsn, rsn);
+        setWrapper.last("limit 1");
+        OpeCarDistribute setModel = opeCarDistributeMapper.selectOne(setWrapper);
+        if (null != setModel) {
+            LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
+            nodeWrapper.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
+            nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, setModel.getCustomerId());
+            nodeWrapper.last("limit 1");
+            OpeCarDistributeNode node = opeCarDistributeNodeMapper.selectOne(nodeWrapper);
+            if (null != node && node.getAppNode() == 6 && node.getFlag() == 2) {
+                nodes.add(new Node("6", DateUtil.getTimeStr(setModel.getUpdatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
+            } else {
+                nodes.add(new Node("6", "-"));
+            }
+        } else {
+            nodes.add(new Node("6", "-"));
+        }
 
         // 车辆信息
         LambdaQueryWrapper<OpeCarDistribute> scooterWrapper = new LambdaQueryWrapper<>();
@@ -173,8 +197,10 @@ public class RSNServiceImpl implements RSNService {
         List<Map<String, Object>> dataMap = new ArrayList<>();
         Integer i = 1;
         for (ExportRSNResult item : list) {
-            /*item.setGenerateDate(DateUtil.dateAddHour(item.getGenerateDate(), 8));
-            item.setFinishDate(DateUtil.dateAddHour(item.getFinishDate(), 8));*/
+            if (StringUtils.isNotBlank(enter.getTimeZone()) && StringManaConstant.GMT_TIME_ZONE.equals(enter.getTimeZone())) {
+                item.setGenerateDate(DateUtil.dateAddHour(item.getGenerateDate(), 8));
+                item.setFinishDate(DateUtil.dateAddHour(item.getFinishDate(), 8));
+            }
             dataMap.add(toMap(item, i));
             i++;
         }

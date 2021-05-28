@@ -77,7 +77,7 @@
         end as status, created_time as generateDate, updated_time as
         finishDate
         from ope_codebase_rsn
-        where dr = 0
+        where dr = 0 and status != 3
         <include refid="condition"/>
         order by created_time desc
     </select>

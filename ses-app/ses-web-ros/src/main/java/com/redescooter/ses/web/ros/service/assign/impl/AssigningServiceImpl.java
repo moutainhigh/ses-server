@@ -104,6 +104,7 @@ public class AssigningServiceImpl implements AssigningService {
             // 详细信息
             List<AssigningDetailScooterInfoResult> scooterList = Lists.newArrayList();
             AssigningDetailScooterInfoResult model = new AssigningDetailScooterInfoResult();
+            model.setId(o.getId());
             model.setSeatNumber(o.getSeatNumber());
             model.setVinCode(o.getVinCode());
             model.setLicensePlate(o.getLicensePlate());

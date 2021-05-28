@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.scooter.job.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.jiguang.JobResult;
 import com.redescooter.ses.api.foundation.service.AppVersionService;
 import com.redescooter.ses.api.foundation.service.AppVersionUpdateLogService;
@@ -10,18 +11,26 @@ import com.redescooter.ses.api.scooter.service.ScooterEcuService;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterEcuDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterTabletUpdatePublishDTO;
 import com.redescooter.ses.service.scooter.config.emqx.MqttClientUtil;
+import com.redescooter.ses.service.scooter.constant.SequenceName;
+import com.redescooter.ses.service.scooter.dm.base.ScoScooterUpdateRecord;
+import com.redescooter.ses.service.scooter.service.base.ScoScooterUpdateRecordService;
+import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
 import com.redescooter.ses.tool.utils.thread.ThreadPoolExecutorUtil;
 import io.seata.spring.annotation.GlobalTransactional;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -29,16 +38,26 @@ import java.util.stream.Collectors;
  * @date 2020/12/27 15:30
  */
 @DubboService
+@Slf4j
 public class RunScooterTaskExecutorJobServiceImpl implements RunScooterTaskExecutorJobService {
 
     @DubboReference
     private AppVersionService appVersionService;
+
     @DubboReference
     private AppVersionUpdateLogService appVersionUpdateLogService;
+
+    @DubboReference
+    private IdAppService idAppService;
+
     @Resource
     private ScooterEcuService scooterEcuService;
+
     @Resource
     private MqttClientUtil mqttClientUtil;
+
+    @Autowired
+    private ScoScooterUpdateRecordService scoScooterUpdateRecordService;
 
     @Override
     public JobResult scooterUpdateFailRetry() {
@@ -54,12 +73,28 @@ public class RunScooterTaskExecutorJobServiceImpl implements RunScooterTaskExecu
                 tabletUpdatePublish.setDownloadLink(updateLog.getUpdateLink());
                 tabletUpdatePublish.setVersionCode(updateLog.getVersionCode());
                 tabletUpdatePublish.setTabletSn(updateLog.getTabletSn());
+                tabletUpdatePublish.setUpdateCode(UUID.randomUUID().toString().replaceAll("-", ""));
 
                 /**
                  * 发送车载平板升级EMQ X消息, 不同车可能对应不同的版本
                  */
+                log.info("下发的消息为:[{}]", tabletUpdatePublish);
                 mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_TABLET_UPDATE_TOPIC, updateLog.getTabletSn()),
                         JSONObject.toJSONString(tabletUpdatePublish));
+
+                // 新增平板升级更新记录表
+                ScoScooterUpdateRecord record = new ScoScooterUpdateRecord();
+                record.setId(idAppService.getId(SequenceName.SCO_SCOOTER));
+                record.setDr(Constant.DR_FALSE);
+                record.setTabletSn(tabletUpdatePublish.getTabletSn());
+                record.setDownloadLink(tabletUpdatePublish.getDownloadLink());
+                record.setVersionCode(tabletUpdatePublish.getVersionCode());
+                record.setUpdateCode(tabletUpdatePublish.getUpdateCode());
+                record.setFlag(1);
+                record.setCreatedBy(0L);
+                record.setCreatedTime(new Date());
+                log.info("新增平板升级更新记录表的入参是:[{}]", record);
+                scoScooterUpdateRecordService.save(record);
             });
 
         });
