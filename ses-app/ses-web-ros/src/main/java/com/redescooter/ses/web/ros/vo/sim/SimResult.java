@@ -21,20 +21,20 @@ import lombok.NoArgsConstructor;
 public class SimResult {
 
     @ApiModelProperty(value = "可用余额")
-    private String current_balance;
+    private Double current_balance;
 
     @ApiModelProperty(value = "sim卡数")
-    private String simCount;
+    private int simCount;
 
     @ApiModelProperty(value = "已激活卡数")
     private int activatedCount;
 
     @ApiModelProperty(value = "激活就绪卡数")
-    private String activationReadyCount;
+    private int activationReadyCount;
 
     @ApiModelProperty(value = "停用卡数")
-    private String deactivatedCount;
+    private int deactivatedCount;
 
-    @ApiModelProperty(value = "暂停")
-    private String suspended;
+    @ApiModelProperty(value = "暂停卡数")
+    private int suspended;
 }

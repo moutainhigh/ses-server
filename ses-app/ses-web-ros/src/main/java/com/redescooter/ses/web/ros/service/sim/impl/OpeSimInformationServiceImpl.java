@@ -29,6 +29,8 @@ import java.util.Map;
 @Service
 public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationMapper, OpeSimInformation> implements OpeSimInformationService {
 
+    private String status = "?status_id=";
+
     /**
      * @Title: getSimInformation
      * @Description: // 获取基本信息
@@ -50,8 +52,8 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
      * @Title: getSimTransactionRecords
      * @Description: // 获取交易记录
      * @Param: [simEnter]
-     * @Return: java.util.List<com.redescooter.ses.web.ros.vo.sim.SimTransactionRecordsResult>
-     * @Date: 2021/5/27 1:43 下午
+     * @Return: com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.web.ros.vo.sim.SimDataResult>
+     * @Date: 2021/5/28 8:58 上午
      * @Author: Charles
      */
     @Override
@@ -71,8 +73,8 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
      * @Title: getSimCardList
      * @Description: // Sim卡 列表信息
      * @Param: [simEnter]
-     * @Return: com.redescooter.ses.api.common.vo.base.Response<java.util.List < com.redescooter.ses.web.ros.vo.sim.SimCardList>>
-     * @Date: 2021/5/27 1:28 下午
+     * @Return: com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.web.ros.vo.sim.SimDataResult>
+     * @Date: 2021/5/28 8:58 上午
      * @Author: Charles
      */
     @Override
@@ -88,7 +90,14 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
         return new SimDataResult(list, total);
     }
 
-    // 激活
+    /**
+     * @Title: activationSim
+     * @Description: // Sim卡 激活
+     * @Param: [simEnter]
+     * @Return: com.redescooter.ses.api.common.vo.base.Response
+     * @Date: 2021/5/28 8:59 上午
+     * @Author: Charles
+     */
     @Override
     public boolean activationSim(SimEnter simEnter) {
         SimEssentialInformation simEssentialInformation = getSimInformation();
@@ -112,8 +121,14 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
         return false;
     }
 
-
-    // 停用
+    /**
+     * @Title: deactivatedSim
+     * @Description: // Sim卡 停用
+     * @Param: [simEnter]
+     * @Return: com.redescooter.ses.api.common.vo.base.Response
+     * @Date: 2021/5/28 9:00 上午
+     * @Author: Charles
+     */
     @Override
     public boolean deactivatedSim(SimEnter simEnter) {
         String body = sendPostSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_SIM_CARD, simEnter.getIccid(), SimInterfaceMethod.SIM_METHOD_DEACTIVATE, null));
@@ -128,7 +143,64 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
         return false;
     }
 
-    // 详情 数据判断和 mac地址判断
+    /**
+     * @Title: getSimEssentialInformation
+     * @Description: // 获取sim基本信息
+     * @Param: []
+     * @Return: com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.web.ros.vo.sim.SimResult>
+     * @Date: 2021/5/28 9:40 上午
+     * @Author: Charles
+     */
+    @Override
+    public SimResult getSimEssentialInformation() {
+        SimEssentialInformation simInformation = getSimInformation();
+        if (null == simInformation) {
+            return null;
+        }
+        // 已激活:1-Activated, 激活就绪:4-Activation Ready, 停用:2-Deactivated, 暂停:3-Suspended
+        int activatedTotal = getTotalByStatus(status + 1);
+        int activatedReadyTotal = getTotalByStatus(status + 4);
+        int deactivatedTotal = getTotalByStatus(status + 2);
+        int suspendedTotal = getTotalByStatus(status + 3);
+
+        int total = activatedTotal + activatedReadyTotal + deactivatedTotal + suspendedTotal;
+
+        SimResult simResult = new SimResult();
+        simResult.setCurrent_balance(simInformation.getCurrent_balance());
+        simResult.setSimCount(total);
+        simResult.setActivatedCount(activatedTotal);
+        simResult.setActivationReadyCount(activatedReadyTotal);
+        simResult.setDeactivatedCount(deactivatedTotal);
+        simResult.setSuspended(suspendedTotal);
+        return simResult;
+    }
+
+    /**
+     * @Title: getTotalByStatus
+     * @Description: // 查询各状态的总数据量
+     * @Param: [status]
+     * @Return: int
+     * @Date: 2021/5/28 9:23 上午
+     * @Author: Charles
+     */
+    private int getTotalByStatus(String status) {
+        String body = sendGetSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_IOT_SIM_CARDS, null, status, null));
+        if (StringUtils.isBlank(body)) {
+            return 0;
+        }
+        JSONObject jsonObject = JSONObject.parseObject(body);
+        int total = jsonObject.getInteger("total");
+        return total;
+    }
+
+    /**
+     * @Title: getSimDetails
+     * @Description: // Sim卡 详情
+     * @Param: [simEnter]
+     * @Return: com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.web.ros.vo.sim.SimBaseCodeResult>
+     * @Date: 2021/5/28 8:59 上午
+     * @Author: Charles
+     */
     @Override
     public SimBaseCodeResult getSimDetails(SimEnter simEnter) {
         QueryWrapper<OpeSimInformation> qw = new QueryWrapper<OpeSimInformation>();
@@ -150,13 +222,20 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
         JSONObject jsonObject = JSONObject.parseObject(body);
         String data = jsonObject.getString("data");
         SimBaseCodeResult simBaseCodeResult = JSONObject.parseObject(data, SimBaseCodeResult.class);
-        simBaseCodeResult.setRsn(opeSimInformation.getRsn());
-        simBaseCodeResult.setVin(opeSimInformation.getVin());
-        simBaseCodeResult.setMacAddress(opeSimInformation.getBluetoothMacAddress());
+        simBaseCodeResult.setRsn(opeSimInformation == null ? "" : opeSimInformation.getRsn());
+        simBaseCodeResult.setVin(opeSimInformation == null ? "" : opeSimInformation.getVin());
+        simBaseCodeResult.setMacAddress(opeSimInformation == null ? "" : opeSimInformation.getBluetoothMacAddress());
         return simBaseCodeResult;
     }
 
-    // 获取连接记录
+    /**
+     * @Title: getSimConnectRecord
+     * @Description: // 获取连接记录
+     * @Param: [simEnter]
+     * @Return: com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.web.ros.vo.sim.SimDataResult>
+     * @Date: 2021/5/28 8:58 上午
+     * @Author: Charles
+     */
     @Override
     public SimDataResult getSimConnectRecord(SimEnter simEnter) {
         String body = sendGetSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_SIM_CARD, simEnter.getIccid(), SimInterfaceMethod.SIM_METHOD_SESSIONS, getPage(simEnter)));
@@ -170,7 +249,14 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
         return new SimDataResult(list, total);
     }
 
-    // 日统计
+    /**
+     * @Title: getSimDailyStatistics
+     * @Description: // Sim卡 日统计
+     * @Param: [simEnter]
+     * @Return: com.redescooter.ses.api.common.vo.base.Response<java.util.List < com.redescooter.ses.web.ros.vo.sim.SimDailyStatisticsResult>>
+     * @Date: 2021/5/28 8:59 上午
+     * @Author: Charles
+     */
     @Override
     public List<SimDailyStatisticsResult> getSimDailyStatistics(SimEnter simEnter) {
         String body = sendGetSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_SIM_CARD, simEnter.getIccid(), SimInterfaceMethod.SIM_METHOD_DAILY_STATISTICS, null));

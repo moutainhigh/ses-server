@@ -24,7 +24,7 @@ public class SimEnter extends PageEnter {
     @ApiModelProperty("停用时间")
     private String deactivationDate;
 
-    @ApiModelProperty("状态: {已激活:Activated, 激活就绪:Activation Ready, 停用:Deactivated, 暂停:Suspended}")
+    @ApiModelProperty("状态: {已激活:1-Activated, 激活就绪:4-Activation Ready, 停用:2-Deactivated, 暂停:3-Suspended}")
     private String status;
 
     @ApiModelProperty("iccid")
