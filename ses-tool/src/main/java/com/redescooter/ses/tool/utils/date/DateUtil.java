@@ -1008,5 +1008,16 @@ public class DateUtil {
         return getSimpleTimeStamp().replaceAll("-","");
     }
 
-
+    /**
+     * @Title: getTimestamp
+     * @Description: // sim使用时间戳，10位，切记误改
+     * @Param: []
+     * @Return: java.lang.String
+     * @Date: 2021/5/27 11:00 上午
+     * @Author: Charles
+     */
+    public static String getTimestamp() {
+        long l = System.currentTimeMillis() / 1000;
+        return String.format("%010d", l);
+    }
 }

@@ -48,45 +48,15 @@ import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeNodeMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWmsScooterStockMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWmsStockRecordMapper;
-import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
-import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
-import com.redescooter.ses.web.ros.dm.OpeCodebaseRelation;
-import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
-import com.redescooter.ses.web.ros.dm.OpeCodebaseVin;
-import com.redescooter.ses.web.ros.dm.OpeColor;
-import com.redescooter.ses.web.ros.dm.OpeCustomer;
-import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
-import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
-import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
-import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
-import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
-import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
-import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
-import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.enums.distributor.StatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.app.FrAppService;
 import com.redescooter.ses.web.ros.service.assign.impl.ToBeAssignServiceImpl;
-import com.redescooter.ses.web.ros.service.base.OpeCodebaseRelationService;
-import com.redescooter.ses.web.ros.service.base.OpeCodebaseRsnService;
-import com.redescooter.ses.web.ros.service.base.OpeCodebaseVinService;
-import com.redescooter.ses.web.ros.service.base.OpeColorService;
-import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
-import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
-import com.redescooter.ses.web.ros.service.base.OpeSaleScooterService;
-import com.redescooter.ses.web.ros.service.base.OpeSpecificatGroupService;
-import com.redescooter.ses.web.ros.service.base.OpeWarehouseAccountService;
-import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
-import com.redescooter.ses.web.ros.vo.app.AppLoginEnter;
-import com.redescooter.ses.web.ros.vo.app.BindLicensePlateEnter;
-import com.redescooter.ses.web.ros.vo.app.BindVinEnter;
-import com.redescooter.ses.web.ros.vo.app.InputBatteryEnter;
-import com.redescooter.ses.web.ros.vo.app.InputScooterEnter;
-import com.redescooter.ses.web.ros.vo.app.InquiryDetailEnter;
-import com.redescooter.ses.web.ros.vo.app.InquiryDetailResult;
-import com.redescooter.ses.web.ros.vo.app.InquiryListAppEnter;
-import com.redescooter.ses.web.ros.vo.app.InquiryListResult;
+import com.redescooter.ses.web.ros.service.base.*;
+import com.redescooter.ses.web.ros.service.sim.OpeSimInformationService;
+import com.redescooter.ses.web.ros.vo.app.*;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
@@ -100,16 +70,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.JedisCluster;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -204,6 +165,12 @@ public class FrAppServiceImpl implements FrAppService {
 
     @DubboReference
     private AssignScooterService assignScooterService;
+
+    /**
+     * sim card
+     */
+    @Autowired
+    private OpeSimInformationService simInformationService;
 
     /**
      * 登录
@@ -317,13 +284,20 @@ public class FrAppServiceImpl implements FrAppService {
     }
 
     /**
+     * 验证token
+     */
+    public void checkToken(GeneralEnter enter) {
+        if (!jedisCluster.exists(enter.getToken())) {
+            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+        }
+    }
+
+    /**
      * 获得个人信息
      */
     @Override
     public OpeWarehouseAccount getUserInfo(GeneralEnter enter) {
-        if (!jedisCluster.exists(enter.getToken())) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
-        }
+        checkToken(enter);
         Long userId = getUserId(enter);
         OpeWarehouseAccount account = opeWarehouseAccountService.getById(userId);
         if (null == account) {
@@ -337,9 +311,7 @@ public class FrAppServiceImpl implements FrAppService {
      */
     @Override
     public PageResult<InquiryListResult> getList(InquiryListAppEnter enter) {
-        if (!jedisCluster.exists(enter.getToken())) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
-        }
+        checkToken(enter);
         Long userId = getUserId(enter);
         int count = opeCarDistributeExMapper.getInquiryListCount(enter, userId);
         if (count == 0) {
@@ -407,9 +379,7 @@ public class FrAppServiceImpl implements FrAppService {
      */
     @Override
     public InquiryDetailResult getDetail(InquiryDetailEnter enter) {
-        if (!jedisCluster.exists(enter.getToken())) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
-        }
+        checkToken(enter);
         Long userId = getUserId(enter);
 
         // 校验此询价单是否已分配给其他仓库账号
@@ -494,9 +464,7 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult bindVin(BindVinEnter enter) {
-        if (!jedisCluster.exists(enter.getToken())) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
-        }
+        checkToken(enter);
         Long userId = getUserId(enter);
         String vinCode = enter.getVinCode();
         Integer seatNumber = enter.getSeatNumber();
@@ -615,9 +583,7 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult bindLicensePlate(BindLicensePlateEnter enter) {
-        if (!jedisCluster.exists(enter.getToken())) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
-        }
+        checkToken(enter);
         Long userId = getUserId(enter);
         String licensePlate = enter.getLicensePlate();
         Long customerId = enter.getCustomerId();
@@ -660,9 +626,7 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult inputScooter(InputScooterEnter enter) {
-        if (!jedisCluster.exists(enter.getToken())) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
-        }
+        checkToken(enter);
         Long userId = getUserId(enter);
         Long customerId = enter.getCustomerId();
         String rsn = enter.getRsn();
@@ -770,9 +734,7 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult inputBattery(InputBatteryEnter enter) {
-        if (!jedisCluster.exists(enter.getToken())) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
-        }
+        checkToken(enter);
         Long userId = getUserId(enter);
         Long inquiryId = enter.getId();
 
@@ -854,9 +816,7 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult setScooterModel(CustomerIdEnter enter) {
-        if (!jedisCluster.exists(enter.getToken())) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
-        }
+        checkToken(enter);
         log.info("开始设置软体,入参是:[{}]", enter);
         Long userId = getUserId(enter);
 
@@ -1104,6 +1064,28 @@ public class FrAppServiceImpl implements FrAppService {
         lqw.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
         lqw.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
         opeCarDistributeNodeMapper.update(node, lqw);
+
+        /*---------------sim 信息录入--------------*/
+        LambdaQueryWrapper<OpeCarDistribute> qwOpeCar = new LambdaQueryWrapper<>();
+        qwOpeCar.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        qwOpeCar.eq(OpeCarDistribute::getCustomerId, opeCustomer.getId());
+        qwOpeCar.last("limit 1");
+        OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectOne(qwOpeCar);
+        if (null != opeCarDistribute) {
+            OpeSimInformation simInfo = new OpeSimInformation();
+            String iccid = jedisCluster.get(opeCarDistribute.getTabletSn());
+            if (StringUtils.isNotBlank(iccid)) {
+                simInfo.setSimIccid(iccid);
+            }
+            simInfo.setRsn(opeCarDistribute.getRsn());
+            simInfo.setBluetoothMacAddress(opeCarDistribute.getBluetoothAddress());
+            simInfo.setTabletSn(opeCarDistribute.getTabletSn());
+            simInfo.setVin(opeCarDistribute.getVinCode());
+            simInfo.setCreatedBy(enter.getUserId());
+            simInfo.setCreatedTime(new Date());
+            simInformationService.save(simInfo);
+        }
+        /*---------------sim 信息录入--------------*/
         return new GeneralResult(enter.getRequestId());
     }
 
