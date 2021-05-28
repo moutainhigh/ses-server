@@ -128,16 +128,23 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
-        // 校验rsn在ope_wms_stock_serial_number表是否存在
+        // 校验信息在ope_in_whouse_order_serial_bind表是否存在
         boolean flag = false;
         for (FrInWhOrderAddScooterBEnter scooterB : list) {
-            String rsn = scooterB.getSn();
-            LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
-            qw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
-            qw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
-            qw.eq(OpeWmsStockSerialNumber::getRsn, rsn);
-            int count = opeWmsStockSerialNumberService.count(qw);
+            LambdaQueryWrapper<OpeInWhouseOrderSerialBind> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeInWhouseOrderSerialBind::getDr, Constant.DR_FALSE);
+            qw.eq(OpeInWhouseOrderSerialBind::getSerialNum, scooterB.getSn());
+            int count = opeInWhouseOrderSerialBindService.count(qw);
             if (count > 0) {
+                flag = true;
+                break;
+            }
+
+            LambdaQueryWrapper<OpeInWhouseOrderSerialBind> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeInWhouseOrderSerialBind::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeInWhouseOrderSerialBind::getTabletSn, scooterB.getTabletSn());
+            int tabletSnCount = opeInWhouseOrderSerialBindService.count(lqw);
+            if (tabletSnCount > 0) {
                 flag = true;
                 break;
             }
