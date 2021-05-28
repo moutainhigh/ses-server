@@ -3,6 +3,9 @@ package com.redescooter.ses.web.ros.service.wms.cn.fr;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderAddEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderCheckEnter;
+
+import java.util.List;
 
 /**
  * @Description 法国仓库入库单Service层
@@ -20,5 +23,10 @@ public interface FrInWhOrderService {
      * 确认入库
      */
     GeneralResult confirmInWh(IdEnter enter);
+
+    /**
+     * 校验rsn在法国库存产品序列号表是否存在
+     */
+    List<String> checkRsn(FrInWhOrderCheckEnter enter);
 
 }

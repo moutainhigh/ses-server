@@ -46,6 +46,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusF
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsInStockRecordEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderAddEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderAddScooterBEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderCheckEnter;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -127,6 +128,24 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
+        // 校验rsn在ope_wms_stock_serial_number表是否存在
+        boolean flag = false;
+        for (FrInWhOrderAddScooterBEnter scooterB : list) {
+            String rsn = scooterB.getSn();
+            LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+            qw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
+            qw.eq(OpeWmsStockSerialNumber::getRsn, rsn);
+            int count = opeWmsStockSerialNumberService.count(qw);
+            if (count > 0) {
+                flag = true;
+                break;
+            }
+        }
+        if (flag) {
+            throw new SesWebRosException(ExceptionCodeEnums.FR_WH_RSN_IS_EXIST.getCode(), ExceptionCodeEnums.FR_WH_RSN_IS_EXIST.getMessage());
+        }
+
         // 新增入库单主表
         OpeInWhouseOrder inWhOrder = new OpeInWhouseOrder();
         inWhOrder.setId(idAppService.getId(SequenceName.OPE_IN_WHOUSE_ORDER));
@@ -189,6 +208,28 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
         // 操作法国仓库车辆库存,待入库数量增加
         wmsMaterialStockService.waitInStock(inWhOrder.getOrderType(), inWhOrder.getId(), inWhOrder.getCountryType(), enter.getUserId());
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 校验rsn在法国库存产品序列号表是否存在
+     */
+    @Override
+    public List<String> checkRsn(FrInWhOrderCheckEnter enter) {
+        if (null == enter || CollectionUtils.isEmpty(enter.getRsnList())) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+        List<String> result = Lists.newLinkedList();
+        for (String rsn : enter.getRsnList()) {
+            LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+            qw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
+            qw.eq(OpeWmsStockSerialNumber::getRsn, rsn);
+            int count = opeWmsStockSerialNumberService.count(qw);
+            if (count > 0) {
+                result.add(rsn);
+            }
+        }
+        return result;
     }
 
     /**
