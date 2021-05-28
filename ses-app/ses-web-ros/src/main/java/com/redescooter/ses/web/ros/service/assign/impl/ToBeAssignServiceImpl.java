@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.assign.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
@@ -47,22 +48,7 @@ import com.redescooter.ses.web.ros.dao.base.OpeWmsScooterStockMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWmsStockRecordMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.OpeInWhouseOrderSerialBindMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMapper;
-import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
-import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
-import com.redescooter.ses.web.ros.dm.OpeCodebaseRelation;
-import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
-import com.redescooter.ses.web.ros.dm.OpeCodebaseVin;
-import com.redescooter.ses.web.ros.dm.OpeColor;
-import com.redescooter.ses.web.ros.dm.OpeCustomer;
-import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
-import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
-import com.redescooter.ses.web.ros.dm.OpeInWhouseOrderSerialBind;
-import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
-import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
-import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
-import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
-import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
-import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
+import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.enums.assign.CustomerFormEnum;
 import com.redescooter.ses.web.ros.enums.assign.IndustryTypeEnum;
 import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
@@ -74,6 +60,7 @@ import com.redescooter.ses.web.ros.service.base.OpeCodebaseRsnService;
 import com.redescooter.ses.web.ros.service.base.OpeCodebaseVinService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
+import com.redescooter.ses.web.ros.service.sim.OpeSimInformationService;
 import com.redescooter.ses.web.ros.vo.assign.done.enter.AssignedListEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignInputBatteryDetailEnter;
@@ -102,6 +89,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.JedisCluster;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -198,6 +186,15 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
     @DubboReference
     private AssignScooterService assignScooterService;
+
+    @Autowired
+    private JedisCluster jedisCluster;
+
+    /**
+     * sim card
+     */
+    @Autowired
+    private OpeSimInformationService simInformationService;
 
     /**
      * 待分配列表
@@ -895,6 +892,28 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         if (stockFlag) {
             throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getCode(), ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getMessage());
         }
+
+        /*---------------sim 信息录入--------------*/
+        LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        qw.eq(OpeCarDistribute::getCustomerId, opeCustomer.getId());
+        qw.last("limit 1");
+        OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectOne(qw);
+        if (null != opeCarDistribute) {
+            OpeSimInformation simInfo = new OpeSimInformation();
+            String iccid = jedisCluster.get(opeCarDistribute.getTabletSn());
+            if (StringUtils.isNotBlank(iccid)) {
+                simInfo.setSimIccid(iccid);
+            }
+            simInfo.setRsn(opeCarDistribute.getRsn());
+            simInfo.setBluetoothMacAddress(opeCarDistribute.getBluetoothAddress());
+            simInfo.setTabletSn(opeCarDistribute.getTabletSn());
+            simInfo.setVin(opeCarDistribute.getVinCode());
+            simInfo.setCreatedBy(enter.getUserId());
+            simInfo.setCreatedTime(new Date());
+            simInformationService.save(simInfo);
+        }
+        /*---------------sim 信息录入--------------*/
 
         // node表node字段+1
         LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
