@@ -9,11 +9,25 @@ import com.redescooter.ses.web.ros.dao.sim.OpeSimInformationMapper;
 import com.redescooter.ses.web.ros.dm.OpeSimInformation;
 import com.redescooter.ses.web.ros.service.sim.OpeSimInformationService;
 import com.redescooter.ses.web.ros.utils.HmacUtil;
-import com.redescooter.ses.web.ros.vo.sim.*;
+import com.redescooter.ses.web.ros.vo.sim.SimBaseCodeResult;
+import com.redescooter.ses.web.ros.vo.sim.SimCardListResult;
+import com.redescooter.ses.web.ros.vo.sim.SimCardSessionsResult;
+import com.redescooter.ses.web.ros.vo.sim.SimDailyStatisticsResult;
+import com.redescooter.ses.web.ros.vo.sim.SimDataResult;
+import com.redescooter.ses.web.ros.vo.sim.SimEnter;
+import com.redescooter.ses.web.ros.vo.sim.SimEssentialInformation;
+import com.redescooter.ses.web.ros.vo.sim.SimInterfaceMethod;
+import com.redescooter.ses.web.ros.vo.sim.SimResult;
+import com.redescooter.ses.web.ros.vo.sim.SimTransactionRecordsResult;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -71,7 +85,7 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
 
     /**
      * @Title: getSimCardList
-     * @Description: // Sim卡 列表信息
+     * @Description: // Sim卡 列表信息 状态 status_id=1
      * @Param: [simEnter]
      * @Return: com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.web.ros.vo.sim.SimDataResult>
      * @Date: 2021/5/28 8:58 上午
@@ -79,15 +93,78 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
      */
     @Override
     public SimDataResult getSimCardList(SimEnter simEnter) {
-        String body = sendGetSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_IOT_SIM_CARDS, null, null, getPage(simEnter)));
-        if (StringUtils.isBlank(body)) {
-            return null;
-        }
+        String param = getParam(simEnter.getStatus(), simEnter.getIccid());
+        String body = sendGetSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_IOT_SIM_CARDS, null, getPage(simEnter), param));
         JSONObject jsonObject = JSONObject.parseObject(body);
         String data = jsonObject.getString("data");
         int total = jsonObject.getInteger("total");
-        List<SimCardListResult> list = JSONArray.parseArray(data, SimCardListResult.class);
+        List<SimCardListResult> list = null;
+        // 单一
+        if (StringUtils.isNotBlank(simEnter.getIccid())) {
+            QueryWrapper<OpeSimInformation> qwOpe = new QueryWrapper<>();
+            qwOpe.eq(OpeSimInformation.COL_DR, Constant.DR_FALSE);
+            qwOpe.select(OpeSimInformation.COL_TABLET_SN);
+            qwOpe.and(Wrapper -> Wrapper.eq(OpeSimInformation.COL_SIM_ICCID, simEnter.getIccid()).or().eq(OpeSimInformation.COL_TABLET_SN, simEnter.getIccid()));
+            qwOpe.last("limit 1");
+            OpeSimInformation simInformation = this.getOne(qwOpe);
+            if (0 == total && null == simInformation) {
+                return null;
+            }
+            if(0 != total){
+                list = JSONArray.parseArray(data, SimCardListResult.class);
+                if (CollectionUtils.isEmpty(list)) {
+                    return null;
+                }
+                list.stream().forEach((SimCardListResult simResult) -> {
+                    simResult.setTabledSn(simInformation.getTabletSn());
+                });
+                return new SimDataResult(list, total);
+            }
+            if (0 == total && null != simInformation) {
+                String param1 = getParam(simEnter.getStatus(), simInformation.getSimIccid());
+                String result = sendGetSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_IOT_SIM_CARDS, null, null, param1));
+                JSONObject resultJson = JSONObject.parseObject(result);
+                String resultTata = resultJson.getString("data");
+                int resultTotal = resultJson.getInteger("total");
+                list = JSONArray.parseArray(resultTata, SimCardListResult.class);
+                if (CollectionUtils.isEmpty(list)) {
+                    return null;
+                }
+                list.stream().forEach((SimCardListResult simResult) -> {
+                    simResult.setTabledSn(simInformation.getTabletSn());
+                });
+                return new SimDataResult(list, resultTotal);
+            }
+        }
+
+
+        list = JSONArray.parseArray(data, SimCardListResult.class);
+        if (CollectionUtils.isEmpty(list)) {
+            return null;
+        }
+
+        for (int i = 0; i < list.size(); i++) {
+            SimCardListResult simCardListResult = list.get(i);
+            QueryWrapper<OpeSimInformation> qw = new QueryWrapper<>();
+            qw.eq(OpeSimInformation.COL_DR, Constant.DR_FALSE);
+            qw.eq(OpeSimInformation.COL_SIM_ICCID, simCardListResult.getIccid());
+            qw.select(OpeSimInformation.COL_TABLET_SN);
+            qw.last("limit 1");
+            OpeSimInformation information = this.getOne(qw);
+            if (null == information) {
+                continue;
+            }
+            simCardListResult.setTabledSn(information.getTabletSn());
+
+        }
         return new SimDataResult(list, total);
+    }
+
+    private String getParam(String param1, String param2) {
+        String status = StringUtils.isBlank(param1) ? null : "&status_id=" + param1;
+        String iccid = StringUtils.isBlank(param2) ? null : "&common_filter=" + param2;
+        String param = (null == status ? "" : status) + (null == iccid ? "" : iccid);
+        return param;
     }
 
     /**
@@ -203,18 +280,6 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
      */
     @Override
     public SimBaseCodeResult getSimDetails(SimEnter simEnter) {
-        QueryWrapper<OpeSimInformation> qw = new QueryWrapper<OpeSimInformation>();
-        qw.eq(OpeSimInformation.COL_DR, Constant.DR_FALSE);
-        if (StringUtils.isNotBlank(simEnter.getIccid())) {
-            qw.eq(OpeSimInformation.COL_SIM_ICCID, simEnter.getIccid());
-        }
-        if (StringUtils.isNotBlank(simEnter.getTabledSn())) {
-            qw.eq(OpeSimInformation.COL_TABLET_SN, simEnter.getTabledSn());
-        }
-        OpeSimInformation opeSimInformation = this.getOne(qw);
-        if (null == opeSimInformation) {
-            return null;
-        }
         String body = sendGetSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_IOT_SIM_CARDS, "?" + HmacUtil.COMMON_FILTER + "=" + simEnter.getIccid(), null, null));
         if (StringUtils.isBlank(body)) {
             return null;
@@ -222,6 +287,11 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
         JSONObject jsonObject = JSONObject.parseObject(body);
         String data = jsonObject.getString("data");
         SimBaseCodeResult simBaseCodeResult = JSONObject.parseObject(data, SimBaseCodeResult.class);
+        QueryWrapper<OpeSimInformation> qw = new QueryWrapper<OpeSimInformation>();
+        qw.eq(OpeSimInformation.COL_DR, Constant.DR_FALSE);
+        qw.eq(OpeSimInformation.COL_SIM_ICCID, simEnter.getIccid());
+        qw.last("limit 1");
+        OpeSimInformation opeSimInformation = this.getOne(qw);
         simBaseCodeResult.setRsn(opeSimInformation == null ? "" : opeSimInformation.getRsn());
         simBaseCodeResult.setVin(opeSimInformation == null ? "" : opeSimInformation.getVin());
         simBaseCodeResult.setMacAddress(opeSimInformation == null ? "" : opeSimInformation.getBluetoothMacAddress());
@@ -259,7 +329,8 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
      */
     @Override
     public List<SimDailyStatisticsResult> getSimDailyStatistics(SimEnter simEnter) {
-        String body = sendGetSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_SIM_CARD, simEnter.getIccid(), SimInterfaceMethod.SIM_METHOD_DAILY_STATISTICS, null));
+        String body = sendGetSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_SIM_CARD, simEnter.getIccid(), SimInterfaceMethod.SIM_METHOD_DAILY_STATISTICS,
+                StringUtils.isBlank(simEnter.getDailyStatisticsDate()) ? null : "?billing_cycle" + simEnter.getDailyStatisticsDate()));
         if (StringUtils.isBlank(body)) {
             return null;
         }
