@@ -525,6 +525,8 @@ public class FrAppServiceImpl implements FrAppService {
         OpeCarDistribute distribute = new OpeCarDistribute();
         distribute.setVinCode(vinCode);
         distribute.setWarehouseAccountId(userId);
+        distribute.setUpdatedBy(enter.getUserId());
+        distribute.setUpdatedTime(new Date());
         // 条件
         LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
@@ -600,6 +602,8 @@ public class FrAppServiceImpl implements FrAppService {
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();
         distribute.setLicensePlate(licensePlate);
+        distribute.setUpdatedBy(enter.getUserId());
+        distribute.setUpdatedTime(new Date());
         // 条件
         LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
@@ -682,7 +686,8 @@ public class FrAppServiceImpl implements FrAppService {
         distribute.setMeter(meter);
         distribute.setImei(imei);
         distribute.setColorId(enter.getColorId());
-        distribute.setCreatedTime(new Date());
+        distribute.setUpdatedBy(enter.getUserId());
+        distribute.setUpdatedTime(new Date());
 
         // 条件
         LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
@@ -720,6 +725,8 @@ public class FrAppServiceImpl implements FrAppService {
         OpeCodebaseRelation relation = new OpeCodebaseRelation();
         relation.setRsn(rsn);
         relation.setStatus(2);
+        relation.setUpdatedBy(enter.getUserId());
+        relation.setUpdatedTime(new Date());
         LambdaQueryWrapper<OpeCodebaseRelation> relationWrapper = new LambdaQueryWrapper<>();
         relationWrapper.eq(OpeCodebaseRelation::getDr, Constant.DR_FALSE);
         relationWrapper.eq(OpeCodebaseRelation::getVin, enter.getVin());
