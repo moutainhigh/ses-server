@@ -137,13 +137,20 @@ public class ChAppServiceImpl implements ChAppService {
     }
 
     /**
+     * 验证token
+     */
+    public void checkToken(GeneralEnter enter) {
+        if (!jedisCluster.exists(enter.getToken())) {
+            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+        }
+    }
+
+    /**
      * 获得个人信息
      */
     @Override
     public OpeWarehouseAccount getUserInfo(GeneralEnter enter) {
-        if (!jedisCluster.exists(enter.getToken())) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
-        }
+        checkToken(enter);
         Long userId = getUserId(enter);
         OpeWarehouseAccount account = opeWarehouseAccountService.getById(userId);
         if (null == account) {
