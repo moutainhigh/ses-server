@@ -478,7 +478,7 @@ public class FrAppServiceImpl implements FrAppService {
         if (null != instance) {
             Long warehouseAccountId = instance.getWarehouseAccountId();
             String vin = instance.getVinCode();
-            if (null != warehouseAccountId) {
+            if (null != warehouseAccountId && !userId.equals(warehouseAccountId)) {
                 throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getCode(), ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getMessage());
             }
             if (StringUtils.isNotBlank(vin)) {
