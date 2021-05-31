@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.sim;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -26,33 +27,41 @@ public class SimCardListResult {
     @ApiModelProperty("iccid")
     private String iccid;
 
+    @JsonAlias(value = {"account_name", "accountName"})
     @ApiModelProperty("账户名称")
-    private String account_name;
+    private String accountName;
 
+    @JsonAlias(value = {"rate_plan", "ratePlan"})
     @ApiModelProperty("速率计划")
-    private String rate_plan;
+    private String ratePlan;
 
+    @JsonAlias(value = {"billing_cycle", "billingCycle"})
     @ApiModelProperty("计费周期")
-    private String billing_cycle;
+    private String billingCycle;
 
+    @JsonAlias(value = {"daily_usage_mb", "dailyUsageMb"})
     @ApiModelProperty("每日使用量")
-    private String daily_usage_mb;
+    private String dailyUsageMb;
 
+    @JsonAlias(value = {"monthly_usage_mb", "monthlyUsageMb"})
     @ApiModelProperty("每月使用量")
-    private String monthly_usage_mb;
+    private String monthlyUsageMb;
 
     @ApiModelProperty("仪表sn")
     private String tabledSn;
 
+    @JsonAlias(value = {"count_of_sessions", "countOfSessions"})
     @ApiModelProperty("绘画计数")
-    private String count_of_sessions;
+    private String countOfSessions;
 
+    @JsonAlias(value = {"sms_sent", "smsSent"})
     @ApiModelProperty("已发送短信")
-    private String sms_sent;
+    private String smsSent;
 
     @ApiModelProperty("记录")
     private String notes;
 
+    @JsonAlias(value = {"deactivation_date", "deactivationDate"})
     @ApiModelProperty("停用时间")
-    private String deactivation_date;
+    private String deactivationDate;
 }

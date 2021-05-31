@@ -110,7 +110,7 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
             if (0 == total && null == simInformation) {
                 return null;
             }
-            if(0 != total){
+            if (0 != total) {
                 list = JSONArray.parseArray(data, SimCardListResult.class);
                 if (CollectionUtils.isEmpty(list)) {
                     return null;
@@ -183,7 +183,7 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
         }
         // 余额不足要加提示
         // 账户余额不足，请充值后再来开启
-        if (simEssentialInformation.is_low_balance()) {
+        if (simEssentialInformation.isLowBalance()) {
             return false;
         }
         String body = sendPostSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_SIM_CARD, simEnter.getIccid(), SimInterfaceMethod.SIM_METHOD_ACTIVATION_READY, null));
@@ -221,6 +221,27 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
     }
 
     /**
+     * @Title: deactivationDate
+     * @Description: // sim 卡的停用日期
+     * @Param: [simEnter]
+     * @Return: boolean
+     * @Date: 2021/5/31 9:45 上午
+     * @Author: Charles
+     */
+    private boolean deactivationDate(SimEnter simEnter) {
+        String body = sendPostSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_SIM_CARD, simEnter.getIccid(), SimInterfaceMethod.SIM_METHOD_DEACTIVATION_DATE, null));
+        if (StringUtils.isBlank(body)) {
+            return false;
+        }
+        JSONObject jsonObject = JSONObject.parseObject(body);
+        String ack = jsonObject.getString("ack");
+        if ("success".equals(ack)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * @Title: getSimEssentialInformation
      * @Description: // 获取sim基本信息
      * @Param: []
@@ -243,7 +264,7 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
         int total = activatedTotal + activatedReadyTotal + deactivatedTotal + suspendedTotal;
 
         SimResult simResult = new SimResult();
-        simResult.setCurrent_balance(simInformation.getCurrent_balance());
+        simResult.setCurrentBalance(simInformation.getCurrentBalance());
         simResult.setSimCount(total);
         simResult.setActivatedCount(activatedTotal);
         simResult.setActivationReadyCount(activatedReadyTotal);
@@ -300,7 +321,7 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
 
     /**
      * @Title: getSimConnectRecord
-     * @Description: // 获取连接记录
+     * @Description: // 获取连接记录 是否加时间查询
      * @Param: [simEnter]
      * @Return: com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.web.ros.vo.sim.SimDataResult>
      * @Date: 2021/5/28 8:58 上午
