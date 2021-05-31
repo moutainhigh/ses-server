@@ -34,6 +34,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName:ScooterRecordsImpl
@@ -122,12 +124,12 @@ public class ScooterRecordsImpl implements ScooterRecordService {
         LambdaQueryWrapper<ScoScooterUpdateRecord> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ScoScooterUpdateRecord::getDr, Constant.DR_FALSE);
         wrapper.eq(ScoScooterUpdateRecord::getTabletSn, tabletSn);
-        wrapper.last("limit 1");
-        ScoScooterUpdateRecord model = scoScooterUpdateRecordService.getOne(wrapper);
-        if (null == model) {
+        List<ScoScooterUpdateRecord> modelList = scoScooterUpdateRecordService.list(wrapper);
+        if (CollectionUtils.isEmpty(modelList)) {
             return new BooleanResult(Boolean.FALSE);
         }
-        if (!versionCode.equals(model.getVersionCode())) {
+        Set<String> versionCodeSet = modelList.stream().map(o -> o.getVersionCode()).collect(Collectors.toSet());
+        if (!versionCodeSet.contains(versionCode)) {
             return new BooleanResult(Boolean.FALSE);
         }
 
