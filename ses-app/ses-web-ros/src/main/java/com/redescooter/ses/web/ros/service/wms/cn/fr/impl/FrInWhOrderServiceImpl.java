@@ -154,6 +154,33 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.FR_WH_RSN_IS_EXIST.getCode(), ExceptionCodeEnums.FR_WH_RSN_IS_EXIST.getMessage());
         }*/
 
+        // 校验信息在ope_wms_stock_serial_number表是否存在
+        boolean flag = false;
+        for (FrInWhOrderAddScooterBEnter scooterB : list) {
+            LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+            qw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
+            qw.eq(OpeWmsStockSerialNumber::getRsn, scooterB.getSn());
+            int count = opeWmsStockSerialNumberService.count(qw);
+            if (count > 0) {
+                flag = true;
+                break;
+            }
+
+            LambdaQueryWrapper<OpeWmsStockSerialNumber> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
+            lqw.eq(OpeWmsStockSerialNumber::getSn, scooterB.getTabletSn());
+            int tabletSnCount = opeWmsStockSerialNumberService.count(lqw);
+            if (tabletSnCount > 0) {
+                flag = true;
+                break;
+            }
+        }
+        if (flag) {
+            throw new SesWebRosException(ExceptionCodeEnums.FR_WH_RSN_IS_EXIST.getCode(), ExceptionCodeEnums.FR_WH_RSN_IS_EXIST.getMessage());
+        }
+
         // 新增入库单主表
         OpeInWhouseOrder inWhOrder = new OpeInWhouseOrder();
         inWhOrder.setId(idAppService.getId(SequenceName.OPE_IN_WHOUSE_ORDER));
@@ -225,15 +252,17 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
     public BooleanResult checkRsn(FrInWhOrderCheckEnter enter) {
         BooleanResult result = new BooleanResult();
 
-        /*LambdaQueryWrapper<OpeInWhouseOrderSerialBind> qw = new LambdaQueryWrapper<>();
-        qw.eq(OpeInWhouseOrderSerialBind::getDr, Constant.DR_FALSE);
-        qw.eq(OpeInWhouseOrderSerialBind::getSerialNum, enter.getRsn());
-        int count = opeInWhouseOrderSerialBindService.count(qw);
+        LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+        qw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
+        qw.eq(OpeWmsStockSerialNumber::getRsn, enter.getRsn());
+        int count = opeWmsStockSerialNumberService.count(qw);
 
-        LambdaQueryWrapper<OpeInWhouseOrderSerialBind> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(OpeInWhouseOrderSerialBind::getDr, Constant.DR_FALSE);
-        lqw.eq(OpeInWhouseOrderSerialBind::getTabletSn, enter.getTabletSn());
-        int tabletSnCount = opeInWhouseOrderSerialBindService.count(lqw);
+        LambdaQueryWrapper<OpeWmsStockSerialNumber> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+        lqw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
+        lqw.eq(OpeWmsStockSerialNumber::getSn, enter.getTabletSn());
+        int tabletSnCount = opeWmsStockSerialNumberService.count(lqw);
 
         if (count > 0 || tabletSnCount > 0) {
             result.setSuccess(Boolean.FALSE);
@@ -242,7 +271,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
         }
 
         result.setSuccess(Boolean.TRUE);
-        result.setRequestId(enter.getRequestId());*/
+        result.setRequestId(enter.getRequestId());
         return result;
     }
 
@@ -413,7 +442,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
                     number.setLotNum(lot);
                     // 整车序列号
                     number.setRsn(rsn);
-                    number.setSn(item.getDef1());
+                    number.setSn(item.getDef3());
                     // 蓝牙地址
                     number.setBluetoothMacAddress(item.getDef2());
                     // 仪表序列号
