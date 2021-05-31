@@ -2,7 +2,6 @@ package com.redescooter.ses.web.ros.service.assign.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
@@ -48,7 +47,23 @@ import com.redescooter.ses.web.ros.dao.base.OpeWmsScooterStockMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWmsStockRecordMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.OpeInWhouseOrderSerialBindMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMapper;
-import com.redescooter.ses.web.ros.dm.*;
+import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
+import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseRelation;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseVin;
+import com.redescooter.ses.web.ros.dm.OpeColor;
+import com.redescooter.ses.web.ros.dm.OpeCustomer;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
+import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
+import com.redescooter.ses.web.ros.dm.OpeInWhouseOrderSerialBind;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
+import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
+import com.redescooter.ses.web.ros.dm.OpeSimInformation;
+import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
+import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
+import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
+import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.web.ros.enums.assign.CustomerFormEnum;
 import com.redescooter.ses.web.ros.enums.assign.IndustryTypeEnum;
 import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
@@ -378,6 +393,19 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             /*String vinCode = generateVINCode(specificatId, specificatName, seatNumber);
             logger.info("生成的VIN Code是:[{}]", vinCode);*/
 
+            // 校验是否已被操作过
+            LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+            lqw.last("limit 1");
+            OpeCarDistribute instance = opeCarDistributeMapper.selectOne(lqw);
+            if (null != instance) {
+                String vin = instance.getVinCode();
+                if (StringUtils.isNotBlank(vin)) {
+                    throw new SesWebRosException(ExceptionCodeEnums.STEP_HAS_INPUT_IN_APP.getCode(), ExceptionCodeEnums.STEP_HAS_INPUT_IN_APP.getMessage());
+                }
+            }
+
             if (vinCode.length() != 17) {
                 throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
             }
@@ -413,14 +441,14 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             }
 
             // 查看vin在码库中是否存在
-            /*LambdaQueryWrapper<OpeCodebaseVin> existWrapper = new LambdaQueryWrapper<>();
+            LambdaQueryWrapper<OpeCodebaseVin> existWrapper = new LambdaQueryWrapper<>();
             existWrapper.eq(OpeCodebaseVin::getDr, Constant.DR_FALSE);
             existWrapper.eq(OpeCodebaseVin::getStatus, 1);
             existWrapper.eq(OpeCodebaseVin::getVin, vinCode);
             int count = opeCodebaseVinService.count(existWrapper);
             if (count == 0) {
                 throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getMessage());
-            }*/
+            }
 
             // 修改主表
             OpeCarDistribute model = new OpeCarDistribute();
@@ -505,6 +533,19 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         for (ToBeAssignLicensePlateNextDetailEnter o : list) {
             Long id = o.getId();
             String licensePlate = o.getLicensePlate();
+
+            // 校验是否已被操作过
+            LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+            lqw.last("limit 1");
+            OpeCarDistribute instance = opeCarDistributeMapper.selectOne(lqw);
+            if (null != instance) {
+                String plate = instance.getLicensePlate();
+                if (StringUtils.isNotBlank(plate)) {
+                    throw new SesWebRosException(ExceptionCodeEnums.STEP_HAS_INPUT_IN_APP.getCode(), ExceptionCodeEnums.STEP_HAS_INPUT_IN_APP.getMessage());
+                }
+            }
 
             LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
             checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
@@ -606,6 +647,18 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             String meter = o.getMeter();
             String imei = o.getImei();
 
+            // 校验是否已被操作过
+            LambdaQueryWrapper<OpeCarDistribute> scooterWrapper = new LambdaQueryWrapper<>();
+            scooterWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+            scooterWrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+            scooterWrapper.last("limit 1");
+            OpeCarDistribute instance = opeCarDistributeMapper.selectOne(scooterWrapper);
+            if (null != instance) {
+                if (StringUtils.isNotBlank(instance.getRsn()) || StringUtils.isNotBlank(instance.getTabletSn()) || StringUtils.isNotBlank(instance.getBluetoothAddress())) {
+                    throw new SesWebRosException(ExceptionCodeEnums.STEP_HAS_INPUT_IN_APP.getCode(), ExceptionCodeEnums.STEP_HAS_INPUT_IN_APP.getMessage());
+                }
+            }
+
             LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
             lqw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
             lqw.eq(OpeCarDistribute::getRsn, rsn);
@@ -616,14 +669,14 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             }
 
             // 查看rsn在码库中是否存在
-            /*LambdaQueryWrapper<OpeCodebaseRsn> existWrapper = new LambdaQueryWrapper<>();
+            LambdaQueryWrapper<OpeCodebaseRsn> existWrapper = new LambdaQueryWrapper<>();
             existWrapper.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
             existWrapper.eq(OpeCodebaseRsn::getStatus, 1);
             existWrapper.eq(OpeCodebaseRsn::getRsn, rsn);
             int count = opeCodebaseRsnService.count(existWrapper);
             if (count == 0) {
                 throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getMessage());
-            }*/
+            }
 
             // 修改主表
             OpeCarDistribute model = new OpeCarDistribute();
@@ -723,6 +776,19 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         for (ToBeAssignInputBatteryDetailEnter o : list) {
             Long id = o.getId();
             String battery = o.getBattery();
+
+            // 校验是否已被操作过
+            LambdaQueryWrapper<OpeCarDistribute> batteryWrapper = new LambdaQueryWrapper<>();
+            batteryWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+            batteryWrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+            batteryWrapper.last("limit 1");
+            OpeCarDistribute instance = opeCarDistributeMapper.selectOne(batteryWrapper);
+            if (null != instance) {
+                String cell = instance.getBattery();
+                if (StringUtils.isNotBlank(cell)) {
+                    throw new SesWebRosException(ExceptionCodeEnums.STEP_HAS_INPUT_IN_APP.getCode(), ExceptionCodeEnums.STEP_HAS_INPUT_IN_APP.getMessage());
+                }
+            }
 
             LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
             checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);

@@ -12,6 +12,7 @@ import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.enums.wms.WmsStockTypeEnum;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
@@ -46,6 +47,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusF
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsInStockRecordEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderAddEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderAddScooterBEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderCheckEnter;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -127,6 +129,31 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
+        // 校验信息在ope_in_whouse_order_serial_bind表是否存在
+        /*boolean flag = false;
+        for (FrInWhOrderAddScooterBEnter scooterB : list) {
+            LambdaQueryWrapper<OpeInWhouseOrderSerialBind> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeInWhouseOrderSerialBind::getDr, Constant.DR_FALSE);
+            qw.eq(OpeInWhouseOrderSerialBind::getSerialNum, scooterB.getSn());
+            int count = opeInWhouseOrderSerialBindService.count(qw);
+            if (count > 0) {
+                flag = true;
+                break;
+            }
+
+            LambdaQueryWrapper<OpeInWhouseOrderSerialBind> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeInWhouseOrderSerialBind::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeInWhouseOrderSerialBind::getTabletSn, scooterB.getTabletSn());
+            int tabletSnCount = opeInWhouseOrderSerialBindService.count(lqw);
+            if (tabletSnCount > 0) {
+                flag = true;
+                break;
+            }
+        }
+        if (flag) {
+            throw new SesWebRosException(ExceptionCodeEnums.FR_WH_RSN_IS_EXIST.getCode(), ExceptionCodeEnums.FR_WH_RSN_IS_EXIST.getMessage());
+        }*/
+
         // 新增入库单主表
         OpeInWhouseOrder inWhOrder = new OpeInWhouseOrder();
         inWhOrder.setId(idAppService.getId(SequenceName.OPE_IN_WHOUSE_ORDER));
@@ -189,6 +216,34 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
         // 操作法国仓库车辆库存,待入库数量增加
         wmsMaterialStockService.waitInStock(inWhOrder.getOrderType(), inWhOrder.getId(), inWhOrder.getCountryType(), enter.getUserId());
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 校验rsn在法国库存产品序列号表是否存在
+     */
+    @Override
+    public BooleanResult checkRsn(FrInWhOrderCheckEnter enter) {
+        BooleanResult result = new BooleanResult();
+
+        /*LambdaQueryWrapper<OpeInWhouseOrderSerialBind> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeInWhouseOrderSerialBind::getDr, Constant.DR_FALSE);
+        qw.eq(OpeInWhouseOrderSerialBind::getSerialNum, enter.getRsn());
+        int count = opeInWhouseOrderSerialBindService.count(qw);
+
+        LambdaQueryWrapper<OpeInWhouseOrderSerialBind> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(OpeInWhouseOrderSerialBind::getDr, Constant.DR_FALSE);
+        lqw.eq(OpeInWhouseOrderSerialBind::getTabletSn, enter.getTabletSn());
+        int tabletSnCount = opeInWhouseOrderSerialBindService.count(lqw);
+
+        if (count > 0 || tabletSnCount > 0) {
+            result.setSuccess(Boolean.FALSE);
+            result.setRequestId(enter.getRequestId());
+            return result;
+        }
+
+        result.setSuccess(Boolean.TRUE);
+        result.setRequestId(enter.getRequestId());*/
+        return result;
     }
 
     /**

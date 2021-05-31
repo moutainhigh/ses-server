@@ -588,7 +588,15 @@ public enum ExceptionCodeEnums {
 
     RSN_NOT_EXISTS_CODEBASE(10285, "该RSN在码库中不存在"),
 
-    ASSIGN_SCOOTER_WRONG(10286, "分车信息错误")
+    ASSIGN_SCOOTER_WRONG(10286, "分车信息错误"),
+
+    FR_WH_RSN_IS_EXIST(10287, "仓库中已存在一条或多条重复车辆信息,请确认后再提交"),
+
+    STEP_HAS_INPUT_IN_ROS(10288, "该步骤已在ROS录入,请刷新页面"),
+
+    STEP_HAS_INPUT_IN_APP(10289, "该步骤已在APP录入,请刷新页面")
+
+
 
 
     ;

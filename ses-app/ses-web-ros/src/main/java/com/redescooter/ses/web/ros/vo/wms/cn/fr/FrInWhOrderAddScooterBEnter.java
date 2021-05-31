@@ -26,7 +26,7 @@ public class FrInWhOrderAddScooterBEnter extends GeneralEnter {
     @ApiModelProperty(value = "颜色id", required = true)
     private Long colorId;
 
-    @ApiModelProperty(value = "平板序列号", required = true)
+    @ApiModelProperty(value = "整车序列号", required = true)
     private String sn;
 
     @ApiModelProperty(value = "蓝牙地址", required = true)

@@ -285,7 +285,12 @@ public class OrderServiceImpl implements OrderService {
         LambdaQueryWrapper<SiteProductPrice> queryWrapper1 = new LambdaQueryWrapper<>();
         queryWrapper1.eq(SiteProductPrice::getProductModelId, product.getProductModelId());
         queryWrapper1.eq(SiteProductPrice::getDr, Constant.DR_FALSE);
-        queryWrapper1.eq(SiteProductPrice::getPrice, sitePaymentType.getPaymentCode());
+        queryWrapper1.eq(SiteProductPrice::getPriceType, sitePaymentType.getPaymentCode());
+        if (StringUtils.isBlank(enter.getInstallmentTime())) {
+            queryWrapper1.eq(SiteProductPrice::getInstallmentTime, 0);
+        }else{
+            queryWrapper1.eq(SiteProductPrice::getInstallmentTime, enter.getInstallmentTime());
+        }
         SiteProductPrice siteProductPrice = siteProductPriceService.getOne(queryWrapper1);
         //判断是分期，租赁还是全款支付
         if (productPrice.getPriceType() == 1 || productPrice.getPriceType() == 3) {
@@ -340,6 +345,31 @@ public class OrderServiceImpl implements OrderService {
         result.setDeposit(addSiteOrderVO.getPrepaidDeposit());
         result.setRequestId(enter.getRequestId());
         String bankCardName = customer.getCardholder();
+        SiteOrder siteOrder = siteOrderService.getById(addSiteOrderVO.getId());
+        LambdaQueryWrapper<SiteParts> queryWrapper2 = new LambdaQueryWrapper<>();
+        queryWrapper2.eq(SiteParts::getPartsType, 3);
+        queryWrapper2.last("limit 1");
+        SiteParts siteParts = sitePartsService.getOne(queryWrapper2);
+        if (siteParts == null) {
+            throw new SesWebsiteException(ExceptionCodeEnums.PARTS_NOT_EXIST_EXIST.getCode(),
+                    ExceptionCodeEnums.PARTS_NOT_EXIST_EXIST.getMessage());
+        }
+        String batterys = siteProductPrice.getBattery().substring(0, 1);
+        BigDecimal batteryResult = new BigDecimal(siteOrder.getBatteryQty()).subtract(new BigDecimal(batterys));
+        BigDecimal batteryResult2 = new BigDecimal("0");
+        if (batteryResult.compareTo(BigDecimal.ZERO) == 0) {
+            batteryResult2 = new BigDecimal("0");
+        } else {
+            if (StringUtils.isBlank(enter.getInstallmentTime()) || "0".equals(enter.getInstallmentTime())){
+                batteryResult2 = batteryResult.multiply(siteParts.getPrice());
+            }else {
+                batteryResult2 = batteryResult.multiply(siteParts.getPrice()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()), 2, BigDecimal.ROUND_UP);
+                // BigDecimal peijian = new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()), 2, BigDecimal.ROUND_UP).multiply(new BigDecimal(siteProductPrice.getInstallmentTime()));
+                BigDecimal installmentTime2 = new BigDecimal(siteProductPrice.getInstallmentTime());
+                addSiteOrderVO.setTotalPrice(siteOrder.getPrepaidDeposit().add(siteOrder.getFreight()).add(siteProductPrice.getShouldPayPeriod().multiply(installmentTime2)).add(batteryResult2.multiply(installmentTime2)));
+                addSiteOrderVO.setAmountObligation(siteOrder.getTotalPrice().subtract(addSiteOrderVO.getAmountPaid()));
+            }
+        }
         // 官网的订单数据 要同步到ROS系统中
         syncdataToRos(addSiteOrderVO, email, bankCardName);
 
@@ -469,16 +499,16 @@ public class OrderServiceImpl implements OrderService {
             // 不包含+,说明是分期支付和租赁
             BigDecimal shouldPayPeriod = new BigDecimal("0");
             SitePaymentType paymentType = sitePaymentTypeService.getById(enter.getPaymentTypeId());
+
+
+            LambdaQueryWrapper<SiteProductPrice> queryWrapper1 = new LambdaQueryWrapper<>();
+            queryWrapper1.eq(SiteProductPrice::getProductModelId, enter.getModelId());
+            queryWrapper1.eq(SiteProductPrice::getDr, Constant.DR_FALSE);
+            queryWrapper1.eq(SiteProductPrice::getPriceType, Integer.valueOf(paymentType.getPaymentCode()));
+            queryWrapper1.eq(SiteProductPrice::getInstallmentTime, order.getDef5());
+            SiteProductPrice productPrice = siteProductPriceService.getOne(queryWrapper1);
+
             if ("3".equals(paymentType.getPaymentCode()) || "1".equals(paymentType.getPaymentCode())) {
-                LambdaQueryWrapper<SiteProductPrice> qw = new LambdaQueryWrapper<>();
-                qw.eq(SiteProductPrice::getDr, Constant.DR_FALSE);
-                qw.eq(SiteProductPrice::getStatus, 1);
-                qw.eq(SiteProductPrice::getPriceType, Integer.valueOf(paymentType.getPaymentCode()));
-                qw.eq(SiteProductPrice::getProductModelId, enter.getModelId());
-                qw.like(SiteProductPrice::getBattery, enter.getBattery());
-                qw.orderByDesc(SiteProductPrice::getInstallmentTime);
-                qw.last("limit 1");
-                SiteProductPrice productPrice = siteProductPriceService.getOne(qw);
                 if (null != productPrice) {
                     String installmentTime = productPrice.getInstallmentTime();
 //                        Integer count = Integer.valueOf(installmentTime) - 1;
@@ -496,13 +526,17 @@ public class OrderServiceImpl implements OrderService {
 //            BigDecimal orderTotalPrice = order.getTotalPrice().add(partAllTotalPrice);
             BigDecimal orderTotalPrice = order.getTotalPrice();
             //更新总金额
-            order.setTotalPrice(orderTotalPrice);
+            //order.setTotalPrice(orderTotalPrice);
             //更新待付金额
 //            BigDecimal amountObligation = order.getTotalPrice().add(shouldPayPeriod);
 //            order.setAmountObligation(amountObligation);
             order.setAmountObligation(order.getAmountObligation());
             //所选择配件总价格做备份记录
             order.setDef1(partAllTotalPrice.toPlainString());
+            log.info("订单总价格：{}", order.getTotalPrice());
+            order.setTotalPrice(orderTotalPrice.add(new BigDecimal(String.valueOf(shouldPayPeriod)).multiply(new BigDecimal(productPrice.getInstallmentTime()))));
+            log.info("订单总价格new>>>>>>>>>>>>>>>>>>>>>：{}", order.getTotalPrice());
+            order.setAmountObligation(order.getAmountObligation().add(new BigDecimal(String.valueOf(shouldPayPeriod))));
             //如果是分期的情况配件每期应付的价格
             orderB.setDef2(String.valueOf(shouldPayPeriod));
             //更新主订单金额
@@ -511,7 +545,7 @@ public class OrderServiceImpl implements OrderService {
             siteOrderBService.batchInsert(list);
 
             // 如果选择的有配件,同步修改ros预订单的价格(加上配件的价格)
-            syncPriceToRos(enter, orderTotalPrice, orderTotalPrice.subtract(order.getAmountPaid()));
+            syncPriceToRos(enter, order.getTotalPrice(), order.getTotalPrice().subtract(order.getAmountPaid()));
         }
         return new GeneralResult(enter.getRequestId());
     }
