@@ -37,6 +37,9 @@ public class InquiryDetailResult extends GeneralResult {
     @ApiModelProperty(value = "颜色id")
     private Long colorId;
 
+    @ApiModelProperty(value = "车牌")
+    private String licensePlate;
+
     @ApiModelProperty(value = "电池数量")
     private Integer batteryNum;
 
@@ -54,6 +57,21 @@ public class InquiryDetailResult extends GeneralResult {
 
     @ApiModelProperty(value = "VIN")
     private String vinCode;
+
+    @ApiModelProperty(value = "BBI")
+    private String bbi;
+
+    @ApiModelProperty(value = "控制器")
+    private String controller;
+
+    @ApiModelProperty(value = "电机")
+    private String electricMachinery;
+
+    @ApiModelProperty(value = "仪表")
+    private String meter;
+
+    @ApiModelProperty(value = "IMEI")
+    private String imei;
 
     @ApiModelProperty(value = "电池数")
     private Integer batteryNumber;

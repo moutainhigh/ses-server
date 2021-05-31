@@ -197,6 +197,12 @@
             ocd.rsn,
             ocd.tablet_sn,
             ocd.bluetooth_address,
+            ocd.license_plate,
+            ocd.bbi,
+            ocd.controller,
+            ocd.electric_machinery,
+            ocd.meter,
+            ocd.imei,
             ocd.vin_code,
             ocdn.app_node,
             ocd.battery
