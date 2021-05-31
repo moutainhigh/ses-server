@@ -116,20 +116,7 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
                 if (CollectionUtils.isEmpty(list)) {
                     return null;
                 }
-                switch (list.get(0).getStatus()) {
-                    case SimCardStatus.SIM_CARD_STATUSES_ACTIVATED:
-                        list.get(0).setSimCardStatus(1);
-                        break;
-                    case SimCardStatus.SIM_CARD_STATUSES_ACTIVATION_READY:
-                        list.get(0).setSimCardStatus(4);
-                        break;
-                    case SimCardStatus.SIM_CARD_STATUSES_DEACTIVATED:
-                        list.get(0).setSimCardStatus(2);
-                        break;
-                    case SimCardStatus.SIM_CARD_STATUSES_SUSPENDED:
-                        list.get(0).setSimCardStatus(3);
-                        break;
-                }
+                list.get(0).setSimCardStatus(getStatus(list.get(0).getStatus()));
                 list.stream().forEach((SimCardListResult simResult) -> {
                     simResult.setTabledSn(null == simInformation ? "" : simInformation.getTabletSn());
                 });
@@ -145,20 +132,7 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
                 if (CollectionUtils.isEmpty(list)) {
                     return null;
                 }
-                switch (list.get(0).getStatus()) {
-                    case SimCardStatus.SIM_CARD_STATUSES_ACTIVATED:
-                        list.get(0).setSimCardStatus(1);
-                        break;
-                    case SimCardStatus.SIM_CARD_STATUSES_ACTIVATION_READY:
-                        list.get(0).setSimCardStatus(4);
-                        break;
-                    case SimCardStatus.SIM_CARD_STATUSES_DEACTIVATED:
-                        list.get(0).setSimCardStatus(2);
-                        break;
-                    case SimCardStatus.SIM_CARD_STATUSES_SUSPENDED:
-                        list.get(0).setSimCardStatus(3);
-                        break;
-                }
+                list.get(0).setSimCardStatus(getStatus(list.get(0).getStatus()));
                 list.stream().forEach((SimCardListResult simResult) -> {
                     simResult.setTabledSn(simInformation.getTabletSn());
                 });
@@ -174,20 +148,7 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
 
         for (int i = 0; i < list.size(); i++) {
             SimCardListResult simCardListResult = list.get(i);
-            switch (simCardListResult.getStatus()) {
-                case SimCardStatus.SIM_CARD_STATUSES_ACTIVATED:
-                    simCardListResult.setSimCardStatus(1);
-                    break;
-                case SimCardStatus.SIM_CARD_STATUSES_ACTIVATION_READY:
-                    simCardListResult.setSimCardStatus(4);
-                    break;
-                case SimCardStatus.SIM_CARD_STATUSES_DEACTIVATED:
-                    simCardListResult.setSimCardStatus(2);
-                    break;
-                case SimCardStatus.SIM_CARD_STATUSES_SUSPENDED:
-                    simCardListResult.setSimCardStatus(3);
-                    break;
-            }
+            simCardListResult.setSimCardStatus(getStatus(simCardListResult.getStatus()));
             QueryWrapper<OpeSimInformation> qw = new QueryWrapper<>();
             qw.eq(OpeSimInformation.COL_DR, Constant.DR_FALSE);
             qw.eq(OpeSimInformation.COL_SIM_ICCID, simCardListResult.getIccid());
@@ -349,7 +310,10 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
         }
         JSONObject jsonObject = JSONObject.parseObject(body);
         String data = jsonObject.getString("data");
-        SimBaseCodeResult simBaseCodeResult = JSONObject.parseObject(data, SimBaseCodeResult.class);
+        List<SimBaseCodeResult> simBaseCodeResults = JSONArray.parseArray(data, SimBaseCodeResult.class);
+        SimBaseCodeResult simBaseCodeResult = 0 == simBaseCodeResults.size() ? new SimBaseCodeResult() : simBaseCodeResults.get(0);
+        String status = null == simBaseCodeResult ? "" : simBaseCodeResult.getStatus();
+        simBaseCodeResult.setSimCardStatus(getStatus(status));
         QueryWrapper<OpeSimInformation> qw = new QueryWrapper<OpeSimInformation>();
         qw.eq(OpeSimInformation.COL_DR, Constant.DR_FALSE);
         qw.eq(OpeSimInformation.COL_SIM_ICCID, simEnter.getIccid());
@@ -474,6 +438,23 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
     private static double kbToMb(String kb) {
         DecimalFormat df = new DecimalFormat("#.00");
         return Double.valueOf(df.format(Double.valueOf(kb) / 1024));
+    }
+
+    private int getStatus(String status) {
+        if (StringUtils.isBlank(status)) {
+            return 0;
+        }
+        switch (status) {
+            case SimCardStatus.SIM_CARD_STATUSES_ACTIVATED:
+                return 1;
+            case SimCardStatus.SIM_CARD_STATUSES_ACTIVATION_READY:
+                return 4;
+            case SimCardStatus.SIM_CARD_STATUSES_DEACTIVATED:
+                return 2;
+            case SimCardStatus.SIM_CARD_STATUSES_SUSPENDED:
+                return 3;
+        }
+        return 0;
     }
 
 }
