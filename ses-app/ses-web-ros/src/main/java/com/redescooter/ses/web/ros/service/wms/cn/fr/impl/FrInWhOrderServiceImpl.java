@@ -130,7 +130,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
         }
 
         // 校验信息在ope_in_whouse_order_serial_bind表是否存在
-        boolean flag = false;
+        /*boolean flag = false;
         for (FrInWhOrderAddScooterBEnter scooterB : list) {
             LambdaQueryWrapper<OpeInWhouseOrderSerialBind> qw = new LambdaQueryWrapper<>();
             qw.eq(OpeInWhouseOrderSerialBind::getDr, Constant.DR_FALSE);
@@ -152,7 +152,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
         }
         if (flag) {
             throw new SesWebRosException(ExceptionCodeEnums.FR_WH_RSN_IS_EXIST.getCode(), ExceptionCodeEnums.FR_WH_RSN_IS_EXIST.getMessage());
-        }
+        }*/
 
         // 新增入库单主表
         OpeInWhouseOrder inWhOrder = new OpeInWhouseOrder();
@@ -225,7 +225,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
     public BooleanResult checkRsn(FrInWhOrderCheckEnter enter) {
         BooleanResult result = new BooleanResult();
 
-        LambdaQueryWrapper<OpeInWhouseOrderSerialBind> qw = new LambdaQueryWrapper<>();
+        /*LambdaQueryWrapper<OpeInWhouseOrderSerialBind> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeInWhouseOrderSerialBind::getDr, Constant.DR_FALSE);
         qw.eq(OpeInWhouseOrderSerialBind::getSerialNum, enter.getRsn());
         int count = opeInWhouseOrderSerialBindService.count(qw);
@@ -242,7 +242,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
         }
 
         result.setSuccess(Boolean.TRUE);
-        result.setRequestId(enter.getRequestId());
+        result.setRequestId(enter.getRequestId());*/
         return result;
     }
 
