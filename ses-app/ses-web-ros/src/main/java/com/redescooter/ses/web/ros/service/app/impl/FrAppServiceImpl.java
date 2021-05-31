@@ -284,13 +284,20 @@ public class FrAppServiceImpl implements FrAppService {
     }
 
     /**
+     * 验证token
+     */
+    public void checkToken(GeneralEnter enter) {
+        if (!jedisCluster.exists(enter.getToken())) {
+            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+        }
+    }
+
+    /**
      * 获得个人信息
      */
     @Override
     public OpeWarehouseAccount getUserInfo(GeneralEnter enter) {
-        if (!jedisCluster.exists(enter.getToken())) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
-        }
+        checkToken(enter);
         Long userId = getUserId(enter);
         OpeWarehouseAccount account = opeWarehouseAccountService.getById(userId);
         if (null == account) {
@@ -304,9 +311,7 @@ public class FrAppServiceImpl implements FrAppService {
      */
     @Override
     public PageResult<InquiryListResult> getList(InquiryListAppEnter enter) {
-        if (!jedisCluster.exists(enter.getToken())) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
-        }
+        checkToken(enter);
         Long userId = getUserId(enter);
         int count = opeCarDistributeExMapper.getInquiryListCount(enter, userId);
         if (count == 0) {
@@ -374,9 +379,7 @@ public class FrAppServiceImpl implements FrAppService {
      */
     @Override
     public InquiryDetailResult getDetail(InquiryDetailEnter enter) {
-        if (!jedisCluster.exists(enter.getToken())) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
-        }
+        checkToken(enter);
         Long userId = getUserId(enter);
 
         // 校验此询价单是否已分配给其他仓库账号
@@ -461,9 +464,7 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult bindVin(BindVinEnter enter) {
-        if (!jedisCluster.exists(enter.getToken())) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
-        }
+        checkToken(enter);
         Long userId = getUserId(enter);
         String vinCode = enter.getVinCode();
         Integer seatNumber = enter.getSeatNumber();
@@ -582,9 +583,7 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult bindLicensePlate(BindLicensePlateEnter enter) {
-        if (!jedisCluster.exists(enter.getToken())) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
-        }
+        checkToken(enter);
         Long userId = getUserId(enter);
         String licensePlate = enter.getLicensePlate();
         Long customerId = enter.getCustomerId();
@@ -627,9 +626,7 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult inputScooter(InputScooterEnter enter) {
-        if (!jedisCluster.exists(enter.getToken())) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
-        }
+        checkToken(enter);
         Long userId = getUserId(enter);
         Long customerId = enter.getCustomerId();
         String rsn = enter.getRsn();
@@ -737,9 +734,7 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult inputBattery(InputBatteryEnter enter) {
-        if (!jedisCluster.exists(enter.getToken())) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
-        }
+        checkToken(enter);
         Long userId = getUserId(enter);
         Long inquiryId = enter.getId();
 
@@ -821,9 +816,7 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult setScooterModel(CustomerIdEnter enter) {
-        if (!jedisCluster.exists(enter.getToken())) {
-            throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
-        }
+        checkToken(enter);
         log.info("开始设置软体,入参是:[{}]", enter);
         Long userId = getUserId(enter);
 
