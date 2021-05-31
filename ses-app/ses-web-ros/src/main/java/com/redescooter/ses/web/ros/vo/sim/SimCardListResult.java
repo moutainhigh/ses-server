@@ -24,6 +24,9 @@ public class SimCardListResult {
     @ApiModelProperty("状态: {已激活:1-Activated, 激活就绪:4-Activation Ready, 停用:2-Deactivated, 暂停:3-Suspended}")
     private String status;
 
+    @ApiModelProperty("状态: {已激活:1, 激活就绪:4, 停用:2, 暂停:3}")
+    private int simCardStatus;
+
     @ApiModelProperty("iccid")
     private String iccid;
 

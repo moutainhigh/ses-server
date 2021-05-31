@@ -12,6 +12,7 @@ import com.redescooter.ses.web.ros.utils.HmacUtil;
 import com.redescooter.ses.web.ros.vo.sim.SimBaseCodeResult;
 import com.redescooter.ses.web.ros.vo.sim.SimCardListResult;
 import com.redescooter.ses.web.ros.vo.sim.SimCardSessionsResult;
+import com.redescooter.ses.web.ros.vo.sim.SimCardStatus;
 import com.redescooter.ses.web.ros.vo.sim.SimDailyStatisticsResult;
 import com.redescooter.ses.web.ros.vo.sim.SimDataResult;
 import com.redescooter.ses.web.ros.vo.sim.SimEnter;
@@ -115,8 +116,22 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
                 if (CollectionUtils.isEmpty(list)) {
                     return null;
                 }
+                switch (list.get(0).getStatus()) {
+                    case SimCardStatus.SIM_CARD_STATUSES_ACTIVATED:
+                        list.get(0).setSimCardStatus(1);
+                        break;
+                    case SimCardStatus.SIM_CARD_STATUSES_ACTIVATION_READY:
+                        list.get(0).setSimCardStatus(4);
+                        break;
+                    case SimCardStatus.SIM_CARD_STATUSES_DEACTIVATED:
+                        list.get(0).setSimCardStatus(2);
+                        break;
+                    case SimCardStatus.SIM_CARD_STATUSES_SUSPENDED:
+                        list.get(0).setSimCardStatus(3);
+                        break;
+                }
                 list.stream().forEach((SimCardListResult simResult) -> {
-                    simResult.setTabledSn(simInformation.getTabletSn());
+                    simResult.setTabledSn(null == simInformation ? "" : simInformation.getTabletSn());
                 });
                 return new SimDataResult(list, total);
             }
@@ -129,6 +144,20 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
                 list = JSONArray.parseArray(resultTata, SimCardListResult.class);
                 if (CollectionUtils.isEmpty(list)) {
                     return null;
+                }
+                switch (list.get(0).getStatus()) {
+                    case SimCardStatus.SIM_CARD_STATUSES_ACTIVATED:
+                        list.get(0).setSimCardStatus(1);
+                        break;
+                    case SimCardStatus.SIM_CARD_STATUSES_ACTIVATION_READY:
+                        list.get(0).setSimCardStatus(4);
+                        break;
+                    case SimCardStatus.SIM_CARD_STATUSES_DEACTIVATED:
+                        list.get(0).setSimCardStatus(2);
+                        break;
+                    case SimCardStatus.SIM_CARD_STATUSES_SUSPENDED:
+                        list.get(0).setSimCardStatus(3);
+                        break;
                 }
                 list.stream().forEach((SimCardListResult simResult) -> {
                     simResult.setTabledSn(simInformation.getTabletSn());
@@ -145,6 +174,20 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
 
         for (int i = 0; i < list.size(); i++) {
             SimCardListResult simCardListResult = list.get(i);
+            switch (simCardListResult.getStatus()) {
+                case SimCardStatus.SIM_CARD_STATUSES_ACTIVATED:
+                    simCardListResult.setSimCardStatus(1);
+                    break;
+                case SimCardStatus.SIM_CARD_STATUSES_ACTIVATION_READY:
+                    simCardListResult.setSimCardStatus(4);
+                    break;
+                case SimCardStatus.SIM_CARD_STATUSES_DEACTIVATED:
+                    simCardListResult.setSimCardStatus(2);
+                    break;
+                case SimCardStatus.SIM_CARD_STATUSES_SUSPENDED:
+                    simCardListResult.setSimCardStatus(3);
+                    break;
+            }
             QueryWrapper<OpeSimInformation> qw = new QueryWrapper<>();
             qw.eq(OpeSimInformation.COL_DR, Constant.DR_FALSE);
             qw.eq(OpeSimInformation.COL_SIM_ICCID, simCardListResult.getIccid());
@@ -155,7 +198,6 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
                 continue;
             }
             simCardListResult.setTabledSn(information.getTabletSn());
-
         }
         return new SimDataResult(list, total);
     }
