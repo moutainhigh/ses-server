@@ -170,7 +170,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             LambdaQueryWrapper<OpeWmsStockSerialNumber> lqw = new LambdaQueryWrapper<>();
             lqw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
             lqw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
-            lqw.eq(OpeWmsStockSerialNumber::getSn, scooterB.getTabletSn());
+            lqw.eq(OpeWmsStockSerialNumber::getSn, scooterB.getTabletSn()).or().eq(OpeWmsStockSerialNumber::getDef3, scooterB.getTabletSn());
             int tabletSnCount = opeWmsStockSerialNumberService.count(lqw);
             if (tabletSnCount > 0) {
                 flag = true;
@@ -261,7 +261,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
         LambdaQueryWrapper<OpeWmsStockSerialNumber> lqw = new LambdaQueryWrapper<>();
         lqw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
         lqw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
-        lqw.eq(OpeWmsStockSerialNumber::getSn, enter.getTabletSn());
+        lqw.eq(OpeWmsStockSerialNumber::getSn, enter.getTabletSn()).or().eq(OpeWmsStockSerialNumber::getDef3, enter.getTabletSn());
         int tabletSnCount = opeWmsStockSerialNumberService.count(lqw);
 
         if (count > 0 || tabletSnCount > 0) {
