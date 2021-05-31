@@ -255,6 +255,24 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
         List<OpeCarDistributeNode> nodeList = opeCarDistributeNodeMapper.selectList(nodeWrapper);
         if (CollectionUtils.isEmpty(nodeList)) {
+
+            LambdaQueryWrapper<OpeCustomerInquiry> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeCustomerInquiry::getDr, Constant.DR_FALSE);
+            qw.eq(OpeCustomerInquiry::getCustomerId, enter.getCustomerId());
+            qw.last("limit 1");
+            OpeCustomerInquiry inquiry = opeCustomerInquiryMapper.selectOne(qw);
+            if (null == inquiry) {
+                throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+            }
+            Long productId = inquiry.getProductId();
+            OpeSaleScooter saleScooter = opeSaleScooterMapper.selectById(productId);
+            if (null == saleScooter) {
+                throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
+            }
+            // 根据询价单id获得车辆型号id和颜色id
+            Long specificatId = saleScooter.getSpecificatId();
+            Long colorId = saleScooter.getColorId();
+
             OpeCarDistributeNode node = new OpeCarDistributeNode();
             node.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE_NODE));
             node.setDr(DelStatusEnum.VALID.getCode());
@@ -275,6 +293,10 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             model.setTenantId(enter.getTenantId());
             model.setUserId(enter.getUserId());
             model.setCustomerId(enter.getCustomerId());
+            model.setSpecificatTypeId(specificatId);
+            model.setColorId(colorId);
+            model.setSeatNumber(2);
+            model.setQty(1);
             model.setCreatedBy(enter.getUserId());
             model.setCreatedTime(new Date());
             opeCarDistributeMapper.insert(model);
