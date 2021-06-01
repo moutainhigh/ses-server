@@ -321,6 +321,7 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
         OpeSimInformation opeSimInformation = this.getOne(qw);
         simBaseCodeResult.setRsn(opeSimInformation == null ? "" : opeSimInformation.getRsn());
         simBaseCodeResult.setVin(opeSimInformation == null ? "" : opeSimInformation.getVin());
+        simBaseCodeResult.setTabledSn(opeSimInformation == null ? "" : opeSimInformation.getTabletSn());
         simBaseCodeResult.setMacAddress(opeSimInformation == null ? "" : opeSimInformation.getBluetoothMacAddress());
         return simBaseCodeResult;
     }
@@ -335,7 +336,9 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
      */
     @Override
     public SimDataResult getSimConnectRecord(SimEnter simEnter) {
-        String body = sendGetSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_SIM_CARD, simEnter.getIccid(), SimInterfaceMethod.SIM_METHOD_SESSIONS, getPage(simEnter)));
+        String dailyStatisticsDate = StringUtils.isBlank(simEnter.getDailyStatisticsDate()) ? "" : "&billing_cycle=" + simEnter.getDailyStatisticsDate();
+        String body = sendGetSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_SIM_CARD, simEnter.getIccid(), SimInterfaceMethod.SIM_METHOD_SESSIONS,
+                getPage(simEnter) + dailyStatisticsDate));
         if (StringUtils.isBlank(body)) {
             return null;
         }
@@ -357,11 +360,14 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
     @Override
     public List<SimDailyStatisticsResult> getSimDailyStatistics(SimEnter simEnter) {
         String body = sendGetSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_SIM_CARD, simEnter.getIccid(), SimInterfaceMethod.SIM_METHOD_DAILY_STATISTICS,
-                StringUtils.isBlank(simEnter.getDailyStatisticsDate()) ? null : "?billing_cycle" + simEnter.getDailyStatisticsDate()));
+                StringUtils.isBlank(simEnter.getDailyStatisticsDate()) ? null : "?billing_cycle=" + simEnter.getDailyStatisticsDate()));
         if (StringUtils.isBlank(body)) {
             return null;
         }
         List<SimDailyStatisticsResult> list = JSONArray.parseArray(body, SimDailyStatisticsResult.class);
+        if (CollectionUtils.isEmpty(list)) {
+            return list;
+        }
         list.stream().forEach((SimDailyStatisticsResult result) -> {
             result.setUsageMb(kbToMb(result.getUsage_kb()));
         });

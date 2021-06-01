@@ -33,7 +33,7 @@ public class SimCardSessionsResult {
     private String endDate;
 
     @JsonAlias(value = {"billing_cycle", "billingCycle"})
-    @ApiModelProperty(value = "计费周期", hidden = true)
+    @ApiModelProperty(value = "计费周期")
     private String billingCycle;
 
     @JsonAlias(value = {"country_code", "countryCode"})
