@@ -21,7 +21,7 @@ public class ScooterTakeEffectTask {
     @DubboReference
     private RunPoductionTaskExecutorServiceJob runPoductionTaskExecutorServiceJob;
 
-    @XxlJob("ScooterReleaseTask")
+    @XxlJob("ScooterTakeEffectTask")
     public ReturnT<String> ScooterTakeEffectTask(String param) throws Exception {
         // 开始时间
         Calendar start = Calendar.getInstance();
