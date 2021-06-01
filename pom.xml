@@ -85,6 +85,7 @@
         <module>ses-app</module>
         <module>ses-service</module>
         <module>ses-monitor-admin</module>
+        <module>ses-job</module>
     </modules>
 
     <dependencyManagement>
