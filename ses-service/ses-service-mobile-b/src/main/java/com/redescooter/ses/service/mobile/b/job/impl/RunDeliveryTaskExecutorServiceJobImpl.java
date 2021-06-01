@@ -1,6 +1,6 @@
 package com.redescooter.ses.service.mobile.b.job.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.enums.base.BizType;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatisticsEnums;
 import com.redescooter.ses.api.common.enums.delivery.DeliveryStatusEnums;
@@ -34,6 +34,7 @@ public class RunDeliveryTaskExecutorServiceJobImpl implements RunDeliveryTaskExe
 
     @Autowired
     private CorDeliveryMapper corDeliveryMapper;
+
     @Autowired
     private StatisticalDataService statisticalDataService;
 
@@ -47,48 +48,51 @@ public class RunDeliveryTaskExecutorServiceJobImpl implements RunDeliveryTaskExe
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public JobResult countDelivery(GeneralEnter enter) {
-
         Calendar start = Calendar.getInstance();
         log.info("本次countDelivery任务开始执行");
 
-        QueryWrapper<CorDelivery> corDeliveryQueryWrapper = new QueryWrapper<>();
-        corDeliveryQueryWrapper.eq(CorDelivery.COL_STATUS, DeliveryStatusEnums.COMPLETED.getValue()).or().eq(CorDelivery.COL_STATUS, DeliveryStatusEnums.TIMEOUT_COMPLETE.getValue());
-        corDeliveryQueryWrapper.eq(CorDelivery.COL_STATISTICS, DeliveryStatisticsEnums.NOT_COUNTED.getValue());
-        List<CorDelivery> deliveryList = corDeliveryMapper.selectList(corDeliveryQueryWrapper);
+        // 查找所有未统计的,订单状态为已送达或者超时完成的订单
+        LambdaQueryWrapper<CorDelivery> qw = new LambdaQueryWrapper<>();
+        qw.eq(CorDelivery::getStatus, DeliveryStatusEnums.COMPLETED.getValue()).or().eq(CorDelivery::getStatus, DeliveryStatusEnums.TIMEOUT_COMPLETE.getValue());
+        qw.eq(CorDelivery::getStatistics, DeliveryStatisticsEnums.NOT_COUNTED.getValue());
+        List<CorDelivery> list = corDeliveryMapper.selectList(qw);
 
-        List<SaveDeliveryStatEnter> saveDeliveryStatEnterList = new ArrayList<>();
+        // 保存集合
+        List<SaveDeliveryStatEnter> saveList = new ArrayList<>();
 
-        if (CollectionUtils.isNotEmpty(deliveryList)) {
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (CorDelivery item : list) {
+                SaveDeliveryStatEnter param = new SaveDeliveryStatEnter();
+                param.setDuration(Long.valueOf(item.getDrivenDuration()));
+                param.setMileage(item.getDrivenMileage().doubleValue());
+                param.setCo2(item.getCo2());
+                param.setMoney(item.getSavings());
+                param.setBizType(BizType.DELIVERY.getValue());
+                param.setBizId(item.getId());
+                param.setInputUserId(item.getDelivererId());
+                param.setInputTenantId(item.getTenantId());
+                param.setLastUpdateTime(item.getUpdatedTime());
+                saveList.add(param);
 
-            deliveryList.forEach(item -> {
-                SaveDeliveryStatEnter saveDeliveryStatEnter = SaveDeliveryStatEnter.builder()
-                        .bizId(item.getId())
-                        .bizType(BizType.DELIVERY.getValue())
-                        .mileage(item.getDrivenMileage().doubleValue())
-                        .duration(Long.valueOf(item.getDrivenDuration()))
-                        .inputUserId(item.getDelivererId())
-                        .inputTenantId(item.getTenantId())
-                        .lastUpdateTime(item.getUpdatedTime())
-                        .co2(item.getCo2())
-                        .money(item.getSavings())
-                        .build();
-                saveDeliveryStatEnterList.add(saveDeliveryStatEnter);
-
+                // 统计标识改为已统计
                 item.setStatistics(DeliveryStatisticsEnums.COUNTED.getValue());
-            });
+            }
         }
+
         // 抓取订单 进行数据保存
-        if (CollectionUtils.isNotEmpty(saveDeliveryStatEnterList)) {
-            statisticalDataService.saveDriverRideStat(saveDeliveryStatEnterList);
-            statisticalDataService.saveScooterRideStat(saveDeliveryStatEnterList);
+        if (CollectionUtils.isNotEmpty(saveList)) {
+            // 保存司机骑行数据
+            statisticalDataService.saveDriverRideStat(saveList);
+            // 车辆统计数据
+            statisticalDataService.saveScooterRideStat(saveList);
         }
+
         // 更新统计状态
-        if (CollectionUtils.isNotEmpty(deliveryList)) {
-            corDeliveryMapper.updateBatch(deliveryList);
+        if (CollectionUtils.isNotEmpty(list)) {
+            corDeliveryMapper.updateBatch(list);
         }
 
         log.info("本次任务执行完毕，耗时：" + (Calendar.getInstance().getTimeInMillis() - start.getTimeInMillis()) + "毫秒。");
-
         return JobResult.success();
     }
 }

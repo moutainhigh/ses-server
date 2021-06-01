@@ -36,10 +36,10 @@ public class CountDeliveryTasks {
         JobResult jobResult = runDeliveryTaskExecutorServiceJob.countDelivery(new GeneralEnter());
 
         if (jobResult.getStatus().name().equals("SUCCEED")) {
-            XxlJobLogger.log("本次[DeliveryTaskExecutor]任务执行完毕，等待下次执行！");
+            XxlJobLogger.log("本次[countDeliveryTasks]任务执行完毕，等待下次执行！");
             XxlJobLogger.log("本次任务执行完毕，耗时{}毫秒。", +(Calendar.getInstance().getTimeInMillis() - start.getTimeInMillis()));
             //该返回值是简单返回，可根据自身进行设置
-            return new ReturnT(ReturnT.SUCCESS_CODE, "【DeliveryTaskExecutor】执行成功，耗时" + (Calendar.getInstance().getTimeInMillis() - start.getTimeInMillis()) + "毫秒.");
+            return new ReturnT(ReturnT.SUCCESS_CODE, "【countDeliveryTasks】执行成功，耗时" + (Calendar.getInstance().getTimeInMillis() - start.getTimeInMillis()) + "毫秒.");
         }
         return new ReturnT<String>(IJobHandler.FAIL.getCode(), jobResult.getErrorMessage() == null ? JobDefaultError.RJOB_SYSTEM_INTERNAL_ERROR.getErrorMessage() : jobResult.getErrorMessage());
     }
