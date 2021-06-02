@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.mobile.c.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.DateTimeParmEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.mobile.c.service.IdDashboardService;
@@ -12,12 +13,12 @@ import com.redescooter.ses.service.mobile.c.dm.base.ConUserScooter;
 import com.redescooter.ses.service.mobile.c.service.base.ConScooterRideStatService;
 import com.redescooter.ses.service.mobile.c.service.base.ConUserScooterService;
 import com.redescooter.ses.tool.utils.date.DateUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +30,7 @@ import java.util.Map;
  * @create: 2020/02/20 14:45
  */
 @DubboService
+@Slf4j
 public class IdDashboardServiceImpl implements IdDashboardService {
 
     @Autowired
@@ -51,27 +53,33 @@ public class IdDashboardServiceImpl implements IdDashboardService {
      */
     @Override
     public ScooterChartResult allScooterChart(GeneralEnter enter) {
-        QueryWrapper<ConUserScooter> conUserScooterQueryWrapper = new QueryWrapper();
-        conUserScooterQueryWrapper.eq(ConUserScooter.COL_DR, 0);
-        conUserScooterQueryWrapper.eq(ConUserScooter.COL_USER_ID, enter.getUserId());
-        ConUserScooter conUserScooter = conUserScooterService.getOne(conUserScooterQueryWrapper);
-        if (conUserScooter == null) {
+        log.info("入参是:[{}]", enter);
+        LambdaQueryWrapper<ConUserScooter> qw = new LambdaQueryWrapper<>();
+        qw.eq(ConUserScooter::getDr, Constant.DR_FALSE);
+        qw.eq(ConUserScooter::getUserId, enter.getUserId());
+        qw.last("limit 1");
+        ConUserScooter userScooter = conUserScooterService.getOne(qw);
+        if (null == userScooter) {
             return new ScooterChartResult();
         }
+
         // 查询骑行数据
-        QueryWrapper<ConScooterRideStat> conScooterRideStatQueryWrapper = new QueryWrapper<>();
-        conScooterRideStatQueryWrapper.eq(ConScooterRideStat.COL_DR, 0);
-        conScooterRideStatQueryWrapper.eq(ConScooterRideStat.COL_SCOOTER_ID, conUserScooter.getScooterId());
-        ConScooterRideStat conScooterRideStat = conScooterRideStatService.getOne(conScooterRideStatQueryWrapper);
-        if (conScooterRideStat == null) {
+        LambdaQueryWrapper<ConScooterRideStat> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(ConScooterRideStat::getDr, Constant.DR_FALSE);
+        lqw.eq(ConScooterRideStat::getScooterId, userScooter.getScooterId());
+        lqw.last("limit 1");
+        ConScooterRideStat stat = conScooterRideStatService.getOne(lqw);
+        if (null == stat) {
             return new ScooterChartResult();
         }
-        return ScooterChartResult.builder()
-                .avgSpeed(conScooterRideStat.getSavedMoney().toString())
-                .totalCo2(conScooterRideStat.getCo2Total().toString())
-                .totalMileage(conScooterRideStat.getTotalMileage().toString())
-                .totalMoney(conScooterRideStat.getSavedMoney().toString())
-                .build();
+
+        ScooterChartResult result = new ScooterChartResult();
+        result.setTotalMileage(stat.getTotalMileage().toString());
+        result.setTotalCo2(stat.getCo2Total().toString());
+        result.setTotalMoney(stat.getSavedMoney().toString());
+        result.setAvgSpeed(stat.getSavedMoney().toString());
+        result.setRequestId(enter.getRequestId());
+        return result;
     }
 
     /**
@@ -85,38 +93,38 @@ public class IdDashboardServiceImpl implements IdDashboardService {
      */
     @Override
     public AllScooterChartResult scooterChart(DateTimeParmEnter enter) {
-
-        Map<String, ScooterChartResult> allMap = new LinkedHashMap<>();
-        List<String> dayList = new LinkedList();
+        log.info("入参是:[{}]", enter);
+        Map<String, ScooterChartResult> map = new LinkedHashMap<>();
+        List<String> dayList;
         // 获取指定日期格式向前N天时间集合
 //            dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
         dayList = DateUtil.getBetweenDates(enter.getStartDateTime(), enter.getEndDateTime());
         List<ScooterChartResult> list = idDashboardServiceMapper.scooterChart(enter);
-        ScooterChartResult result = null;
+        ScooterChartResult model = null;
         if (CollectionUtils.isEmpty(list)) {
             for (String str : dayList) {
-                result = new ScooterChartResult();
-                result.setTimes(str);
-                allMap.put(str, result);
+                model = new ScooterChartResult();
+                model.setTimes(str);
+                map.put(str, model);
             }
         } else {
             for (String str : dayList) {
                 for (ScooterChartResult chart : list) {
                     if (chart.getTimes().equals(str)) {
-                        allMap.put(str, chart);
+                        map.put(str, chart);
                     }
                 }
-                if (!allMap.containsKey(str)) {
-                    result = new ScooterChartResult();
-                    result.setTimes(str);
-                    allMap.put(str, result);
+                if (!map.containsKey(str)) {
+                    model = new ScooterChartResult();
+                    model.setTimes(str);
+                    map.put(str, model);
                 }
             }
         }
 
-        AllScooterChartResult scooterChartResult = new AllScooterChartResult();
-        scooterChartResult.setAllMap(allMap);
-        scooterChartResult.setRequestId(enter.getRequestId());
-        return scooterChartResult;
+        AllScooterChartResult result = new AllScooterChartResult();
+        result.setAllMap(map);
+        result.setRequestId(enter.getRequestId());
+        return result;
     }
 }
