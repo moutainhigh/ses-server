@@ -41,6 +41,6 @@
     <update id="synchronizeDeposit" parameterType="com.redescooter.ses.service.hub.source.website.dm.SiteProductPrice">
         update site_product_price
         set prepaid_deposit = #{enter.prepaidDeposit},
-            price           = #{price}where dr = 0
+            price           = #{enter.price}where dr = 0
     </update>
 </mapper>
