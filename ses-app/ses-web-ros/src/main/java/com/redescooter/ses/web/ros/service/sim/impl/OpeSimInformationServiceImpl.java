@@ -1,10 +1,13 @@
 package com.redescooter.ses.web.ros.service.sim.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.dao.sim.OpeSimInformationMapper;
 import com.redescooter.ses.web.ros.dm.OpeSimInformation;
 import com.redescooter.ses.web.ros.service.sim.OpeSimInformationService;
@@ -105,6 +108,7 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
             QueryWrapper<OpeSimInformation> qwOpe = new QueryWrapper<>();
             qwOpe.eq(OpeSimInformation.COL_DR, Constant.DR_FALSE);
             qwOpe.select(OpeSimInformation.COL_TABLET_SN);
+            qwOpe.select(OpeSimInformation.COL_SIM_ICCID);
             qwOpe.and(Wrapper -> Wrapper.eq(OpeSimInformation.COL_SIM_ICCID, simEnter.getIccid()).or().eq(OpeSimInformation.COL_TABLET_SN, simEnter.getIccid()));
             qwOpe.last("limit 1");
             OpeSimInformation simInformation = this.getOne(qwOpe);
@@ -124,7 +128,7 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
             }
             if (0 == total && null != simInformation) {
                 String param1 = getParam(simEnter.getStatus(), simInformation.getSimIccid());
-                String result = sendGetSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_IOT_SIM_CARDS, null, null, param1));
+                String result = sendGetSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_IOT_SIM_CARDS, null, "?", param1));
                 JSONObject resultJson = JSONObject.parseObject(result);
                 String resultTata = resultJson.getString("data");
                 int resultTotal = resultJson.getInteger("total");
@@ -232,7 +236,7 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
      * @Author: Charles
      */
     private boolean deactivationDate(SimEnter simEnter) {
-        String body = sendPostSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_SIM_CARD, simEnter.getIccid(), SimInterfaceMethod.SIM_METHOD_DEACTIVATION_DATE, null));
+        String body = sendPutSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_SIM_CARD, simEnter.getIccid(), SimInterfaceMethod.SIM_METHOD_DEACTIVATION_DATE, null));
         if (StringUtils.isBlank(body)) {
             return false;
         }
@@ -427,6 +431,41 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
                     .addHeader(HmacUtil.SIM_TIMESTAMP, map.get(HmacUtil.SIM_TIMESTAMP))
                     .addHeader(HmacUtil.SIM_HASH, map.get(HmacUtil.SIM_HASH))
                     .addHeader(HmacUtil.SIM_UUID, HmacUtil.USER_UUID)
+                    .build();
+            Response response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                return null;
+            }
+            String bodyJson = response.body().string();
+            log.info("sim 相应结果 {}", bodyJson);
+            return bodyJson;
+        } catch (Exception e) {
+            log.error("sim {}接口请求异常", reqMethod);
+        }
+        return null;
+    }
+
+    private String sendPutSimRequest(String reqMethod) {
+        try {
+            Map<String, String> map = HmacUtil.generateKey();
+            if (null == map) {
+                return null;
+            }
+            String utcPlusDays = DateUtil.getUTCPlusDays(1);
+            Map<String, String> paramMap = Maps.newHashMap();
+            paramMap.put(SimInterfaceMethod.SIM_METHOD_DEACTIVATION_DATE, utcPlusDays);
+            String paramJson = JSON.toJSONString(paramMap);
+            OkHttpClient client = new OkHttpClient().newBuilder()
+                    .build();
+            MediaType mediaType = MediaType.parse("application/json");
+            RequestBody body = RequestBody.create(mediaType, paramJson);
+            Request request = new Request.Builder()
+                    .url(HmacUtil.API_LINK + reqMethod)
+                    .method("PUT", body)
+                    .addHeader(HmacUtil.SIM_TIMESTAMP, map.get(HmacUtil.SIM_TIMESTAMP))
+                    .addHeader(HmacUtil.SIM_HASH, map.get(HmacUtil.SIM_HASH))
+                    .addHeader(HmacUtil.SIM_UUID, HmacUtil.USER_UUID)
+                    .addHeader("Content-Type", "application/json")
                     .build();
             Response response = client.newCall(request).execute();
             if (!response.isSuccessful()) {
