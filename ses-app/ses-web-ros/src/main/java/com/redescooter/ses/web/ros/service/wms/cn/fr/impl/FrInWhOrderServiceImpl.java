@@ -51,6 +51,7 @@ import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderCheckEnter;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -252,19 +253,35 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
     public BooleanResult checkRsn(FrInWhOrderCheckEnter enter) {
         BooleanResult result = new BooleanResult();
 
-        LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
-        qw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
-        qw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
-        qw.eq(OpeWmsStockSerialNumber::getRsn, enter.getRsn());
-        int count = opeWmsStockSerialNumberService.count(qw);
+        Integer count = 0, tabletSnCount = 0, macCount = 0;
+        // 整车序列号
+        if (StringUtils.isNotBlank(enter.getRsn())) {
+            LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+            qw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
+            qw.eq(OpeWmsStockSerialNumber::getRsn, enter.getRsn());
+            count = opeWmsStockSerialNumberService.count(qw);
+        }
 
-        LambdaQueryWrapper<OpeWmsStockSerialNumber> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
-        lqw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
-        lqw.eq(OpeWmsStockSerialNumber::getSn, enter.getTabletSn()).or().eq(OpeWmsStockSerialNumber::getDef3, enter.getTabletSn());
-        int tabletSnCount = opeWmsStockSerialNumberService.count(lqw);
+        // 平板序列号
+        if (StringUtils.isNotBlank(enter.getTabletSn())) {
+            LambdaQueryWrapper<OpeWmsStockSerialNumber> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
+            lqw.eq(OpeWmsStockSerialNumber::getSn, enter.getTabletSn()).or().eq(OpeWmsStockSerialNumber::getDef3, enter.getTabletSn());
+            tabletSnCount = opeWmsStockSerialNumberService.count(lqw);
+        }
 
-        if (count > 0 || tabletSnCount > 0) {
+        // 蓝牙地址
+        if (StringUtils.isNotBlank(enter.getBluetoothMacAddress())) {
+            LambdaQueryWrapper<OpeWmsStockSerialNumber> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+            wrapper.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
+            wrapper.eq(OpeWmsStockSerialNumber::getBluetoothMacAddress, enter.getBluetoothMacAddress());
+            macCount = opeWmsStockSerialNumberService.count(wrapper);
+        }
+
+        if (count > 0 || tabletSnCount > 0 || macCount > 0) {
             result.setSuccess(Boolean.FALSE);
             result.setRequestId(enter.getRequestId());
             return result;
