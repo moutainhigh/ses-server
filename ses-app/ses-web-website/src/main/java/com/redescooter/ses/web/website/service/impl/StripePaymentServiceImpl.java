@@ -397,11 +397,11 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                 }
                 BigDecimal peijian = new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()),2,BigDecimal.ROUND_UP).multiply(new BigDecimal(siteProductPrice.getInstallmentTime()));
                 BigDecimal installmentTime = new BigDecimal(siteProductPrice.getInstallmentTime());
-                //siteOrder.setTotalPrice(siteOrder.getPrepaidDeposit().add(siteOrder.getFreight()).add(siteProductPrice.getShouldPayPeriod().multiply(installmentTime)).add(batteryResult2.multiply(installmentTime)).add(peijian));
+                siteOrder.setTotalPrice(siteOrder.getTotalPrice());
                 Integer restPeriods = Integer.parseInt(siteOrder.getDef2());
                 siteOrder.setDef2(restPeriods.toString());
             } else {
-                siteOrder.setTotalPrice(siteOrder.getTotalPrice().add(new BigDecimal(siteOrder.getDef1())));
+                siteOrder.setTotalPrice(siteOrder.getTotalPrice());
                 siteOrder.setAmountPaid(siteOrder.getPrepaidDeposit().add(siteOrder.getFreight()));
                 siteOrder.setAmountObligation(siteOrder.getTotalPrice().subtract(siteOrder.getAmountPaid()));
             }
@@ -426,7 +426,8 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                     siteOrder.setDef2(restPeriods.toString());
                     BigDecimal peijian = new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()),2,BigDecimal.ROUND_UP).multiply(new BigDecimal(siteProductPrice.getInstallmentTime()));
                     BigDecimal installmentTime = new BigDecimal(siteProductPrice.getInstallmentTime());
-                    siteOrder.setTotalPrice(siteOrder.getPrepaidDeposit().add(siteOrder.getFreight()).add(siteProductPrice.getShouldPayPeriod().multiply(installmentTime)).add(batteryResult2.multiply(installmentTime)).add(peijian));
+//                    siteOrder.setTotalPrice(siteOrder.getPrepaidDeposit().add(siteOrder.getFreight()).add(siteProductPrice.getShouldPayPeriod().multiply(installmentTime)).add(batteryResult2.multiply(installmentTime)).add(peijian));
+                    siteOrder.setTotalPrice(siteOrder.getTotalPrice());
                     siteOrder.setAmountPaid(siteOrder.getAmountPaid().add(siteOrder.getAmountObligation()));
                 }
             } else {
