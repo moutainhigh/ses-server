@@ -20,6 +20,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
+
 @DubboService
 @DS("operation")
 @Slf4j
@@ -80,8 +82,8 @@ public class CustomerInquiryServiceImpl implements CustomerInquiryService {
             if (InquiryPayStatusEnums.UNPAY_DEPOSIT.getValue().equals(opeCustomerInquiry.getPayStatus())) {
                 log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>这个时候是预定金的支付 需要改动已付金额 待付金额");
                 // 这个时候是预定金的支付 需要改动已付金额 待付金额
-                opeCustomerInquiry.setAmountPaid(opeCustomerInquiry.getPrepaidDeposit());
-                opeCustomerInquiry.setAmountObligation(opeCustomerInquiry.getAmountObligation().subtract(opeCustomerInquiry.getPrepaidDeposit()));
+                opeCustomerInquiry.setAmountPaid(syncOrderDataEnter.getAmountPaid());
+                opeCustomerInquiry.setAmountObligation(syncOrderDataEnter.getAmountObligation());
                 opeCustomerInquiry.setStatus(InquiryStatusEnums.PAY_DEPOSIT.getValue());
                 opeCustomerInquiry.setPayStatus(InquiryPayStatusEnums.PAY_DEPOSIT.getValue());
 
