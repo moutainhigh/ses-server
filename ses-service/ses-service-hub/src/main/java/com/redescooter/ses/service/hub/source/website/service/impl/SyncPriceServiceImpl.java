@@ -38,7 +38,7 @@ public class SyncPriceServiceImpl implements SyncPriceService {
 
     @Autowired
     private SiteProductPriceService siteProductPriceService;
-    
+
     @Autowired
     private SiteProductModelService siteProductModelService;
 
@@ -134,7 +134,7 @@ public class SyncPriceServiceImpl implements SyncPriceService {
                 // 期数(期数-定金的1个月)
                 //Integer period = enter.getPeriod() - 1;
                 // 期数
-                Integer period = enter.getPeriod() ;
+                Integer period = enter.getPeriod();
                 // 每期应付*期数
                 BigDecimal balance = enter.getShouldPayPeriod().multiply(new BigDecimal(String.valueOf(period)));
                 BigDecimal price = deposit.add(balance);
@@ -199,8 +199,17 @@ public class SyncPriceServiceImpl implements SyncPriceService {
     @DS("website")
     @Override
     public GeneralResult synchronizeDeposit(SyncSalePriceDataEnter enter) {
-        SiteProductPrice siteProductPrice = new SiteProductPrice();
+        LambdaQueryWrapper<SiteProductPrice> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.last("limit 1");
+        SiteProductPrice siteProductPrice = siteProductPriceService.getOne(queryWrapper);
+        BigDecimal subtract = new BigDecimal("0");
+        if (enter.getDeposit().compareTo(siteProductPrice.getPrepaidDeposit()) == 1) {
+            subtract = enter.getDeposit().subtract(siteProductPrice.getPrepaidDeposit());
+        } else {
+            subtract = siteProductPrice.getPrepaidDeposit().subtract(enter.getDeposit());
+        }
         siteProductPrice.setPrepaidDeposit(enter.getDeposit());
+        siteProductPrice.setPrice(siteProductPrice.getPrice().add(subtract));
         siteProductPriceMapper.synchronizeDeposit(siteProductPrice);
         return new GeneralResult(enter.getRequestId());
     }
