@@ -134,6 +134,15 @@ public class ToBeAssignController {
     }
 
     /**
+     * 点击分配按钮校验询价单是否被操作过
+     */
+    @ApiOperation(value = "点击分配按钮校验询价单是否被操作过", notes = "点击分配按钮校验询价单是否被操作过")
+    @PostMapping("/checkOp")
+    public Response<BooleanResult> checkOperation(@ModelAttribute CustomerIdEnter enter) {
+        return new Response<>(toBeAssignService.checkOperation(enter));
+    }
+
+    /**
      * 生成105条SSN
      */
     @PostMapping("/test")

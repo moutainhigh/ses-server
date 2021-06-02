@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.controller.app;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -139,6 +140,15 @@ public class FrAppController {
     @IgnoreLoginCheck
     public Response<GeneralResult> setScooterModel(@ModelAttribute CustomerIdEnter enter) {
         return new Response<>(frAppService.setScooterModel(enter));
+    }
+
+    /**
+     * 校验询价单是否被操作过
+     */
+    @ApiOperation(value = "校验询价单是否被操作过", notes = "校验询价单是否被操作过")
+    @PostMapping("/check")
+    public Response<BooleanResult> checkOperation(@ModelAttribute CustomerIdEnter enter) {
+        return new Response<>(frAppService.checkOperation(enter));
     }
 
 }
