@@ -327,6 +327,15 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
         simBaseCodeResult.setVin(opeSimInformation == null ? "" : opeSimInformation.getVin());
         simBaseCodeResult.setTabledSn(opeSimInformation == null ? "" : opeSimInformation.getTabletSn());
         simBaseCodeResult.setMacAddress(opeSimInformation == null ? "" : opeSimInformation.getBluetoothMacAddress());
+        SimEnter enter = new SimEnter();
+        enter.setIccid(simEnter.getIccid());
+        enter.setPageNo(1);
+        enter.setPageSize(1);
+        SimDataResult simDataResult = getSimConnectRecord(enter);
+        if(null != simDataResult && !CollectionUtils.isEmpty(simDataResult.getList())){
+            SimCardSessionsResult simCardSessionsResult = JSONObject.parseObject(JSON.toJSONString(simDataResult.getList().get(0)), SimCardSessionsResult.class);
+            simBaseCodeResult.setDeactivationDate(simCardSessionsResult.getEndDate());
+        }
         return simBaseCodeResult;
     }
 
