@@ -13,6 +13,7 @@ import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
 import com.redescooter.ses.api.common.enums.wms.WmsStockStatusEnum;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -639,6 +640,29 @@ public class FrAppServiceImpl implements FrAppService {
         wrapper.eq(OpeCarDistributeNode::getCustomerId, customerId);
         opeCarDistributeNodeMapper.update(node, wrapper);
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 校验询价单是否被操作过
+     */
+    @Override
+    public BooleanResult checkOperation(CustomerIdEnter enter) {
+        BooleanResult result = new BooleanResult();
+        result.setSuccess(true);
+
+        LambdaQueryWrapper<OpeCarDistributeNode> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
+        qw.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
+        qw.last("limit 1");
+        OpeCarDistributeNode node = opeCarDistributeNodeMapper.selectOne(qw);
+        if (null != node) {
+            Integer flag = node.getFlag();
+            if (flag == 1 || flag == 2) {
+                result.setSuccess(false);
+            }
+        }
+        result.setRequestId(enter.getRequestId());
+        return result;
     }
 
     /**

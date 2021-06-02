@@ -1280,6 +1280,29 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     }
 
     /**
+     * 点击分配按钮校验询价单是否被操作过
+     */
+    @Override
+    public BooleanResult checkOperation(CustomerIdEnter enter) {
+        BooleanResult result = new BooleanResult();
+        result.setSuccess(Boolean.TRUE);
+
+        LambdaQueryWrapper<OpeCarDistributeNode> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
+        qw.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
+        qw.last("limit 1");
+        OpeCarDistributeNode node = opeCarDistributeNodeMapper.selectOne(qw);
+        if (null != node) {
+            Integer flag = node.getFlag();
+            if (flag == 1 || flag == 2) {
+                result.setSuccess(Boolean.FALSE);
+            }
+        }
+        result.setRequestId(enter.getRequestId());
+        return result;
+    }
+
+    /**
      * 根据客户id获得询价单型号id和颜色id
      */
     public Map<String, Long> getSpecificatIdAndColorId(CustomerIdEnter enter) {
