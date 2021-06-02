@@ -147,6 +147,7 @@ public class FrAppController {
      */
     @ApiOperation(value = "校验询价单是否被操作过", notes = "校验询价单是否被操作过")
     @PostMapping("/check")
+    @IgnoreLoginCheck
     public Response<BooleanResult> checkOperation(@ModelAttribute CustomerIdEnter enter) {
         return new Response<>(frAppService.checkOperation(enter));
     }

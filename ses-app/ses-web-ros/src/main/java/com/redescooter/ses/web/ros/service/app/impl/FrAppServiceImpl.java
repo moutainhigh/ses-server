@@ -647,6 +647,7 @@ public class FrAppServiceImpl implements FrAppService {
      */
     @Override
     public BooleanResult checkOperation(CustomerIdEnter enter) {
+        checkToken(enter);
         BooleanResult result = new BooleanResult();
         result.setSuccess(true);
 
