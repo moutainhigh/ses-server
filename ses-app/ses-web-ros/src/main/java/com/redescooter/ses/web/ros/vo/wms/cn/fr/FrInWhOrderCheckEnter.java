@@ -18,13 +18,13 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class FrInWhOrderCheckEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "整车序列号", required = true)
+    @ApiModelProperty(value = "整车序列号")
     private String rsn;
 
-    @ApiModelProperty(value = "仪表序列号", required = true)
+    @ApiModelProperty(value = "仪表序列号")
     private String tabletSn;
 
-    @ApiModelProperty(value = "蓝牙地址", required = true)
+    @ApiModelProperty(value = "蓝牙地址")
     private String bluetoothMacAddress;
 
 }
