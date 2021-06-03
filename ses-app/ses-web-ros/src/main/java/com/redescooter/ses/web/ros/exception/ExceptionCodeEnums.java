@@ -594,7 +594,9 @@ public enum ExceptionCodeEnums {
 
     STEP_HAS_INPUT_IN_ROS(10288, "该步骤已在ROS录入,请刷新页面"),
 
-    STEP_HAS_INPUT_IN_APP(10289, "该步骤已在APP录入,请刷新页面")
+    STEP_HAS_INPUT_IN_APP(10289, "该步骤已在APP录入,请刷新页面"),
+
+    SPECIFICAT_NOT_MATCH(10290, "车型不匹配")
 
 
 

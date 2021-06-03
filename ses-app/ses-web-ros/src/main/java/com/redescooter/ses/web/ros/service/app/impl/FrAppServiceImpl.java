@@ -1325,7 +1325,7 @@ public class FrAppServiceImpl implements FrAppService {
         // 获得询价单产品是低速还是高速,以及颜色
         OpeSaleScooter saleScooter = getSaleScooter(customerId);
         if (!Objects.equals(groupId, saleScooter.getGroupId()) || !Objects.equals(colorId, saleScooter.getColorId())) {
-            throw new SesWebRosException(ExceptionCodeEnums.ASSIGN_SCOOTER_WRONG.getCode(), ExceptionCodeEnums.ASSIGN_SCOOTER_WRONG.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_NOT_MATCH.getCode(), ExceptionCodeEnums.SPECIFICAT_NOT_MATCH.getMessage());
         }
     }
 
