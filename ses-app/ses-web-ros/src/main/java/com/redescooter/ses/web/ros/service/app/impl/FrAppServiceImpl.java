@@ -839,19 +839,6 @@ public class FrAppServiceImpl implements FrAppService {
         Long userId = getUserId(enter);
         Long inquiryId = enter.getId();
 
-        // 校验是否已被操作过
-        LambdaQueryWrapper<OpeCarDistribute> batteryWrapper = new LambdaQueryWrapper<>();
-        batteryWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
-        batteryWrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
-        batteryWrapper.last("limit 1");
-        OpeCarDistribute instance = opeCarDistributeMapper.selectOne(batteryWrapper);
-        if (null != instance) {
-            String battery = instance.getBattery();
-            if (StringUtils.isNotBlank(battery)) {
-                throw new SesWebRosException(ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getCode(), ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getMessage());
-            }
-        }
-
         LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
         checkWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
         checkWrapper.like(OpeCarDistribute::getBattery, enter.getBattery());
@@ -868,6 +855,25 @@ public class FrAppServiceImpl implements FrAppService {
         lqw.last("limit 1");
         OpeCustomerInquiryB inquiryB = opeCustomerInquiryBService.getOne(lqw);
         Integer batteryNum = inquiryB.getProductQty();
+
+        // 校验是否已被操作过
+        LambdaQueryWrapper<OpeCarDistribute> batteryWrapper = new LambdaQueryWrapper<>();
+        batteryWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        batteryWrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+        batteryWrapper.last("limit 1");
+        OpeCarDistribute instance = opeCarDistributeMapper.selectOne(batteryWrapper);
+        if (null != instance) {
+            String battery = instance.getBattery();
+            if (StringUtils.isNotBlank(battery)) {
+                String[] split = battery.split(",");
+                List<String> batteryList = new ArrayList<>(Arrays.asList(split));
+                if (CollectionUtils.isNotEmpty(batteryList)) {
+                    if (batteryList.size() == batteryNum) {
+                        throw new SesWebRosException(ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getCode(), ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getMessage());
+                    }
+                }
+            }
+        }
 
         LambdaQueryWrapper<OpeCarDistribute> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
