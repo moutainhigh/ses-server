@@ -776,7 +776,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         BooleanResult checkMail = checkMail(opeCustomer.getEmail());
         BaseUserResult userResult = null;
 
-        if (!checkMail.isSuccess()) {
+        if (checkMail.isSuccess()) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
 
