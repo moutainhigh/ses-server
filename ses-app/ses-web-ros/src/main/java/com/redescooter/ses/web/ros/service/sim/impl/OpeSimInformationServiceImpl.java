@@ -107,8 +107,7 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
         if (StringUtils.isNotBlank(simEnter.getIccid())) {
             QueryWrapper<OpeSimInformation> qwOpe = new QueryWrapper<>();
             qwOpe.eq(OpeSimInformation.COL_DR, Constant.DR_FALSE);
-            qwOpe.select(OpeSimInformation.COL_TABLET_SN);
-            qwOpe.select(OpeSimInformation.COL_SIM_ICCID);
+            qwOpe.select(OpeSimInformation.COL_TABLET_SN, OpeSimInformation.COL_SIM_ICCID);
             qwOpe.and(Wrapper -> Wrapper.eq(OpeSimInformation.COL_SIM_ICCID, simEnter.getIccid()).or().eq(OpeSimInformation.COL_TABLET_SN, simEnter.getIccid()));
             qwOpe.last("limit 1");
             OpeSimInformation simInformation = this.getOne(qwOpe);
