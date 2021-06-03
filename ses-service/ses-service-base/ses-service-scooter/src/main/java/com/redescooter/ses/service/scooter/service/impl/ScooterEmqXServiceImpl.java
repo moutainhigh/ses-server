@@ -49,7 +49,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
@@ -205,15 +204,18 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
              * 结束导航,结束导航的时候保存骑行数据(司机骑行数据、车辆骑行数据)
              */
             if (null != scoScooterNavigation) {
+                // 距离
                 Double distance = 0.0;
                 if (null != scooterResult.getLatitude() && null != scooterResult.getLongitule()) {
                     // 计算本次导航行驶公里数
                     distance = MapUtil.getDistance(scooterNavigation.getLat(), scooterNavigation.getLng(),
                             scooterResult.getLatitude().toString(), scooterResult.getLongitule().toString());
+                    log.info("本次导航行驶公里为:[{}]", distance);
                 }
 
                 // 计算导航所花时间,单位/s
                 Long duration = (scoScooterNavigation.getCreatedTime().getTime() - new Date().getTime()) / 1000;
+                log.info("计算导航所花时间是:[{}]", duration);
 
                 scooterNavigation.setMileage(String.valueOf(distance));
                 scooterNavigation.setDuration(duration);
@@ -221,16 +223,18 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
                 /**
                  * 根据用户类型(b/c)进行不同业务处理
                  */
-                InsertRideStatDataDTO rideStatData = new InsertRideStatDataDTO();
-                BeanUtils.copyProperties(scooterNavigation, rideStatData);
-                rideStatData.setMileage(new BigDecimal(scooterNavigation.getDuration()));
-                rideStatData.setBizId(scooterId);
-                rideStatData.setBizType(BizType.SCOOTER.getValue());
+                InsertRideStatDataDTO param = new InsertRideStatDataDTO();
+                param.setMileage(new BigDecimal(scooterNavigation.getMileage()));
+                param.setDuration(scooterNavigation.getDuration());
+                param.setBizType(BizType.SCOOTER.getValue());
+                param.setBizId(scooterId);
+
                 if (UserServiceTypeEnum.B.getType().equals(userServiceType)) {
                     // 保存司机、车辆骑行数据
-                    rideStatBService.insertDriverAndScooterRideStat(rideStatData);
+                    rideStatBService.insertDriverAndScooterRideStat(param);
                 } else {
-                    rideStatCService.insertDriverAndScooterRideStat(rideStatData);
+                    log.info("进入toc司机骑行数据,参数是:[{}]", param);
+                    rideStatCService.insertDriverAndScooterRideStat(param);
                 }
 
                 scoScooterNavigation.setStatus(NavigationStatus.END.getValue());
