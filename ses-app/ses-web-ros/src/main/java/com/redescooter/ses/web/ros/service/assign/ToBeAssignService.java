@@ -79,7 +79,7 @@ public interface ToBeAssignService {
     /**
      * 点击分配按钮校验询价单是否被操作过
      */
-    BooleanResult checkOperation(CustomerIdEnter enter);
+    //BooleanResult checkOperation(CustomerIdEnter enter);
 
     /**
      * 生成105条SSN

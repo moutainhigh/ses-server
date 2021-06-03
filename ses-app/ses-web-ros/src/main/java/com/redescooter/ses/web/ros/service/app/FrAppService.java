@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.service.app;
 
-import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -77,6 +76,6 @@ public interface FrAppService {
     /**
      * 校验询价单是否被操作过
      */
-    BooleanResult checkOperation(CustomerIdEnter enter);
+    //BooleanResult checkOperation(CustomerIdEnter enter);
 
 }
