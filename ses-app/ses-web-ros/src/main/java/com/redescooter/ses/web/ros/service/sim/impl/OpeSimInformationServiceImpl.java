@@ -99,6 +99,9 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
     public SimDataResult getSimCardList(SimEnter simEnter) {
         String param = getParam(simEnter.getStatus(), simEnter.getIccid());
         String body = sendGetSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_IOT_SIM_CARDS, null, getPage(simEnter), param));
+        if (StringUtils.isBlank(body)) {
+            return null;
+        }
         JSONObject jsonObject = JSONObject.parseObject(body);
         String data = jsonObject.getString("data");
         int total = jsonObject.getInteger("total");
@@ -128,6 +131,9 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
             if (0 == total && null != simInformation) {
                 String param1 = getParam(simEnter.getStatus(), simInformation.getSimIccid());
                 String result = sendGetSimRequest(getReqMethod(SimInterfaceMethod.SIM_METHOD_IOT_SIM_CARDS, null, "?", param1));
+                if (StringUtils.isBlank(result)) {
+                    return null;
+                }
                 JSONObject resultJson = JSONObject.parseObject(result);
                 String resultTata = resultJson.getString("data");
                 int resultTotal = resultJson.getInteger("total");
@@ -331,7 +337,7 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
         enter.setPageNo(1);
         enter.setPageSize(1);
         SimDataResult simDataResult = getSimConnectRecord(enter);
-        if(null != simDataResult && !CollectionUtils.isEmpty(simDataResult.getList())){
+        if (null != simDataResult && !CollectionUtils.isEmpty(simDataResult.getList())) {
             SimCardSessionsResult simCardSessionsResult = JSONObject.parseObject(JSON.toJSONString(simDataResult.getList().get(0)), SimCardSessionsResult.class);
             simBaseCodeResult.setDeactivationDate(simCardSessionsResult.getEndDate());
         }
