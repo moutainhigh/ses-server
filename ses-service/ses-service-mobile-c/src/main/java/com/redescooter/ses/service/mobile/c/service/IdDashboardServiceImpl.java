@@ -77,7 +77,8 @@ public class IdDashboardServiceImpl implements IdDashboardService {
         result.setTotalMileage(stat.getTotalMileage().toString());
         result.setTotalCo2(stat.getCo2Total().toString());
         result.setTotalMoney(stat.getSavedMoney().toString());
-        result.setAvgSpeed(stat.getSavedMoney().toString());
+        result.setAvgSpeed(stat.getSvgSpeed().toString());
+        result.setTimes(stat.getReadTime().toString());
         result.setRequestId(enter.getRequestId());
         return result;
     }
@@ -94,13 +95,15 @@ public class IdDashboardServiceImpl implements IdDashboardService {
     @Override
     public AllScooterChartResult scooterChart(DateTimeParmEnter enter) {
         log.info("入参是:[{}]", enter);
+        AllScooterChartResult result = new AllScooterChartResult();
         Map<String, ScooterChartResult> map = new LinkedHashMap<>();
         List<String> dayList;
+
         // 获取指定日期格式向前N天时间集合
-//            dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
+        //dayList = DateUtil.getDayList(enter.getDateTime() == null ? new Date() : enter.getDateTime(), 30, null);
         dayList = DateUtil.getBetweenDates(enter.getStartDateTime(), enter.getEndDateTime());
         List<ScooterChartResult> list = idDashboardServiceMapper.scooterChart(enter);
-        ScooterChartResult model = null;
+        ScooterChartResult model;
         if (CollectionUtils.isEmpty(list)) {
             for (String str : dayList) {
                 model = new ScooterChartResult();
@@ -122,9 +125,9 @@ public class IdDashboardServiceImpl implements IdDashboardService {
             }
         }
 
-        AllScooterChartResult result = new AllScooterChartResult();
         result.setAllMap(map);
         result.setRequestId(enter.getRequestId());
         return result;
     }
+
 }
