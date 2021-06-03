@@ -178,74 +178,81 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void saveScooterRideStat(List<SaveDeliveryStatEnter> enter) {
-        List<CorScooterRideStatDetail> saveCorScooterRideStatDetailList = new ArrayList<>();
 
-        List<CorScooterRideStat> saveCorScooterRideStatList = new ArrayList<>();
+        // 详情集合
+        List<CorScooterRideStatDetail> detailList = new ArrayList<>();
+        // 保存集合
+        List<CorScooterRideStat> saveList = new ArrayList<>();
+        // 修改集合
+        List<CorScooterRideStat> updateList = new ArrayList<>();
 
-        List<CorScooterRideStat> updateCorScooterRideStatList = new ArrayList<>();
-
+        // 查询司机之前是否存在有统计数据
         if (CollectionUtils.isNotEmpty(enter)) {
-            // 查询司机之前是否存在有统计数据
             for (SaveDeliveryStatEnter item : enter) {
-                QueryWrapper<CorDriver> corDriverMapperQueryWrapper = new QueryWrapper<>();
-                corDriverMapperQueryWrapper.eq(CorDriver.COL_USER_ID, item.getInputUserId());
-                corDriverMapperQueryWrapper.eq(CorDriver.COL_DR, 0);
-                CorDriver corDriver = corDriverMapper.selectOne(corDriverMapperQueryWrapper);
 
+                QueryWrapper<CorDriver> wrapper = new QueryWrapper<>();
+                wrapper.eq(CorDriver.COL_USER_ID, item.getInputUserId());
+                wrapper.eq(CorDriver.COL_DR, 0);
+                wrapper.last("limit 1");
+                CorDriver corDriver = corDriverMapper.selectOne(wrapper);
 
-                QueryWrapper<CorDriverScooter> driverScooterQueryWrapper = new QueryWrapper<>();
-                driverScooterQueryWrapper.eq(CorDriverScooter.COL_DRIVER_ID, corDriver.getId());
-                driverScooterQueryWrapper.eq(CorDriverScooter.COL_DR, 0);
-                driverScooterQueryWrapper.in(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
-                CorDriverScooter driverScooter = corDriverScooterMapper.selectOne(driverScooterQueryWrapper);
+                QueryWrapper<CorDriverScooter> qw = new QueryWrapper<>();
+                qw.eq(CorDriverScooter.COL_DRIVER_ID, corDriver.getId());
+                qw.eq(CorDriverScooter.COL_DR, 0);
+                qw.in(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
+                qw.last("limit 1");
+                CorDriverScooter driverScooter = corDriverScooterMapper.selectOne(qw);
 
-                QueryWrapper<CorScooterRideStat> scooterRideStatQueryWrapper = new QueryWrapper<>();
-                scooterRideStatQueryWrapper.eq(CorScooterRideStat.COL_DR, 0);
-                scooterRideStatQueryWrapper.eq(CorScooterRideStat.COL_SCOOTER_ID, driverScooter.getScooterId());
-                CorScooterRideStat scooterRideStat = corScooterRideStatMapper.selectOne(scooterRideStatQueryWrapper);
+                QueryWrapper<CorScooterRideStat> lqw = new QueryWrapper<>();
+                lqw.eq(CorScooterRideStat.COL_DR, 0);
+                lqw.eq(CorScooterRideStat.COL_SCOOTER_ID, driverScooter.getScooterId());
+                lqw.last("limit 1");
+                CorScooterRideStat scooterRideStat = corScooterRideStatMapper.selectOne(lqw);
 
-                Boolean checkSaveScooterRideStatList = Boolean.FALSE;
-                if (CollectionUtils.isNotEmpty(saveCorScooterRideStatList)) {
-                    for (CorScooterRideStat corScooterRideStat : saveCorScooterRideStatList) {
-                        if (corScooterRideStat.getScooterId().equals(driverScooter.getScooterId())) {
-                            scooterRideStat = corScooterRideStat;
-                            checkSaveScooterRideStatList = Boolean.TRUE;
-                            saveCorScooterRideStatList.remove(corScooterRideStat);
+                Boolean flag = false;
+                if (CollectionUtils.isNotEmpty(saveList)) {
+                    Iterator<CorScooterRideStat> iterator = saveList.iterator();
+                    while (iterator.hasNext()) {
+                        CorScooterRideStat next = iterator.next();
+                        if (next.getScooterId().equals(driverScooter.getScooterId())) {
+                            scooterRideStat = next;
+                            flag = true;
+                            iterator.remove();
                             break;
                         }
                     }
                 }
 
                 // 插入详情
-                CorScooterRideStatDetail scooterRideStatDetail = buildScooterRideStatDetail(item, driverScooter, scooterRideStat);
-                saveCorScooterRideStatDetailList.add(scooterRideStatDetail);
+                CorScooterRideStatDetail detail = buildScooterRideStatDetail(item, driverScooter, scooterRideStat);
+                detailList.add(detail);
 
                 if (scooterRideStat == null) {
-                    saveCorScooterRideStatList.add(buildScooterRideStat(item, driverScooter, scooterRideStatDetail));
+                    saveList.add(buildScooterRideStat(item, driverScooter, detail));
                 } else {
                     scooterRideStat.setTotalDuration(scooterRideStat.getTotalDuration() + item.getDuration());
-                    scooterRideStat.setCo2Total(scooterRideStat.getCo2Total().add(scooterRideStatDetail.getCo2Increment()));
-                    scooterRideStat.setCo2Increment(scooterRideStatDetail.getCo2Increment());
-                    scooterRideStat.setSavedMoney(scooterRideStat.getSavedMoney().add(scooterRideStatDetail.getSavedMoney()));
-                    scooterRideStat.setSvgSpeed(scooterRideStat.getSvgSpeed().add(scooterRideStatDetail.getSvgSpeed()));
+                    scooterRideStat.setCo2Total(scooterRideStat.getCo2Total().add(detail.getCo2Increment()));
+                    scooterRideStat.setCo2Increment(detail.getCo2Increment());
+                    scooterRideStat.setSavedMoney(scooterRideStat.getSavedMoney().add(detail.getSavedMoney()));
+                    scooterRideStat.setSvgSpeed(scooterRideStat.getSvgSpeed().add(detail.getSvgSpeed()));
                     scooterRideStat.setTotalMileage(scooterRideStat.getTotalMileage().add(new BigDecimal(item.getMileage())));
-                    if (checkSaveScooterRideStatList) {
-                        saveCorScooterRideStatList.add(scooterRideStat);
+                    if (flag) {
+                        saveList.add(scooterRideStat);
                     } else {
-                        updateCorScooterRideStatList.add(scooterRideStat);
+                        updateList.add(scooterRideStat);
                     }
                 }
             }
         }
 
-        if (CollectionUtils.isNotEmpty(saveCorScooterRideStatDetailList)) {
-            corScooterRideStatDetailMapper.batchInsert(saveCorScooterRideStatDetailList);
+        if (CollectionUtils.isNotEmpty(detailList)) {
+            corScooterRideStatDetailMapper.batchInsert(detailList);
         }
-        if (CollectionUtils.isNotEmpty(saveCorScooterRideStatList)) {
-            corScooterRideStatMapper.batchInsert(saveCorScooterRideStatList);
+        if (CollectionUtils.isNotEmpty(saveList)) {
+            corScooterRideStatMapper.batchInsert(saveList);
         }
-        if (CollectionUtils.isNotEmpty(updateCorScooterRideStatList)) {
-            corScooterRideStatMapper.updateBatch(updateCorScooterRideStatList);
+        if (CollectionUtils.isNotEmpty(updateList)) {
+            corScooterRideStatMapper.updateBatch(updateList);
         }
     }
 
