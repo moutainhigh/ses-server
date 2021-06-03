@@ -92,35 +92,34 @@ public class SalePriceServiceImpl implements SalePriceService {
         }
         //拿到单个电池的价格
         BigDecimal battery = opeSaleParts.getPrice();
-        Map<String, List<Integer>> numMap = Maps.newHashMap();
         LambdaQueryWrapper<OpeSaleScooter> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeSaleScooter::getDr, Constant.DR_FALSE);
-        List<OpeSaleScooter> opeSaleScooters = opeSaleScooterMapper.selectList(wrapper);
-        for (OpeSaleScooter item : opeSaleScooters) {
-            String a = item.getProductCode() + "+" + item.getMinBatteryNum() + "Batterie";
-            List<Integer> list1 = new ArrayList<>();
-            for (int i = item.getMinBatteryNum(); i < 5; i++) {
-                list1.add(i);
-                numMap.put(a, list1);
-            }
-        }
+        List<OpeSaleScooter> saleScooterList = opeSaleScooterMapper.selectList(wrapper);
+        Map<String, Integer> numMap = saleScooterList.stream().collect(Collectors.toMap(OpeSaleScooter::getProductCode, o -> o.getMinBatteryNum()));
         for (String ospKey : ospMap.keySet()) {
             List<OpeSalePrice> eFiveList = ospMap.get(ospKey);
-            Map<Integer, OpeSalePrice> collect = eFiveList.stream().filter(o -> o.getType() != 2).collect(Collectors.toMap(OpeSalePrice::getPeriod, o -> o));
-            List<Integer> integers = numMap.get(ospKey);
+            Map<Integer, OpeSalePrice> collect = new HashMap<>();
+            List<OpeSalePrice> collects = eFiveList.stream().filter(o -> o.getType() == 1 || o.getType() == 3).collect(Collectors.toList());
+            if (collects.size() > 1) {
+                collect = eFiveList.stream().filter(o -> o.getType() == 3).collect(Collectors.toMap(OpeSalePrice::getPeriod, o -> o));
+            } else {
+                collect = eFiveList.stream().filter(o -> o.getType() == 1 || o.getType() == 3).collect(Collectors.toMap(OpeSalePrice::getPeriod, o -> o));
+            }
             //获取最低配置电池数量值
-            int minNum = integers.get(0);
+            String configKey = ospKey.substring(0, ospKey.indexOf("+"));
+            int minNum = numMap.get(configKey);
+            int i = minNum;
             for (int period : collect.keySet()) {
                 BigDecimal batteryPeriod = battery.divide(new BigDecimal(period), 2, BigDecimal.ROUND_DOWN);//电池分期的价格
-                for (Integer o : integers) {
+                for (i = minNum; i <= 4; i++) {
                     Map<String, SalesPriceResult> map1 = new HashMap<>();
-                    BigDecimal shouldPayPeriod = collect.get(period).getShouldPayPeriod().add(batteryPeriod.multiply(new BigDecimal(o - minNum)));
+                    BigDecimal shouldPayPeriod = collect.get(period).getShouldPayPeriod().add(batteryPeriod.multiply(new BigDecimal(i - minNum)));
                     SalesPriceResult salesPriceResult = new SalesPriceResult();
                     salesPriceResult.setShouldPayPeriod(shouldPayPeriod); //每期应付
                     salesPriceResult.setPeriod(period); //期数
                     salesPriceResult.setDeposit(collect.get(period).getDeposit()); //定金
                     salesPriceResult.setTax(collect.get(period).getTax()); //ttc税金
-                    map1.put(String.format("%s+%d", ospKey.substring(0, ospKey.indexOf("+")), o), salesPriceResult);
+                    map1.put(String.format("%s+%d", configKey, i), salesPriceResult);
                     String jsonObject = JSONObject.toJSONString(map1);  //map转json格式
                     lists.add(jsonObject);
                 }
@@ -128,5 +127,4 @@ public class SalePriceServiceImpl implements SalePriceService {
         }
         return lists;
     }
-
 }
