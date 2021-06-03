@@ -3,15 +3,16 @@
 <mapper namespace="com.redescooter.ses.service.mobile.c.dao.IdDashboardServiceMapper">
 
     <select id="scooterChart" resultType="com.redescooter.ses.api.mobile.c.vo.ScooterChartResult">
-        select  ifnull(sum(detail.svg_speed), 0) as avgSpeed,
-                ifnull(sum(detail.saved_money), 0) as totalMileage,
-                ifnull(sum(detail.mileage), 0) as svgSpeed,
-                ifnull(sum(detail.co2_increment), 0) as totalCo2,
-                DATE_FORMAT(detail.create_time, '%Y-%m-%d') as times
-        from con_driver_ride_stat_detail detail
-        where detail.dr = 0 and detail.driver_id = #{userId}
+        select
+            IFNULL(sum(svg_speed), 0) as avgSpeed,
+            IFNULL(sum(saved_money), 0) as totalMileage,
+            IFNULL(sum(mileage), 0) as svgSpeed,
+            IFNULL(sum(co2_increment), 0) as totalCo2,
+            DATE_FORMAT(create_time, '%Y-%m-%d') as times
+        from con_driver_ride_stat_detail
+        where dr = 0 and driver_id = #{userId}
         <if test="startDateTime != null and endDateTime != null">
-            and detail.create_time between #{startDateTime} and #{endDateTime}
+            and create_time between #{startDateTime} and #{endDateTime}
         </if>
         group by times
     </select>
