@@ -1282,7 +1282,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     /**
      * 点击分配按钮校验询价单是否被操作过
      */
-    @Override
+    /*@Override
     public BooleanResult checkOperation(CustomerIdEnter enter) {
         BooleanResult result = new BooleanResult();
         result.setSuccess(Boolean.TRUE);
@@ -1300,7 +1300,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         }
         result.setRequestId(enter.getRequestId());
         return result;
-    }
+    }*/
 
     /**
      * 根据客户id获得询价单型号id和颜色id
