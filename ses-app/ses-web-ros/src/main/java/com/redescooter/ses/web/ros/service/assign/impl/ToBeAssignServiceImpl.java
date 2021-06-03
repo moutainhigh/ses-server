@@ -408,7 +408,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         for (ToBeAssignSeatNextDetailEnter o : list) {
             Long specificatId = o.getSpecificatId();
             Integer seatNumber = o.getSeatNumber();
-            String vinCode = o.getVin();
+            String vinCode = o.getVin().trim();
             Integer qty = o.getQty();
 
             // 生成VIN Code,只需车型名称和座位数量这两个变量
@@ -554,7 +554,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
         for (ToBeAssignLicensePlateNextDetailEnter o : list) {
             Long id = o.getId();
-            String licensePlate = o.getLicensePlate();
+            String licensePlate = o.getLicensePlate().trim();
 
             // 校验是否已被操作过
             LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
@@ -659,15 +659,15 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
         for (ToBeAssignSubmitDetailEnter o : list) {
             Long id = o.getId();
-            String rsn = o.getRsn();
+            String rsn = o.getRsn().trim();
             Long colorId = o.getColorId();
-            String bluetoothAddress = o.getBluetoothAddress();
-            String tabletSn = o.getTabletSn();
-            String bbi = o.getBbi();
-            String controller = o.getController();
-            String electricMachinery = o.getElectricMachinery();
-            String meter = o.getMeter();
-            String imei = o.getImei();
+            String bluetoothAddress = o.getBluetoothAddress().trim();
+            String tabletSn = o.getTabletSn().trim();
+            String bbi = o.getBbi().trim();
+            String controller = o.getController().trim();
+            String electricMachinery = o.getElectricMachinery().trim();
+            String meter = o.getMeter().trim();
+            String imei = o.getImei().trim();
 
             // 校验是否已被操作过
             LambdaQueryWrapper<OpeCarDistribute> scooterWrapper = new LambdaQueryWrapper<>();
@@ -797,7 +797,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
         for (ToBeAssignInputBatteryDetailEnter o : list) {
             Long id = o.getId();
-            String battery = o.getBattery();
+            String battery = o.getBattery().trim();
 
             // 校验是否已被操作过
             LambdaQueryWrapper<OpeCarDistribute> batteryWrapper = new LambdaQueryWrapper<>();

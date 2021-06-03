@@ -507,7 +507,7 @@ public class FrAppServiceImpl implements FrAppService {
     public GeneralResult bindVin(BindVinEnter enter) {
         checkToken(enter);
         Long userId = getUserId(enter);
-        String vinCode = enter.getVinCode();
+        String vinCode = enter.getVinCode().trim();
         Integer seatNumber = enter.getSeatNumber();
 
         // 校验此询价单是否已分配给其他仓库账号
@@ -632,7 +632,7 @@ public class FrAppServiceImpl implements FrAppService {
     public GeneralResult bindLicensePlate(BindLicensePlateEnter enter) {
         checkToken(enter);
         Long userId = getUserId(enter);
-        String licensePlate = enter.getLicensePlate();
+        String licensePlate = enter.getLicensePlate().trim();
         Long customerId = enter.getCustomerId();
 
         // 校验是否已被操作过
@@ -715,14 +715,14 @@ public class FrAppServiceImpl implements FrAppService {
         checkToken(enter);
         Long userId = getUserId(enter);
         Long customerId = enter.getCustomerId();
-        String rsn = enter.getRsn();
-        String tabletSn = enter.getTabletSn();
-        String bluetoothAddress = enter.getBluetoothAddress();
-        String bbi = enter.getBbi();
-        String controller = enter.getController();
-        String electricMachinery = enter.getElectricMachinery();
-        String meter = enter.getMeter();
-        String imei = enter.getImei();
+        String rsn = enter.getRsn().trim();
+        String tabletSn = enter.getTabletSn().trim();
+        String bluetoothAddress = enter.getBluetoothAddress().trim();
+        String bbi = enter.getBbi().trim();
+        String controller = enter.getController().trim();
+        String electricMachinery = enter.getElectricMachinery().trim();
+        String meter = enter.getMeter().trim();
+        String imei = enter.getImei().trim();
 
         // 校验是否已被操作过
         LambdaQueryWrapper<OpeCarDistribute> scooterWrapper = new LambdaQueryWrapper<>();
@@ -885,7 +885,7 @@ public class FrAppServiceImpl implements FrAppService {
             if (StringUtils.isBlank(modelBattery)) {
                 // 第一次扫描电池
                 OpeCarDistribute distribute = new OpeCarDistribute();
-                distribute.setBattery(enter.getBattery());
+                distribute.setBattery(enter.getBattery().trim());
                 distribute.setUpdatedBy(userId);
                 distribute.setUpdatedTime(new Date());
                 LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
@@ -895,7 +895,7 @@ public class FrAppServiceImpl implements FrAppService {
             } else {
                 // 之前已经扫描过电池,在电池后追加
                 OpeCarDistribute distribute = new OpeCarDistribute();
-                distribute.setBattery(modelBattery + "," + enter.getBattery());
+                distribute.setBattery(modelBattery + "," + enter.getBattery().trim());
                 distribute.setUpdatedBy(userId);
                 distribute.setUpdatedTime(new Date());
                 LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
