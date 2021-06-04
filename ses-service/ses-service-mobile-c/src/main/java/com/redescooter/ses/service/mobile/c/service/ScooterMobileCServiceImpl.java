@@ -84,7 +84,7 @@ public class ScooterMobileCServiceImpl implements ScooterMobileCService {
         /**
          * 开关车辆锁
          */
-        return scooterEmqXService.lock(scooterLockDTO, scooter.getScooterId());
+        return scooterEmqXService.lock(scooterLockDTO, scooter.getScooterId(), UserServiceTypeEnum.C.getType());
     }
 
     @Override
