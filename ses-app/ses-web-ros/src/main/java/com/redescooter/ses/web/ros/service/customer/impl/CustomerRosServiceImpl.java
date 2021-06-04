@@ -773,12 +773,12 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         // todo 存在漏洞 先创建 Driver 账户 ---》 web或者TOC 账户是能够通过校验的
-        BooleanResult checkMail = checkMail(opeCustomer.getEmail());
+        //BooleanResult checkMail = checkMail(opeCustomer.getEmail());
         BaseUserResult userResult = null;
 
-        if (checkMail.isSuccess()) {
+        /*if (checkMail.isSuccess()) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
-        }
+        }*/
 
         // 开始创建客户
         BaseCustomerResult baseCustomer = new BaseCustomerResult();
