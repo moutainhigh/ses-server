@@ -33,15 +33,22 @@ public class RideStatCServiceImpl implements RideStatCService {
 
     @Resource
     private DriverRideStatMapper driverRideStatMapper;
+
     @Resource
     private DriverRideStatDetailMapper driverRideStatDetailMapper;
+
     @Resource
     private ScooterRideStatMapper scooterRideStatMapper;
+
     @Resource
     private ScooterRideStatDetailMapper scooterRideStatDetailMapper;
+
     @DubboReference
     private IdAppService idAppService;
 
+    /**
+     * 新增/修改 司机骑行数据/车辆骑行数据
+     */
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public int insertDriverAndScooterRideStat(InsertRideStatDataDTO enter) {

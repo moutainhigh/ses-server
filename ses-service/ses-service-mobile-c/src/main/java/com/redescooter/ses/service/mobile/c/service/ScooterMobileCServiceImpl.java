@@ -88,8 +88,8 @@ public class ScooterMobileCServiceImpl implements ScooterMobileCService {
     }
 
     @Override
-    public GeneralResult scooterNavigation(ScooterNavigationDTO scooterNavigation) {
-        ConUserScooter scooter = userScooterMapper.getUserScooterByUserIdAndStatus(scooterNavigation.getUserId(),
+    public GeneralResult scooterNavigation(ScooterNavigationDTO enter) {
+        ConUserScooter scooter = userScooterMapper.getUserScooterByUserIdAndStatus(enter.getUserId(),
                 DriverScooterStatusEnums.USED.getValue());
 
         /**
@@ -103,7 +103,7 @@ public class ScooterMobileCServiceImpl implements ScooterMobileCService {
         /**
          * 开始/结束导航
          */
-        return scooterEmqXService.scooterNavigation(scooterNavigation, scooter.getScooterId(), UserServiceTypeEnum.C.getType());
+        return scooterEmqXService.scooterNavigation(enter, scooter.getScooterId(), UserServiceTypeEnum.C.getType());
     }
 
 }

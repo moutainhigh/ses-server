@@ -162,7 +162,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
 
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
-    public GeneralResult scooterNavigation(ScooterNavigationDTO scooterNavigation, Long scooterId, Integer userServiceType) {
+    public GeneralResult scooterNavigation(ScooterNavigationDTO enter, Long scooterId, Integer userServiceType) {
         BaseScooterResult scooterResult = scooterMapper.getScooterInfoById(scooterId);
         if (null == scooterResult) {
             throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(),
@@ -173,8 +173,8 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
         // 导航下发数据
         ScooterNavigationPublishDTO navigationPublish = new ScooterNavigationPublishDTO();
         navigationPublish.setTabletSn(scooterResult.getTabletSn());
-        navigationPublish.setLatitude(new BigDecimal(scooterNavigation.getLat()));
-        navigationPublish.setLongitude(new BigDecimal(scooterNavigation.getLng()));
+        navigationPublish.setLatitude(new BigDecimal(enter.getLat()));
+        navigationPublish.setLongitude(new BigDecimal(enter.getLng()));
 
         /**
          * 查看当前车辆是否正在导航(每次导航都会产生一条导航数据)
@@ -185,16 +185,16 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
         /**
          * 如果开启导航的时候有正在导航的则不做处理,没有正在导航的则开启导航
          */
-        if (CommonEvent.START.getValue().equals(scooterNavigation.getEvent())) {
+        if (CommonEvent.START.getValue().equals(enter.getEvent())) {
             // 避免上次导航未结束或结束导航失败导致车辆还在导航,无法开启导航的情况出现
             if (null != scoScooterNavigation) {
                 scoScooterNavigation.setStatus(NavigationStatus.END.getValue());
-                scoScooterNavigation.setUpdatedBy(scooterNavigation.getUserId());
+                scoScooterNavigation.setUpdatedBy(enter.getUserId());
                 scoScooterNavigation.setUpdatedTime(new Date());
                 scooterNavigationMapper.updateScooterNavigation(scoScooterNavigation);
             }
             // 开启导航
-            ScoScooterNavigation scooterNavigationNew = buildScoScooterNavigationData(scooterNavigation, scooterResult);
+            ScoScooterNavigation scooterNavigationNew = buildScoScooterNavigationData(enter, scooterResult);
             scooterNavigationMapper.insertScooterNavigation(scooterNavigationNew);
 
             actionType = ScooterActionTypeEnums.START_NAVIGATION.getValue();
@@ -208,7 +208,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
                 Double distance = 0.0;
                 if (null != scooterResult.getLatitude() && null != scooterResult.getLongitule()) {
                     // 计算本次导航行驶公里数
-                    distance = MapUtil.getDistance(scooterNavigation.getLat(), scooterNavigation.getLng(),
+                    distance = MapUtil.getDistance(enter.getLat(), enter.getLng(),
                             scooterResult.getLatitude().toString(), scooterResult.getLongitule().toString());
                     log.info("本次导航行驶公里为:[{}]", distance);
                 }
@@ -217,15 +217,15 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
                 Long duration = (scoScooterNavigation.getCreatedTime().getTime() - new Date().getTime()) / 1000;
                 log.info("计算导航所花时间是:[{}]", duration);
 
-                scooterNavigation.setMileage(String.valueOf(distance));
-                scooterNavigation.setDuration(duration);
+                enter.setMileage(String.valueOf(distance));
+                enter.setDuration(duration);
 
                 /**
                  * 根据用户类型(b/c)进行不同业务处理
                  */
                 InsertRideStatDataDTO param = new InsertRideStatDataDTO();
-                param.setMileage(new BigDecimal(scooterNavigation.getMileage()));
-                param.setDuration(scooterNavigation.getDuration());
+                param.setMileage(new BigDecimal(enter.getMileage()));
+                param.setDuration(enter.getDuration());
                 param.setBizType(BizType.SCOOTER.getValue());
                 param.setBizId(scooterId);
 
@@ -238,7 +238,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
                 }
 
                 scoScooterNavigation.setStatus(NavigationStatus.END.getValue());
-                scoScooterNavigation.setUpdatedBy(scooterNavigation.getUserId());
+                scoScooterNavigation.setUpdatedBy(enter.getUserId());
                 scoScooterNavigation.setUpdatedTime(new Date());
                 scooterNavigationMapper.updateScooterNavigation(scoScooterNavigation);
 
@@ -252,10 +252,10 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
          */
         if (null != actionType) {
             ScooterLockDTO scooterLock = new ScooterLockDTO();
-            scooterLock.setUserId(scooterNavigation.getUserId());
-            scooterLock.setTenantId(scooterNavigation.getTenantId());
-            scooterLock.setLat(scooterNavigation.getLat());
-            scooterLock.setLng(scooterNavigation.getLng());
+            scooterLock.setUserId(enter.getUserId());
+            scooterLock.setTenantId(enter.getTenantId());
+            scooterLock.setLat(enter.getLat());
+            scooterLock.setLng(enter.getLng());
 
             ScoScooterActionTrace scooterActionTrace = buildScooterActionTraceData(scooterLock, scooterResult, actionType);
             scooterActionTraceMapper.insert(scooterActionTrace);
@@ -269,7 +269,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
             });
         }
 
-        return new GeneralResult(scooterNavigation.getRequestId());
+        return new GeneralResult(enter.getRequestId());
     }
 
     @Override
