@@ -18,9 +18,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SimBaseCodeResult extends SimCardListResult {
 
-    @ApiModelProperty("仪表SN")
-    private String tabledSn;
-
     @ApiModelProperty("mac地址")
     private String macAddress;
 

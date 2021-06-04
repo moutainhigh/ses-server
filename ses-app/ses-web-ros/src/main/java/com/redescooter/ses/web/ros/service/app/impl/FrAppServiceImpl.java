@@ -1204,6 +1204,7 @@ public class FrAppServiceImpl implements FrAppService {
             simInfo.setCreatedBy(enter.getUserId());
             simInfo.setCreatedTime(new Date());
             simInformationService.save(simInfo);
+            jedisCluster.del(opeCarDistribute.getTabletSn());
         }
         /*---------------sim 信息录入--------------*/
         return new GeneralResult(enter.getRequestId());

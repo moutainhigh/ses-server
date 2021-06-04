@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.vo.sim;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -26,15 +27,19 @@ public class SimTransactionRecordsResult {
     @ApiModelProperty("充值金额")
     private String amount;
 
+    @JsonAlias(value = {"transaction_id", "transactionId"})
     @ApiModelProperty("交易id")
-    private String transaction_id;
+    private String transactionId;
 
+    @JsonAlias(value = {"last_credit_card_digits", "lastCreditCardDigits"})
     @ApiModelProperty("最后信用卡数字")
-    private String last_credit_card_digits;
+    private String lastCreditCardDigits;
 
+    @JsonAlias(value = {"created_at", "createdAt"})
     @ApiModelProperty("创建时间")
-    private String created_at;
+    private String createdAt;
 
+    @JsonAlias(value = {"updated_at", "updatedAt"})
     @ApiModelProperty("修改时间")
-    private String updated_at;
+    private String updatedAt;
 }
