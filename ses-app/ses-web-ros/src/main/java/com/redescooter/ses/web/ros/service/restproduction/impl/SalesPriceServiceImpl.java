@@ -40,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.apache.zookeeper.Op;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -102,8 +103,8 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         qw.eq(OpeSaleScooter::getDr, Constant.DR_FALSE);
         List<OpeSaleScooter> list = opeSaleScooterMapper.selectList(qw);
         List<String> list1 = new ArrayList<>();
-        list.stream().forEach(item->{
-            String result = item.getProductCode() +"+"+ item.getMinBatteryNum()+"Batterie";
+        list.stream().forEach(item -> {
+            String result = item.getProductCode() + "+" + item.getMinBatteryNum() + "Batterie";
             list1.add(result);
         });
         return list1;
@@ -363,6 +364,18 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         //同步官网
         synchronizeDeposit(setDepositEnter);
         return new GeneralResult(setDepositEnter.getRequestId());
+    }
+
+    @Override
+    public GeneralResult TipSettings(GeneralEnter enter) {
+        LambdaQueryWrapper<OpeSalePrice> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(OpeSalePrice::getDr, Constant.DR_FALSE);
+        queryWrapper.isNotNull(OpeSalePrice::getDeposit);
+        List<OpeSalePrice> list = opeSalePriceMapper.selectList(queryWrapper);
+        if (list.size() <= 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.NO_DEPOSIT_SET.getCode(), ExceptionCodeEnums.NO_DEPOSIT_SET.getMessage());
+        }
+        return new GeneralResult(enter.getRequestId());
     }
 
     //同步给官网定金数据

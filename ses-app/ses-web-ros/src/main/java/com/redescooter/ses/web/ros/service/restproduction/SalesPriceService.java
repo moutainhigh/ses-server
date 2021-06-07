@@ -65,4 +65,6 @@ public interface SalesPriceService {
 
     GeneralResult setDeposit(SetDepositEnter setDepositEnter);
 
+    GeneralResult TipSettings(GeneralEnter enter);
+
 }
