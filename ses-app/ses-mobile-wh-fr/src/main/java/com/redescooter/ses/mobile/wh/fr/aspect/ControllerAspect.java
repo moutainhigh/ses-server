@@ -10,7 +10,7 @@ import com.redescooter.ses.mobile.wh.fr.dm.OpeWarehouseAccount;
 import com.redescooter.ses.tool.aspect.ValidationUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.mobile.wh.fr.exception.ExceptionCodeEnums;
-import com.redescooter.ses.mobile.wh.fr.exception.SesWebRosException;
+import com.redescooter.ses.mobile.wh.fr.exception.SesMobileFrWhException;
 import com.redescooter.ses.mobile.wh.fr.service.base.OpeWarehouseAccountService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -127,14 +127,14 @@ public class ControllerAspect {
         if (method.getAnnotation(IgnoreLoginCheck.class) == null) {
 
             if (StringUtils.isBlank(enter.getToken())) {
-                throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+                throw new SesMobileFrWhException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
             }
             if (!jedisCluster.exists(enter.getToken())) {
-                throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+                throw new SesMobileFrWhException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
             }
             Map<String, String> map = jedisCluster.hgetAll(enter.getToken());
             if (map == null) {
-                throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+                throw new SesMobileFrWhException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
             }
             UserToken userToken = new UserToken();
             try {
@@ -145,7 +145,7 @@ public class ControllerAspect {
 
             OpeWarehouseAccount account = opeWarehouseAccountService.getById(userToken.getUserId());
             if (null == account) {
-                throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+                throw new SesMobileFrWhException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
             }
             enter.setUserId(userToken.getUserId());
         }
@@ -165,22 +165,22 @@ public class ControllerAspect {
         }
         enter.setTimestamp((new Date()).getTime());
         if (StringUtils.isBlank(enter.getCountry())) {
-            throw new SesWebRosException(ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.COUNTRY_CANNOT_EMPTY.getMessage());
         }
         if (SesStringUtils.isBlank(enter.getLanguage())) {
-            throw new SesWebRosException(ExceptionCodeEnums.LANGUAGE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.LANGUAGE_CANNOT_EMPTY.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.LANGUAGE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.LANGUAGE_CANNOT_EMPTY.getMessage());
         }
         if (StringUtils.isBlank(enter.getClientType())) {
-            throw new SesWebRosException(ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CLIENTTYPE_CANNOT_EMPTY.getMessage());
         }
         if (StringUtils.isBlank(enter.getClientIp())) {
-            throw new SesWebRosException(ExceptionCodeEnums.CLIENTIP_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CLIENTIP_CANNOT_EMPTY.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.CLIENTIP_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CLIENTIP_CANNOT_EMPTY.getMessage());
         }
         if (StringUtils.isBlank(enter.getTimeZone())) {
-            throw new SesWebRosException(ExceptionCodeEnums.TIMEZONE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.TIMEZONE_CANNOT_EMPTY.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.TIMEZONE_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.TIMEZONE_CANNOT_EMPTY.getMessage());
         }
         if (StringUtils.isBlank(enter.getVersion())) {
-            throw new SesWebRosException(ExceptionCodeEnums.VERSION_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.VERSION_CANNOT_EMPTY.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.VERSION_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.VERSION_CANNOT_EMPTY.getMessage());
         }
     }
 

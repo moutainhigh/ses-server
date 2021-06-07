@@ -8,21 +8,21 @@ import com.redescooter.ses.api.common.exception.BusinessException;
  * @author: Darren
  * @create: 2019/01/16 11:36
  */
-public class SesWebRosException extends BusinessException {
+public class SesMobileFrWhException extends BusinessException {
 
-    private static final String ROOT_CODE = "R000";
+    private static final String ROOT_CODE = "WF000";
 
     private static final int DEFAULT_ERROR_CODE = 1;
 
-    public SesWebRosException() {
+    public SesMobileFrWhException() {
         this(DEFAULT_ERROR_CODE);
     }
 
-    public SesWebRosException(int code) {
+    public SesMobileFrWhException(int code) {
         this(code, "");
     }
 
-    public SesWebRosException(int code, String message) {
+    public SesMobileFrWhException(int code, String message) {
         super(ROOT_CODE + code, message);
     }
 }

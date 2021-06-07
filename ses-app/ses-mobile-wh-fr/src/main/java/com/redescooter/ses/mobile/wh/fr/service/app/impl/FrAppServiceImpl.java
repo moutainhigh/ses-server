@@ -68,7 +68,7 @@ import com.redescooter.ses.mobile.wh.fr.dm.OpeWmsStockRecord;
 import com.redescooter.ses.mobile.wh.fr.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.mobile.wh.fr.enums.StatusEnum;
 import com.redescooter.ses.mobile.wh.fr.exception.ExceptionCodeEnums;
-import com.redescooter.ses.mobile.wh.fr.exception.SesWebRosException;
+import com.redescooter.ses.mobile.wh.fr.exception.SesMobileFrWhException;
 import com.redescooter.ses.mobile.wh.fr.service.app.FrAppService;
 import com.redescooter.ses.mobile.wh.fr.service.base.OpeSaleScooterService;
 import com.redescooter.ses.mobile.wh.fr.service.base.OpeSimInformationService;
@@ -233,14 +233,14 @@ public class FrAppServiceImpl implements FrAppService {
         try {
             decryptEmail = RsaUtils.decrypt(enter.getEmail(), privateKey);
         } catch (Exception ex) {
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         // 密码解密
         String decryptPassword;
         try {
             decryptPassword = RsaUtils.decrypt(enter.getPassword(), privateKey);
         } catch (Exception e) {
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }*/
 
         String decryptEmail = enter.getEmail();
@@ -254,12 +254,12 @@ public class FrAppServiceImpl implements FrAppService {
         qw.last("limit 1");
         OpeWarehouseAccount account = opeWarehouseAccountService.getOne(qw);
         if (null == account) {
-            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
         // 拿着解密后的密码再次md5加密,和db存储的md5加密的密码相比较
         String encryptPassword = DigestUtils.md5Hex(decryptPassword + account.getSalt());
         if (!StringUtils.equals(encryptPassword, account.getPassword())) {
-            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
         }
 
         String lastLoginToken = account.getLastLoginToken();
@@ -328,7 +328,7 @@ public class FrAppServiceImpl implements FrAppService {
     public OpeWarehouseAccount getUserInfo(GeneralEnter enter) {
         OpeWarehouseAccount account = opeWarehouseAccountService.getById(enter.getUserId());
         if (null == account) {
-            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
         return account;
     }
@@ -413,7 +413,7 @@ public class FrAppServiceImpl implements FrAppService {
         if (null != instance) {
             Long warehouseAccountId = instance.getWarehouseAccountId();
             if (null != warehouseAccountId && !enter.getUserId().equals(warehouseAccountId)) {
-                throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getCode(), ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getMessage());
+                throw new SesMobileFrWhException(ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getCode(), ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getMessage());
             }
         }
 
@@ -426,12 +426,12 @@ public class FrAppServiceImpl implements FrAppService {
 
             OpeCustomerInquiry inquiry = opeCustomerInquiryService.getById(enter.getId());
             if (null == inquiry) {
-                throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+                throw new SesMobileFrWhException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
             }
             Long productId = inquiry.getProductId();
             OpeSaleScooter saleScooter = opeSaleScooterService.getById(productId);
             if (null == saleScooter) {
-                throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
+                throw new SesMobileFrWhException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
             }
             // 根据询价单id获得车辆型号id和颜色id
             Long specificatId = saleScooter.getSpecificatId();
@@ -499,31 +499,31 @@ public class FrAppServiceImpl implements FrAppService {
             Long warehouseAccountId = instance.getWarehouseAccountId();
             String vin = instance.getVinCode();
             if (null != warehouseAccountId && !enter.getUserId().equals(warehouseAccountId)) {
-                throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getCode(), ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getMessage());
+                throw new SesMobileFrWhException(ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getCode(), ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getMessage());
             }
             if (StringUtils.isNotBlank(vin)) {
-                throw new SesWebRosException(ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getCode(), ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getMessage());
+                throw new SesMobileFrWhException(ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getCode(), ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getMessage());
             }
         }
 
         if (vinCode.length() != 17) {
-            throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
         }
         if (!vinCode.startsWith("VXSR2A")) {
-            throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
         }
 
         String productType = ProductTypeEnum.showCode(enter.getScooterName());
         // 截取第7位,车型编号
         String productTypeSub = vinCode.substring(6, 7);
         if (!StringUtils.equals(productType, productTypeSub)) {
-            throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
         }
 
         // 截取第8位,座位数量
         String seatNumberSub = vinCode.substring(7, 8);
         if (!StringUtils.equals(String.valueOf(seatNumber), seatNumberSub)) {
-            throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
         }
 
         LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
@@ -532,7 +532,7 @@ public class FrAppServiceImpl implements FrAppService {
         checkWrapper.last("limit 1");
         OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
         if (null != checkModel) {
-            throw new SesWebRosException(ExceptionCodeEnums.VIN_HAS_INPUT.getCode(), ExceptionCodeEnums.VIN_HAS_INPUT.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.VIN_HAS_INPUT.getCode(), ExceptionCodeEnums.VIN_HAS_INPUT.getMessage());
         }
 
         // 查看vin在码库中是否存在
@@ -542,7 +542,7 @@ public class FrAppServiceImpl implements FrAppService {
         existWrapper.eq(OpeCodebaseVin::getVin, vinCode);
         int count = opeCodebaseVinService.count(existWrapper);
         if (count == 0) {
-            throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getMessage());
         }
 
         // 修改主表
@@ -621,7 +621,7 @@ public class FrAppServiceImpl implements FrAppService {
         if (null != instance) {
             String plate = instance.getLicensePlate();
             if (StringUtils.isNotBlank(plate)) {
-                throw new SesWebRosException(ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getCode(), ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getMessage());
+                throw new SesMobileFrWhException(ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getCode(), ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getMessage());
             }
         }
 
@@ -631,7 +631,7 @@ public class FrAppServiceImpl implements FrAppService {
         checkWrapper.last("limit 1");
         OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
         if (null != checkModel) {
-            throw new SesWebRosException(ExceptionCodeEnums.PLATE_HAS_USED.getCode(), ExceptionCodeEnums.PLATE_HAS_USED.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.PLATE_HAS_USED.getCode(), ExceptionCodeEnums.PLATE_HAS_USED.getMessage());
         }
 
         // 修改主表
@@ -707,7 +707,7 @@ public class FrAppServiceImpl implements FrAppService {
         OpeCarDistribute instance = opeCarDistributeMapper.selectOne(scooterWrapper);
         if (null != instance) {
             if (StringUtils.isNotBlank(instance.getRsn()) || StringUtils.isNotBlank(instance.getTabletSn()) || StringUtils.isNotBlank(instance.getBluetoothAddress())) {
-                throw new SesWebRosException(ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getCode(), ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getMessage());
+                throw new SesMobileFrWhException(ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getCode(), ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getMessage());
             }
         }
 
@@ -717,7 +717,7 @@ public class FrAppServiceImpl implements FrAppService {
         lqw.last("limit 1");
         OpeCarDistribute model = opeCarDistributeMapper.selectOne(lqw);
         if (null != model) {
-            throw new SesWebRosException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
         }
 
         LambdaQueryWrapper<OpeCarDistribute> checkWrapper = new LambdaQueryWrapper<>();
@@ -726,7 +726,7 @@ public class FrAppServiceImpl implements FrAppService {
         checkWrapper.last("limit 1");
         OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
         if (null != checkModel && null != checkModel.getWarehouseAccountId() && StringUtils.isNotBlank(checkModel.getRsn())) {
-            throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DEAL.getCode(), ExceptionCodeEnums.ORDER_HAS_DEAL.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.ORDER_HAS_DEAL.getCode(), ExceptionCodeEnums.ORDER_HAS_DEAL.getMessage());
         }
 
         // 查看rsn在码库中是否存在
@@ -736,7 +736,7 @@ public class FrAppServiceImpl implements FrAppService {
         existWrapper.eq(OpeCodebaseRsn::getRsn, rsn);
         int count = opeCodebaseRsnService.count(existWrapper);
         if (count == 0) {
-            throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getMessage());
         }
 
         // 查看rsn对应的车型(低速/高速)和询价单对应的车型(低速/高速)是否相符,不相符抛出异常
@@ -818,7 +818,7 @@ public class FrAppServiceImpl implements FrAppService {
         checkWrapper.last("limit 1");
         OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
         if (null != checkModel) {
-            throw new SesWebRosException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
         }
 
         // 得到询价单的电池数量
@@ -842,7 +842,7 @@ public class FrAppServiceImpl implements FrAppService {
                 List<String> batteryList = new ArrayList<>(Arrays.asList(split));
                 if (CollectionUtils.isNotEmpty(batteryList)) {
                     if (batteryList.size() == batteryNum) {
-                        throw new SesWebRosException(ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getCode(), ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getMessage());
+                        throw new SesMobileFrWhException(ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getCode(), ExceptionCodeEnums.STEP_HAS_INPUT_IN_ROS.getMessage());
                     }
                 }
             }
@@ -920,16 +920,16 @@ public class FrAppServiceImpl implements FrAppService {
         // 客户信息
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getCustomerId());
         if (null == opeCustomer) {
-            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(opeCustomer.getStatus(), CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue())) {
-            throw new SesWebRosException(ExceptionCodeEnums.CONVERT_TO_FORMAL_CUSTOMER_FIRST.getCode(), ExceptionCodeEnums.CONVERT_TO_FORMAL_CUSTOMER_FIRST.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.CONVERT_TO_FORMAL_CUSTOMER_FIRST.getCode(), ExceptionCodeEnums.CONVERT_TO_FORMAL_CUSTOMER_FIRST.getMessage());
         }
 
         // 查询客户的账号信息(查pla_user表)
         QueryAccountResult accountInfo = accountBaseService.customerAccountDeatil(opeCustomer.getEmail());
         if (null == accountInfo) {
-            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
 
         // 客户和车辆产生绑定关系
@@ -958,7 +958,7 @@ public class FrAppServiceImpl implements FrAppService {
         List<OpeWmsScooterStock> stockList = opeWmsScooterStockMapper.selectList(wrapper);
         OpeWmsScooterStock stock = null;
         if (CollectionUtils.isEmpty(stockList)) {
-            throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
         }
 
         stock = stockList.get(0);
@@ -969,7 +969,7 @@ public class FrAppServiceImpl implements FrAppService {
         Integer usedStockQty = stock.getUsedStockQty();
 
         if (ableStockQty < 1) {
-            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getCode(), ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getCode(), ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getMessage());
         }
 
         // 原先库存的可用库存数量-1,已用库存数量+1
@@ -1003,11 +1003,11 @@ public class FrAppServiceImpl implements FrAppService {
         // 根据rsn查询sco_scooter表
         ScoScooterResult scoScooter = scooterService.getScoScooterByTableSn(model.getRsn());
         if (null == scoScooter) {
-            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
         }
         Long scooterId = scoScooter.getId();
         if (null == scooterId) {
-            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
         }
 
         // 修改sco_scooter的牌照
@@ -1046,16 +1046,16 @@ public class FrAppServiceImpl implements FrAppService {
         // 创建车辆
         AdmScooter admScooter = scooterModelService.getScooterBySn(model.getTabletSn());
         if (null != admScooter) {
-            throw new SesWebRosException(ExceptionCodeEnums.SN_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.SN_ALREADY_EXISTS.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.SN_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.SN_ALREADY_EXISTS.getMessage());
         }
         log.info("车辆不存在");
         SpecificGroupDTO group = specificService.getSpecificGroupById(specificatId);
         ColorDTO color = colorService.getColorInfoById(inquiryColorId);
         if (null == group) {
-            throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
         }
         if (null == color) {
-            throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
         }
 
         // 新增adm_scooter表
@@ -1089,20 +1089,20 @@ public class FrAppServiceImpl implements FrAppService {
         // 设置软体
         AdmScooter scooterModel = scooterModelService.getScooterById(scooter.getId());
         if (null == scooterModel) {
-            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
         }
         // 只允许车辆关闭状态时进行软体设置
         String status = scooterService.getScooterStatusByTabletSn(scooter.getSn());
         if (ScooterLockStatusEnums.UNLOCK.getValue().equals(status)) {
-            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_CLOSED.getCode(), ExceptionCodeEnums.SCOOTER_NOT_CLOSED.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.SCOOTER_NOT_CLOSED.getCode(), ExceptionCodeEnums.SCOOTER_NOT_CLOSED.getMessage());
         }
         SpecificTypeDTO specificType = specificService.getSpecificTypeByName(specificatName);
         if (null == specificType) {
-            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
         }
         Integer type = ScooterModelEnum.getScooterModelType(specificType.getSpecificatName());
         if (type == 0) {
-            throw new SesWebRosException(ExceptionCodeEnums.SELECT_SCOOTER_MODEL_ERROR.getCode(), ExceptionCodeEnums.SELECT_SCOOTER_MODEL_ERROR.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.SELECT_SCOOTER_MODEL_ERROR.getCode(), ExceptionCodeEnums.SELECT_SCOOTER_MODEL_ERROR.getMessage());
         }
 
         // 如果设置的型号与当前车辆的型号一致则不做操作
@@ -1194,7 +1194,7 @@ public class FrAppServiceImpl implements FrAppService {
             // 旧数据ope_specificat_def表里面def_group_id字段值是空的,这里会导致stream分组的时候报错
             specificDefList.forEach(def -> {
                 if (null == def.getSpecificDefGroupId()) {
-                    throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                    throw new SesMobileFrWhException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
             });
 
@@ -1275,28 +1275,28 @@ public class FrAppServiceImpl implements FrAppService {
         qw.last("limit 1");
         OpeWmsStockSerialNumber serialNumber = opeWmsStockSerialNumberService.getOne(qw);
         if (null == serialNumber) {
-            throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EXIST.getCode(), ExceptionCodeEnums.RSN_NOT_EXIST.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.RSN_NOT_EXIST.getCode(), ExceptionCodeEnums.RSN_NOT_EXIST.getMessage());
         }
         Long relationId = serialNumber.getRelationId();
         OpeWmsScooterStock stock = opeWmsScooterStockMapper.selectById(relationId);
         if (null == stock) {
-            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_STOCK_IS_EMPTY.getCode(), ExceptionCodeEnums.SCOOTER_STOCK_IS_EMPTY.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.SCOOTER_STOCK_IS_EMPTY.getCode(), ExceptionCodeEnums.SCOOTER_STOCK_IS_EMPTY.getMessage());
         }
         Long groupId = stock.getGroupId();
         Long colorId = stock.getColorId();
         OpeSpecificatGroup group = opeSpecificatGroupService.getById(groupId);
         OpeColor color = opeColorService.getById(colorId);
         if (null == group) {
-            throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
         }
         if (null == color) {
-            throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
         }
 
         // 获得询价单产品是低速还是高速,以及颜色
         OpeSaleScooter saleScooter = getSaleScooter(customerId);
         if (!Objects.equals(groupId, saleScooter.getGroupId()) || !Objects.equals(colorId, saleScooter.getColorId())) {
-            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_NOT_MATCH.getCode(), ExceptionCodeEnums.SPECIFICAT_NOT_MATCH.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.SPECIFICAT_NOT_MATCH.getCode(), ExceptionCodeEnums.SPECIFICAT_NOT_MATCH.getMessage());
         }
     }
 
@@ -1310,12 +1310,12 @@ public class FrAppServiceImpl implements FrAppService {
         qw.last("limit 1");
         OpeCustomerInquiry inquiry = opeCustomerInquiryService.getOne(qw);
         if (null == inquiry) {
-            throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
         Long productId = inquiry.getProductId();
         OpeSaleScooter saleScooter = opeSaleScooterService.getById(productId);
         if (null == saleScooter) {
-            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
         }
         return saleScooter;
     }
@@ -1332,18 +1332,18 @@ public class FrAppServiceImpl implements FrAppService {
         opeCustomerInquiryWrapper.orderByDesc(OpeCustomerInquiry::getCreatedTime);
         List<OpeCustomerInquiry> list = opeCustomerInquiryMapper.selectList(opeCustomerInquiryWrapper);
         if (CollectionUtils.isEmpty(list)) {
-            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         OpeCustomerInquiry customerInquiry = list.get(0);
         Long productId = customerInquiry.getProductId();
         if (null == productId) {
-            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
 
         // 拿着产品id去ope_sale_scooter查询
         OpeSaleScooter opeSaleScooter = opeSaleScooterMapper.selectById(productId);
         if (null == opeSaleScooter) {
-            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 得到型号id和颜色id
         Long groupId = opeSaleScooter.getGroupId();
@@ -1358,7 +1358,7 @@ public class FrAppServiceImpl implements FrAppService {
      */
     public String getSpecificatNameById(Long specificatId) {
         if (null == specificatId) {
-            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_ID_NOT_EMPTY.getCode(), ExceptionCodeEnums.SPECIFICAT_ID_NOT_EMPTY.getMessage());
+            throw new SesMobileFrWhException(ExceptionCodeEnums.SPECIFICAT_ID_NOT_EMPTY.getCode(), ExceptionCodeEnums.SPECIFICAT_ID_NOT_EMPTY.getMessage());
         }
         OpeSpecificatType specificatType = opeSpecificatTypeMapper.selectById(specificatId);
         if (null != specificatType) {
@@ -1367,7 +1367,7 @@ public class FrAppServiceImpl implements FrAppService {
                 return name;
             }
         }
-        throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
+        throw new SesMobileFrWhException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
     }
 
 }

@@ -8,7 +8,6 @@ package com.redescooter.ses.mobile.wh.fr.constant;
  */
 public class StringManaConstant {
 
-
     /**
      * 国内时区
      */
