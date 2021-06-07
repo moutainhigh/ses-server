@@ -1,20 +1,21 @@
-package com.redescooter.ses.web.ros.service.app;
+package com.redescooter.ses.wh.fr.service.app;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
-import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
-import com.redescooter.ses.web.ros.vo.app.AppLoginEnter;
-import com.redescooter.ses.web.ros.vo.app.BindLicensePlateEnter;
-import com.redescooter.ses.web.ros.vo.app.BindVinEnter;
-import com.redescooter.ses.web.ros.vo.app.InputBatteryEnter;
-import com.redescooter.ses.web.ros.vo.app.InputScooterEnter;
-import com.redescooter.ses.web.ros.vo.app.InquiryDetailEnter;
-import com.redescooter.ses.web.ros.vo.app.InquiryDetailResult;
-import com.redescooter.ses.web.ros.vo.app.InquiryListAppEnter;
-import com.redescooter.ses.web.ros.vo.app.InquiryListResult;
-import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
+import com.redescooter.ses.wh.fr.dm.OpeWarehouseAccount;
+import com.redescooter.ses.wh.fr.vo.AppLoginEnter;
+import com.redescooter.ses.wh.fr.vo.BindLicensePlateEnter;
+import com.redescooter.ses.wh.fr.vo.BindVinEnter;
+import com.redescooter.ses.wh.fr.vo.CustomerIdEnter;
+import com.redescooter.ses.wh.fr.vo.InputBatteryEnter;
+import com.redescooter.ses.wh.fr.vo.InputScooterEnter;
+import com.redescooter.ses.wh.fr.vo.InquiryDetailEnter;
+import com.redescooter.ses.wh.fr.vo.InquiryDetailResult;
+import com.redescooter.ses.wh.fr.vo.InquiryListAppEnter;
+import com.redescooter.ses.wh.fr.vo.InquiryListResult;
+
 
 /**
  * @Description

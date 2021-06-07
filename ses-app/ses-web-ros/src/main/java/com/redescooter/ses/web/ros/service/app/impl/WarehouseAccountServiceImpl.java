@@ -7,6 +7,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.hub.service.operation.FrWhAppService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
@@ -63,8 +64,8 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
     @Autowired
     private OpeCarDistributeNodeMapper opeCarDistributeNodeMapper;
 
-    @Autowired
-    private FrAppServiceImpl frAppService;
+    @DubboReference
+    private FrWhAppService frWhAppService;
 
     @DubboReference
     private IdAppService idAppService;
@@ -256,7 +257,7 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
                     // 调用法国仓库app登出接口
                     GeneralEnter generalEnter = new GeneralEnter();
                     generalEnter.setToken(model.getLastLoginToken());
-                    frAppService.logout(generalEnter);
+                    frWhAppService.logout(generalEnter);
                 }
             }
         }
@@ -292,7 +293,7 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
                 // 调用法国仓库app登出接口
                 GeneralEnter generalEnter = new GeneralEnter();
                 generalEnter.setToken(account.getLastLoginToken());
-                frAppService.logout(generalEnter);
+                frWhAppService.logout(generalEnter);
             }
         }
         return new GeneralResult(enter.getRequestId());
@@ -314,7 +315,7 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
                 // 调用法国仓库app登出接口
                 GeneralEnter generalEnter = new GeneralEnter();
                 generalEnter.setToken(account.getLastLoginToken());
-                frAppService.logout(generalEnter);
+                frWhAppService.logout(generalEnter);
             }
         }
         return new GeneralResult(enter.getRequestId());

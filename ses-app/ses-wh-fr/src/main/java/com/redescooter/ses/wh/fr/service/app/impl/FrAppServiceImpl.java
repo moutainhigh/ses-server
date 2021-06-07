@@ -1,7 +1,8 @@
-package com.redescooter.ses.web.ros.service.app.impl;
+package com.redescooter.ses.wh.fr.service.app.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.SpecificDefNameConstant;
 import com.redescooter.ses.api.common.enums.assign.ProductTypeEnum;
@@ -41,55 +42,58 @@ import com.redescooter.ses.api.scooter.vo.emqx.SpecificDefGroupPublishDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.map.MapUtil;
-import com.redescooter.ses.web.ros.constant.SequenceName;
-import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeExMapper;
-import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
-import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeNodeMapper;
-import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
-import com.redescooter.ses.web.ros.dao.base.OpeWmsScooterStockMapper;
-import com.redescooter.ses.web.ros.dao.base.OpeWmsStockRecordMapper;
-import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
-import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
-import com.redescooter.ses.web.ros.dm.OpeCodebaseRelation;
-import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
-import com.redescooter.ses.web.ros.dm.OpeCodebaseVin;
-import com.redescooter.ses.web.ros.dm.OpeColor;
-import com.redescooter.ses.web.ros.dm.OpeCustomer;
-import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
-import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
-import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
-import com.redescooter.ses.web.ros.dm.OpeSimInformation;
-import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
-import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
-import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
-import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
-import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
-import com.redescooter.ses.web.ros.enums.distributor.StatusEnum;
-import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
-import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.service.app.FrAppService;
-import com.redescooter.ses.web.ros.service.assign.impl.ToBeAssignServiceImpl;
-import com.redescooter.ses.web.ros.service.base.OpeCodebaseRelationService;
-import com.redescooter.ses.web.ros.service.base.OpeCodebaseRsnService;
-import com.redescooter.ses.web.ros.service.base.OpeCodebaseVinService;
-import com.redescooter.ses.web.ros.service.base.OpeColorService;
-import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
-import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
-import com.redescooter.ses.web.ros.service.base.OpeSaleScooterService;
-import com.redescooter.ses.web.ros.service.base.OpeSpecificatGroupService;
-import com.redescooter.ses.web.ros.service.base.OpeWarehouseAccountService;
-import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
-import com.redescooter.ses.web.ros.service.sim.OpeSimInformationService;
-import com.redescooter.ses.web.ros.vo.app.AppLoginEnter;
-import com.redescooter.ses.web.ros.vo.app.BindLicensePlateEnter;
-import com.redescooter.ses.web.ros.vo.app.BindVinEnter;
-import com.redescooter.ses.web.ros.vo.app.InputBatteryEnter;
-import com.redescooter.ses.web.ros.vo.app.InputScooterEnter;
-import com.redescooter.ses.web.ros.vo.app.InquiryDetailEnter;
-import com.redescooter.ses.web.ros.vo.app.InquiryDetailResult;
-import com.redescooter.ses.web.ros.vo.app.InquiryListAppEnter;
-import com.redescooter.ses.web.ros.vo.app.InquiryListResult;
-import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
+import com.redescooter.ses.wh.fr.constant.SequenceName;
+import com.redescooter.ses.wh.fr.dao.base.OpeCarDistributeExMapper;
+import com.redescooter.ses.wh.fr.dao.base.OpeCarDistributeMapper;
+import com.redescooter.ses.wh.fr.dao.base.OpeCarDistributeNodeMapper;
+import com.redescooter.ses.wh.fr.dao.base.OpeCustomerInquiryMapper;
+import com.redescooter.ses.wh.fr.dao.base.OpeCustomerMapper;
+import com.redescooter.ses.wh.fr.dao.base.OpeSaleScooterMapper;
+import com.redescooter.ses.wh.fr.dao.base.OpeSpecificatTypeMapper;
+import com.redescooter.ses.wh.fr.dao.base.OpeWmsScooterStockMapper;
+import com.redescooter.ses.wh.fr.dao.base.OpeWmsStockRecordMapper;
+import com.redescooter.ses.wh.fr.dm.OpeCarDistribute;
+import com.redescooter.ses.wh.fr.dm.OpeCarDistributeNode;
+import com.redescooter.ses.wh.fr.dm.OpeCodebaseRelation;
+import com.redescooter.ses.wh.fr.dm.OpeCodebaseRsn;
+import com.redescooter.ses.wh.fr.dm.OpeCodebaseVin;
+import com.redescooter.ses.wh.fr.dm.OpeColor;
+import com.redescooter.ses.wh.fr.dm.OpeCustomer;
+import com.redescooter.ses.wh.fr.dm.OpeCustomerInquiry;
+import com.redescooter.ses.wh.fr.dm.OpeCustomerInquiryB;
+import com.redescooter.ses.wh.fr.dm.OpeSaleScooter;
+import com.redescooter.ses.wh.fr.dm.OpeSimInformation;
+import com.redescooter.ses.wh.fr.dm.OpeSpecificatGroup;
+import com.redescooter.ses.wh.fr.dm.OpeSpecificatType;
+import com.redescooter.ses.wh.fr.dm.OpeWarehouseAccount;
+import com.redescooter.ses.wh.fr.dm.OpeWmsScooterStock;
+import com.redescooter.ses.wh.fr.dm.OpeWmsStockRecord;
+import com.redescooter.ses.wh.fr.dm.OpeWmsStockSerialNumber;
+import com.redescooter.ses.wh.fr.enums.StatusEnum;
+import com.redescooter.ses.wh.fr.exception.ExceptionCodeEnums;
+import com.redescooter.ses.wh.fr.exception.SesWebRosException;
+import com.redescooter.ses.wh.fr.service.app.FrAppService;
+import com.redescooter.ses.wh.fr.service.base.OpeCodebaseRelationService;
+import com.redescooter.ses.wh.fr.service.base.OpeCodebaseRsnService;
+import com.redescooter.ses.wh.fr.service.base.OpeCodebaseVinService;
+import com.redescooter.ses.wh.fr.service.base.OpeColorService;
+import com.redescooter.ses.wh.fr.service.base.OpeCustomerInquiryBService;
+import com.redescooter.ses.wh.fr.service.base.OpeCustomerInquiryService;
+import com.redescooter.ses.wh.fr.service.base.OpeSaleScooterService;
+import com.redescooter.ses.wh.fr.service.base.OpeSimInformationService;
+import com.redescooter.ses.wh.fr.service.base.OpeSpecificatGroupService;
+import com.redescooter.ses.wh.fr.service.base.OpeWarehouseAccountService;
+import com.redescooter.ses.wh.fr.service.base.OpeWmsStockSerialNumberService;
+import com.redescooter.ses.wh.fr.vo.AppLoginEnter;
+import com.redescooter.ses.wh.fr.vo.BindLicensePlateEnter;
+import com.redescooter.ses.wh.fr.vo.BindVinEnter;
+import com.redescooter.ses.wh.fr.vo.CustomerIdEnter;
+import com.redescooter.ses.wh.fr.vo.InputBatteryEnter;
+import com.redescooter.ses.wh.fr.vo.InputScooterEnter;
+import com.redescooter.ses.wh.fr.vo.InquiryDetailEnter;
+import com.redescooter.ses.wh.fr.vo.InquiryDetailResult;
+import com.redescooter.ses.wh.fr.vo.InquiryListAppEnter;
+import com.redescooter.ses.wh.fr.vo.InquiryListResult;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
@@ -157,9 +161,6 @@ public class FrAppServiceImpl implements FrAppService {
     private OpeCustomerInquiryBService opeCustomerInquiryBService;
 
     @Autowired
-    private ToBeAssignServiceImpl toBeAssignService;
-
-    @Autowired
     private OpeSaleScooterService opeSaleScooterService;
 
     @Autowired
@@ -176,6 +177,15 @@ public class FrAppServiceImpl implements FrAppService {
 
     @Autowired
     private OpeColorService opeColorService;
+
+    @Autowired
+    private OpeCustomerInquiryMapper opeCustomerInquiryMapper;
+
+    @Autowired
+    private OpeSaleScooterMapper opeSaleScooterMapper;
+
+    @Autowired
+    private OpeSpecificatTypeMapper opeSpecificatTypeMapper;
 
     @Value("${Request.privateKey}")
     private String privateKey;
@@ -972,7 +982,7 @@ public class FrAppServiceImpl implements FrAppService {
         // 获得询价单型号id和颜色id
         CustomerIdEnter customerIdEnter = new CustomerIdEnter();
         customerIdEnter.setCustomerId(enter.getCustomerId());
-        Map<String, Long> map = toBeAssignService.getSpecificatIdAndColorId(customerIdEnter);
+        Map<String, Long> map = getSpecificatIdAndColorId(customerIdEnter);
         log.info("询价单型号和颜色分别是:[{}]", map);
         Long specificatId = map.get("specificatId");
         Long inquiryColorId = map.get("colorId");
@@ -1027,7 +1037,7 @@ public class FrAppServiceImpl implements FrAppService {
         }
 
         // 获得规格名称
-        String specificatName = toBeAssignService.getSpecificatNameById(model.getSpecificatTypeId());
+        String specificatName = getSpecificatNameById(model.getSpecificatTypeId());
 
         // 根据rsn查询sco_scooter表
         ScoScooterResult scoScooter = scooterService.getScoScooterByTableSn(model.getRsn());
@@ -1347,6 +1357,56 @@ public class FrAppServiceImpl implements FrAppService {
             throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
         }
         return saleScooter;
+    }
+
+    /**
+     * 根据客户id获得询价单型号id和颜色id
+     */
+    public Map<String, Long> getSpecificatIdAndColorId(CustomerIdEnter enter) {
+        Map<String, Long> result = Maps.newHashMapWithExpectedSize(2);
+        // 得到询价单的产品id
+        LambdaQueryWrapper<OpeCustomerInquiry> opeCustomerInquiryWrapper = new LambdaQueryWrapper<>();
+        opeCustomerInquiryWrapper.eq(OpeCustomerInquiry::getDr, Constant.DR_FALSE);
+        opeCustomerInquiryWrapper.eq(OpeCustomerInquiry::getCustomerId, enter.getCustomerId());
+        opeCustomerInquiryWrapper.orderByDesc(OpeCustomerInquiry::getCreatedTime);
+        List<OpeCustomerInquiry> list = opeCustomerInquiryMapper.selectList(opeCustomerInquiryWrapper);
+        if (CollectionUtils.isEmpty(list)) {
+            throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
+        }
+        OpeCustomerInquiry customerInquiry = list.get(0);
+        Long productId = customerInquiry.getProductId();
+        if (null == productId) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        }
+
+        // 拿着产品id去ope_sale_scooter查询
+        OpeSaleScooter opeSaleScooter = opeSaleScooterMapper.selectById(productId);
+        if (null == opeSaleScooter) {
+            throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
+        }
+        // 得到型号id和颜色id
+        Long groupId = opeSaleScooter.getGroupId();
+        Long colorId = opeSaleScooter.getColorId();
+        result.put("specificatId", groupId);
+        result.put("colorId", colorId);
+        return result;
+    }
+
+    /**
+     * 根据型号id获取型号名称
+     */
+    public String getSpecificatNameById(Long specificatId) {
+        if (null == specificatId) {
+            throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_ID_NOT_EMPTY.getCode(), ExceptionCodeEnums.SPECIFICAT_ID_NOT_EMPTY.getMessage());
+        }
+        OpeSpecificatType specificatType = opeSpecificatTypeMapper.selectById(specificatId);
+        if (null != specificatType) {
+            String name = specificatType.getSpecificatName();
+            if (StringUtils.isNotBlank(name)) {
+                return name;
+            }
+        }
+        throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
     }
 
 }
