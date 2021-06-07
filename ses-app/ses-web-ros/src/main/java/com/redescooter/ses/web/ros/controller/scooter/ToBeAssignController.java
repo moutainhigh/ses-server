@@ -134,6 +134,15 @@ public class ToBeAssignController {
     }
 
     /**
+     * 创建oms车辆信息
+     */
+    @ApiOperation(value = "创建oms车辆信息", notes = "创建oms车辆信息")
+    @PostMapping("/scooter")
+    public Response<GeneralResult> createScooter(@ModelAttribute CustomerIdEnter enter) {
+        return new Response<>(toBeAssignService.createScooter(enter));
+    }
+
+    /**
      * 点击分配按钮校验询价单是否被操作过
      */
     /*@ApiOperation(value = "点击分配按钮校验询价单是否被操作过", notes = "点击分配按钮校验询价单是否被操作过")

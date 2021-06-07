@@ -77,6 +77,11 @@ public interface ToBeAssignService {
     BooleanResult checkScooterStock(CustomerIdEnter enter);
 
     /**
+     * 创建oms车辆信息
+     */
+    GeneralResult createScooter(CustomerIdEnter enter);
+
+    /**
      * 点击分配按钮校验询价单是否被操作过
      */
     //BooleanResult checkOperation(CustomerIdEnter enter);
