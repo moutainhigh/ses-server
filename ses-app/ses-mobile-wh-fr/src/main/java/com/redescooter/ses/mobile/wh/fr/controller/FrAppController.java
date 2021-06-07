@@ -1,5 +1,6 @@
 package com.redescooter.ses.mobile.wh.fr.controller;
 
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -45,6 +46,7 @@ public class FrAppController {
      */
     @PostMapping("/login")
     @ApiOperation(value = "登录", notes = "登录")
+    @IgnoreLoginCheck
     public Response<TokenResult> login(@ModelAttribute AppLoginEnter enter) {
         return new Response<>(frAppService.login(enter));
     }

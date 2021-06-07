@@ -124,7 +124,6 @@ public class ControllerAspect {
         } catch (NoSuchMethodException e) {
             log.error("get method failure:", e);
         }
-        //ros 内部系统登录
         if (method.getAnnotation(IgnoreLoginCheck.class) == null) {
 
             if (StringUtils.isBlank(enter.getToken())) {
