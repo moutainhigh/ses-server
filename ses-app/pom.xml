@@ -23,7 +23,7 @@
         <module>ses-mobile-rps</module>
         <module>ses-admin-dev</module>
         <module>ses-web-website</module>
-        <module>ses-wh-fr</module>
+        <module>ses-mobile-wh-fr</module>
     </modules>
 
     <dependencies>

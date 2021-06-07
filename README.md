@@ -171,6 +171,7 @@ ses-server
 | ses-service-mobile-b   | 8806          | 8105       |
 | ses-mobile-client      | 8903          | 8106       |
 | ses-mobile-rps         | 8904          | 8107       |
+| ses-mobile-wh-fr       | 8905          | 8111       |
 | ses-web-website        | 8900          | 8108       |
 | ses-web-ros            | 8901          | 8109       |
 | ses-web-delivery       | 8902          | 8110       |
