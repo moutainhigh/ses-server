@@ -588,9 +588,9 @@ public enum ExceptionCodeEnums {
 
     RSN_NOT_EXISTS_CODEBASE(10285, "该RSN在码库中不存在"),
 
-    ASSIGN_SCOOTER_WRONG(10286, "分车信息错误")
+    ASSIGN_SCOOTER_WRONG(10286, "分车信息错误"),
 
-
+    INSERT_SCAN_CODE_RECORD_WRONG(10287, "该部件已被使用,请更换扫码")
     ;
 
     private int code;

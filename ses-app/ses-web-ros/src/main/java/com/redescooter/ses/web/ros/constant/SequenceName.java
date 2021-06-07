@@ -275,5 +275,7 @@ public interface SequenceName {
 
     String OPE_WAREHOUSE_ACCOUNT = "OPE_WAREHOUSE_ACCOUNT";
 
+    String OPE_SCAN_CODE_RECORD = "OPE_SCAN_CODE_RECORD";
+
 
 }
