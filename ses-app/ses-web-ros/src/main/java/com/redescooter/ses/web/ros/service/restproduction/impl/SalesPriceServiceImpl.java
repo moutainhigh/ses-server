@@ -360,10 +360,6 @@ public class SalesPriceServiceImpl implements SalesPriceService {
 
     @Override
     public GeneralResult setDeposit(SetDepositEnter setDepositEnter) {
-        int i = opeSalePriceMapper.editDeposit(setDepositEnter);
-        if (i < 0) {
-            throw new SesWebRosException(ExceptionCodeEnums.UPDATE_FAIL.getCode(), ExceptionCodeEnums.UPDATE_FAIL.getMessage());
-        }
         LambdaQueryWrapper<OpeSalePrice> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeSalePrice::getDr, Constant.DR_FALSE);
         wrapper.eq(OpeSalePrice::getType, 2);
@@ -375,6 +371,10 @@ public class SalesPriceServiceImpl implements SalesPriceService {
                 .orElse(BigDecimal.ZERO);
         if (setDepositEnter.getDeposit().compareTo(min) == 1) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPOSIT_ERROR.getCode(), ExceptionCodeEnums.DEPOSIT_ERROR.getMessage());
+        }
+        int i = opeSalePriceMapper.editDeposit(setDepositEnter);
+        if (i < 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.UPDATE_FAIL.getCode(), ExceptionCodeEnums.UPDATE_FAIL.getMessage());
         }
         //同步官网
         synchronizeDeposit(setDepositEnter);
