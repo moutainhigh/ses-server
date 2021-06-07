@@ -360,6 +360,9 @@ public class SalesPriceServiceImpl implements SalesPriceService {
 
     @Override
     public GeneralResult setDeposit(SetDepositEnter setDepositEnter) {
+        if (setDepositEnter.getDeposit().compareTo(BigDecimal.ZERO) == 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.DEPOSIT_NOT_ZERO.getCode(), ExceptionCodeEnums.DEPOSIT_NOT_ZERO.getMessage());
+        }
         LambdaQueryWrapper<OpeSalePrice> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeSalePrice::getDr, Constant.DR_FALSE);
         wrapper.eq(OpeSalePrice::getType, 2);

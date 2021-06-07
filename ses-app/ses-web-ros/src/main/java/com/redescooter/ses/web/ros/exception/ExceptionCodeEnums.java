@@ -602,7 +602,9 @@ public enum ExceptionCodeEnums {
 
     SALE_PRICE_NOT_FOUND(10292,"销售价格不存在"),
 
-    DEPOSIT_ERROR(10293,"设置定金不能大于最小价格");
+    DEPOSIT_ERROR(10293,"设置定金不能大于最小价格"),
+
+    DEPOSIT_NOT_ZERO(10294,"设置定金不能为0");
 
     private int code;
 
