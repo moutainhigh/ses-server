@@ -117,7 +117,7 @@ dubbo:
 #mybaits-plus配置，此配置 不影响原始的mybatis
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*Mapper.xml
-  typeAliasesPackage: com.redescooter.ses.wh.fr.vo,com.redescooter.ses.wh.fr.dm
+  typeAliasesPackage: com.redescooter.ses.mobile.wh.fr.vo,com.redescooter.ses.mobile.wh.fr.dm
   global-config:
     banner: true
     db-config:

@@ -58,7 +58,7 @@ public class ControllerAspect {
     @Autowired
     private WebApplicationContext applicationContext;
 
-    @Around("execution(* com.redescooter.ses.web.ros.controller..*.*(..))")
+    @Around("execution(* com.redescooter.ses.mobile.wh.fr.controller..*.*(..))")
     public Object check(ProceedingJoinPoint point) throws Throwable {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = (HttpServletRequest) requestAttributes.resolveReference(RequestAttributes.REFERENCE_REQUEST);
