@@ -598,7 +598,11 @@ public enum ExceptionCodeEnums {
 
     SPECIFICAT_NOT_MATCH(10290, "车型不匹配"),
 
-    NO_DEPOSIT_SET(10291, "未设置定金");
+    NO_DEPOSIT_SET(10291, "未设置定金"),
+
+    SALE_PRICE_NOT_FOUND(10292,"销售价格不存在"),
+
+    DEPOSIT_ERROR(10293,"设置定金不能大于最小价格");
 
     private int code;
 

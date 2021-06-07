@@ -46,10 +46,13 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
 /**
@@ -361,13 +364,25 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         if (i < 0) {
             throw new SesWebRosException(ExceptionCodeEnums.UPDATE_FAIL.getCode(), ExceptionCodeEnums.UPDATE_FAIL.getMessage());
         }
+        LambdaQueryWrapper<OpeSalePrice> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeSalePrice::getDr, Constant.DR_FALSE);
+        wrapper.eq(OpeSalePrice::getType, 2);
+        List<OpeSalePrice> list = opeSalePriceMapper.selectList(wrapper);
+        BigDecimal min = list
+                .stream()
+                .map(OpeSalePrice::getBalance)
+                .min(Comparator.naturalOrder())
+                .orElse(BigDecimal.ZERO);
+        if (setDepositEnter.getDeposit().compareTo(min) == 1) {
+            throw new SesWebRosException(ExceptionCodeEnums.DEPOSIT_ERROR.getCode(), ExceptionCodeEnums.DEPOSIT_ERROR.getMessage());
+        }
         //同步官网
         synchronizeDeposit(setDepositEnter);
         return new GeneralResult(setDepositEnter.getRequestId());
     }
 
     @Override
-    public GeneralResult TipSettings(GeneralEnter enter) {
+    public BigDecimal TipSettings(GeneralEnter enter) {
         LambdaQueryWrapper<OpeSalePrice> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(OpeSalePrice::getDr, Constant.DR_FALSE);
         queryWrapper.isNotNull(OpeSalePrice::getDeposit);
@@ -375,7 +390,12 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         if (list.size() <= 0) {
             throw new SesWebRosException(ExceptionCodeEnums.NO_DEPOSIT_SET.getCode(), ExceptionCodeEnums.NO_DEPOSIT_SET.getMessage());
         }
-        return new GeneralResult(enter.getRequestId());
+        BigDecimal min = list
+                .stream()
+                .map(OpeSalePrice::getDeposit)
+                .min(Comparator.naturalOrder())
+                .orElse(BigDecimal.ZERO);
+        return min;
     }
 
     //同步给官网定金数据

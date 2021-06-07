@@ -10,6 +10,7 @@ import com.redescooter.ses.web.ros.vo.restproduct.SalePriceSaveOrUpdateEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SetDepositEnter;
 import com.redescooter.ses.web.ros.vo.sales.SalesPriceResult;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -65,6 +66,6 @@ public interface SalesPriceService {
 
     GeneralResult setDeposit(SetDepositEnter setDepositEnter);
 
-    GeneralResult TipSettings(GeneralEnter enter);
+    BigDecimal TipSettings(GeneralEnter enter);
 
 }

@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.customer.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
@@ -55,15 +56,18 @@ import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.CustomerServiceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeSalePriceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserProfileMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
+import com.redescooter.ses.web.ros.dm.OpeSalePrice;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
+import com.redescooter.ses.web.ros.service.base.OpeSalePriceService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
 import com.redescooter.ses.web.ros.vo.account.AccountDeatilResult;
@@ -115,6 +119,12 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
     @Autowired
     private CustomerServiceMapper customerServiceMapper;
+
+    @Autowired
+    private OpeSalePriceMapper opeSalePriceMapper;
+
+    @Autowired
+    private OpeSalePriceService opeSalePriceService;
 
     @Autowired
     private OpeSysUserProfileMapper sysUserProfileMapper;
@@ -210,7 +220,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         OpeCustomer saveVo = new OpeCustomer();
         BeanUtils.copyProperties(enter, saveVo);
-        saveVo.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
+        saveVo.setId(Long.valueOf("123456789"));
         saveVo.setStatus(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue());
         saveVo.setCustomerSource(CustomerSourceEnum.SYSTEM.getValue());
         if (enter.getCustomerType().equals(CustomerTypeEnum.ENTERPRISE.getValue())) {
@@ -242,7 +252,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     // 给客户生成一个询价单(低配的询价单)
     public void creatInquiry(OpeCustomer customer) {
         OpeCustomerInquiry inquiry = new OpeCustomerInquiry();
-        inquiry.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
+        inquiry.setId(Long.valueOf("456789123"));
         inquiry.setOrderNo(createOrderNo(OrderNumberTypeEnums.INQUIRY_ORDER.getValue()));
         inquiry.setCustomerId(customer.getId());
 //        inquiry.setCountry(customer.getCountry());
@@ -289,12 +299,23 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
         inquiry.setProductId(productId);
         inquiry.setProductModel(ProductModelEnums.SCOOTER_50_CC.getValue());
-        inquiry.setProductPrice(new BigDecimal(3990.00));
-        inquiry.setTotalPrice(new BigDecimal(3990.00));
+
+
+        LambdaQueryWrapper<OpeSalePrice> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeSalePrice::getDr,Constant.DR_FALSE);
+        wrapper.like(OpeSalePrice::getScooterBattery,"E50");
+        wrapper.eq(OpeSalePrice::getType,2);
+        wrapper.last("limit 1");
+        OpeSalePrice opeSalePrice = opeSalePriceMapper.selectOne(wrapper);
+        if (opeSalePrice==null){
+            throw new SesWebRosException(ExceptionCodeEnums.SALE_PRICE_NOT_FOUND.getCode(), ExceptionCodeEnums.SALE_PRICE_NOT_FOUND.getMessage());
+        }
+        inquiry.setProductPrice(opeSalePrice.getDeposit().add(opeSalePrice.getBalance()));
+        inquiry.setTotalPrice(opeSalePrice.getDeposit().add(opeSalePrice.getBalance()));
         inquiry.setAmountPaid(new BigDecimal(0));
-        inquiry.setAmountObligation(new BigDecimal(3990.00));
-        inquiry.setAmountDiscount(new BigDecimal(500));
-        inquiry.setPrepaidDeposit(new BigDecimal(0));
+        inquiry.setAmountObligation(opeSalePrice.getDeposit().add(opeSalePrice.getBalance()));
+        inquiry.setAmountDiscount(new BigDecimal(0));
+        inquiry.setPrepaidDeposit(opeSalePrice.getDeposit());
         opeCustomerInquiryService.saveOrUpdate(inquiry);
 
         // 询价单的子表
