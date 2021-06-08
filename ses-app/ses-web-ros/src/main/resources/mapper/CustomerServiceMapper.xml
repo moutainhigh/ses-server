@@ -69,14 +69,14 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and (
-            customer_first_name like concat("%",#{keyword},"%")
-            or customer_last_name like concat("%",#{keyword},"%")
-            or customer_full_name like concat("%",#{keyword},"%")
-            or contact_first_name like concat("%",#{keyword},"%")
-            or contact_last_name like concat("%",#{keyword},"%")
-            or contact_full_name like concat("%",#{keyword},"%")
-            or company_name like concat("%",#{keyword},"%")
-            or email like concat("%",#{keyword},"%")
+            customer_first_name like concat('%',#{keyword},'%')
+            or customer_last_name like concat('%',#{keyword},'%')
+            or customer_full_name like concat('%',#{keyword},'%')
+            or contact_first_name like concat('%',#{keyword},'%')
+            or contact_last_name like concat('%',#{keyword},'%')
+            or contact_full_name like concat('%',#{keyword},'%')
+            or company_name like concat('%',#{keyword},'%')
+            or email like concat('%',#{keyword},'%')
             )
         </if>
     </select>
@@ -105,14 +105,14 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and (
-            customer_first_name like concat("%",#{keyword},"%")
-            or customer_last_name like concat("%",#{keyword},"%")
-            or customer_full_name like concat("%",#{keyword},"%")
-            or contact_first_name like concat("%",#{keyword},"%")
-            or contact_last_name like concat("%",#{keyword},"%")
-            or contact_full_name like concat("%",#{keyword},"%")
-            or company_name like concat("%",#{keyword},"%")
-            or email like concat("%",#{keyword},"%")
+            customer_first_name like concat('%',#{keyword},'%')
+            or customer_last_name like concat('%',#{keyword},'%')
+            or customer_full_name like concat('%',#{keyword},'%')
+            or contact_first_name like concat('%',#{keyword},'%')
+            or contact_last_name like concat('%',#{keyword},'%')
+            or contact_full_name like concat('%',#{keyword},'%')
+            or company_name like concat('%',#{keyword},'%')
+            or email like concat('%',#{keyword},'%')
             )
         </if>
         order by created_time desc
@@ -151,9 +151,9 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and (
-               opc.customer_full_name like concat("%",#{keyword},"%")
-            or opc.email like concat("%",#{keyword},"%")
-            or opc.contact_full_name like concat("%",#{keyword},"%")
+               opc.customer_full_name like concat('%',#{keyword},'%')
+            or opc.email like concat('%',#{keyword},'%')
+            or opc.contact_full_name like concat('%',#{keyword},'%')
             )
         </if>
         <if test="status ==2 or status==3 or status==4">
@@ -197,9 +197,9 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and (
-               opc.customer_full_name like concat("%",#{keyword},"%")
-            or opc.email like concat("%",#{keyword},"%")
-            or opc.contact_full_name like concat("%",#{keyword},"%")
+               opc.customer_full_name like concat('%',#{keyword},'%')
+            or opc.email like concat('%',#{keyword},'%')
+            or opc.contact_full_name like concat('%',#{keyword},'%')
             )
         </if>
         <if test="status ==2 or status==3">

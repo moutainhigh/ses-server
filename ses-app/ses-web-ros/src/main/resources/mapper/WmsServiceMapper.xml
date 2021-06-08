@@ -331,9 +331,9 @@
         </if>
         <if test="enter.keyword != ''and enter.keyword != null">
             and (
-            ord.assembly_number like concat ("%",#{enter.keyword},"%") or
-            pro.first_name like concat ("%",#{enter.keyword},"%") or
-            pro.last_name like concat ("%",#{enter.keyword},"%")
+            ord.assembly_number like concat ('%',#{enter.keyword},'%') or
+            pro.first_name like concat ('%',#{enter.keyword},'%') or
+            pro.last_name like concat ('%',#{enter.keyword},'%')
             )
         </if>
     </sql>

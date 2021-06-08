@@ -31,12 +31,12 @@
             </if>
             <if test="keyword != null and keyword != ''">
                 and (
-                inquiry.first_name like concat("%",#{keyword},"%")
-                or inquiry.last_name like concat("%",#{keyword},"%")
-                or inquiry.full_name like concat("%",#{keyword},"%")
-                or inquiry.contant_full_name like concat("%",#{keyword},"%")
-                or inquiry.first_name like concat("%",#{keyword},"%")
-                or inquiry.last_name like concat("%",#{keyword},"%")
+                inquiry.first_name like concat('%',#{keyword},'%')
+                or inquiry.last_name like concat('%',#{keyword},'%')
+                or inquiry.full_name like concat('%',#{keyword},'%')
+                or inquiry.contant_full_name like concat('%',#{keyword},'%')
+                or inquiry.first_name like concat('%',#{keyword},'%')
+                or inquiry.last_name like concat('%',#{keyword},'%')
                 )
             </if>
             <if test="source != null and source != ''">

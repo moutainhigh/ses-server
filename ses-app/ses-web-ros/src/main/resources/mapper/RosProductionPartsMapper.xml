@@ -23,9 +23,9 @@
     </if>
     <if test="enter.keyword != '' and enter.keyword != null">
       and (
-      parts.parts_no like concat ("%",#{enter.keyword},"%") or
-      parts.cn_name like concat ("%",#{enter.keyword},"%") or
-      parts.en_name like concat ("%",#{enter.keyword},"%")
+      parts.parts_no like concat ('%',#{enter.keyword},'%') or
+      parts.cn_name like concat ('%',#{enter.keyword},'%') or
+      parts.en_name like concat ('%',#{enter.keyword},'%')
       )
     </if>
   </sql>

@@ -22,12 +22,12 @@
             </if>
             <if test="keyword != null and keyword != ''">
                 and (
-                opi.order_no like concat("%",#{keyword},"%")
-                or opi.email like concat("%",#{keyword},"%")
-                or oc.customer_full_name like concat("%",#{keyword},"%")
-                or oc.customer_first_name like concat("%",#{keyword},"%")
-                or oc.customer_last_name like concat("%",#{keyword},"%")
-                or oc.email like concat("%",#{keyword},"%")
+                opi.order_no like concat('%',#{keyword},'%')
+                or opi.email like concat('%',#{keyword},'%')
+                or oc.customer_full_name like concat('%',#{keyword},'%')
+                or oc.customer_first_name like concat('%',#{keyword},'%')
+                or oc.customer_last_name like concat('%',#{keyword},'%')
+                or oc.email like concat('%',#{keyword},'%')
                 )
             </if>
         </where>

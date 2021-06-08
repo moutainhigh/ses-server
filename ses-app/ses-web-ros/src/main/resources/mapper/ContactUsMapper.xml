@@ -12,8 +12,8 @@
         </if>
         <if test="enter.keyWord != '' and enter.keyWord != null">
             and (
-            us.full_name like concat ("%",#{enter.keyWord},"%") or
-            us.email like concat ("%",#{enter.keyWord},"%")
+            us.full_name like concat ('%',#{enter.keyWord},'%') or
+            us.email like concat ('%',#{enter.keyWord},'%')
             )
         </if>
         <if test="enter.createEndDateTime != null and enter.createStartDateTime != null">
