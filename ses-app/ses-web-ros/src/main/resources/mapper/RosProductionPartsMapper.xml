@@ -107,7 +107,7 @@
       parts.parts_no,
       parts.id as partsId
     from ope_production_parts parts
-    where parts.dr = 0 and parts.sn_class = 1 and parts.disable = 0 and parts.en_name like concat ("%",#{enter.partsName},"%")
+    where parts.dr = 0 and parts.sn_class = 1 and parts.disable = 0 and parts.en_name like concat ('%', #{enter.partsName}, '%')
   </select>
 
 
