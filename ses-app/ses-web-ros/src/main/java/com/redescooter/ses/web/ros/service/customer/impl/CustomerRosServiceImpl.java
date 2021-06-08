@@ -220,7 +220,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         OpeCustomer saveVo = new OpeCustomer();
         BeanUtils.copyProperties(enter, saveVo);
-        saveVo.setId(Long.valueOf("123456789"));
+        saveVo.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
         saveVo.setStatus(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue());
         saveVo.setCustomerSource(CustomerSourceEnum.SYSTEM.getValue());
         if (enter.getCustomerType().equals(CustomerTypeEnum.ENTERPRISE.getValue())) {
@@ -252,7 +252,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     // 给客户生成一个询价单(低配的询价单)
     public void creatInquiry(OpeCustomer customer) {
         OpeCustomerInquiry inquiry = new OpeCustomerInquiry();
-        inquiry.setId(Long.valueOf("456789123"));
+        inquiry.setId(idAppService.getId(SequenceName.OPE_CUSTOMER_INQUIRY));
         inquiry.setOrderNo(createOrderNo(OrderNumberTypeEnums.INQUIRY_ORDER.getValue()));
         inquiry.setCustomerId(customer.getId());
 //        inquiry.setCountry(customer.getCountry());
