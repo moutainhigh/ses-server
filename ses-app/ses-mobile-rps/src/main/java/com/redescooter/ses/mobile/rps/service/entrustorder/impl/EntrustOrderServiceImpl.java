@@ -240,6 +240,9 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
          * 更新委托单产品实际发货数量
          */
         String serialNum = null;
+        String tabletSn = null;
+        String bluetooth = null;
+        String lot = null;
         Long relationId = null;
         switch (paramDTO.getProductType()) {
             case 1:
@@ -253,15 +256,38 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
 
                 // 保存扫码序列号信息到委托单表中
                 serialNum = opeEntrustScooterB.getDef1();
+                tabletSn = opeEntrustScooterB.getDef2();
+                bluetooth = opeEntrustScooterB.getDef3();
+                lot = opeEntrustScooterB.getDef4();
+
                 if (StringUtils.isNotBlank(serialNum)) {
                     serialNum += "," + paramDTO.getSerialNum();
                 } else {
                     serialNum = paramDTO.getSerialNum();
                 }
+                if (StringUtils.isNotBlank(tabletSn)) {
+                    tabletSn += "," + paramDTO.getTabletSn();
+                } else {
+                    tabletSn = paramDTO.getTabletSn();
+                }
+                if (StringUtils.isNotBlank(bluetooth)) {
+                    bluetooth += "," + paramDTO.getBluetoothMacAddress();
+                } else {
+                    bluetooth = paramDTO.getBluetoothMacAddress();
+                }
+                if (StringUtils.isNotBlank(lot)) {
+                    lot += "," + paramDTO.getLot();
+                } else {
+                    lot = paramDTO.getLot();
+                }
+
                 opeEntrustScooterB.setConsignorQty(opeEntrustScooterB.getConsignorQty() + 1); // 扫一下数量+1
                 opeEntrustScooterB.setUpdatedBy(userId);
                 opeEntrustScooterB.setUpdatedTime(new Date());
                 opeEntrustScooterB.setDef1(serialNum);
+                opeEntrustScooterB.setDef2(tabletSn);
+                opeEntrustScooterB.setDef3(bluetooth);
+                opeEntrustScooterB.setDef4(lot);
                 entrustScooterBMapper.updateEntrustScooter(opeEntrustScooterB);
 
                 // 得到库存表id
@@ -288,15 +314,38 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                         ExceptionCodeEnums.PRODUCT_IS_EMPTY.getMessage());
 
                 serialNum = opeEntrustCombinB.getDef1();
+                tabletSn = opeEntrustCombinB.getDef2();
+                bluetooth = opeEntrustCombinB.getDef3();
+                lot = opeEntrustCombinB.getDef4();
+
                 if (StringUtils.isNotBlank(serialNum)) {
                     serialNum += "," + paramDTO.getSerialNum();
                 } else {
                     serialNum = paramDTO.getSerialNum();
                 }
+                if (StringUtils.isNotBlank(tabletSn)) {
+                    tabletSn += "," + paramDTO.getTabletSn();
+                } else {
+                    tabletSn = paramDTO.getTabletSn();
+                }
+                if (StringUtils.isNotBlank(bluetooth)) {
+                    bluetooth += "," + paramDTO.getBluetoothMacAddress();
+                } else {
+                    bluetooth = paramDTO.getBluetoothMacAddress();
+                }
+                if (StringUtils.isNotBlank(lot)) {
+                    lot += "," + paramDTO.getLot();
+                } else {
+                    lot = paramDTO.getLot();
+                }
+
                 opeEntrustCombinB.setConsignorQty(opeEntrustCombinB.getConsignorQty() + 1);
                 opeEntrustCombinB.setUpdatedBy(userId);
                 opeEntrustCombinB.setUpdatedTime(new Date());
                 opeEntrustCombinB.setDef1(serialNum);
+                opeEntrustCombinB.setDef2(tabletSn);
+                opeEntrustCombinB.setDef3(bluetooth);
+                opeEntrustCombinB.setDef4(lot);
                 entrustCombinBMapper.updateEntrustCombin(opeEntrustCombinB);
 
                 // 得到库存表id
@@ -340,14 +389,37 @@ public class EntrustOrderServiceImpl implements EntrustOrderService {
                 }
 
                 serialNum = opeEntrustPartsB.getDef1();
+                tabletSn = opeEntrustPartsB.getDef2();
+                bluetooth = opeEntrustPartsB.getDef3();
+                lot = opeEntrustPartsB.getDef4();
+
                 if (StringUtils.isNotBlank(serialNum)) {
                     serialNum += "," + paramDTO.getSerialNum();
                 } else {
                     serialNum = paramDTO.getSerialNum();
                 }
+                if (StringUtils.isNotBlank(tabletSn)) {
+                    tabletSn += "," + paramDTO.getTabletSn();
+                } else {
+                    tabletSn = paramDTO.getTabletSn();
+                }
+                if (StringUtils.isNotBlank(bluetooth)) {
+                    bluetooth += "," + paramDTO.getBluetoothMacAddress();
+                } else {
+                    bluetooth = paramDTO.getBluetoothMacAddress();
+                }
+                if (StringUtils.isNotBlank(lot)) {
+                    lot += "," + paramDTO.getLot();
+                } else {
+                    lot = paramDTO.getLot();
+                }
+
                 opeEntrustPartsB.setUpdatedBy(userId);
                 opeEntrustPartsB.setUpdatedTime(new Date());
                 opeEntrustPartsB.setDef1(serialNum);
+                opeEntrustPartsB.setDef2(tabletSn);
+                opeEntrustPartsB.setDef3(bluetooth);
+                opeEntrustPartsB.setDef4(lot);
                 entrustPartsBMapper.updateEntrustPartsB(opeEntrustPartsB);
 
                 // 得到库存表id
