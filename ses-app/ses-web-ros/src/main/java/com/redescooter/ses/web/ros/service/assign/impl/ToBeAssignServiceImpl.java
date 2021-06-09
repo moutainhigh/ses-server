@@ -841,12 +841,12 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             }
 
             // 修改主表
-            OpeCarDistribute model = new OpeCarDistribute();
-            model.setId(id);
-            model.setBattery(battery);
-            model.setUpdatedBy(enter.getUserId());
-            model.setUpdatedTime(new Date());
-            opeCarDistributeMapper.updateById(model);
+            OpeCarDistribute obj = new OpeCarDistribute();
+            obj.setId(id);
+            obj.setBattery(battery);
+            obj.setUpdatedBy(enter.getUserId());
+            obj.setUpdatedTime(new Date());
+            opeCarDistributeMapper.updateById(obj);
 
             // 获得车牌号
             OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectById(id);
@@ -993,6 +993,68 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                         opeWmsStockSerialNumberService.updateById(serialNumber);
                     }
                 }
+            }
+
+            // 创建oms车辆信息
+            LambdaQueryWrapper<OpeCarDistribute> omsWrapper = new LambdaQueryWrapper<>();
+            omsWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+            omsWrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+            omsWrapper.last("limit 1");
+            OpeCarDistribute model = opeCarDistributeMapper.selectOne(omsWrapper);
+            if (null == model) {
+                throw new SesWebRosException(ExceptionCodeEnums.ASSIGN_SCOOTER_WRONG.getCode(), ExceptionCodeEnums.ASSIGN_SCOOTER_WRONG.getMessage());
+            }
+
+            // 型号名称
+            String modelName = getSpecificatNameById(model.getSpecificatTypeId());
+
+            CustomerIdEnter customerEnter = new CustomerIdEnter();
+            customerEnter.setCustomerId(enter.getCustomerId());
+            Map<String, Long> inquiryMap = getSpecificatIdAndColorId(customerEnter);
+            logger.info("询价单型号和颜色分别是:[{}]", inquiryMap);
+            Long groupId = inquiryMap.get("specificatId");
+            Long colorId = inquiryMap.get("colorId");
+
+            AdmScooter admScooter = scooterModelService.getScooterBySn(model.getTabletSn());
+            if (null != admScooter) {
+                throw new SesWebRosException(ExceptionCodeEnums.SN_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.SN_ALREADY_EXISTS.getMessage());
+            }
+            logger.info("车辆不存在");
+            SpecificGroupDTO group = specificService.getSpecificGroupById(groupId);
+            ColorDTO color = colorService.getColorInfoById(colorId);
+            if (null == group) {
+                throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
+            }
+            if (null == color) {
+                throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+            }
+
+            // 新增adm_scooter表
+            AdmScooter scooter = new AdmScooter();
+            scooter.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE_NODE));
+            scooter.setDr(Constant.DR_FALSE);
+            scooter.setSn(model.getTabletSn());
+            scooter.setGroupId(groupId);
+            scooter.setColorId(colorId);
+            scooter.setMacAddress(model.getBluetoothAddress());
+            scooter.setScooterController(ScooterModelEnum.getScooterModelType(modelName));
+            scooter.setCreatedBy(0L);
+            scooter.setCreatedTime(new Date());
+            scooter.setUpdatedBy(0L);
+            scooter.setUpdatedTime(new Date());
+            scooter.setColorName(color.getColorName());
+            scooter.setColorValue(color.getColorValue());
+            scooter.setGroupName(group.getGroupName());
+            scooter.setMacName(model.getBluetoothAddress());
+            scooterModelService.insertScooter(scooter);
+            logger.info("新增adm_scooter表成功");
+
+            // 根据平板序列号(sn)查询在sco_scooter表是否存在 不存在返回true 存在返回false
+            Boolean flag = scooterService.getSnIsExist(scooter.getSn());
+            if (flag) {
+                logger.info("sn在sco_scooter表不存在");
+                String scooterNo = generateScooterNo();
+                scooterService.syncScooterData(buildData(scooter.getId(), scooter.getSn(), scooter.getScooterController(), enter.getUserId(), scooterNo));
             }
         }
 
@@ -1296,73 +1358,6 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         }
         result.setRequestId(enter.getRequestId());
         return result;
-    }
-
-    /**
-     * 创建oms车辆信息
-     */
-    @Override
-    @GlobalTransactional(rollbackFor = Exception.class)
-    public GeneralResult createScooter(CustomerIdEnter enter) {
-        LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
-        qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
-        qw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
-        qw.last("limit 1");
-        OpeCarDistribute model = opeCarDistributeMapper.selectOne(qw);
-        if (null == model) {
-            throw new SesWebRosException(ExceptionCodeEnums.ASSIGN_SCOOTER_WRONG.getCode(), ExceptionCodeEnums.ASSIGN_SCOOTER_WRONG.getMessage());
-        }
-
-        // 型号名称
-        String specificatName = getSpecificatNameById(model.getSpecificatTypeId());
-
-        Map<String, Long> map = getSpecificatIdAndColorId(enter);
-        logger.info("询价单型号和颜色分别是:[{}]", map);
-        Long specificatId = map.get("specificatId");
-        Long inquiryColorId = map.get("colorId");
-
-        AdmScooter admScooter = scooterModelService.getScooterBySn(model.getTabletSn());
-        if (null != admScooter) {
-            throw new SesWebRosException(ExceptionCodeEnums.SN_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.SN_ALREADY_EXISTS.getMessage());
-        }
-        logger.info("车辆不存在");
-        SpecificGroupDTO group = specificService.getSpecificGroupById(specificatId);
-        ColorDTO color = colorService.getColorInfoById(inquiryColorId);
-        if (null == group) {
-            throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
-        }
-        if (null == color) {
-            throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
-        }
-
-        // 新增adm_scooter表
-        AdmScooter scooter = new AdmScooter();
-        scooter.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE_NODE));
-        scooter.setDr(Constant.DR_FALSE);
-        scooter.setSn(model.getTabletSn());
-        scooter.setGroupId(specificatId);
-        scooter.setColorId(inquiryColorId);
-        scooter.setMacAddress(model.getBluetoothAddress());
-        scooter.setScooterController(ScooterModelEnum.getScooterModelType(specificatName));
-        scooter.setCreatedBy(0L);
-        scooter.setCreatedTime(new Date());
-        scooter.setUpdatedBy(0L);
-        scooter.setUpdatedTime(new Date());
-        scooter.setColorName(color.getColorName());
-        scooter.setColorValue(color.getColorValue());
-        scooter.setGroupName(group.getGroupName());
-        scooter.setMacName(model.getBluetoothAddress());
-        scooterModelService.insertScooter(scooter);
-        logger.info("新增adm_scooter表成功");
-
-        // 根据平板序列号(sn)查询在sco_scooter表是否存在 不存在返回true 存在返回false
-        Boolean flag = scooterService.getSnIsExist(scooter.getSn());
-        if (flag) {
-            logger.info("sn在sco_scooter表不存在");
-            String scooterNo = generateScooterNo();
-            scooterService.syncScooterData(buildData(scooter.getId(), scooter.getSn(), scooter.getScooterController(), enter.getUserId(), scooterNo));
-        }
-        return new GeneralResult(enter.getRequestId());
     }
 
     /**
