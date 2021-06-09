@@ -2,16 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.redescooter.ses.web.ros.dao.delete.DeleteMapper">
 
+    <!-- 删除车辆bom -->
+    <delete id="deleteScooterBom">
+        delete from ope_production_scooter_bom where id = #{id}
+    </delete>
 
+    <!-- 删除组装件bom -->
+    <delete id="deleteCombinBom">
+        delete from ope_production_combin_bom where id = #{id}
+    </delete>
 
-
-
-
-
-
-
-
-
+    <!-- 删除码库relation -->
+    <delete id="deleteCodebaseRelation">
+        delete from ope_codebase_relation where id = #{id}
+    </delete>
 
 
 </mapper>

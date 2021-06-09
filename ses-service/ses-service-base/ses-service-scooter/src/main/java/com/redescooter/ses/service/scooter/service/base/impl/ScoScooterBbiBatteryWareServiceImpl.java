@@ -1,17 +1,19 @@
 package com.redescooter.ses.service.scooter.service.base.impl;
 
-import com.redescooter.ses.service.scooter.dm.base.ScoScooterBbiBatteryWare;
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.service.scooter.dao.base.ScoScooterBbiBatteryWareMapper;
+import com.redescooter.ses.service.scooter.dm.base.ScoScooterBbiBatteryWare;
 import com.redescooter.ses.service.scooter.service.base.ScoScooterBbiBatteryWareService;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * @author assert
  * @date 2020/11/20 14:26
  */
 @Service
-public class ScoScooterBbiBatteryWareServiceImpl implements ScoScooterBbiBatteryWareService {
+public class ScoScooterBbiBatteryWareServiceImpl extends ServiceImpl<ScoScooterBbiBatteryWareMapper, ScoScooterBbiBatteryWare> implements ScoScooterBbiBatteryWareService {
 
     @Resource
     private ScoScooterBbiBatteryWareMapper scoScooterBbiBatteryWareMapper;

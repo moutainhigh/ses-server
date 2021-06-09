@@ -1,9 +1,15 @@
 package com.redescooter.ses.web.ros.controller.delete;
 
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.delete.DeleteService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,13 +27,35 @@ public class DeleteController {
     @Autowired
     private DeleteService deleteService;
 
+    /**
+     * 删除车辆bom
+     * 入参是车辆bom的编号
+     */
+    @PostMapping("/bom/scooter")
+    @ApiOperation(value = "删除车辆bom", tags = "删除车辆bom")
+    public Response<GeneralResult> deleteScooterBom(@ModelAttribute StringEnter enter) {
+        return new Response<>(deleteService.deleteScooterBom(enter));
+    }
 
+    /**
+     * 删除组装件bom
+     * 入参是组装件bom的编号
+     */
+    @PostMapping("/bom/combin")
+    @ApiOperation(value = "删除组装件bom", tags = "删除组装件bom")
+    public Response<GeneralResult> deleteCombinBom(@ModelAttribute StringEnter enter) {
+        return new Response<>(deleteService.deleteCombinBom(enter));
+    }
 
-
-
-
-
-
+    /**
+     * 删除车辆
+     * 入参是平板序列号
+     */
+    @PostMapping("/scooter")
+    @ApiOperation(value = "删除车辆", tags = "删除车辆")
+    public Response<GeneralResult> deleteScooter(@ModelAttribute StringEnter enter) {
+        return new Response<>(deleteService.deleteScooter(enter));
+    }
 
 
 
