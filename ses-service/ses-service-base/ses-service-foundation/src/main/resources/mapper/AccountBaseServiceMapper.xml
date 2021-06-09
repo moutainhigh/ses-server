@@ -100,4 +100,21 @@
         </foreach>
 
     </select>
+
+    <delete id="deletePlaUser" parameterType="java.lang.String">
+        delete from pla_user where LOGIN_NAME = #{email}
+    </delete>
+
+    <delete id="deletePlaUserNode" parameterType="java.lang.Long">
+        delete from pla_user_node where user_id = #{id}
+    </delete>
+
+    <delete id="deletePlaUserPassword" parameterType="java.lang.String">
+        delete from pla_user_password where LOGIN_NAME = #{email}
+    </delete>
+
+    <delete id="deletePlaUserPermission" parameterType="java.lang.Long">
+        delete from pla_user_permission where USER_ID = #{id}
+    </delete>
+
 </mapper>

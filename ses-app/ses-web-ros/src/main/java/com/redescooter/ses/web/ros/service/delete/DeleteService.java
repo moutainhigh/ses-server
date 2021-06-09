@@ -3,6 +3,8 @@ package com.redescooter.ses.web.ros.service.delete;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+
 /**
  * @Description
  * @Author Chris
@@ -14,6 +16,12 @@ public interface DeleteService {
      * 删除车辆bom
      */
     GeneralResult deleteScooterBom(StringEnter enter);
+    /**
+     * 删除客户对应关系
+     * @param idEnter
+     * @return
+     */
+    GeneralResult deleteCustomer(IdEnter idEnter);
 
     /**
      * 删除组装件bom

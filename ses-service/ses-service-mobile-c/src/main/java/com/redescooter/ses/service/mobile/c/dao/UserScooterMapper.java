@@ -20,4 +20,6 @@ public interface UserScooterMapper {
     */
     ConUserScooter getUserScooterByUserIdAndStatus(@Param("userId") Long userId, @Param("status") String status);
 
+    int deleteUserScooter(Long id);
+
 }

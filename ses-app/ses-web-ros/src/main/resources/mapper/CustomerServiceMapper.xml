@@ -262,4 +262,5 @@
         and spe.specificat_name = 'E50' and color.color_value = '#2D2926'
         limit 1
     </select>
+
 </mapper>
