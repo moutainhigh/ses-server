@@ -31,12 +31,12 @@ public class DeleteController {
     @Autowired
     private DeleteService deleteService;
 
-
     @PostMapping(value = "/deleteCustomer")
     @ApiOperation(value = "删除客户对应关系", response = BooleanResult.class)
     public Response<BooleanResult> deleteCustomer(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response(deleteService.deleteCustomer(enter));
     }
+
     /**
      * 删除车辆bom
      * 入参是车辆bom的编号

@@ -4,28 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.bom.ProductionBomStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
-import com.redescooter.ses.api.scooter.service.ScooterService;
-import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
-import com.redescooter.ses.web.ros.dao.delete.DeleteMapper;
-import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
-import com.redescooter.ses.web.ros.dm.OpeCodebaseRelation;
-import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
-import com.redescooter.ses.web.ros.dm.OpeCodebaseVin;
-import com.redescooter.ses.web.ros.dm.OpeProductionCombinBom;
-import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
-import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
-import com.redescooter.ses.web.ros.service.base.OpeCodebaseRelationService;
-import com.redescooter.ses.web.ros.service.base.OpeCodebaseRsnService;
-import com.redescooter.ses.web.ros.service.base.OpeCodebaseVinService;
-import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
-import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
-import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.foundation.service.base.UserBaseService;
 import com.redescooter.ses.api.mobile.c.service.UserProfileProService;
+import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeNodeMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerContactMapper;
@@ -35,21 +18,30 @@ import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.web.ros.dao.delete.DeleteMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
 import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseRelation;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
+import com.redescooter.ses.web.ros.dm.OpeCodebaseVin;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerContact;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
+import com.redescooter.ses.web.ros.dm.OpeProductionCombinBom;
+import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
+import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeCodebaseRelationService;
+import com.redescooter.ses.web.ros.service.base.OpeCodebaseRsnService;
+import com.redescooter.ses.web.ros.service.base.OpeCodebaseVinService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
 import com.redescooter.ses.web.ros.service.delete.DeleteService;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.apache.dubbo.config.annotation.DubboReference;
-import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -111,6 +103,7 @@ public class DeleteServiceImpl implements DeleteService {
         if (opeCustomer == null) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
+
         //删除con_user_profile这个表的信息和con_user_scooter这个表的信息
         deleteConUser(opeCustomer.getEmail());
 
@@ -139,25 +132,7 @@ public class DeleteServiceImpl implements DeleteService {
         if (opeCustomerInquiryB != null) {
             deleteMapper.deleteCustomerInquiryB(opeCustomerInquiry.getId());
         }
-    /**
-     * 删除车辆bom
-     */
-    @Override
-    @GlobalTransactional(rollbackFor = Exception.class)
-    public GeneralResult deleteScooterBom(StringEnter enter) {
-        LambdaQueryWrapper<OpeProductionScooterBom> qw = new LambdaQueryWrapper<>();
-        qw.eq(OpeProductionScooterBom::getDr, Constant.DR_FALSE);
-        qw.in(OpeProductionScooterBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
-        qw.eq(OpeProductionScooterBom::getBomNo, enter.getKeyword());
-        List<OpeProductionScooterBom> list = opeProductionScooterBomService.list(qw);
-        if (CollectionUtils.isNotEmpty(list)) {
-            for (OpeProductionScooterBom bom : list) {
-                Long id = bom.getId();
-                deleteMapper.deleteScooterBom(id);
-            }
-        }
-        return new GeneralResult(enter.getRequestId());
-    }
+
 
         //开始删除ope_car_distribute，ope_car_distribute_node
         LambdaQueryWrapper<OpeCarDistribute> wrapper1 = new LambdaQueryWrapper<>();
@@ -166,25 +141,7 @@ public class DeleteServiceImpl implements DeleteService {
         if (opeCarDistribute != null) {
             deleteMapper.deleteCarDistribute(idEnter.getId());
         }
-    /**
-     * 删除组装件bom
-     */
-    @Override
-    @GlobalTransactional(rollbackFor = Exception.class)
-    public GeneralResult deleteCombinBom(StringEnter enter) {
-        LambdaQueryWrapper<OpeProductionCombinBom> qw = new LambdaQueryWrapper<>();
-        qw.eq(OpeProductionCombinBom::getDr, Constant.DR_FALSE);
-        qw.in(OpeProductionCombinBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
-        qw.eq(OpeProductionCombinBom::getBomNo, enter.getKeyword());
-        List<OpeProductionCombinBom> list = opeProductionCombinBomService.list(qw);
-        if (CollectionUtils.isNotEmpty(list)) {
-            for (OpeProductionCombinBom bom : list) {
-                Long id = bom.getId();
-                deleteMapper.deleteCombinBom(id);
-            }
-        }
-        return new GeneralResult(enter.getRequestId());
-    }
+
 
         LambdaQueryWrapper<OpeCarDistributeNode> queryWrapper1 = new LambdaQueryWrapper<>();
         queryWrapper1.eq(OpeCarDistributeNode::getCustomerId, idEnter.getId());
@@ -192,6 +149,14 @@ public class DeleteServiceImpl implements DeleteService {
         if (opeCarDistribute != null) {
             deleteMapper.deleteCarDistributeNode(idEnter.getId());
         }
+
+        //删除platform库里面的pla_user，pla_user_node，pla_user_password，pla_user_permission
+        deletePlaUser(opeCustomer.getEmail());
+        return new GeneralResult(idEnter.getRequestId());
+    }
+
+
+
     /**
      * 删除车辆
      */
@@ -200,16 +165,9 @@ public class DeleteServiceImpl implements DeleteService {
     public GeneralResult deleteScooter(StringEnter enter) {
         String tabletSn = enter.getKeyword();
 
-        //删除platform库里面的pla_user，pla_user_node，pla_user_password，pla_user_permission
-        deletePlaUser(opeCustomer.getEmail());
-        return new GeneralResult(idEnter.getRequestId());
-    }
         // 删除scooter库
         String rsn = scooterService.deleteScooter(tabletSn);
 
-    public void deleteConUser(String email) {
-        userProfileProService.deleteUserProfile(email);
-    }
         // 修改ope_wms_stock_serial_number
         LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
@@ -275,4 +233,50 @@ public class DeleteServiceImpl implements DeleteService {
     public void deletePlaUser(String email) {
         userBaseService.deletePlaUser(email);
     }
+
+    public void deleteConUser(String email) {
+        userProfileProService.deleteUserProfile(email);
+    }
+
+    /**
+     * 删除车辆bom
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult deleteScooterBom(StringEnter enter) {
+        LambdaQueryWrapper<OpeProductionScooterBom> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeProductionScooterBom::getDr, Constant.DR_FALSE);
+        qw.in(OpeProductionScooterBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
+        qw.eq(OpeProductionScooterBom::getBomNo, enter.getKeyword());
+        List<OpeProductionScooterBom> list = opeProductionScooterBomService.list(qw);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (OpeProductionScooterBom bom : list) {
+                Long id = bom.getId();
+                deleteMapper.deleteScooterBom(id);
+            }
+        }
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 删除组装件bom
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult deleteCombinBom(StringEnter enter) {
+        LambdaQueryWrapper<OpeProductionCombinBom> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeProductionCombinBom::getDr, Constant.DR_FALSE);
+        qw.in(OpeProductionCombinBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
+        qw.eq(OpeProductionCombinBom::getBomNo, enter.getKeyword());
+        List<OpeProductionCombinBom> list = opeProductionCombinBomService.list(qw);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (OpeProductionCombinBom bom : list) {
+                Long id = bom.getId();
+                deleteMapper.deleteCombinBom(id);
+            }
+        }
+        return new GeneralResult(enter.getRequestId());
+    }
+
+
 }
