@@ -105,18 +105,6 @@
           and inquiry.id = #{id}
     </select>
 
-    <select id="usingEmailList" resultType="java.lang.String">
-        select email
-        from ope_customer_inquiry
-        where dr = 0
-          and status != 3
-        union
-        select email
-        from ope_customer
-        where dr = 0
-          and ope_customer.status in (1, 2)
-    </select>
-
     <select id="exportInquiry" resultType="com.redescooter.ses.web.ros.vo.inquiry.InquiryExportResult">
         select
                 inquiry.id,
