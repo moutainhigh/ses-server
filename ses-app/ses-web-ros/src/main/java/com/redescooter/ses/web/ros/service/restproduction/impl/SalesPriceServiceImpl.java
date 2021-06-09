@@ -304,59 +304,59 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         return result;
     }
 
-    @Override
-    public List<String> modelPriceList(GeneralEnter enter) {
-        List<String> lists = new ArrayList<>();
-        Map<String, Object> map = new HashMap<>();
-        LambdaQueryWrapper<OpeSalePrice> qw = new LambdaQueryWrapper<>();
-        qw.eq(OpeSalePrice::getDr, Constant.DR_FALSE);
-        List<OpeSalePrice> list = opeSalePriceService.list(qw);
-        Map<String, List<OpeSalePrice>> ospMap = list.stream().collect(Collectors.groupingBy(OpeSalePrice::getScooterBattery));
-        LambdaQueryWrapper<OpeParts> qw2 = new LambdaQueryWrapper<>();
-        qw2.eq(OpeParts::getDr, Constant.DR_FALSE);
-        qw2.eq(OpeParts::getPartsType, 3);
-        qw2.last("limit 1");
-        OpeParts opeParts = opePartsMapper.selectOne(qw2);
-        if (opeParts == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.NOT_FOUND_BATTERY.getCode(), ExceptionCodeEnums.NOT_FOUND_BATTERY.getMessage());
-        }
-        //根据在部件表里面查出来的电池的partId去配件销售表里面查找对应的价格
-        LambdaQueryWrapper<OpeSaleParts> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(OpeSaleParts::getPartsId, opeParts.getId());
-        OpeSaleParts opeSaleParts = opeSalePartsMapper.selectOne(queryWrapper);
-        if (opeSaleParts == null) {
-            throw new SesWebRosException(ExceptionCodeEnums.NOT_FOUND_PARTS.getCode(), ExceptionCodeEnums.NOT_FOUND_PARTS.getMessage());
-        }
-        //拿到单个电池的价格
-        BigDecimal battery = opeSaleParts.getPrice();
-        Map<String, List<Integer>> numMap = Maps.newHashMap();
-        numMap.put(SalePriceEnum.showMsg(1), Lists.newArrayList(1, 2, 3, 4));
-        numMap.put(SalePriceEnum.showMsg(2), Lists.newArrayList(2, 3, 4));
-        numMap.put(SalePriceEnum.showMsg(3), Lists.newArrayList(4));
-        for (String ospKey : ospMap.keySet()) {
-            List<OpeSalePrice> eFiveList = ospMap.get(ospKey);
-            Map<Integer, OpeSalePrice> collect = eFiveList.stream().filter(o -> o.getType() != 2).collect(Collectors.toMap(OpeSalePrice::getPeriod, o -> o));
-            List<Integer> integers = numMap.get(ospKey);
-            //获取最低配置电池数量值
-            int minNum = integers.get(0);
-            for (int period : collect.keySet()) {
-                BigDecimal batteryPeriod = battery.divide(new BigDecimal(period), 2, BigDecimal.ROUND_DOWN);//电池分期的价格
-                for (Integer o : integers) {
-                    Map<String, SalesPriceResult> map1 = new HashMap<>();
-                    BigDecimal shouldPayPeriod = collect.get(period).getShouldPayPeriod().add(batteryPeriod.multiply(new BigDecimal(o - minNum)));
-                    SalesPriceResult salesPriceResult = new SalesPriceResult();
-                    salesPriceResult.setShouldPayPeriod(shouldPayPeriod); //每期应付
-                    salesPriceResult.setPeriod(period); //期数
-                    salesPriceResult.setDeposit(collect.get(period).getDeposit()); //定金
-                    salesPriceResult.setTax(collect.get(period).getTax()); //ttc税金
-                    map1.put(String.format("%s+%d", ospKey.substring(0, ospKey.indexOf("+")), o), salesPriceResult);
-                    String jsonObject = JSONObject.toJSONString(map1);  //map转json格式
-                    lists.add(jsonObject);
-                }
-            }
-        }
-        return lists;
-    }
+//    @Override
+//    public List<String> modelPriceList(GeneralEnter enter) {
+//        List<String> lists = new ArrayList<>();
+//        Map<String, Object> map = new HashMap<>();
+//        LambdaQueryWrapper<OpeSalePrice> qw = new LambdaQueryWrapper<>();
+//        qw.eq(OpeSalePrice::getDr, Constant.DR_FALSE);
+//        List<OpeSalePrice> list = opeSalePriceService.list(qw);
+//        Map<String, List<OpeSalePrice>> ospMap = list.stream().collect(Collectors.groupingBy(OpeSalePrice::getScooterBattery));
+//        LambdaQueryWrapper<OpeParts> qw2 = new LambdaQueryWrapper<>();
+//        qw2.eq(OpeParts::getDr, Constant.DR_FALSE);
+//        qw2.eq(OpeParts::getPartsType, 3);
+//        qw2.last("limit 1");
+//        OpeParts opeParts = opePartsMapper.selectOne(qw2);
+//        if (opeParts == null) {
+//            throw new SesWebRosException(ExceptionCodeEnums.NOT_FOUND_BATTERY.getCode(), ExceptionCodeEnums.NOT_FOUND_BATTERY.getMessage());
+//        }
+//        //根据在部件表里面查出来的电池的partId去配件销售表里面查找对应的价格
+//        LambdaQueryWrapper<OpeSaleParts> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.eq(OpeSaleParts::getPartsId, opeParts.getId());
+//        OpeSaleParts opeSaleParts = opeSalePartsMapper.selectOne(queryWrapper);
+//        if (opeSaleParts == null) {
+//            throw new SesWebRosException(ExceptionCodeEnums.NOT_FOUND_PARTS.getCode(), ExceptionCodeEnums.NOT_FOUND_PARTS.getMessage());
+//        }
+//        //拿到单个电池的价格
+//        BigDecimal battery = opeSaleParts.getPrice();
+//        Map<String, List<Integer>> numMap = Maps.newHashMap();
+//        numMap.put(SalePriceEnum.showMsg(1), Lists.newArrayList(1, 2, 3, 4));
+//        numMap.put(SalePriceEnum.showMsg(2), Lists.newArrayList(2, 3, 4));
+//        numMap.put(SalePriceEnum.showMsg(3), Lists.newArrayList(4));
+//        for (String ospKey : ospMap.keySet()) {
+//            List<OpeSalePrice> eFiveList = ospMap.get(ospKey);
+//            Map<Integer, OpeSalePrice> collect = eFiveList.stream().filter(o -> o.getType() != 2).collect(Collectors.toMap(OpeSalePrice::getPeriod, o -> o));
+//            List<Integer> integers = numMap.get(ospKey);
+//            //获取最低配置电池数量值
+//            int minNum = integers.get(0);
+//            for (int period : collect.keySet()) {
+//                BigDecimal batteryPeriod = battery.divide(new BigDecimal(period), 2, BigDecimal.ROUND_DOWN);//电池分期的价格
+//                for (Integer o : integers) {
+//                    Map<String, SalesPriceResult> map1 = new HashMap<>();
+//                    BigDecimal shouldPayPeriod = collect.get(period).getShouldPayPeriod().add(batteryPeriod.multiply(new BigDecimal(o - minNum)));
+//                    SalesPriceResult salesPriceResult = new SalesPriceResult();
+//                    salesPriceResult.setShouldPayPeriod(shouldPayPeriod); //每期应付
+//                    salesPriceResult.setPeriod(period); //期数
+//                    salesPriceResult.setDeposit(collect.get(period).getDeposit()); //定金
+//                    salesPriceResult.setTax(collect.get(period).getTax()); //ttc税金
+//                    map1.put(String.format("%s+%d", ospKey.substring(0, ospKey.indexOf("+")), o), salesPriceResult);
+//                    String jsonObject = JSONObject.toJSONString(map1);  //map转json格式
+//                    lists.add(jsonObject);
+//                }
+//            }
+//        }
+//        return lists;
+//    }
 
     @Override
     public GeneralResult setDeposit(SetDepositEnter setDepositEnter) {

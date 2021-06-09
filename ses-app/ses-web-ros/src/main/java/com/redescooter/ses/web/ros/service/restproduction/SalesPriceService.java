@@ -62,7 +62,7 @@ public interface SalesPriceService {
     Map<String, Integer> getTabCount(GeneralEnter enter);
 
 
-    List<String> modelPriceList(GeneralEnter enter);
+//    List<String> modelPriceList(GeneralEnter enter);
 
     GeneralResult setDeposit(SetDepositEnter setDepositEnter);
 

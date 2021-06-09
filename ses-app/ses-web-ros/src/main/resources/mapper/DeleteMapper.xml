@@ -3,15 +3,29 @@
 <mapper namespace="com.redescooter.ses.web.ros.dao.delete.DeleteMapper">
 
 
+    <delete id="deleteCustomer" parameterType="java.lang.Long">
+        delete from ope_customer where id = #{id}
+    </delete>
+
+    <delete id="deleteCustomerContact" parameterType="java.lang.Long">
+        delete from ope_customer where customer_id = #{id}
+    </delete>
+
+    <delete id="deleteCustomerInquiry" parameterType="java.lang.Long">
+        delete from ope_customer_inquiry where customer_id = #{id}
+    </delete>
+
+    <delete id="deleteCustomerInquiryB" parameterType="java.lang.Long">
+        delete from ope_customer_inquiry_b where inquiry_id = #{id}
+    </delete>
 
 
+    <delete id="deleteCarDistribute" parameterType="java.lang.Long">
+        delete from ope_car_distribute where customer_id = #{id}
+    </delete>
 
-
-
-
-
-
-
-
+    <delete id="deleteCarDistributeNode" parameterType="java.lang.Long">
+        delete from ope_car_distribute_node where customer_id = #{id}
+    </delete>
 
 </mapper>

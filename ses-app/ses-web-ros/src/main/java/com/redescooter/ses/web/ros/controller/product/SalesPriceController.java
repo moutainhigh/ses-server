@@ -113,11 +113,11 @@ public class SalesPriceController {
     }
 
 
-    @PostMapping("/modelPriceList")
-    @ApiOperation(value = "根据最低配置计算其他配置相应价格", notes = "根据最低配置计算其他配置相应价格")
-    public Response<Map<String, Integer>> modelPriceList(@ModelAttribute GeneralEnter enter) {
-        return new Response(salesPriceService.modelPriceList(enter));
-    }
+//    @PostMapping("/modelPriceList")
+//    @ApiOperation(value = "根据最低配置计算其他配置相应价格", notes = "根据最低配置计算其他配置相应价格")
+//    public Response<Map<String, Integer>> modelPriceList(@ModelAttribute GeneralEnter enter) {
+//        return new Response(salesPriceService.modelPriceList(enter));
+//    }
 
 
     /**

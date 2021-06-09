@@ -1,16 +1,22 @@
 package com.redescooter.ses.service.mobile.c.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.hub.service.operation.CustomerService;
 import com.redescooter.ses.api.mobile.c.exception.MobileCException;
+import com.redescooter.ses.api.mobile.c.service.ScooterMobileCService;
 import com.redescooter.ses.api.mobile.c.service.UserProfileProService;
 import com.redescooter.ses.api.mobile.c.vo.EditUserProfile2CEnter;
 import com.redescooter.ses.api.mobile.c.vo.SaveUserProfileEnter;
 import com.redescooter.ses.service.mobile.c.constant.SequenceName;
+import com.redescooter.ses.service.mobile.c.dao.UserProfileMapper;
+import com.redescooter.ses.service.mobile.c.dao.UserScooterMapper;
 import com.redescooter.ses.service.mobile.c.dao.base.ConUserProfileMapper;
+import com.redescooter.ses.service.mobile.c.dao.base.ConUserScooterMapper;
 import com.redescooter.ses.service.mobile.c.dm.base.ConUserProfile;
+import com.redescooter.ses.service.mobile.c.dm.base.ConUserScooter;
 import com.redescooter.ses.service.mobile.c.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.mobile.c.service.base.ConUserProfileService;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -38,7 +44,17 @@ public class UserProfileProServiceImpl implements UserProfileProService {
     private ConUserProfileMapper conUserProfileMapper;
 
     @Autowired
+    private UserProfileMapper userProfileMapper;
+
+    @Autowired
+    private UserScooterMapper userScooterMapper;
+
+    @Autowired
     private ConUserProfileService userProfileService;
+
+    @Autowired
+    private ConUserScooterMapper conUserScooterMapper;
+
 
     @DubboReference
     private CustomerService customerService;
@@ -131,6 +147,24 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             conUserProfileMapper.updateById(conUserProfile);
         }
         return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public void deleteUserProfile(String email) {
+        LambdaQueryWrapper<ConUserProfile> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ConUserProfile::getEmail1, email);
+        ConUserProfile conUserProfile = conUserProfileMapper.selectOne(wrapper);
+        if (conUserProfile == null) {
+            throw new MobileCException(ExceptionCodeEnums.USERPROFILE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.USERPROFILE_IS_NOT_EXIST.getMessage());
+        }
+        userProfileMapper.deleteUserProfile(email);
+        LambdaQueryWrapper<ConUserScooter> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(ConUserScooter::getUserId, conUserProfile.getUserId());
+        ConUserScooter conUserScooter = conUserScooterMapper.selectOne(lambdaQueryWrapper);
+        if (conUserScooter == null) {
+            throw new MobileCException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        userScooterMapper.deleteUserScooter(conUserProfile.getUserId());
     }
 
     /**

@@ -1,5 +1,8 @@
 package com.redescooter.ses.web.ros.service.delete;
 
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.IdEnter;
+
 /**
  * @Description
  * @Author Chris
@@ -7,7 +10,12 @@ package com.redescooter.ses.web.ros.service.delete;
  */
 public interface DeleteService {
 
-
+    /**
+     * 删除客户对应关系
+     * @param idEnter
+     * @return
+     */
+    GeneralResult deleteCustomer(IdEnter idEnter);
 
 
 

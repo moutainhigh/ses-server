@@ -33,4 +33,9 @@ public interface UserProfileProService {
      * @return
      */
     GeneralResult editUserProfile(EditUserProfile2CEnter enter);
+
+    /**
+     * 删除客户对于的个人信息
+     */
+    void deleteUserProfile(String email);
 }

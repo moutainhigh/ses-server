@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.vo.base.BaseUserResult;
@@ -14,14 +15,21 @@ import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeEnter;
 import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.foundation.vo.user.SaveAccountNodeEnter;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
+import com.redescooter.ses.service.foundation.dao.AccountBaseServiceMapper;
 import com.redescooter.ses.service.foundation.dao.UserTokenMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaTenantMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaUserMapper;
+import com.redescooter.ses.service.foundation.dao.base.PlaUserNodeMapper;
+import com.redescooter.ses.service.foundation.dao.base.PlaUserPasswordMapper;
+import com.redescooter.ses.service.foundation.dao.base.PlaUserPermissionMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaTenant;
 import com.redescooter.ses.service.foundation.dm.base.PlaUser;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserNode;
+import com.redescooter.ses.service.foundation.dm.base.PlaUserPassword;
+import com.redescooter.ses.service.foundation.dm.base.PlaUserPermission;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.foundation.service.base.PlaUserNodeService;
+import com.redescooter.ses.service.foundation.service.base.PlaUserService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
@@ -56,10 +64,25 @@ public class UserBaseServiceImpl implements UserBaseService {
     private PlaUserNodeService plaUserNodeService;
 
     @Autowired
+    private PlaUserMapper plaUserMapper;
+
+    @Autowired
+    private PlaUserNodeMapper plaUserNodeMapper;
+
+    @Autowired
+    private PlaUserPermissionMapper plaUserPermissionMapper;
+
+    @Autowired
+    private PlaUserPasswordMapper plaUserPasswordMapper;
+
+    @Autowired
     private UserTokenMapper userTokenMapper;
 
     @Autowired
     private PlaTenantMapper tenantMapper;
+
+    @Autowired
+    private AccountBaseServiceMapper accountBaseServiceMapper;
 
     /**
      * 根据邮箱获取用户信息
@@ -241,6 +264,38 @@ public class UserBaseServiceImpl implements UserBaseService {
             tenant.setTenantName(synchTenantEnter.getCompanyName());
             tenantMapper.updateById(tenant);
         }
+    }
+
+    @Override
+    public void deletePlaUser(String email) {
+        LambdaQueryWrapper<PlaUser> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(PlaUser::getLoginName, email);
+        PlaUser plaUser = plaUserMapper.selectOne(wrapper);
+        if (plaUser == null) {
+            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        }
+        accountBaseServiceMapper.deletePlaUser(email);
+        LambdaQueryWrapper<PlaUserNode> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(PlaUserNode::getUserId, plaUser.getId());
+        PlaUserNode plaUserNode = plaUserNodeMapper.selectOne(queryWrapper);
+        if (plaUserNode == null) {
+            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        }
+        accountBaseServiceMapper.deletePlaUserNode(plaUser.getId());
+        LambdaQueryWrapper<PlaUserPassword> wrapper1 = new LambdaQueryWrapper<>();
+        wrapper1.eq(PlaUserPassword::getLoginName, email);
+        PlaUserPassword plaUserPassword = plaUserPasswordMapper.selectOne(wrapper1);
+        if (plaUserPassword == null) {
+            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        }
+        accountBaseServiceMapper.deletePlaUserPassword(email);
+        LambdaQueryWrapper<PlaUserPermission> queryWrapper1 = new LambdaQueryWrapper<>();
+        queryWrapper1.eq(PlaUserPermission::getUserId, plaUser.getId());
+        PlaUserPermission plaUserPermission = plaUserPermissionMapper.selectOne(queryWrapper1);
+        if (plaUserPermission == null) {
+            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        }
+        accountBaseServiceMapper.deletePlaUserPermission(plaUser.getId());
     }
 
 }
