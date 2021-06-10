@@ -117,4 +117,9 @@
         left join site_order c on c.product_id = b.id
         where a.dr = 0 and b.dr = 0 and c.dr = 0 and c.id = #{orderId}
     </select>
+
+
+    <delete id="deleteOrder" parameterType="java.lang.Long">
+        delete from site_order where id = #{id}
+    </delete>
 </mapper>

@@ -4,6 +4,8 @@ import org.apache.ibatis.annotations.Mapper;
 
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * @Description
  * @Author Chris
@@ -37,4 +39,9 @@ public interface DeleteMapper {
     int deleteCarDistribute(Long id);
 
     int deleteCarDistributeNode(Long id);
+
+
+    int deleteOrder(Long id);
+
+    int deleteOrderB(Long id);
 }

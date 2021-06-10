@@ -151,7 +151,7 @@ public class DeleteServiceImpl implements DeleteService {
         LambdaQueryWrapper<OpeCarDistributeNode> queryWrapper1 = new LambdaQueryWrapper<>();
         queryWrapper1.eq(OpeCarDistributeNode::getCustomerId, idEnter.getId());
         OpeCarDistributeNode opeCarDistributeNode = opeCarDistributeNodeMapper.selectOne(queryWrapper1);
-        if (opeCarDistribute != null) {
+        if (opeCarDistributeNode != null) {
             deleteMapper.deleteCarDistributeNode(idEnter.getId());
         }
 
