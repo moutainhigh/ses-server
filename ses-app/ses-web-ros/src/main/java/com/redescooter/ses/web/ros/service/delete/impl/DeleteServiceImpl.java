@@ -130,14 +130,12 @@ public class DeleteServiceImpl implements DeleteService {
         OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryMapper.selectOne(queryWrapper);
         if (opeCustomerInquiry != null) {
             deleteMapper.deleteCustomerInquiry(opeCustomer.getId());
-        }
-
-
-        LambdaQueryWrapper<OpeCustomerInquiryB> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.eq(OpeCustomerInquiryB::getInquiryId, opeCustomerInquiry.getId());
-        OpeCustomerInquiryB opeCustomerInquiryB = opeCustomerInquiryBMapper.selectOne(lambdaQueryWrapper);
-        if (opeCustomerInquiryB != null) {
-            deleteMapper.deleteCustomerInquiryB(opeCustomerInquiry.getId());
+            LambdaQueryWrapper<OpeCustomerInquiryB> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+            lambdaQueryWrapper.eq(OpeCustomerInquiryB::getInquiryId, opeCustomerInquiry.getId());
+            OpeCustomerInquiryB opeCustomerInquiryB = opeCustomerInquiryBMapper.selectOne(lambdaQueryWrapper);
+            if (opeCustomerInquiryB != null) {
+                deleteMapper.deleteCustomerInquiryB(opeCustomerInquiry.getId());
+            }
         }
 
 

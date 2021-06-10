@@ -273,12 +273,19 @@ public class UserBaseServiceImpl implements UserBaseService {
         PlaUser plaUser = plaUserMapper.selectOne(wrapper);
         if (null != plaUser) {
             accountBaseServiceMapper.deletePlaUser(email);
-        }
-        LambdaQueryWrapper<PlaUserNode> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(PlaUserNode::getUserId, plaUser.getId());
-        PlaUserNode plaUserNode = plaUserNodeMapper.selectOne(queryWrapper);
-        if (null != plaUserNode) {
-            accountBaseServiceMapper.deletePlaUserNode(plaUser.getId());
+            LambdaQueryWrapper<PlaUserNode> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(PlaUserNode::getUserId, plaUser.getId());
+            PlaUserNode plaUserNode = plaUserNodeMapper.selectOne(queryWrapper);
+            if (null != plaUserNode) {
+                accountBaseServiceMapper.deletePlaUserNode(plaUser.getId());
+                LambdaQueryWrapper<PlaUserPermission> queryWrapper1 = new LambdaQueryWrapper<>();
+                queryWrapper1.eq(PlaUserPermission::getUserId, plaUser.getId());
+                PlaUserPermission plaUserPermission = plaUserPermissionMapper.selectOne(queryWrapper1);
+                if (null != plaUserPermission) {
+                    accountBaseServiceMapper.deletePlaUserPermission(plaUser.getId());
+                }
+            }
+
         }
 
         LambdaQueryWrapper<PlaUserPassword> wrapper1 = new LambdaQueryWrapper<>();
@@ -287,14 +294,6 @@ public class UserBaseServiceImpl implements UserBaseService {
         if (null != plaUserPassword) {
             accountBaseServiceMapper.deletePlaUserPassword(email);
         }
-
-        LambdaQueryWrapper<PlaUserPermission> queryWrapper1 = new LambdaQueryWrapper<>();
-        queryWrapper1.eq(PlaUserPermission::getUserId, plaUser.getId());
-        PlaUserPermission plaUserPermission = plaUserPermissionMapper.selectOne(queryWrapper1);
-        if (null != plaUserPermission) {
-            accountBaseServiceMapper.deletePlaUserPermission(plaUser.getId());
-        }
-
     }
 
 }
