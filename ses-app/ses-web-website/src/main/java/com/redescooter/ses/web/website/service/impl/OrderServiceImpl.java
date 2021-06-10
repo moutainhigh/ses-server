@@ -307,7 +307,7 @@ public class OrderServiceImpl implements OrderService {
             }
         } else {
             //没有选着其他配件前，只是整车的价格+运费
-            totalPrice = new BigDecimal("199").add(siteProductPrice.getPrice().multiply(new BigDecimal(enter.getScooterQuantity())));
+            totalPrice = new BigDecimal("199").add(siteProductPrice.getPrepaidDeposit()).add(siteProductPrice.getPrice().multiply(new BigDecimal(enter.getScooterQuantity())));
             //加上选购电池的价格
             totalPrice = totalPrice.add(battery.getPrice().multiply(new BigDecimal(String.valueOf(paidBattery))));
         }
