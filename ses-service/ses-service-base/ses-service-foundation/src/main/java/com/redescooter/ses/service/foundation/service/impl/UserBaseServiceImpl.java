@@ -271,31 +271,30 @@ public class UserBaseServiceImpl implements UserBaseService {
         LambdaQueryWrapper<PlaUser> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(PlaUser::getLoginName, email);
         PlaUser plaUser = plaUserMapper.selectOne(wrapper);
-        if (plaUser == null) {
-            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        if (null != plaUser) {
+            accountBaseServiceMapper.deletePlaUser(email);
         }
-        accountBaseServiceMapper.deletePlaUser(email);
         LambdaQueryWrapper<PlaUserNode> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(PlaUserNode::getUserId, plaUser.getId());
         PlaUserNode plaUserNode = plaUserNodeMapper.selectOne(queryWrapper);
-        if (plaUserNode == null) {
-            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        if (null != plaUserNode) {
+            accountBaseServiceMapper.deletePlaUserNode(plaUser.getId());
         }
-        accountBaseServiceMapper.deletePlaUserNode(plaUser.getId());
+
         LambdaQueryWrapper<PlaUserPassword> wrapper1 = new LambdaQueryWrapper<>();
         wrapper1.eq(PlaUserPassword::getLoginName, email);
         PlaUserPassword plaUserPassword = plaUserPasswordMapper.selectOne(wrapper1);
-        if (plaUserPassword == null) {
-            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        if (null != plaUserPassword) {
+            accountBaseServiceMapper.deletePlaUserPassword(email);
         }
-        accountBaseServiceMapper.deletePlaUserPassword(email);
+
         LambdaQueryWrapper<PlaUserPermission> queryWrapper1 = new LambdaQueryWrapper<>();
         queryWrapper1.eq(PlaUserPermission::getUserId, plaUser.getId());
         PlaUserPermission plaUserPermission = plaUserPermissionMapper.selectOne(queryWrapper1);
-        if (plaUserPermission == null) {
-            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        if (null != plaUserPermission) {
+            accountBaseServiceMapper.deletePlaUserPermission(plaUser.getId());
         }
-        accountBaseServiceMapper.deletePlaUserPermission(plaUser.getId());
+
     }
 
 }

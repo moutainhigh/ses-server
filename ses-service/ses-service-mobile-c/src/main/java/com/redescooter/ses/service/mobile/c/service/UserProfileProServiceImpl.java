@@ -154,17 +154,17 @@ public class UserProfileProServiceImpl implements UserProfileProService {
         LambdaQueryWrapper<ConUserProfile> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ConUserProfile::getEmail1, email);
         ConUserProfile conUserProfile = conUserProfileMapper.selectOne(wrapper);
-        if (conUserProfile == null) {
-            throw new MobileCException(ExceptionCodeEnums.USERPROFILE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.USERPROFILE_IS_NOT_EXIST.getMessage());
+        if (null != conUserProfile) {
+            userProfileMapper.deleteUserProfile(email);
         }
-        userProfileMapper.deleteUserProfile(email);
+
         LambdaQueryWrapper<ConUserScooter> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.eq(ConUserScooter::getUserId, conUserProfile.getUserId());
         ConUserScooter conUserScooter = conUserScooterMapper.selectOne(lambdaQueryWrapper);
-        if (conUserScooter == null) {
-            throw new MobileCException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        if (null != conUserScooter) {
+            userScooterMapper.deleteUserScooter(conUserProfile.getUserId());
         }
-        userScooterMapper.deleteUserScooter(conUserProfile.getUserId());
+
     }
 
     /**
