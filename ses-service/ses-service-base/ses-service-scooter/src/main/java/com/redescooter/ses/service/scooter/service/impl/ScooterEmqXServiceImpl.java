@@ -167,6 +167,8 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
                             log.info("关锁时,进入toc司机骑行数据,参数是:[{}]", param);
                             rideStatCService.insertDriverAndScooterRideStat(param);
                         }
+                    } else {
+                        log.info("关锁时,车辆状态为空,没有进入预想逻辑");
                     }
                 }
             } else {
