@@ -40,7 +40,7 @@ public class DeleteController {
 
     /**
      * 删除车辆bom
-     * 入参是车辆bom的编号
+     * 入参是车辆bom的id
      */
     @PostMapping("/bom/scooter")
     @ApiOperation(value = "删除车辆bom", tags = "删除车辆bom")
@@ -51,7 +51,7 @@ public class DeleteController {
 
     /**
      * 删除组装件bom
-     * 入参是组装件bom的编号
+     * 入参是组装件bom的id
      */
     @PostMapping("/bom/combin")
     @ApiOperation(value = "删除组装件bom", tags = "删除组装件bom")
