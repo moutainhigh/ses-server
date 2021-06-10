@@ -357,16 +357,15 @@ public class FrAppServiceImpl implements FrAppService {
             return Collections.EMPTY_LIST;
         }
         // 定义返回出参
-        List<String> resultList = Lists.newArrayListWithCapacity(10);
+        List<String> resultList = Lists.newArrayList();
 
         List<String> nameList = opeCarDistributeExMapper.getNameDataList(enter);
         if (CollectionUtils.isNotEmpty(nameList)) {
             for (String name : nameList) {
                 resultList.add(name);
-            }
-
-            if (CollectionUtils.isNotEmpty(resultList) && resultList.size() == 10) {
-                return resultList;
+                if (CollectionUtils.isNotEmpty(resultList) && resultList.size() == 10) {
+                    break;
+                }
             }
         }
 
@@ -374,10 +373,9 @@ public class FrAppServiceImpl implements FrAppService {
         if (CollectionUtils.isNotEmpty(orderNoList)) {
             for (String orderNo : orderNoList) {
                 resultList.add(orderNo);
-            }
-
-            if (CollectionUtils.isNotEmpty(resultList) && resultList.size() == 10) {
-                return resultList;
+                if (CollectionUtils.isNotEmpty(resultList) && resultList.size() == 10) {
+                    break;
+                }
             }
         }
         return resultList;
