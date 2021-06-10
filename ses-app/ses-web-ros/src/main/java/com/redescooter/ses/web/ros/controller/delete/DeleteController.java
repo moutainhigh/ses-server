@@ -45,7 +45,7 @@ public class DeleteController {
     @PostMapping("/bom/scooter")
     @ApiOperation(value = "删除车辆bom", tags = "删除车辆bom")
     @IgnoreLoginCheck
-    public Response<GeneralResult> deleteScooterBom(@ModelAttribute StringEnter enter) {
+    public Response<GeneralResult> deleteScooterBom(@ModelAttribute IdEnter enter) {
         return new Response<>(deleteService.deleteScooterBom(enter));
     }
 
@@ -56,7 +56,7 @@ public class DeleteController {
     @PostMapping("/bom/combin")
     @ApiOperation(value = "删除组装件bom", tags = "删除组装件bom")
     @IgnoreLoginCheck
-    public Response<GeneralResult> deleteCombinBom(@ModelAttribute StringEnter enter) {
+    public Response<GeneralResult> deleteCombinBom(@ModelAttribute IdEnter enter) {
         return new Response<>(deleteService.deleteCombinBom(enter));
     }
 

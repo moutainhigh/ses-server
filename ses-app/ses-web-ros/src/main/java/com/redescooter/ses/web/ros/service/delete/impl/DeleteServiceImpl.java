@@ -2,7 +2,6 @@ package com.redescooter.ses.web.ros.service.delete.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
-import com.redescooter.ses.api.common.enums.bom.ProductionBomStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
@@ -251,17 +250,11 @@ public class DeleteServiceImpl implements DeleteService {
      */
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
-    public GeneralResult deleteScooterBom(StringEnter enter) {
-        LambdaQueryWrapper<OpeProductionScooterBom> qw = new LambdaQueryWrapper<>();
-        qw.eq(OpeProductionScooterBom::getDr, Constant.DR_FALSE);
-        qw.in(OpeProductionScooterBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
-        qw.eq(OpeProductionScooterBom::getBomNo, enter.getKeyword());
-        List<OpeProductionScooterBom> list = opeProductionScooterBomService.list(qw);
-        if (CollectionUtils.isNotEmpty(list)) {
-            for (OpeProductionScooterBom bom : list) {
-                Long id = bom.getId();
-                deleteMapper.deleteScooterBom(id);
-            }
+    public GeneralResult deleteScooterBom(IdEnter enter) {
+        OpeProductionScooterBom bom = opeProductionScooterBomService.getById(enter.getId());
+        if (null != bom) {
+            log.info("进入删除车辆bom");
+            deleteMapper.deleteScooterBom(enter.getId());
         }
         return new GeneralResult(enter.getRequestId());
     }
@@ -271,20 +264,13 @@ public class DeleteServiceImpl implements DeleteService {
      */
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
-    public GeneralResult deleteCombinBom(StringEnter enter) {
-        LambdaQueryWrapper<OpeProductionCombinBom> qw = new LambdaQueryWrapper<>();
-        qw.eq(OpeProductionCombinBom::getDr, Constant.DR_FALSE);
-        qw.in(OpeProductionCombinBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue(), ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
-        qw.eq(OpeProductionCombinBom::getBomNo, enter.getKeyword());
-        List<OpeProductionCombinBom> list = opeProductionCombinBomService.list(qw);
-        if (CollectionUtils.isNotEmpty(list)) {
-            for (OpeProductionCombinBom bom : list) {
-                Long id = bom.getId();
-                deleteMapper.deleteCombinBom(id);
-            }
+    public GeneralResult deleteCombinBom(IdEnter enter) {
+        OpeProductionCombinBom bom = opeProductionCombinBomService.getById(enter.getId());
+        if (null != bom) {
+            log.info("进入删除组装件bom");
+            deleteMapper.deleteCombinBom(enter.getId());
         }
         return new GeneralResult(enter.getRequestId());
     }
-
 
 }

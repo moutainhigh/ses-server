@@ -15,7 +15,7 @@ public interface DeleteService {
     /**
      * 删除车辆bom
      */
-    GeneralResult deleteScooterBom(StringEnter enter);
+    GeneralResult deleteScooterBom(IdEnter enter);
     /**
      * 删除客户对应关系
      * @param idEnter
@@ -26,7 +26,7 @@ public interface DeleteService {
     /**
      * 删除组装件bom
      */
-    GeneralResult deleteCombinBom(StringEnter enter);
+    GeneralResult deleteCombinBom(IdEnter enter);
 
     /**
      * 删除车辆
