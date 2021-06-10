@@ -6,7 +6,6 @@ import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.hub.service.operation.CustomerService;
 import com.redescooter.ses.api.mobile.c.exception.MobileCException;
-import com.redescooter.ses.api.mobile.c.service.ScooterMobileCService;
 import com.redescooter.ses.api.mobile.c.service.UserProfileProService;
 import com.redescooter.ses.api.mobile.c.vo.EditUserProfile2CEnter;
 import com.redescooter.ses.api.mobile.c.vo.SaveUserProfileEnter;
@@ -21,6 +20,7 @@ import com.redescooter.ses.service.mobile.c.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.mobile.c.service.base.ConUserProfileService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.spring.annotation.GlobalTransactional;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -153,14 +153,19 @@ public class UserProfileProServiceImpl implements UserProfileProService {
     public void deleteUserProfile(String email) {
         LambdaQueryWrapper<ConUserProfile> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ConUserProfile::getEmail1, email);
-        ConUserProfile conUserProfile = conUserProfileMapper.selectOne(wrapper);
-        if (null != conUserProfile) {
-            userProfileMapper.deleteUserProfile(email);
-            LambdaQueryWrapper<ConUserScooter> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-            lambdaQueryWrapper.eq(ConUserScooter::getUserId, conUserProfile.getUserId());
-            ConUserScooter conUserScooter = conUserScooterMapper.selectOne(lambdaQueryWrapper);
-            if (null != conUserScooter) {
-                userScooterMapper.deleteUserScooter(conUserProfile.getUserId());
+        List<ConUserProfile> list = conUserProfileMapper.selectList(wrapper);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (ConUserProfile profile : list) {
+                userProfileMapper.deleteUserProfile(profile.getEmail1());
+
+                LambdaQueryWrapper<ConUserScooter> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+                lambdaQueryWrapper.eq(ConUserScooter::getUserId, profile.getUserId());
+                List<ConUserScooter> userScooterList = conUserScooterMapper.selectList(lambdaQueryWrapper);
+                if (CollectionUtils.isNotEmpty(userScooterList)) {
+                    for (ConUserScooter userScooter : userScooterList) {
+                        userScooterMapper.deleteUserScooter(userScooter.getUserId());
+                    }
+                }
             }
         }
     }

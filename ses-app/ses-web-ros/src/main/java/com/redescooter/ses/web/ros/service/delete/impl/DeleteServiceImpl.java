@@ -1,6 +1,7 @@
 package com.redescooter.ses.web.ros.service.delete.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -14,26 +15,32 @@ import com.redescooter.ses.web.ros.dao.base.OpeCustomerContactMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryBMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeWmsScooterStockMapper;
 import com.redescooter.ses.web.ros.dao.delete.DeleteMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
 import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
 import com.redescooter.ses.web.ros.dm.OpeCodebaseRelation;
 import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
 import com.redescooter.ses.web.ros.dm.OpeCodebaseVin;
+import com.redescooter.ses.web.ros.dm.OpeColor;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerContact;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
 import com.redescooter.ses.web.ros.dm.OpeProductionCombinBom;
 import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
+import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
+import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCodebaseRelationService;
 import com.redescooter.ses.web.ros.service.base.OpeCodebaseRsnService;
 import com.redescooter.ses.web.ros.service.base.OpeCodebaseVinService;
+import com.redescooter.ses.web.ros.service.base.OpeColorService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
+import com.redescooter.ses.web.ros.service.base.OpeSpecificatGroupService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
 import com.redescooter.ses.web.ros.service.delete.DeleteService;
 import io.seata.spring.annotation.GlobalTransactional;
@@ -45,6 +52,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description
@@ -97,6 +105,15 @@ public class DeleteServiceImpl implements DeleteService {
     @Autowired
     private DeleteMapper deleteMapper;
 
+    @Autowired
+    private OpeWmsScooterStockMapper opeWmsScooterStockMapper;
+
+    @Autowired
+    private OpeSpecificatGroupService opeSpecificatGroupService;
+
+    @Autowired
+    private OpeColorService opeColorService;
+
     @DubboReference
     private UserBaseService userBaseService;
 
@@ -119,6 +136,7 @@ public class DeleteServiceImpl implements DeleteService {
         //开始删除ope_customer，ope_customer_contact，ope_customer_inquiry，ope_customer_inquiry_b这几张表的信息
         LambdaQueryWrapper<OpeCustomerContact> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeCustomerContact::getCustomerId, idEnter.getId());
+        wrapper.last("limit 1");
         OpeCustomerContact opeCustomerContact = opeCustomerContactMapper.selectOne(wrapper);
         if (opeCustomerContact != null) {
             deleteMapper.deleteCustomerContact(opeCustomer.getId());
@@ -127,11 +145,13 @@ public class DeleteServiceImpl implements DeleteService {
 
         LambdaQueryWrapper<OpeCustomerInquiry> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(OpeCustomerInquiry::getCustomerId, idEnter.getId());
+        queryWrapper.last("limit 1");
         OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryMapper.selectOne(queryWrapper);
         if (opeCustomerInquiry != null) {
             deleteMapper.deleteCustomerInquiry(opeCustomer.getId());
             LambdaQueryWrapper<OpeCustomerInquiryB> lambdaQueryWrapper = new LambdaQueryWrapper<>();
             lambdaQueryWrapper.eq(OpeCustomerInquiryB::getInquiryId, opeCustomerInquiry.getId());
+            lambdaQueryWrapper.last("limit 1");
             OpeCustomerInquiryB opeCustomerInquiryB = opeCustomerInquiryBMapper.selectOne(lambdaQueryWrapper);
             if (opeCustomerInquiryB != null) {
                 deleteMapper.deleteCustomerInquiryB(opeCustomerInquiry.getId());
@@ -142,6 +162,7 @@ public class DeleteServiceImpl implements DeleteService {
         //开始删除ope_car_distribute，ope_car_distribute_node
         LambdaQueryWrapper<OpeCarDistribute> wrapper1 = new LambdaQueryWrapper<>();
         wrapper1.eq(OpeCarDistribute::getCustomerId, idEnter.getId());
+        wrapper1.last("limit 1");
         OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectOne(wrapper1);
         if (opeCarDistribute != null) {
             deleteMapper.deleteCarDistribute(idEnter.getId());
@@ -150,6 +171,7 @@ public class DeleteServiceImpl implements DeleteService {
 
         LambdaQueryWrapper<OpeCarDistributeNode> queryWrapper1 = new LambdaQueryWrapper<>();
         queryWrapper1.eq(OpeCarDistributeNode::getCustomerId, idEnter.getId());
+        queryWrapper1.last("limit 1");
         OpeCarDistributeNode opeCarDistributeNode = opeCarDistributeNodeMapper.selectOne(queryWrapper1);
         if (opeCarDistributeNode != null) {
             deleteMapper.deleteCarDistributeNode(idEnter.getId());
@@ -160,7 +182,36 @@ public class DeleteServiceImpl implements DeleteService {
         return new GeneralResult(idEnter.getRequestId());
     }
 
-
+    private Map<String, Long> check(String rsn) {
+        LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+        qw.eq(OpeWmsStockSerialNumber::getRelationType, 1);
+        qw.eq(OpeWmsStockSerialNumber::getRsn, rsn);
+        qw.last("limit 1");
+        OpeWmsStockSerialNumber serialNumber = opeWmsStockSerialNumberService.getOne(qw);
+        if (null == serialNumber) {
+            throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EXIST.getCode(), ExceptionCodeEnums.RSN_NOT_EXIST.getMessage());
+        }
+        Long relationId = serialNumber.getRelationId();
+        OpeWmsScooterStock stock = opeWmsScooterStockMapper.selectById(relationId);
+        if (null == stock) {
+            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_STOCK_IS_EMPTY.getCode(), ExceptionCodeEnums.SCOOTER_STOCK_IS_EMPTY.getMessage());
+        }
+        Long groupId = stock.getGroupId();
+        Long colorId = stock.getColorId();
+        OpeSpecificatGroup group = opeSpecificatGroupService.getById(groupId);
+        OpeColor color = opeColorService.getById(colorId);
+        if (null == group) {
+            throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
+        }
+        if (null == color) {
+            throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+        }
+        Map<String, Long> map = Maps.newHashMapWithExpectedSize(2);
+        map.put("groupId", groupId);
+        map.put("colorId", colorId);
+        return map;
+    }
 
     /**
      * 删除车辆
@@ -173,16 +224,31 @@ public class DeleteServiceImpl implements DeleteService {
         // 删除scooter库
         String rsn = scooterService.deleteScooter(tabletSn);
 
-        // 修改ope_wms_stock_serial_number
+        Map<String, Long> map = check(rsn);
+        Long groupId = map.get("groupId");
+        Long colorId = map.get("colorId");
+
+        LambdaQueryWrapper<OpeWmsScooterStock> stockWrapper = new LambdaQueryWrapper<>();
+        stockWrapper.eq(OpeWmsScooterStock::getDr, Constant.DR_FALSE);
+        stockWrapper.eq(OpeWmsScooterStock::getGroupId, groupId);
+        stockWrapper.eq(OpeWmsScooterStock::getColorId, colorId);
+        List<OpeWmsScooterStock> stockList = opeWmsScooterStockMapper.selectList(stockWrapper);
+        if (CollectionUtils.isNotEmpty(stockList)) {
+            for (OpeWmsScooterStock stock : stockList) {
+                stock.setAbleStockQty(stock.getAbleStockQty() - 1);
+                stock.setUsedStockQty(stock.getUsedStockQty() - 1);
+                opeWmsScooterStockMapper.updateById(stock);
+            }
+        }
+
+        // 删除ope_wms_stock_serial_number
         LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
         qw.eq(OpeWmsStockSerialNumber::getRsn, rsn);
-        qw.eq(OpeWmsStockSerialNumber::getStockStatus, 2);
         List<OpeWmsStockSerialNumber> list = opeWmsStockSerialNumberService.list(qw);
         if (CollectionUtils.isNotEmpty(list)) {
             for (OpeWmsStockSerialNumber item : list) {
-                item.setStockStatus(1);
-                opeWmsStockSerialNumberService.updateById(item);
+                deleteMapper.deleteWmsStockSerialNumber(item.getId());
             }
         }
 

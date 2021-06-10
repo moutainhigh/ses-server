@@ -29,7 +29,6 @@ import com.redescooter.ses.service.foundation.dm.base.PlaUserPassword;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserPermission;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.foundation.service.base.PlaUserNodeService;
-import com.redescooter.ses.service.foundation.service.base.PlaUserService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
@@ -270,16 +269,19 @@ public class UserBaseServiceImpl implements UserBaseService {
     public void deletePlaUser(String email) {
         LambdaQueryWrapper<PlaUser> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(PlaUser::getLoginName, email);
+        wrapper.last("limit 1");
         PlaUser plaUser = plaUserMapper.selectOne(wrapper);
         if (null != plaUser) {
             accountBaseServiceMapper.deletePlaUser(email);
             LambdaQueryWrapper<PlaUserNode> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(PlaUserNode::getUserId, plaUser.getId());
+            queryWrapper.last("limit 1");
             PlaUserNode plaUserNode = plaUserNodeMapper.selectOne(queryWrapper);
             if (null != plaUserNode) {
                 accountBaseServiceMapper.deletePlaUserNode(plaUser.getId());
                 LambdaQueryWrapper<PlaUserPermission> queryWrapper1 = new LambdaQueryWrapper<>();
                 queryWrapper1.eq(PlaUserPermission::getUserId, plaUser.getId());
+                queryWrapper1.last("limit 1");
                 PlaUserPermission plaUserPermission = plaUserPermissionMapper.selectOne(queryWrapper1);
                 if (null != plaUserPermission) {
                     accountBaseServiceMapper.deletePlaUserPermission(plaUser.getId());
@@ -290,6 +292,7 @@ public class UserBaseServiceImpl implements UserBaseService {
 
         LambdaQueryWrapper<PlaUserPassword> wrapper1 = new LambdaQueryWrapper<>();
         wrapper1.eq(PlaUserPassword::getLoginName, email);
+        wrapper1.last("limit 1");
         PlaUserPassword plaUserPassword = plaUserPasswordMapper.selectOne(wrapper1);
         if (null != plaUserPassword) {
             accountBaseServiceMapper.deletePlaUserPassword(email);

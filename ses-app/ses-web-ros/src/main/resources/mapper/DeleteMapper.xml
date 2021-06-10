@@ -62,6 +62,11 @@
         where id = #{id}
     </delete>
 
+    <!-- 删除库存产品序列号 -->
+    <delete id="deleteWmsStockSerialNumber">
+        delete from ope_wms_stock_serial_number where id = #{id}
+    </delete>
+
 
     <delete id="deleteOrder" parameterType="java.lang.Long">
         delete
