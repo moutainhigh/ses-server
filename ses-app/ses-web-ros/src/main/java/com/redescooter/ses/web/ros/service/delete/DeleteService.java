@@ -33,5 +33,4 @@ public interface DeleteService {
      */
     GeneralResult deleteScooter(StringEnter enter);
 
-
 }

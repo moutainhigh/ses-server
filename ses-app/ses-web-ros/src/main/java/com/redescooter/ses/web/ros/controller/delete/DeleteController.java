@@ -1,11 +1,11 @@
 package com.redescooter.ses.web.ros.controller.delete;
 
-import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.delete.DeleteService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,6 +33,7 @@ public class DeleteController {
 
     @PostMapping(value = "/deleteCustomer")
     @ApiOperation(value = "删除客户对应关系", response = BooleanResult.class)
+    @IgnoreLoginCheck
     public Response<BooleanResult> deleteCustomer(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response(deleteService.deleteCustomer(enter));
     }
@@ -43,6 +44,7 @@ public class DeleteController {
      */
     @PostMapping("/bom/scooter")
     @ApiOperation(value = "删除车辆bom", tags = "删除车辆bom")
+    @IgnoreLoginCheck
     public Response<GeneralResult> deleteScooterBom(@ModelAttribute StringEnter enter) {
         return new Response<>(deleteService.deleteScooterBom(enter));
     }
@@ -53,6 +55,7 @@ public class DeleteController {
      */
     @PostMapping("/bom/combin")
     @ApiOperation(value = "删除组装件bom", tags = "删除组装件bom")
+    @IgnoreLoginCheck
     public Response<GeneralResult> deleteCombinBom(@ModelAttribute StringEnter enter) {
         return new Response<>(deleteService.deleteCombinBom(enter));
     }
@@ -63,11 +66,9 @@ public class DeleteController {
      */
     @PostMapping("/scooter")
     @ApiOperation(value = "删除车辆", tags = "删除车辆")
+    @IgnoreLoginCheck
     public Response<GeneralResult> deleteScooter(@ModelAttribute StringEnter enter) {
         return new Response<>(deleteService.deleteScooter(enter));
     }
-
-
-
 
 }

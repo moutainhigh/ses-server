@@ -76,21 +76,29 @@ public class DeleteServiceImpl implements DeleteService {
 
     @Autowired
     private OpeCarDistributeMapper opeCarDistributeMapper;
+
     @Autowired
     private OpeCustomerMapper opeCustomerMapper;
+
     @DubboReference
     private UserProfileProService userProfileProService;
+
     @Autowired
     private OpeCustomerContactMapper opeCustomerContactMapper;
+
     @Autowired
     private OpeCustomerInquiryMapper opeCustomerInquiryMapper;
+
     @Autowired
     private OpeCustomerInquiryBMapper opeCustomerInquiryBMapper;
+
     @Autowired
     private OpeCarDistributeNodeMapper opeCarDistributeNodeMapper;
+
     @Autowired
     private DeleteMapper deleteMapper;
-    @Autowired
+
+    @DubboReference
     private UserBaseService userBaseService;
 
     @DubboReference
