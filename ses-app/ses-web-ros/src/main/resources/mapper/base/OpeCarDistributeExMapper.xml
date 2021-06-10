@@ -216,6 +216,24 @@
         where oci.id = #{param.id}
     </select>
 
+    <!-- 检索数据下拉接口(客户姓名) -->
+    <select id="getNameDataList" resultType="java.lang.String">
+        select distinct full_name
+        from ope_customer_inquiry
+        where dr = 0 and full_name like concat('%', #{param.keyword}, '%')
+        order by created_time desc
+        limit 10
+    </select>
+
+    <!-- 检索数据下拉接口(询价单号) -->
+    <select id="getOrderNoDataList" resultType="java.lang.String">
+        select distinct order_no
+        from ope_customer_inquiry
+        where dr = 0 and order_no like concat('%', #{param.keyword}, '%')
+        order by created_time desc
+        limit 10
+    </select>
+
     <!-- 待分配列表筛选条件 -->
     <sql id="toBeAssignList">
         <if test="param.generateDateStartTime != null">

@@ -16,6 +16,7 @@ import com.redescooter.ses.api.common.enums.wms.WmsStockStatusEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.common.vo.scooter.ColorDTO;
 import com.redescooter.ses.api.common.vo.scooter.SpecificGroupDTO;
@@ -345,6 +346,41 @@ public class FrAppServiceImpl implements FrAppService {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
         return account;
+    }
+
+    /**
+     * 检索数据下拉接口
+     */
+    @Override
+    public List<String> getDataList(StringEnter enter) {
+        if (null == enter || StringUtils.isBlank(enter.getKeyword())) {
+            return Collections.EMPTY_LIST;
+        }
+        // 定义返回出参
+        List<String> resultList = Lists.newArrayListWithCapacity(10);
+
+        List<String> nameList = opeCarDistributeExMapper.getNameDataList(enter);
+        if (CollectionUtils.isNotEmpty(nameList)) {
+            for (String name : nameList) {
+                resultList.add(name);
+            }
+
+            if (CollectionUtils.isNotEmpty(resultList) && resultList.size() == 10) {
+                return resultList;
+            }
+        }
+
+        List<String> orderNoList = opeCarDistributeExMapper.getOrderNoDataList(enter);
+        if (CollectionUtils.isNotEmpty(orderNoList)) {
+            for (String orderNo : orderNoList) {
+                resultList.add(orderNo);
+            }
+
+            if (CollectionUtils.isNotEmpty(resultList) && resultList.size() == 10) {
+                return resultList;
+            }
+        }
+        return resultList;
     }
 
     /**

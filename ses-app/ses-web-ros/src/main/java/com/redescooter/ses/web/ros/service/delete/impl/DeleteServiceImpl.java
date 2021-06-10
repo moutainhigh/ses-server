@@ -183,33 +183,31 @@ public class DeleteServiceImpl implements DeleteService {
     }
 
     private Map<String, Long> check(String rsn) {
+        Map<String, Long> map = Maps.newHashMapWithExpectedSize(2);
         LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
         qw.eq(OpeWmsStockSerialNumber::getRelationType, 1);
         qw.eq(OpeWmsStockSerialNumber::getRsn, rsn);
         qw.last("limit 1");
         OpeWmsStockSerialNumber serialNumber = opeWmsStockSerialNumberService.getOne(qw);
-        if (null == serialNumber) {
-            throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EXIST.getCode(), ExceptionCodeEnums.RSN_NOT_EXIST.getMessage());
+        if (null != serialNumber) {
+            Long relationId = serialNumber.getRelationId();
+            OpeWmsScooterStock stock = opeWmsScooterStockMapper.selectById(relationId);
+            if (null != stock) {
+                Long groupId = stock.getGroupId();
+                Long colorId = stock.getColorId();
+                OpeSpecificatGroup group = opeSpecificatGroupService.getById(groupId);
+                OpeColor color = opeColorService.getById(colorId);
+                if (null == group) {
+                    throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
+                }
+                if (null == color) {
+                    throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+                }
+                map.put("groupId", groupId);
+                map.put("colorId", colorId);
+            }
         }
-        Long relationId = serialNumber.getRelationId();
-        OpeWmsScooterStock stock = opeWmsScooterStockMapper.selectById(relationId);
-        if (null == stock) {
-            throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_STOCK_IS_EMPTY.getCode(), ExceptionCodeEnums.SCOOTER_STOCK_IS_EMPTY.getMessage());
-        }
-        Long groupId = stock.getGroupId();
-        Long colorId = stock.getColorId();
-        OpeSpecificatGroup group = opeSpecificatGroupService.getById(groupId);
-        OpeColor color = opeColorService.getById(colorId);
-        if (null == group) {
-            throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
-        }
-        if (null == color) {
-            throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
-        }
-        Map<String, Long> map = Maps.newHashMapWithExpectedSize(2);
-        map.put("groupId", groupId);
-        map.put("colorId", colorId);
         return map;
     }
 
@@ -225,19 +223,21 @@ public class DeleteServiceImpl implements DeleteService {
         String rsn = scooterService.deleteScooter(tabletSn);
 
         Map<String, Long> map = check(rsn);
-        Long groupId = map.get("groupId");
-        Long colorId = map.get("colorId");
+        if (null != map && map.size() > 0) {
+            Long groupId = map.get("groupId");
+            Long colorId = map.get("colorId");
 
-        LambdaQueryWrapper<OpeWmsScooterStock> stockWrapper = new LambdaQueryWrapper<>();
-        stockWrapper.eq(OpeWmsScooterStock::getDr, Constant.DR_FALSE);
-        stockWrapper.eq(OpeWmsScooterStock::getGroupId, groupId);
-        stockWrapper.eq(OpeWmsScooterStock::getColorId, colorId);
-        List<OpeWmsScooterStock> stockList = opeWmsScooterStockMapper.selectList(stockWrapper);
-        if (CollectionUtils.isNotEmpty(stockList)) {
-            for (OpeWmsScooterStock stock : stockList) {
-                stock.setAbleStockQty(stock.getAbleStockQty() - 1);
-                stock.setUsedStockQty(stock.getUsedStockQty() - 1);
-                opeWmsScooterStockMapper.updateById(stock);
+            LambdaQueryWrapper<OpeWmsScooterStock> stockWrapper = new LambdaQueryWrapper<>();
+            stockWrapper.eq(OpeWmsScooterStock::getDr, Constant.DR_FALSE);
+            stockWrapper.eq(OpeWmsScooterStock::getGroupId, groupId);
+            stockWrapper.eq(OpeWmsScooterStock::getColorId, colorId);
+            List<OpeWmsScooterStock> stockList = opeWmsScooterStockMapper.selectList(stockWrapper);
+            if (CollectionUtils.isNotEmpty(stockList)) {
+                for (OpeWmsScooterStock stock : stockList) {
+                    stock.setAbleStockQty(stock.getAbleStockQty() - 1);
+                    stock.setUsedStockQty(stock.getUsedStockQty() - 1);
+                    opeWmsScooterStockMapper.updateById(stock);
+                }
             }
         }
 
