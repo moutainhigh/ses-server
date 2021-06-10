@@ -19,10 +19,12 @@ import com.redescooter.ses.web.ros.dao.base.OpePartsMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSalePartsMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSalePriceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSaleScooterMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeSetDepositMapper;
 import com.redescooter.ses.web.ros.dm.OpeParts;
 import com.redescooter.ses.web.ros.dm.OpeSaleParts;
 import com.redescooter.ses.web.ros.dm.OpeSalePrice;
 import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
+import com.redescooter.ses.web.ros.dm.OpeSetDeposit;
 import com.redescooter.ses.web.ros.enums.distributor.StatusEnum;
 import com.redescooter.ses.web.ros.enums.salePrice.SalePriceEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -30,6 +32,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpePartsService;
 import com.redescooter.ses.web.ros.service.base.OpeSalePriceService;
 import com.redescooter.ses.web.ros.service.base.OpeSaleScooterBatteryRelationService;
+import com.redescooter.ses.web.ros.service.base.OpeSetDepositService;
 import com.redescooter.ses.web.ros.service.restproduction.SalesPriceService;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePriceListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePriceSaveOrUpdateEnter;
@@ -70,6 +73,12 @@ public class SalesPriceServiceImpl implements SalesPriceService {
 
     @Autowired
     private OpeSalePriceMapper opeSalePriceMapper;
+
+    @Autowired
+    private OpeSetDepositMapper opeSetDepositMapper;
+
+    @Autowired
+    private OpeSetDepositService opeSetDepositService;
 
     @Autowired
     private OpeSaleScooterBatteryRelationService opeSaleScooterBatteryRelationService;
@@ -152,10 +161,14 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         boolean save = opeSalePriceService.save(price);
         //新增的同时要修改定金
         if (save) {
-            Integer deposit = opeSalePriceMapper.findDeposit();
-            deposit = deposit == null ? 0 : deposit;
+            LambdaQueryWrapper<OpeSetDeposit> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(OpeSetDeposit::getDr,Constant.DR_FALSE);
+            wrapper.last("limit 1");
+            OpeSetDeposit setDeposit = opeSetDepositMapper.selectOne(wrapper);
+            BigDecimal deposit = setDeposit.getDeposit();
+            deposit = deposit == null ? new BigDecimal("0") : deposit;
             OpeSalePrice opeSalePrice = new OpeSalePrice();
-            opeSalePrice.setDeposit(new BigDecimal(deposit));
+            opeSalePrice.setDeposit(deposit);
             opeSalePrice.setId(price.getId());
             opeSalePriceMapper.updateById(opeSalePrice);
         }
@@ -363,41 +376,50 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         if (setDepositEnter.getDeposit().compareTo(BigDecimal.ZERO) == 0) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPOSIT_NOT_ZERO.getCode(), ExceptionCodeEnums.DEPOSIT_NOT_ZERO.getMessage());
         }
-//        LambdaQueryWrapper<OpeSalePrice> wrapper = new LambdaQueryWrapper<>();
-//        wrapper.eq(OpeSalePrice::getDr, Constant.DR_FALSE);
-//        wrapper.eq(OpeSalePrice::getType, 2);
-//        List<OpeSalePrice> list = opeSalePriceMapper.selectList(wrapper);
-//
-//        BigDecimal min = list
-//                .stream()
-//                .map(OpeSalePrice::getBalance)
-//                .min(Comparator.naturalOrder())
-//                .orElse(BigDecimal.ZERO);
-//        if (setDepositEnter.getDeposit().compareTo(min) == 1) {
-//            throw new SesWebRosException(ExceptionCodeEnums.DEPOSIT_ERROR.getCode(), ExceptionCodeEnums.DEPOSIT_ERROR.getMessage());
-//        }
-        int i = opeSalePriceMapper.editDeposit(setDepositEnter);
+        LambdaQueryWrapper<OpeSetDeposit> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeSetDeposit::getDr, Constant.DR_FALSE);
+        wrapper.last("limit 1");
+        OpeSetDeposit opeSetDeposit = opeSetDepositMapper.selectOne(wrapper);
+        OpeSetDeposit opeSetDeposit1 = new OpeSetDeposit();
+        opeSetDeposit1.setDeposit(setDepositEnter.getDeposit());
+        opeSetDeposit1.setDr(Constant.DR_FALSE);
+        int i = 0;
+        if (null == opeSetDeposit) {
+            i = opeSetDepositMapper.insert(opeSetDeposit1);
+        } else {
+            opeSetDeposit1.setId(opeSetDeposit.getId());
+            i = opeSetDepositMapper.updateById(opeSetDeposit1);
+        }
         if (i < 0) {
             throw new SesWebRosException(ExceptionCodeEnums.UPDATE_FAIL.getCode(), ExceptionCodeEnums.UPDATE_FAIL.getMessage());
         }
-        //同步官网
-        synchronizeDeposit(setDepositEnter);
+        LambdaQueryWrapper<OpeSalePrice> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(OpeSalePrice::getDr, Constant.DR_FALSE);
+        List<OpeSalePrice> list = opeSalePriceMapper.selectList(queryWrapper);
+        if (0 < list.size()) {
+            OpeSetDeposit setDeposit = opeSetDepositMapper.selectOne(wrapper);
+            setDepositEnter.setDeposit(setDeposit.getDeposit());
+            opeSalePriceMapper.editDeposit(setDepositEnter);
+            //同步官网
+            synchronizeDeposit(setDepositEnter);
+        }
+
         return new GeneralResult(setDepositEnter.getRequestId());
     }
 
     @Override
     public BigDecimal TipSettings(GeneralEnter enter) {
-        LambdaQueryWrapper<OpeSalePrice> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(OpeSalePrice::getDr, Constant.DR_FALSE);
-        queryWrapper.isNotNull(OpeSalePrice::getDeposit);
-        queryWrapper.ne(OpeSalePrice::getDeposit,0);
-        List<OpeSalePrice> list = opeSalePriceMapper.selectList(queryWrapper);
+        LambdaQueryWrapper<OpeSetDeposit> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(OpeSetDeposit::getDr, Constant.DR_FALSE);
+        queryWrapper.isNotNull(OpeSetDeposit::getDeposit);
+        queryWrapper.ne(OpeSetDeposit::getDeposit, 0);
+        List<OpeSetDeposit> list = opeSetDepositMapper.selectList(queryWrapper);
         if (list.size() <= 0) {
             throw new SesWebRosException(ExceptionCodeEnums.NO_DEPOSIT_SET.getCode(), ExceptionCodeEnums.NO_DEPOSIT_SET.getMessage());
         }
         BigDecimal min = list
                 .stream()
-                .map(OpeSalePrice::getDeposit)
+                .map(OpeSetDeposit::getDeposit)
                 .min(Comparator.naturalOrder())
                 .orElse(BigDecimal.ZERO);
         return min;

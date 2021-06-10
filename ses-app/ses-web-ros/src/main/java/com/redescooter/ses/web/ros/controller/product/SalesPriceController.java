@@ -11,9 +11,11 @@ import com.redescooter.ses.web.ros.service.restproduction.SalesPriceService;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePriceListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePriceSaveOrUpdateEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SetDepositEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -126,6 +128,7 @@ public class SalesPriceController {
      * @param setDepositEnter
      * @return
      */
+    @GlobalTransactional
     @PostMapping("/setDeposit")
     @ApiOperation(value = "单独设置价格", notes = "单独设置价格")
     public Response<Map<String, Integer>> setDeposit(@ModelAttribute SetDepositEnter setDepositEnter) {
