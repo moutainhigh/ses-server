@@ -184,6 +184,38 @@
         </if>
     </sql>
 
+    <!-- 检索数据下拉接口(客户姓名) -->
+    <select id="getNameDataList" resultType="java.lang.String">
+        select oci.full_name
+        from ope_customer_inquiry oci
+        left join ope_car_distribute ocd on oci.customer_id = ocd.customer_id and ocd.dr = 0
+        left join ope_car_distribute_node ocdn on ocdn.customer_id = oci.customer_id and ocdn.dr = 0
+        where oci.dr = 0
+        and (  (ocdn.flag is null or ocdn.flag = 0) and ( (ocdn.app_node is null or ocdn.app_node = 1 ) or (ocdn.node is null or ocdn.node = 1 ) ) and oci.full_name like concat('%', #{param.keyword}, '%')    )
+
+        or (  ocd.warehouse_account_id = #{warehouseAccountId} and ocdn.flag = 1 and ocdn.app_node in (2, 3, 4, 5) and oci.full_name like concat('%', #{param.keyword}, '%')     )
+
+        or (  ocd.warehouse_account_id = #{warehouseAccountId} and ocdn.flag = 2 and ocdn.app_node = 6 and oci.full_name like concat('%', #{param.keyword}, '%')           )
+        order by oci.created_time desc
+        limit 10
+    </select>
+
+    <!-- 检索数据下拉接口(询价单号) -->
+    <select id="getOrderNoDataList" resultType="java.lang.String">
+        select oci.order_no
+        from ope_customer_inquiry oci
+        left join ope_car_distribute ocd on oci.customer_id = ocd.customer_id and ocd.dr = 0
+        left join ope_car_distribute_node ocdn on ocdn.customer_id = oci.customer_id and ocdn.dr = 0
+        where oci.dr = 0
+        and (  (ocdn.flag is null or ocdn.flag = 0) and ( (ocdn.app_node is null or ocdn.app_node = 1 ) or (ocdn.node is null or ocdn.node = 1 ) ) and oci.order_no like concat('%', #{param.keyword}, '%')    )
+
+        or (  ocd.warehouse_account_id = #{warehouseAccountId} and ocdn.flag = 1 and ocdn.app_node in (2, 3, 4, 5) and oci.order_no like concat('%', #{param.keyword}, '%')     )
+
+        or (  ocd.warehouse_account_id = #{warehouseAccountId} and ocdn.flag = 2 and ocdn.app_node = 6 and oci.order_no like concat('%', #{param.keyword}, '%')           )
+        order by oci.created_time desc
+        limit 10
+    </select>
+
     <!-- app询价单详情 -->
     <select id="getInquiryDetail" resultType="com.redescooter.ses.web.ros.vo.app.InquiryDetailResult">
         select
@@ -214,24 +246,6 @@
         left join ope_specificat_type ost on ost.id = ocd.specificat_type_id and ost.dr = 0
         left join ope_color oc on oc.id = ocd.color_id and oc.dr = 0
         where oci.id = #{param.id}
-    </select>
-
-    <!-- 检索数据下拉接口(客户姓名) -->
-    <select id="getNameDataList" resultType="java.lang.String">
-        select full_name
-        from ope_customer_inquiry
-        where dr = 0 and full_name like concat('%', #{param.keyword}, '%')
-        order by created_time desc
-        limit 10
-    </select>
-
-    <!-- 检索数据下拉接口(询价单号) -->
-    <select id="getOrderNoDataList" resultType="java.lang.String">
-        select order_no
-        from ope_customer_inquiry
-        where dr = 0 and order_no like concat('%', #{param.keyword}, '%')
-        order by created_time desc
-        limit 10
     </select>
 
     <!-- 待分配列表筛选条件 -->

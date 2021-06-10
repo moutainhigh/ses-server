@@ -83,11 +83,11 @@ public interface OpeCarDistributeExMapper {
     /**
      * 检索数据下拉接口(客户姓名)
      */
-    List<String> getNameDataList(@Param("param") StringEnter enter);
+    List<String> getNameDataList(@Param("param") StringEnter enter, @Param("warehouseAccountId") Long warehouseAccountId);
 
     /**
      * 检索数据下拉接口(询价单号)
      */
-    List<String> getOrderNoDataList(@Param("param") StringEnter enter);
+    List<String> getOrderNoDataList(@Param("param") StringEnter enter, @Param("warehouseAccountId") Long warehouseAccountId);
 
 }
