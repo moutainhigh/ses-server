@@ -389,6 +389,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         LambdaQueryWrapper<OpeSalePrice> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(OpeSalePrice::getDr, Constant.DR_FALSE);
         queryWrapper.isNotNull(OpeSalePrice::getDeposit);
+        queryWrapper.ne(OpeSalePrice::getDeposit,0);
         List<OpeSalePrice> list = opeSalePriceMapper.selectList(queryWrapper);
         if (list.size() <= 0) {
             throw new SesWebRosException(ExceptionCodeEnums.NO_DEPOSIT_SET.getCode(), ExceptionCodeEnums.NO_DEPOSIT_SET.getMessage());
