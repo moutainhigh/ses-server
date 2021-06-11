@@ -268,7 +268,7 @@ public class OrderServiceImpl implements OrderService {
         //运费
         addSiteOrderVO.setFreight(new BigDecimal("199"));
         //整车价格
-        addSiteOrderVO.setProductPrice(siteProductPrice.getPrice());
+        addSiteOrderVO.setProductPrice(siteProductPrice.getPrice().add(siteProductPrice.getPrepaidDeposit()));
         //实际付款电池数: 选配电池总数-产品最小电池数
         //int paidBattery = scooterBatteryParts.getQty() - product.getMinBatteryNum();
         int paidBattery = enter.getBatteryQty() - product.getMinBatteryNum();
