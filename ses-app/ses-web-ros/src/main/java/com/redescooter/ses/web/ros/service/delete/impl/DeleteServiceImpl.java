@@ -128,52 +128,52 @@ public class DeleteServiceImpl implements DeleteService {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
 
-        //删除con_user_profile这个表的信息和con_user_scooter这个表的信息
+        // 删除con_user_profile这个表的信息和con_user_scooter这个表的信息
         deleteConUser(opeCustomer.getEmail());
 
+        // 删除ope_customer
         deleteMapper.deleteCustomer(idEnter.getId());
 
-        //开始删除ope_customer，ope_customer_contact，ope_customer_inquiry，ope_customer_inquiry_b这几张表的信息
+        // 删除ope_customer_contact
         LambdaQueryWrapper<OpeCustomerContact> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeCustomerContact::getCustomerId, idEnter.getId());
         wrapper.last("limit 1");
-        OpeCustomerContact opeCustomerContact = opeCustomerContactMapper.selectOne(wrapper);
-        if (opeCustomerContact != null) {
+        OpeCustomerContact contact = opeCustomerContactMapper.selectOne(wrapper);
+        if (contact != null) {
             deleteMapper.deleteCustomerContact(opeCustomer.getId());
         }
 
-
-        LambdaQueryWrapper<OpeCustomerInquiry> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(OpeCustomerInquiry::getCustomerId, idEnter.getId());
-        queryWrapper.last("limit 1");
-        OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryMapper.selectOne(queryWrapper);
-        if (opeCustomerInquiry != null) {
+        // 删除ope_customer_inquiry，ope_customer_inquiry_b
+        LambdaQueryWrapper<OpeCustomerInquiry> inquiryWrapper = new LambdaQueryWrapper<>();
+        inquiryWrapper.eq(OpeCustomerInquiry::getCustomerId, idEnter.getId());
+        inquiryWrapper.last("limit 1");
+        OpeCustomerInquiry inquiry = opeCustomerInquiryMapper.selectOne(inquiryWrapper);
+        if (inquiry != null) {
             deleteMapper.deleteCustomerInquiry(opeCustomer.getId());
-            LambdaQueryWrapper<OpeCustomerInquiryB> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-            lambdaQueryWrapper.eq(OpeCustomerInquiryB::getInquiryId, opeCustomerInquiry.getId());
-            lambdaQueryWrapper.last("limit 1");
-            OpeCustomerInquiryB opeCustomerInquiryB = opeCustomerInquiryBMapper.selectOne(lambdaQueryWrapper);
-            if (opeCustomerInquiryB != null) {
-                deleteMapper.deleteCustomerInquiryB(opeCustomerInquiry.getId());
+
+            LambdaQueryWrapper<OpeCustomerInquiryB> inquiryBWrapper = new LambdaQueryWrapper<>();
+            inquiryBWrapper.eq(OpeCustomerInquiryB::getInquiryId, inquiry.getId());
+            inquiryBWrapper.last("limit 1");
+            OpeCustomerInquiryB inquiryB = opeCustomerInquiryBMapper.selectOne(inquiryBWrapper);
+            if (inquiryB != null) {
+                deleteMapper.deleteCustomerInquiryB(inquiry.getId());
             }
         }
 
-
-        //开始删除ope_car_distribute，ope_car_distribute_node
-        LambdaQueryWrapper<OpeCarDistribute> wrapper1 = new LambdaQueryWrapper<>();
-        wrapper1.eq(OpeCarDistribute::getCustomerId, idEnter.getId());
-        wrapper1.last("limit 1");
-        OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectOne(wrapper1);
-        if (opeCarDistribute != null) {
+        // 删除ope_car_distribute，ope_car_distribute_node
+        LambdaQueryWrapper<OpeCarDistribute> distributeWrapper = new LambdaQueryWrapper<>();
+        distributeWrapper.eq(OpeCarDistribute::getCustomerId, idEnter.getId());
+        distributeWrapper.last("limit 1");
+        OpeCarDistribute distribute = opeCarDistributeMapper.selectOne(distributeWrapper);
+        if (distribute != null) {
             deleteMapper.deleteCarDistribute(idEnter.getId());
         }
 
-
-        LambdaQueryWrapper<OpeCarDistributeNode> queryWrapper1 = new LambdaQueryWrapper<>();
-        queryWrapper1.eq(OpeCarDistributeNode::getCustomerId, idEnter.getId());
-        queryWrapper1.last("limit 1");
-        OpeCarDistributeNode opeCarDistributeNode = opeCarDistributeNodeMapper.selectOne(queryWrapper1);
-        if (opeCarDistributeNode != null) {
+        LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
+        nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, idEnter.getId());
+        nodeWrapper.last("limit 1");
+        OpeCarDistributeNode node = opeCarDistributeNodeMapper.selectOne(nodeWrapper);
+        if (node != null) {
             deleteMapper.deleteCarDistributeNode(idEnter.getId());
         }
 

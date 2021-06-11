@@ -11,7 +11,7 @@
 
     <delete id="deleteCustomerContact" parameterType="java.lang.Long">
         delete
-        from ope_customer
+        from ope_customer_contact
         where customer_id = #{id}
     </delete>
 
