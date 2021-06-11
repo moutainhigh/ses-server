@@ -5,11 +5,13 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.codebase.RSNService;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.codebase.RSNDetailResult;
 import com.redescooter.ses.web.ros.vo.codebase.RSNListEnter;
 import com.redescooter.ses.web.ros.vo.codebase.RSNListResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -56,6 +58,12 @@ public class RSNController {
     @ApiOperation(value = "RSN导出", notes = "RSN导出")
     public Response<GeneralResult> export(@ModelAttribute RSNListEnter enter) {
         return new Response<>(rsnService.export(enter));
+    }
+
+    @PostMapping(value = "/importRsn")
+    @ApiOperation(value = "导入rsn")
+    public Response<GeneralResult> saveScooterImportExcel(@ModelAttribute @ApiParam("请求参数") ImportPartsEnter enter) {
+        return new Response<>(rsnService.importRsn(enter));
     }
 
 }

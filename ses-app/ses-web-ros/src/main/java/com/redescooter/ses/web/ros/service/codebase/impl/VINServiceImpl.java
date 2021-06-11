@@ -1,6 +1,9 @@
 package com.redescooter.ses.web.ros.service.codebase.impl;
 
+import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -8,7 +11,10 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.app.common.service.FileAppService;
+import com.redescooter.ses.app.common.service.excel.ImportExcelService;
+import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.date.DateUtil;
+import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCodebaseVinMapper;
@@ -18,20 +24,26 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.codebase.VINService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
+import com.redescooter.ses.web.ros.verifyhandler.VinExcelVerifyHandlerImpl;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.codebase.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Description
@@ -71,6 +83,15 @@ public class VINServiceImpl implements VINService {
      */
     @Autowired
     private FileAppService fileAppService;
+
+    @Autowired
+    private ImportExcelService importExcelService;
+
+    @DubboReference
+    private IdAppService idAppService;
+
+    @Autowired
+    private OpeSpecificatTypeService typeService;
 
     /**
      * 车型数据源
@@ -224,6 +245,94 @@ public class VINServiceImpl implements VINService {
             log.error("导出VIN异常", e);
         }
         return new GeneralResult(excelPath);
+    }
+
+    /**
+     * @Title: saveScooterImportExcel
+     * @Description: // 导入VIN
+     * @Param: [enter]
+     * @Return: com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
+     * @Date: 2021/6/11 4:44 下午
+     * @Author: Charles
+     */
+    @Transactional
+    @Override
+    public ImportExcelPartsResult importVin(ImportPartsEnter enter) {
+        ImportExcelPartsResult result = new ImportExcelPartsResult();
+        ExcelImportResult<VinImportData> excelImportResult =
+                importExcelService.setiExcelVerifyHandler(new VinExcelVerifyHandlerImpl())
+                        .importOssExcel(enter.getUrl(), VinImportData.class, new ImportParams());
+        if (null == excelImportResult) {
+            throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(),
+                    ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
+        }
+        List<VinImportData> successList = excelImportResult.getList();
+        List<VinImportData> failList = excelImportResult.getFailList();
+        if (CollectionUtils.isEmpty(successList)) {
+            // 如果没有成功的数据 直接抛异常
+            throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(),
+                    ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
+        }
+        List<OpeCodebaseVin> vinList = Lists.newArrayList();
+        if (CollectionUtils.isNotEmpty(failList)) {
+            List<Map<String, String>> errorMsgList = org.apache.commons.compress.utils.Lists.newArrayList();
+            for (VinImportData data : successList) {
+                Map<String, String> map = new HashMap<>();
+                map.put(String.valueOf(data.getRowNum()), data.getErrorMsg());
+                errorMsgList.add(map);
+            }
+            result.setSuccess(Boolean.FALSE);
+            result.setSuccessNum(successList.size());
+            result.setFailNum(failList.size());
+            result.setErrorMsgList(errorMsgList);
+            return result;
+        }
+        List<String> vinCodes = org.apache.commons.compress.utils.Lists.newArrayList();
+        successList.stream().forEach((VinImportData data) -> {
+            if (StringUtils.isNotBlank(data.getVin())) {
+                vinCodes.add(data.getVin());
+            }
+        });
+        LambdaQueryWrapper<OpeCodebaseVin> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(OpeCodebaseVin::getDr, Constant.DR_FALSE);
+        queryWrapper.in(OpeCodebaseVin::getVin, vinCodes);
+        List<OpeCodebaseVin> list = opeCodebaseVinService.list(queryWrapper);
+        if (CollectionUtils.isNotEmpty(list)) {
+            result.setSuccess(Boolean.FALSE);
+            result.setRepeatFlag(true);
+            return result;
+        }
+        QueryWrapper<OpeSpecificatType> qw = new QueryWrapper<>();
+        qw.eq(OpeSpecificatType.COL_DR, Constant.DR_FALSE);
+        List<OpeSpecificatType> typeList = typeService.list(qw);
+        Map<String, Long> map = typeList.stream().collect(Collectors.toMap(OpeSpecificatType::getSpecificatName, OpeSpecificatType::getId));
+
+        for (VinImportData data : successList) {
+            String vinCode = data.getVin().substring(0, 7);
+            OpeCodebaseVin vin = new OpeCodebaseVin();
+            if(StringUtils.equals(vinCode, "VXSR2A3")){
+                vin.setSpecificatTypeId(map.get("E100"));
+            }
+            if(StringUtils.equals(vinCode, "VXSR2A2")){
+                vin.setSpecificatTypeId(map.get("E50"));
+            }
+            if(StringUtils.equals(vinCode, "VXSR2A4")){
+                vin.setSpecificatTypeId(map.get("E125"));
+            }
+            vin.setId(idAppService.getId(SequenceName.OPE_CODEBASE_VIN));
+            vin.setDr(Constant.DR_FALSE);
+            vin.setStatus(1);
+            vin.setVin(data.getVin());
+            vin.setSeatNumber(data.getSeatNumber());
+            vin.setCreatedTime(new Date());
+            vinList.add(vin);
+        }
+        opeCodebaseVinService.saveBatch(vinList);
+        result.setSuccess(Boolean.TRUE);
+        result.setSuccessNum(successList.size());
+        result.setFailNum(0);
+        result.setRequestId(enter.getRequestId());
+        return result;
     }
 
     private Map<String, Object> toMap(ExportVINResult param, Integer i) {

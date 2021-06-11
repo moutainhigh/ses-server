@@ -1,12 +1,17 @@
 package com.redescooter.ses.web.ros.service.codebase.impl;
 
+import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.app.common.service.FileAppService;
+import com.redescooter.ses.app.common.service.excel.ImportExcelService;
+import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.date.DateUtil;
+import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeNodeMapper;
@@ -15,26 +20,41 @@ import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
 import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
 import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
+import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCodebaseRsnService;
 import com.redescooter.ses.web.ros.service.base.OpeCodebaseVinService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
 import com.redescooter.ses.web.ros.service.codebase.RSNService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
-import com.redescooter.ses.web.ros.vo.codebase.*;
+import com.redescooter.ses.web.ros.verifyhandler.RsnExcelVerifyHandlerImpl;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
+import com.redescooter.ses.web.ros.vo.codebase.ExportRSNResult;
+import com.redescooter.ses.web.ros.vo.codebase.Node;
+import com.redescooter.ses.web.ros.vo.codebase.RSNDetailResult;
+import com.redescooter.ses.web.ros.vo.codebase.RSNDetailScooterResult;
+import com.redescooter.ses.web.ros.vo.codebase.RSNListEnter;
+import com.redescooter.ses.web.ros.vo.codebase.RSNListResult;
+import com.redescooter.ses.web.ros.vo.codebase.RsnImportData;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +94,12 @@ public class RSNServiceImpl implements RSNService {
      */
     @Autowired
     private FileAppService fileAppService;
+
+    @Autowired
+    private ImportExcelService importExcelService;
+
+    @DubboReference
+    private IdAppService idAppService;
 
     /**
      * 列表
@@ -223,6 +249,70 @@ public class RSNServiceImpl implements RSNService {
             log.error("导出RSN异常", e);
         }
         return new GeneralResult(excelPath);
+    }
+
+    @Transactional
+    @Override
+    public ImportExcelPartsResult importRsn(ImportPartsEnter enter) {
+        ImportExcelPartsResult result = new ImportExcelPartsResult();
+        ExcelImportResult<RsnImportData> excelImportResult =
+                importExcelService.setiExcelVerifyHandler(new RsnExcelVerifyHandlerImpl())
+                        .importOssExcel(enter.getUrl(), RsnImportData.class, new ImportParams());
+        if (null == excelImportResult) {
+            throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(),
+                    ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
+        }
+        List<RsnImportData> successList = excelImportResult.getList();
+        List<RsnImportData> failList = excelImportResult.getFailList();
+        if (CollectionUtils.isEmpty(successList)) {
+            // 如果没有成功的数据 直接抛异常
+            throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(),
+                    ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
+        }
+        List<OpeCodebaseRsn> rsnList = Lists.newArrayList();
+        if (CollectionUtils.isNotEmpty(failList)) {
+            List<Map<String, String>> errorMsgList = Lists.newArrayList();
+            for (RsnImportData data : successList) {
+                Map<String, String> map = new HashMap<>();
+                map.put(String.valueOf(data.getRowNum()), data.getErrorMsg());
+                errorMsgList.add(map);
+            }
+            result.setSuccess(Boolean.FALSE);
+            result.setSuccessNum(successList.size());
+            result.setFailNum(failList.size());
+            result.setErrorMsgList(errorMsgList);
+            return result;
+        }
+        List<String> rsnCodes = Lists.newArrayList();
+        successList.stream().forEach((RsnImportData data) -> {
+            if (StringUtils.isNotBlank(data.getRsn())) {
+                rsnCodes.add(data.getRsn());
+            }
+        });
+        LambdaQueryWrapper<OpeCodebaseRsn> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
+        queryWrapper.in(OpeCodebaseRsn::getRsn, rsnCodes);
+        List<OpeCodebaseRsn> list = opeCodebaseRsnService.list(queryWrapper);
+        if (CollectionUtils.isNotEmpty(list)) {
+            result.setSuccess(Boolean.FALSE);
+            result.setRepeatFlag(true);
+            return result;
+        }
+        for (RsnImportData data : successList) {
+            OpeCodebaseRsn rsn = new OpeCodebaseRsn();
+            rsn.setId(idAppService.getId(SequenceName.OPE_CODEBASE_RSN));
+            rsn.setDr(Constant.DR_FALSE);
+            rsn.setStatus(1);
+            rsn.setRsn(data.getRsn());
+            rsn.setCreatedTime(new Date());
+            rsnList.add(rsn);
+        }
+        opeCodebaseRsnService.saveBatch(rsnList);
+        result.setSuccess(Boolean.TRUE);
+        result.setSuccessNum(successList.size());
+        result.setFailNum(0);
+        result.setRequestId(enter.getRequestId());
+        return result;
     }
 
     private Map<String, Object> toMap(ExportRSNResult param, Integer i) {
