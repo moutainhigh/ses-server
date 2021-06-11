@@ -27,7 +27,10 @@ import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerContact;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
+import com.redescooter.ses.web.ros.dm.OpeProductPrice;
+import com.redescooter.ses.web.ros.dm.OpeProductPriceHistory;
 import com.redescooter.ses.web.ros.dm.OpeProductionCombinBom;
+import com.redescooter.ses.web.ros.dm.OpeProductionParts;
 import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
@@ -38,7 +41,10 @@ import com.redescooter.ses.web.ros.service.base.OpeCodebaseRelationService;
 import com.redescooter.ses.web.ros.service.base.OpeCodebaseRsnService;
 import com.redescooter.ses.web.ros.service.base.OpeCodebaseVinService;
 import com.redescooter.ses.web.ros.service.base.OpeColorService;
+import com.redescooter.ses.web.ros.service.base.OpeProductPriceHistoryService;
+import com.redescooter.ses.web.ros.service.base.OpeProductPriceService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
 import com.redescooter.ses.web.ros.service.base.OpeSpecificatGroupService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
@@ -104,6 +110,15 @@ public class DeleteServiceImpl implements DeleteService {
 
     @Autowired
     private DeleteMapper deleteMapper;
+
+    @Autowired
+    private OpeProductionPartsService opeProductionPartsService;
+
+    @Autowired
+    private OpeProductPriceService opeProductPriceService;
+
+    @Autowired
+    private OpeProductPriceHistoryService opeProductPriceHistoryService;
 
     @Autowired
     private OpeWmsScooterStockMapper opeWmsScooterStockMapper;
@@ -294,6 +309,41 @@ public class DeleteServiceImpl implements DeleteService {
                 OpeCodebaseRelation relation = opeCodebaseRelationService.getOne(wrapper);
                 if (null != relation) {
                     deleteMapper.deleteCodebaseRelation(relation.getId());
+                }
+            }
+        }
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 删除部件
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult deletePart(IdEnter enter) {
+        OpeProductionParts parts = opeProductionPartsService.getById(enter.getId());
+        if (null != parts) {
+            // 删除ope_production_parts
+            deleteMapper.deletePart(parts.getId());
+
+            // 删除ope_product_price
+            LambdaQueryWrapper<OpeProductPrice> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeProductPrice::getDr, Constant.DR_FALSE);
+            qw.eq(OpeProductPrice::getProductPriceType, 1);
+            qw.eq(OpeProductPrice::getProductId, parts.getId());
+            qw.last("limit 1");
+            OpeProductPrice price = opeProductPriceService.getOne(qw);
+            if (null != price) {
+                deleteMapper.deletePrice(price.getId());
+
+                // 删除ope_product_price_history
+                LambdaQueryWrapper<OpeProductPriceHistory> lqw = new LambdaQueryWrapper<>();
+                lqw.eq(OpeProductPriceHistory::getDr, Constant.DR_FALSE);
+                lqw.eq(OpeProductPriceHistory::getProductPriceId, price.getId());
+                lqw.last("limit 1");
+                OpeProductPriceHistory history = opeProductPriceHistoryService.getOne(lqw);
+                if (null != history) {
+                    deleteMapper.deletePriceHistory(history.getId());
                 }
             }
         }

@@ -80,4 +80,20 @@
         delete
         from ope_customer_inquiry_b where inquiry_id = #{id}
     </delete>
+
+    <!-- 删除部件 -->
+    <delete id="deletePart">
+        delete from ope_production_parts where id = #{id}
+    </delete>
+
+    <!-- 删除ope_product_price -->
+    <delete id="deletePrice">
+        delete from ope_product_price where id = #{id}
+    </delete>
+
+    <!-- 删除ope_product_price_history -->
+    <delete id="deletePriceHistory">
+        delete from ope_product_price_history where id = #{id}
+    </delete>
+
 </mapper>

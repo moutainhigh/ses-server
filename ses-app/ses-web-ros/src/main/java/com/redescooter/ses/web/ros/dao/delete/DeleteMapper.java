@@ -47,4 +47,19 @@ public interface DeleteMapper {
      */
     int deleteWmsStockSerialNumber(@Param("id") Long id);
 
+    /**
+     * 删除部件
+     */
+    int deletePart(@Param("id") Long id);
+
+    /**
+     * 删除ope_product_price
+     */
+    int deletePrice(@Param("id") Long id);
+
+    /**
+     * 删除ope_product_price_history
+     */
+    int deletePriceHistory(@Param("id") Long id);
+
 }

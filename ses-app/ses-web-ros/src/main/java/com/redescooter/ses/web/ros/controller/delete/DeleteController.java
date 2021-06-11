@@ -71,4 +71,15 @@ public class DeleteController {
         return new Response<>(deleteService.deleteScooter(enter));
     }
 
+    /**
+     * 删除部件
+     * 入参是部件id
+     */
+    @PostMapping("/part")
+    @ApiOperation(value = "删除部件", tags = "删除部件")
+    @IgnoreLoginCheck
+    public Response<GeneralResult> deletePart(@ModelAttribute IdEnter enter) {
+        return new Response<>(deleteService.deletePart(enter));
+    }
+
 }
