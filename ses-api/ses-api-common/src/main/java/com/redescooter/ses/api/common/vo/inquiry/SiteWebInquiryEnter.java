@@ -35,7 +35,7 @@ public class SiteWebInquiryEnter implements Serializable {
     /**
      * 客户来源渠道 官网/email/电话
      */
-    @ApiModelProperty(value = "客户来源渠道 官网/email/电话")
+    @ApiModelProperty(value = "客户来源渠道 1系统添加 2官网")
     private String customerSource;
 
     /**

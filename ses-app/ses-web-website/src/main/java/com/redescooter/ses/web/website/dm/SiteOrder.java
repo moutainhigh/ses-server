@@ -6,10 +6,11 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 销售订单
@@ -54,10 +55,10 @@ public class SiteOrder implements Serializable {
     private Long customerId;
 
     /**
-     * 客户来源渠道 官网/email/电话
+     * 客户来源渠道 1系统添加 2官网
      */
     @TableField(value = "customer_source")
-    @ApiModelProperty(value = "客户来源渠道 官网/email/电话")
+    @ApiModelProperty(value = "客户来源渠道 1系统添加 2官网")
     private String customerSource;
 
     /**
