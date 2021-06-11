@@ -7,6 +7,7 @@ import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.config.MondayConfig;
 import com.redescooter.ses.web.ros.constant.MondayParameterName;
 import com.redescooter.ses.web.ros.constant.MondayQueryGqlConstant;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.enums.columntemplate.MondayBookOrderColumnEnums;
 import com.redescooter.ses.web.ros.enums.columntemplate.MondayContantUsColumnEnums;
 import com.redescooter.ses.web.ros.enums.columntemplate.MondayWebsiteSubscriptionEmailEnums;
@@ -465,7 +466,7 @@ public class MondayServiceImpl implements MondayService {
         log.info("执行gql 返回值的json数据-------{}", mondayJson);
         MondayGeneralResult mondayGeneralResult = JSON.parseObject(mondayJson, MondayGeneralResult.class);
 
-        if (mondayGeneralResult.getErrors() != null) {
+        if (StringManaConstant.entityIsNotNull(mondayGeneralResult.getErrors())) {
             throw new RuntimeException();
         }
         return mondayGeneralResult;
@@ -650,13 +651,13 @@ public class MondayServiceImpl implements MondayService {
         }
         MondayBoardResult mondayBoardResult = mondayBoardResults.stream()
                 .filter(item -> StringUtils.equals(item.getName(), boardName)).findFirst().orElse(null);
-        if (mondayBoardResult == null) {
+        if (StringManaConstant.entityIsNull(mondayBoardResult)) {
             // 创建板子
             mutationBoardEnter = MondayMutationBoardEnter.builder().boardName(boardName)
                     .workspaceId(Integer.valueOf(workspaceId)).templateId(Integer.valueOf(mondayConfig.getTempleteId()))
                     .boardKind(BoardKindEnums.PUBLIC.getCode()).build();
         }
-        if (mutationBoardEnter != null) {
+        if (StringManaConstant.entityIsNotNull(mutationBoardEnter)) {
             MondayCreateResult mondayCreateResult = mutationBoard(mutationBoardEnter);
             return MondayBoardResult.builder().id(mondayCreateResult.getId()).build();
         }
@@ -683,13 +684,13 @@ public class MondayServiceImpl implements MondayService {
         }
         MondayGroupResult mondayGroupResult = mondayGroupResults.stream()
                 .filter(item -> StringUtils.equals(item.getTitle(), groupName)).findFirst().orElse(null);
-        if (mondayGroupResult == null) {
+        if (StringManaConstant.entityIsNull(mondayGroupResult)) {
             // 板子下村子分组 但是没有我们需要的指定分组
             mondayMutationGroupEnter = new MondayMutationGroupEnter();
             mondayMutationGroupEnter.setBoardId(Integer.valueOf(boardId));
             mondayMutationGroupEnter.setGroupName(groupName);
         }
-        if (mondayMutationGroupEnter != null) {
+        if (StringManaConstant.entityIsNotNull(mondayMutationGroupEnter)) {
             return mutationGroup(mondayMutationGroupEnter);
         }
         MondayCreateResult mondayCreateResult = new MondayCreateResult();
@@ -725,7 +726,7 @@ public class MondayServiceImpl implements MondayService {
                 }
                 MondayColumnResult mondayColumnResult = mondayColumnResults.stream()
                         .filter(item -> StringUtils.equals(item.getTitle(), map)).findFirst().orElse(null);
-                if (mondayColumnResult == null || !mondayColumnResult.getId().equals(parameterMap.get(map))) {
+                if (StringManaConstant.entityIsNull(mondayColumnResult) || !mondayColumnResult.getId().equals(parameterMap.get(map))) {
                     contantUsColumnList.add(MondayMutationColumnEnter.builder()
                             .boardId(Integer.valueOf(mondayBoardResult.getId())).title(map)
                             .columnType(MondayContantUsColumnEnums.getEnumsTypeByTitle(map)).defaults(null).build());
@@ -784,7 +785,7 @@ public class MondayServiceImpl implements MondayService {
                 }
                 MondayColumnResult mondayColumnResult = mondayColumnResults.stream()
                         .filter(item -> StringUtils.equals(item.getTitle(), map)).findFirst().orElse(null);
-                if (mondayColumnResult == null || !mondayColumnResult.getId().equals(parameterMap.get(map))) {
+                if (StringManaConstant.entityIsNull(mondayColumnResult) || !mondayColumnResult.getId().equals(parameterMap.get(map))) {
                     bookOrderColumnList.add(MondayMutationColumnEnter.builder()
                             .boardId(Integer.valueOf(mondayBoardResult.getId())).title(map)
                             .columnType(MondayBookOrderColumnEnums.getEnumsTypeByTitle(map)).defaults(null).build());
@@ -838,7 +839,7 @@ public class MondayServiceImpl implements MondayService {
             parameterMap.keySet().forEach(map -> {
                 MondayColumnResult mondayColumnResult = mondayColumnResults.stream()
                         .filter(item -> StringUtils.equals(item.getTitle(), map)).findFirst().orElse(null);
-                if (mondayColumnResult == null || !mondayColumnResult.getId().equals(parameterMap.get(map))) {
+                if (StringManaConstant.entityIsNull(mondayColumnResult) || !mondayColumnResult.getId().equals(parameterMap.get(map))) {
                     subEmailColumnList
                             .add(MondayMutationColumnEnter.builder().boardId(Integer.valueOf(mondayBoardResult.getId()))
                                     .title(map).columnType(MondayWebsiteSubscriptionEmailEnums.getEnumsTypeByTitle(map))

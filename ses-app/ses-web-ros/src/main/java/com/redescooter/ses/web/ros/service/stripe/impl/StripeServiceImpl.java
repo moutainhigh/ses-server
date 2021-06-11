@@ -18,6 +18,7 @@ import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpePayOrder;
@@ -123,7 +124,7 @@ public class StripeServiceImpl implements StripeService {
         Stripe.apiKey = API_SECRET_KEY;
         OpeCustomerInquiry payOrder = opeCustomerInquiryService.getById(enter.getId());
 
-        if (payOrder == null) {
+        if (StringManaConstant.entityIsNull(payOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.PAYMENT_INFO_IS_NOT_EXIST.getMessage());
         }
@@ -322,7 +323,7 @@ public class StripeServiceImpl implements StripeService {
         Long orderId = Long.valueOf(id);
 
         OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(orderId);
-        if (customerInquiry == null) {
+        if (StringManaConstant.entityIsNull(customerInquiry)) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
 

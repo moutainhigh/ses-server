@@ -14,6 +14,7 @@ import com.redescooter.ses.api.foundation.vo.setting.GroupListEnter;
 import com.redescooter.ses.api.foundation.vo.setting.GroupResult;
 import com.redescooter.ses.api.foundation.vo.setting.SaveGroupEnter;
 import com.redescooter.ses.tool.utils.date.DateUtil;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.service.base.OpeSysStaffService;
@@ -114,11 +115,11 @@ public class RosGroupServiceImpl implements RosGroupService {
         OpeSysUserProfile createUserProfile = opeSysUserProfileService.getById(detail.getCreatedById());
         OpeSysUserProfile updateUserProfile = opeSysUserProfileService.getById(detail.getUpdatedById());
 
-        if (createUserProfile != null) {
+        if (StringManaConstant.entityIsNotNull(createUserProfile)) {
             detail.setCreatedByFirstName(createUserProfile.getFirstName());
             detail.setCreatedByLastName(createUserProfile.getLastName());
         }
-        if (updateUserProfile != null) {
+        if (StringManaConstant.entityIsNotNull(updateUserProfile)) {
             detail.setUpdatedByFirstName(updateUserProfile.getFirstName());
             detail.setUpdatedByLastName(updateUserProfile.getLastName());
         }

@@ -12,6 +12,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionProductServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproduction.SaleCombinMapper;
 import com.redescooter.ses.web.ros.dm.OpeSaleCombin;
@@ -19,6 +20,7 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSaleCombinService;
 import com.redescooter.ses.web.ros.service.restproduction.SaleCombinService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.restproduct.BomNameData;
 import com.redescooter.ses.web.ros.vo.restproduct.BomNoEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.CombinNameData;
@@ -90,11 +92,11 @@ public class SaleCombinServiceImpl implements SaleCombinService {
         }
         QueryWrapper<OpeSaleCombin> qw = new QueryWrapper<>();
         qw.eq(OpeSaleCombin.COL_PRODUCT_NAME, enter.getProductName());
-        if (enter.getId() != null) {
+        if (StringManaConstant.entityIsNotNull(enter.getId())) {
             qw.ne(OpeSaleCombin.COL_ID, enter.getId());
         }
         int count = opeSaleCombinService.count(qw);
-        if (count > 0) {
+        if (0 < count) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
         }
     }
@@ -105,7 +107,7 @@ public class SaleCombinServiceImpl implements SaleCombinService {
         // 去空格
         enter = SesStringUtils.objStringTrim(enter);
         int totalNum = saleCombinMapper.saleCombinTotal(enter);
-        if (totalNum == 0) {
+        if (NumberUtil.eqZero(totalNum)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<SaleCombinListResult> resultList = saleCombinMapper.saleCombinList(enter);
@@ -113,14 +115,14 @@ public class SaleCombinServiceImpl implements SaleCombinService {
     }
 
     @Override
-    @GlobalTransactional(rollbackFor = Exception.class)  
+    @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult editSaleCombin(SaleCombinSaveOrUpdateEnter enter) {
         // 去空格
         enter = SesStringUtils.objStringTrim(enter);
         // 新增的校验
         check(enter);
         OpeSaleCombin combin = opeSaleCombinService.getById(enter.getId());
-        if (combin == null) {
+        if (StringManaConstant.entityIsNull(combin)) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         combin.setProductName(enter.getProductName());
@@ -137,7 +139,7 @@ public class SaleCombinServiceImpl implements SaleCombinService {
     @Override
     public GeneralResult deleteSaleCombin(IdEnter enter) {
         OpeSaleCombin combin = opeSaleCombinService.getById(enter.getId());
-        if (null == combin) {
+        if (StringManaConstant.entityIsNull(combin)) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         opeSaleCombinService.removeById(enter.getId());
@@ -156,7 +158,7 @@ public class SaleCombinServiceImpl implements SaleCombinService {
         }
         jedisService.delKey(key);
         OpeSaleCombin combin = opeSaleCombinService.getById(enter.getId());
-        if (combin == null) {
+        if (StringManaConstant.entityIsNull(combin)) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         Integer saleStatus = combin.getSaleStutas();

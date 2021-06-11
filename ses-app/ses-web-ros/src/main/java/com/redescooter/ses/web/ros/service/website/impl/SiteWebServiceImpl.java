@@ -13,6 +13,7 @@ import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryPriceEnter;
 import com.redescooter.ses.api.hub.service.website.ProductionService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.website.WebsiteInquiryServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeColor;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
@@ -112,7 +113,7 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         qw.eq(OpeCustomer::getEmail, email);
         qw.last("limit 1");
         OpeCustomer customer = opeCustomerService.getOne(qw);
-        if (customer == null) {
+        if (StringManaConstant.entityIsNull(customer)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         inquiry.setCustomerId(customer.getId());
@@ -135,9 +136,9 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
 
         // 将productId转为销售车辆id,根据名字,颜色,型号,开启状态进行匹配
         Long productId = inquiry.getProductId();
-        if (null != productId) {
+        if (StringManaConstant.entityIsNotNull(productId)) {
             Map<String, String> map = productionService.getProductInfoByModelId(productId);
-            if (null != map) {
+            if (StringManaConstant.entityIsNotNull(map)) {
                 String colorName = map.get("colorName");
                 String code = map.get("code");
                 String name = map.get("name");
@@ -148,7 +149,7 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
                 wrapper.eq(OpeColor::getColorName, colorName);
                 wrapper.last("limit 1");
                 OpeColor color = opeColorService.getOne(wrapper);
-                if (null == color) {
+                if (StringManaConstant.entityIsNull(color)) {
                     throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
                 }
                 Long colorId = color.getId();
@@ -162,7 +163,7 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
                 lqw.eq(OpeSaleScooter::getProductCode, code);
                 lqw.last("limit 1");
                 OpeSaleScooter saleScooter = opeSaleScooterService.getOne(lqw);
-                if (null != saleScooter) {
+                if (StringManaConstant.entityIsNotNull(saleScooter)) {
                     inquiry.setProductId(saleScooter.getId());
                 }
             }
@@ -204,7 +205,7 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         qw.eq(OpeCustomer::getEmail, email);
         qw.last("limit 1");
         OpeCustomer customer = opeCustomerService.getOne(qw);
-        if (customer == null) {
+        if (StringManaConstant.entityIsNull(customer)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
 
@@ -262,7 +263,7 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
     public void siteWebInquiryPay(SiteWebInquiryPayEnter enter) {
 
         OpeCustomerInquiry inquiry = opeCustomerInquiryService.getById(enter.getId());
-        if (inquiry == null) {
+        if (StringManaConstant.entityIsNull(inquiry)) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
         BeanUtils.copyProperties(enter, inquiry);

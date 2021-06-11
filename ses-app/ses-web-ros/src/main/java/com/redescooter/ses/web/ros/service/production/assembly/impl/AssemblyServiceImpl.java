@@ -32,6 +32,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.production.AssemblyServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeAssembiyOrderTrace;
 import com.redescooter.ses.web.ros.dm.OpeAssemblyBOrder;
@@ -64,6 +65,7 @@ import com.redescooter.ses.web.ros.service.base.OpeStockService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.base.OpeWhseService;
 import com.redescooter.ses.web.ros.service.production.assembly.AssemblyService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
@@ -329,13 +331,13 @@ public class AssemblyServiceImpl implements AssemblyService {
                         if (item.getPartsId().equals(stock.getMaterielProductId())) {
 
                             int canAss = Long.valueOf(stock.getAvailableTotal() / item.getPartsQty()).intValue();
-                            if (maxTotal == 0) {
+                            if (NumberUtil.eqZero(maxTotal)) {
                                 maxTotal = canAss;
                             }
                             if (canAss < maxTotal) {
                                 maxTotal = canAss;
                             }
-                            if (canAss != 0) {
+                            if (0 != canAss) {
                                 total++;
                                 continue flag2;
                             }
@@ -399,7 +401,7 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         //查询整车组装配方
         QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
-        opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_DR, 0);
+        opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_DR, Constant.DR_FALSE);
         opePartsProductBQueryWrapper.in(OpePartsProductB.COL_PARTS_PRODUCT_ID, productIdsList);
         List<OpePartsProductB> partsProductBList = opePartsProductBService.list(opePartsProductBQueryWrapper);
 
@@ -421,16 +423,16 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         //查询仓库信息
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
-        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
+        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, Constant.DR_FALSE);
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.ALLOCATE.getValue());
         opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
-        if (opeWhse == null) {
+        if (StringManaConstant.entityIsNull(opeWhse)) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
         }
 
         QueryWrapper<OpeStock> opeStockQueryWrapper = new QueryWrapper<>();
-        opeStockQueryWrapper.eq(OpeStock.COL_DR, 0);
+        opeStockQueryWrapper.eq(OpeStock.COL_DR, Constant.DR_FALSE);
         opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
         opeStockList.addAll(opeStockService.list(opeStockQueryWrapper));
         return CollectionUtils.isEmpty(opeStockList);
@@ -472,14 +474,14 @@ public class AssemblyServiceImpl implements AssemblyService {
         }
         //收货人、代工厂校验
         QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
-        opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
+        opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, Constant.DR_FALSE);
         opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID, enter.getConsigneeId());
         opeSysUserProfileQueryWrapper.last("limit 1");
-        if (opeSysUserProfileService.getOne(opeSysUserProfileQueryWrapper) == null) {
+        if (StringManaConstant.entityIsNull(opeSysUserProfileService.getOne(opeSysUserProfileQueryWrapper))) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
 
-        if (opeFactoryService.getById(enter.getFactoryId()) == null) {
+        if (StringManaConstant.entityIsNull(opeFactoryService.getById(enter.getFactoryId()))) {
             throw new SesWebRosException(ExceptionCodeEnums.FACTORY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.FACTORY_IS_NOT_EXIST.getMessage());
         }
 
@@ -487,7 +489,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         Map<Long, Integer> partMap = Maps.newHashMap();
 
         QueryWrapper<OpePartsProduct> opePartsProductQueryWrapper = new QueryWrapper<>();
-        opePartsProductQueryWrapper.eq(OpePartsProduct.COL_DR, 0);
+        opePartsProductQueryWrapper.eq(OpePartsProduct.COL_DR, Constant.DR_FALSE);
         opePartsProductQueryWrapper.eq(OpePartsProduct.COL_PRODUCT_TYPE, BomCommonTypeEnums.SCOOTER.getValue());
         List<OpePartsProduct> opePartsProductList = opePartsProductService.list(opePartsProductQueryWrapper);
         if (CollectionUtils.isEmpty(opePartsProductList)) {
@@ -508,7 +510,7 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         //查询产品对应的bom 规则
         QueryWrapper<OpePartsProductB> opePartsProductBQueryWrapper = new QueryWrapper<>();
-        opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_DR, 0);
+        opePartsProductBQueryWrapper.eq(OpePartsProductB.COL_DR, Constant.DR_FALSE);
         opePartsProductBQueryWrapper.in(OpePartsProductB.COL_PARTS_PRODUCT_ID, productIds);
         List<OpePartsProductB> productBList = opePartsProductBService.list(opePartsProductBQueryWrapper);
         if (CollectionUtils.isEmpty(productBList)) {
@@ -532,17 +534,17 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         //查询仓库
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
-        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
+        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, Constant.DR_FALSE);
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.ALLOCATE.getValue());
         opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
-        if (opeWhse == null) {
+        if (StringManaConstant.entityIsNull(opeWhse)) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
         }
 
         // 查询部件库存
         QueryWrapper<OpeStock> opeStockQueryWrapper = new QueryWrapper<>();
-        opeStockQueryWrapper.eq(OpeStock.COL_DR, 0);
+        opeStockQueryWrapper.eq(OpeStock.COL_DR, Constant.DR_FALSE);
         opeStockQueryWrapper.in(OpeStock.COL_MATERIEL_PRODUCT_ID, new ArrayList<>(partMap.keySet()));
         opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
         List<OpeStock> opeStockList = opeStockService.list(opeStockQueryWrapper);
@@ -618,7 +620,7 @@ public class AssemblyServiceImpl implements AssemblyService {
     public List<FactoryCommonResult> factoryList(GeneralEnter enter) {
         List<FactoryCommonResult> result = new ArrayList<>();
         QueryWrapper<OpeFactory> opeFactoryQueryWrapper = new QueryWrapper();
-        opeFactoryQueryWrapper.eq(OpeFactory.COL_DR, 0);
+        opeFactoryQueryWrapper.eq(OpeFactory.COL_DR, Constant.DR_FALSE);
         List<OpeFactory> opeFactoryList = opeFactoryService.list(opeFactoryQueryWrapper);
         opeFactoryList.forEach(item -> {
             result.add(FactoryCommonResult.builder()
@@ -643,7 +645,7 @@ public class AssemblyServiceImpl implements AssemblyService {
     public List<ConsigneeResult> consigneeList(GeneralEnter enter) {
         List<ConsigneeResult> consigneeResultlist = new ArrayList<>();
         QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
-        opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
+        opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, Constant.DR_FALSE);
         opeSysUserProfileQueryWrapper.ne(OpeSysUserProfile.COL_FIRST_NAME, Constant.ADMIN_USER_NAME);
         List<OpeSysUserProfile> opeSysUserProfileList = opeSysUserProfileService.list(opeSysUserProfileQueryWrapper);
         opeSysUserProfileList.forEach(item -> {
@@ -676,7 +678,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         }
 
         int count = assemblyServiceMapper.assemblyListCount(enter, statusList);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
 
@@ -696,7 +698,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     @Override
     public PageResult<AssemblyResult> list(AssemblyListEnter enter) {
-        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+        if (NumberUtil.notNullAndGtFifty(enter.getKeyword())) {
             return PageResult.createZeroRowResult(enter);
         }
         //对type 进行拆分 组装statusList
@@ -714,7 +716,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         }
 
         int count = assemblyServiceMapper.assemblyListCount(enter, statusList);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
 
@@ -838,17 +840,17 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Override
     public void export(IdEnter enter) {
         AssemblyResult assemblyResult = assemblyServiceMapper.detail(enter);
-        if (assemblyResult == null) {
+        if (StringManaConstant.entityIsNull(assemblyResult)) {
             throw new SesWebRosException(0, "");
         }
         AssemblyExportResult assemblyExportResult = new AssemblyExportResult();
         BeanUtil.copyProperties(assemblyResult, assemblyExportResult);
-        if (assemblyResult.getCreatedTime() != null) {
+        if (StringManaConstant.entityIsNotNull(assemblyResult.getCreatedTime())) {
             assemblyExportResult.setCreatedTime(DateUtil.getYmdhm(assemblyResult.getCreatedTime()));
         } else {
             assemblyExportResult.setCreatedTime("--");
         }
-        if (assemblyResult.getStatementDate() != null) {
+        if (StringManaConstant.entityIsNotNull(assemblyResult.getStatementDate())) {
             assemblyExportResult.setStatementDate(DateUtil.getYmdhm(assemblyResult.getStatementDate()));
         } else {
             assemblyExportResult.setStatementDate("--");
@@ -891,7 +893,7 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         //组装单校验
         OpeAssemblyOrder opeAssemblyOrder = checkAssembly(enter.getId(), null);
-        if (opeAssemblyOrder.getTotalPrice() != null) {
+        if (StringManaConstant.entityIsNotNull(opeAssemblyOrder.getTotalPrice())) {
             throw new SesWebRosException(ExceptionCodeEnums.DO_NOT_SET_THE_PRICE_REPEATEDLY.getCode(), ExceptionCodeEnums.DO_NOT_SET_THE_PRICE_REPEATEDLY.getMessage());
         }
 
@@ -973,7 +975,7 @@ public class AssemblyServiceImpl implements AssemblyService {
     public List<AssemblyQcItemResult> assemblyQcInfoItem(AssemblyQcInfoItemEnter enter) {
         //校验质检结果
         OpeAssemblyBQc opeAssemblyBQc = opeAssemblyBQcService.getById(enter.getId());
-        if (opeAssemblyBQc == null) {
+        if (StringManaConstant.entityIsNull(opeAssemblyBQc)) {
             throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_B_QC_RESULT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_B_QC_RESULT_IS_NOT_EXIST.getMessage());
         }
         return assemblyServiceMapper.assemblyQcInfoItem(enter);
@@ -989,7 +991,7 @@ public class AssemblyServiceImpl implements AssemblyService {
     public AssemblyQcItemViewResult assemblyQcItemView(IdEnter enter) {
         // 查询车辆质检信息
         AssemblyQcItemViewResult result = assemblyServiceMapper.assemblyQcItemView(enter);
-        if (result == null) {
+        if (StringManaConstant.entityIsNull(result)) {
             throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_QC_ITEM_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_QC_ITEM_IS_NOT_EXIST.getMessage());
         }
         //查询车辆对应的质检项
@@ -1010,7 +1012,7 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Override
     public List<AssemblyQcItemViewItemTemplateResult> viewItemTemplate(IdEnter enter) {
         OpeAssemblyQcItem assemblyQcItem = opeAssemblyQcItemService.getById(enter.getId());
-        if (assemblyQcItem == null) {
+        if (StringManaConstant.entityIsNull(assemblyQcItem)) {
             throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_QC_ITEM_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_QC_ITEM_IS_NOT_EXIST.getMessage());
         }
         return assemblyServiceMapper.viewItemTemplate(enter.getId());
@@ -1174,7 +1176,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         List<OpeStockBill> saveStockBillList = Lists.newArrayList();
         //查询该组装单的产品
         QueryWrapper<OpeAssemblyBOrder> opeAssemblyBOrderQueryWrapper = new QueryWrapper<>();
-        opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_DR, 0);
+        opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_DR, Constant.DR_FALSE);
         opeAssemblyBOrderQueryWrapper.eq(OpeAssemblyBOrder.COL_ASSEMBLY_ID, opeAssemblyOrder.getId());
         List<OpeAssemblyBOrder> assemblyBOrderList = opeAssemblyOrderBService.list(opeAssemblyBOrderQueryWrapper);
 
@@ -1185,17 +1187,17 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         //查询仓库
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
-        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
+        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, Constant.DR_FALSE);
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.ASSEMBLY.getValue());
         opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
-        if (opeWhse == null) {
+        if (StringManaConstant.entityIsNull(opeWhse)) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
         }
 
         //查询商品信息
         QueryWrapper<OpePartsProduct> opePartsProductQueryWrapper = new QueryWrapper<>();
-        opePartsProductQueryWrapper.eq(OpePartsProduct.COL_DR, 0);
+        opePartsProductQueryWrapper.eq(OpePartsProduct.COL_DR, Constant.DR_FALSE);
         opePartsProductQueryWrapper.in(OpePartsProduct.COL_ID, new ArrayList<>(productMap.keySet()));
         List<OpePartsProduct> partsProductList = opePartsProductService.list(opePartsProductQueryWrapper);
         if (CollectionUtils.isEmpty(partsProductList)) {
@@ -1204,7 +1206,7 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         //查询库存
         QueryWrapper<OpeStock> opeStockQueryWrapper = new QueryWrapper<>();
-        opeStockQueryWrapper.eq(OpeStock.COL_DR, 0);
+        opeStockQueryWrapper.eq(OpeStock.COL_DR, Constant.DR_FALSE);
         opeStockQueryWrapper.eq(OpeStock.COL_MATERIEL_PRODUCT_TYPE, BomCommonTypeEnums.SCOOTER.getValue());
         opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
         opeStockQueryWrapper.in(OpeStock.COL_MATERIEL_PRODUCT_ID, new ArrayList<>(productMap.keySet()));
@@ -1325,7 +1327,7 @@ public class AssemblyServiceImpl implements AssemblyService {
         List<PaymentItemDetailResult> paymentItemList = assemblyServiceMapper.paymentItemList(enter.getId());
         if (CollectionUtils.isNotEmpty(paymentItemList)) {
             for (PaymentItemDetailResult result : paymentItemList) {
-                if (result.getPlannedPaymentTime() != null) {
+                if (StringManaConstant.entityIsNotNull(result.getPlannedPaymentTime())) {
                     String date = DateUtil.getTimeStr(result.getPlannedPaymentTime(), "yyyy-MM-dd");
                     result.setYear(date.split("-")[0]);
                     try {
@@ -1357,7 +1359,7 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Override
     public GeneralResult pay(PayEnter enter) {
         OpeAssemblyOrderPayment opeAssemblyOrderPayment = opeAssemblyOrderPaymentService.getById(enter.getId());
-        if (opeAssemblyOrderPayment == null) {
+        if (StringManaConstant.entityIsNull(opeAssemblyOrderPayment)) {
             throw new SesWebRosException(ExceptionCodeEnums.OPEPURCHAS_PAYMENT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.OPEPURCHAS_PAYMENT_IS_NOT_EXIST.getMessage());
         }
         if (StringUtils.equals(opeAssemblyOrderPayment.getPaymentStatus(), PayStatusEnums.PAID.getValue())) {
@@ -1366,15 +1368,15 @@ public class AssemblyServiceImpl implements AssemblyService {
         //验证是否该支付的是当前分期
         QueryWrapper<OpeAssemblyOrderPayment> opeAssemblyOrderPaymentQueryWrapper = new QueryWrapper<>();
         opeAssemblyOrderPaymentQueryWrapper.eq(OpeAssemblyOrderPayment.COL_OPE_ASSEMBLY_ORDER_ID, opeAssemblyOrderPayment.getOpeAssemblyOrderId());
-        opeAssemblyOrderPaymentQueryWrapper.eq(OpeAssemblyOrderPayment.COL_DR, 0);
+        opeAssemblyOrderPaymentQueryWrapper.eq(OpeAssemblyOrderPayment.COL_DR, Constant.DR_FALSE);
         opeAssemblyOrderPaymentQueryWrapper.eq(OpeAssemblyOrderPayment.COL_PAYMENT_STATUS, PayStatusEnums.UNPAID.getValue());
         opeAssemblyOrderPaymentQueryWrapper.lt(OpeAssemblyOrderPayment.COL_PAYMENT_PRIORITY, opeAssemblyOrderPayment.getPaymentPriority());
 
-        if (opeAssemblyOrderPaymentService.count(opeAssemblyOrderPaymentQueryWrapper) > 0) {
+        if (0 < opeAssemblyOrderPaymentService.count(opeAssemblyOrderPaymentQueryWrapper)) {
             throw new SesWebRosException(ExceptionCodeEnums.PAY_IN_INSTALLMENTS.getCode(), (ExceptionCodeEnums.PAY_IN_INSTALLMENTS.getMessage()));
         }
         //支付金额过滤
-        if (opeAssemblyOrderPayment.getAmount().subtract(enter.getAmount()).intValue() != 0) {
+        if (0 != opeAssemblyOrderPayment.getAmount().subtract(enter.getAmount()).intValue()) {
             throw new SesWebRosException(ExceptionCodeEnums.PAY_AMOUNT_IS_FALSE.getCode(), (ExceptionCodeEnums.PAY_AMOUNT_IS_FALSE.getMessage()));
         }
 
@@ -1460,11 +1462,11 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Override
     public List<ProductAssemblyTraceItemResult> productAssemblyTraceItem(IdEnter enter) {
         OpeAssemblyBOrder assemblyBOrder = opeAssemblyOrderBService.getById(enter.getId());
-        if (assemblyBOrder == null) {
+        if (StringManaConstant.entityIsNull(assemblyBOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getMessage());
         }
         OpeAssemblyOrder opeAssemblyOrder = opeAssemblyOrderService.getById(assemblyBOrder.getAssemblyId());
-        if (opeAssemblyOrder == null) {
+        if (StringManaConstant.entityIsNull(opeAssemblyOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getMessage());
         }
         List<ProductAssemblyTraceItemResult> productAssemblyTraceItemResultList = assemblyServiceMapper.productAssemblyItemTrace(enter);
@@ -1483,7 +1485,7 @@ public class AssemblyServiceImpl implements AssemblyService {
      */
     private OpeAssemblyOrder checkAssembly(Long id, String status) {
         OpeAssemblyOrder opeAssemblyOrder = opeAssemblyOrderService.getById(id);
-        if (opeAssemblyOrder == null) {
+        if (StringManaConstant.entityIsNull(opeAssemblyOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ASSEMBLY_IS_NOT_EXIST.getMessage());
         }
         if (StringUtils.isNotEmpty(status)) {
@@ -1504,7 +1506,7 @@ public class AssemblyServiceImpl implements AssemblyService {
     private List<OpeStock> buildOpeStocks(IdEnter enter, OpeAssemblyOrder opeAssemblyOrder) {
         //查询组装单出库的部件
         QueryWrapper<OpeAssemblyOrderPart> opeAssemblyOrderPartQueryWrapper = new QueryWrapper<>();
-        opeAssemblyOrderPartQueryWrapper.eq(OpeAssemblyOrderPart.COL_DR, 0);
+        opeAssemblyOrderPartQueryWrapper.eq(OpeAssemblyOrderPart.COL_DR, Constant.DR_FALSE);
         opeAssemblyOrderPartQueryWrapper.eq(OpeAssemblyOrderPart.COL_ASSEMBLY_ID, opeAssemblyOrder.getId());
         List<OpeAssemblyOrderPart> assemblyOrderPartList = opeAssemblyOrderPartService.list(opeAssemblyOrderPartQueryWrapper);
 
@@ -1515,16 +1517,16 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         //查询仓库
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
-        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
+        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, Constant.DR_FALSE);
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.ALLOCATE.getValue());
         opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
-        if (opeWhse == null) {
+        if (StringManaConstant.entityIsNull(opeWhse)) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
         }
 
         QueryWrapper<OpeStock> opeStockQueryWrapper = new QueryWrapper<>();
-        opeStockQueryWrapper.eq(OpeStock.COL_DR, 0);
+        opeStockQueryWrapper.eq(OpeStock.COL_DR, Constant.DR_FALSE);
         opeStockQueryWrapper.in(OpeStock.COL_MATERIEL_PRODUCT_ID, partIds);
         List<OpeStock> opeStockList = opeStockService.list(opeStockQueryWrapper);
 
@@ -1557,7 +1559,7 @@ public class AssemblyServiceImpl implements AssemblyService {
     private void buildPaymentItem(SetPaymentAssemblyEnter enter, List<StagingPaymentEnter> paymentList, List<OpeAssemblyOrderPayment> saveAssemblyOrderPayment, OpeAssemblyOrder opeAssemblyOrder) {
         QueryWrapper<OpeAssemblyOrderPart> opeAssemblyOrderPartQueryWrapper = new QueryWrapper<>();
         opeAssemblyOrderPartQueryWrapper.eq(OpeAssemblyOrderPart.COL_ASSEMBLY_ID, opeAssemblyOrder.getId());
-        opeAssemblyOrderPartQueryWrapper.eq(OpeAssemblyOrderPart.COL_DR, 0);
+        opeAssemblyOrderPartQueryWrapper.eq(OpeAssemblyOrderPart.COL_DR, Constant.DR_FALSE);
         List<OpeAssemblyOrderPart> assemblyOrderPartList = opeAssemblyOrderPartService.list(opeAssemblyOrderPartQueryWrapper);
 
         List<Long> partIds = Lists.newArrayList();
@@ -1582,7 +1584,7 @@ public class AssemblyServiceImpl implements AssemblyService {
 
         if (StringUtils.equals(enter.getPaymentType(), PaymentTypeEnums.MONTHLY_PAY.getValue())) {
             //月结
-            if (enter.getStatementdate() == null || enter.getDays() == 0 || enter.getDays() == null) {
+            if (StringManaConstant.entityIsNull(enter.getStatementdate()) || 0 == enter.getDays() || StringManaConstant.entityIsNull(enter.getDays())) {
                 throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getCode(), ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getMessage());
             }
             //生成支付节点

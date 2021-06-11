@@ -19,6 +19,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.sys.EmployeeServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
@@ -35,6 +36,7 @@ import com.redescooter.ses.web.ros.service.base.OpeSysUserRoleService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.sys.EmployeeService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.sys.employee.DeptEmployeeListResult;
 import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptEnter;
 import com.redescooter.ses.web.ros.vo.sys.employee.EmployeeDeptResult;
@@ -109,7 +111,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<DeptEmployeeListResult> employeeList(EmployeeListEnter enter) {
 
-        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+        if (NumberUtil.notNullAndGtFifty(enter.getKeyword())) {
             return new ArrayList<>();
         }
         // 拿到所有部门
@@ -134,7 +136,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             employeeList.forEach(item -> {
                 //解析出每个办公区域信息
                 String addressBureau = null;
-                if (item.getAddressBureauId() != null || item.getAddressBureauId() != 0) {
+                if (StringManaConstant.entityIsNotNull(item.getAddressBureauId()) || 0 != item.getAddressBureauId()) {
                     addressBureau = AddressBureauEnums.getEnumByCode(String.valueOf(item.getAddressBureauId())).getMessage();
                 }
                 item.setAddressBureau(addressBureau);
@@ -157,7 +159,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeResult employeeDetail(IdEnter enter) {
         EmployeeResult employeeResult = employeeServiceMapper.employeeDetail(enter);
-        if (employeeResult == null) {
+        if (StringManaConstant.entityIsNull(employeeResult)) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
 
@@ -174,12 +176,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         //解析出每个办公区域信息
         String addressBureau = null;
-        if (employeeResult.getAddressBureauId() != null || employeeResult.getAddressBureauId() != 0) {
+        if (StringManaConstant.entityIsNotNull(employeeResult.getAddressBureauId()) || 0 != employeeResult.getAddressBureauId()) {
             addressBureau = AddressBureauEnums.getEnumByCode(String.valueOf(employeeResult.getAddressBureauId())).getMessage();
         }
         employeeResult.setAddressBureau(addressBureau);
         DeptTreeReslt deptTreeReslt = sysDeptService.topDeptartment(new IdEnter(employeeResult.getDeptId()), DeptLevelEnums.COMPANY.getValue());
-        if(deptTreeReslt == null){
+        if(StringManaConstant.entityIsNull(deptTreeReslt)){
             throw new SesWebRosException(ExceptionCodeEnums.TOP_DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TOP_DEPT_IS_NOT_EXIST.getMessage());
         }
         employeeResult.setCompanyId(deptTreeReslt == null?0L:deptTreeReslt.getId());
@@ -217,12 +219,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         OpeSysUserProfile opeSysUserProfile = buildOpeSysUserProfile(enter);
         OpeSysUser opeSysUser = null;
         OpeSysUserRole opeSysUserRole = null;
-        if (enter.getId() == null || enter.getId() == 0) {
-            if (!enter.getEmail().contains("@") || enter.getEmail().length() < 2 || enter.getEmail().length() > 50) {
+        if (StringManaConstant.entityIsNull(enter.getId()) || 0 == enter.getId()) {
+            if (!enter.getEmail().contains("@") || NumberUtil.ltTwoOrGtFifty(enter.getEmail().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
             }
             // 创建
-            if (checkMail != null) {
+            if (StringManaConstant.entityIsNotNull(checkMail)) {
                 throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
             }
             //邮箱过滤
@@ -248,20 +250,20 @@ public class EmployeeServiceImpl implements EmployeeService {
             // 查询用户信息
             QueryWrapper<OpeSysUser> opeSysUserQueryWrapper = new QueryWrapper<>();
             opeSysUserQueryWrapper.eq(OpeSysUser.COL_LOGIN_NAME, enter.getEmail());
-            opeSysUserQueryWrapper.eq(OpeSysUser.COL_DR, 0);
+            opeSysUserQueryWrapper.eq(OpeSysUser.COL_DR, Constant.DR_FALSE);
             opeSysUserQueryWrapper.eq(OpeSysUser.COL_DEF1, SysUserSourceEnum.SYSTEM.getValue());
             opeSysUserQueryWrapper.last("limit 1");
             opeSysUser = opeSysUserService.getOne(opeSysUserQueryWrapper);
-            if (opeSysUser == null) {
+            if (StringManaConstant.entityIsNull(opeSysUser)) {
                 throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
             }
             // 邮件过滤
-            if (!checkMail.getLoginName().equals(enter.getEmail()) && checkMail != null) {
+            if (!checkMail.getLoginName().equals(enter.getEmail()) && StringManaConstant.entityIsNotNull(checkMail)) {
                 throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
             }
             QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
             opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID, opeSysUser.getId());
-            opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
+            opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, Constant.DR_FALSE);
             opeSysUserProfileQueryWrapper.last("limit 1");
             OpeSysUserProfile sysUserProfile = opeSysUserProfileService.getOne(opeSysUserProfileQueryWrapper);
             // 个人信息更新
@@ -272,7 +274,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             opeSysUserRoleQueryWrapper.eq(OpeSysUserRole.COL_USER_ID, opeSysUser.getId());
             opeSysUserRoleQueryWrapper.last("limit 1");
             opeSysUserRole = opeSysUserRoleService.getOne(opeSysUserRoleQueryWrapper);
-            if (opeSysUserRole == null) {
+            if (StringManaConstant.entityIsNull(opeSysUserRole)) {
                 throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_BING_POSITION.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_BING_POSITION.getMessage());
             }
             if (!opeSysUserRole.getRoleId().equals(enter.getPositionId())) {
@@ -290,10 +292,10 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
 
         }
-        if (opeSysUserRole != null) {
+        if (StringManaConstant.entityIsNotNull(opeSysUserRole)) {
             opeSysUserRoleService.saveOrUpdate(opeSysUserRole);
         }
-        if (opeSysUser != null) {
+        if (StringManaConstant.entityIsNotNull(opeSysUser)) {
             opeSysUserService.saveOrUpdate(opeSysUser);
         }
         opeSysUserProfileService.saveOrUpdate(opeSysUserProfile);
@@ -309,11 +311,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<EmployeeDeptResult> employeeDeptList(EmployeeDeptEnter enter) {
         // 类型过滤
-        if (EmployeeDeptTypeEnums.checkValue(enter.getType()) == null) {
+        if (StringManaConstant.entityIsNull(EmployeeDeptTypeEnums.checkValue(enter.getType()))) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         List<Long> ids = new ArrayList<>();
-        if (enter.getBizId() != null && enter.getBizId() != 0) {
+        if (StringManaConstant.entityIsNotNull(enter.getBizId()) && 0 != enter.getBizId()) {
             ids.add(enter.getBizId());
         }
         List<EmployeeDeptResult> result = new ArrayList<>();
@@ -362,7 +364,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public GeneralResult trushEmployee(IdEnter enter) {
         // 验证员工是否存在
         OpeSysStaff opeSysStaff = opeSysStaffService.getById(enter.getId());
-        if (opeSysStaff == null) {
+        if (StringManaConstant.entityIsNull(opeSysStaff)) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
         if (!SesStringUtils.equals(opeSysStaff.getStatus().toString(), EmployeeStatusEnums.IN_SERVICE.getValue())) {
@@ -383,7 +385,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         opeSysUserService.removeById(opeSysStaff.getSysUserId());
         // 删除员工信息
         QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
-        opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
+        opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, Constant.DR_FALSE);
         opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID, opeSysStaff.getSysUserId());
         opeSysUserProfileService.remove(opeSysUserProfileQueryWrapper);
         // 删除角色员工关联关系
@@ -457,10 +459,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     private void checkSaveEmployeeParameter(SaveEmployeeEnter enter) {
-        if (opeSysDeptService.getById(enter.getDeptId()) == null) {
+        if (StringManaConstant.entityIsNull(opeSysDeptService.getById(enter.getDeptId()))) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
         }
-        if (opeSysRoleService.getById(enter.getPositionId()) == null) {
+        if (StringManaConstant.entityIsNull(opeSysRoleService.getById(enter.getPositionId()))) {
             throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
         }
         // 办公区域校验
@@ -468,16 +470,16 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
-        if (enter.getEmployeeFirstName().length() < 2 || enter.getEmployeeFirstName().length() > 20) {
+        if (NumberUtil.ltTwoOrGtTwenty(enter.getEmployeeFirstName().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMPLOYEE_NAME_IS_NOT_ILLEGAL.getMessage());
         }
-        if (enter.getEmployeeLastName().length() < 2 || enter.getEmployeeLastName().length() > 20) {
+        if (NumberUtil.ltTwoOrGtTwenty(enter.getEmployeeLastName().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMPLOYEE_NAME_IS_NOT_ILLEGAL.getMessage());
         }
-        if (enter.getTelephone().length() < 2 || enter.getTelephone().length() > 20) {
+        if (NumberUtil.ltTwoOrGtTwenty(enter.getTelephone().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMPLOYEE_NAME_IS_NOT_ILLEGAL.getMessage());
         }
-        if (enter.getAddress().length() < 2 || enter.getAddress().length() > 200) {
+        if (NumberUtil.ltTwoOrGtTwoHundred(enter.getAddress().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getMessage());
         }
     }

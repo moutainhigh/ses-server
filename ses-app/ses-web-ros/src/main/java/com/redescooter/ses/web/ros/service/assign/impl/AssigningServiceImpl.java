@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeExMapper;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
@@ -12,6 +13,7 @@ import com.redescooter.ses.web.ros.enums.assign.IndustryTypeEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.assign.AssigningService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.assign.doing.result.AssigningDetailResult;
 import com.redescooter.ses.web.ros.vo.assign.doing.result.AssigningDetailScooterInfoResult;
 import com.redescooter.ses.web.ros.vo.assign.doing.result.AssigningDetailScooterResult;
@@ -55,7 +57,7 @@ public class AssigningServiceImpl implements AssigningService {
     @Override
     public PageResult<AssigningListResult> getList(ToBeAssignListEnter enter) {
         int count = opeCarDistributeExMapper.getDoingListCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<AssigningListResult> list = opeCarDistributeExMapper.getDoingList(enter);
@@ -72,7 +74,7 @@ public class AssigningServiceImpl implements AssigningService {
 
         // 客户信息
         ToBeAssignDetailCustomerInfoResult customerInfo = opeCarDistributeExMapper.getCustomerInfo(enter.getCustomerId());
-        if (null == customerInfo) {
+        if (StringManaConstant.entityIsNull(customerInfo)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         String customerType = customerInfo.getCustomerType();
@@ -96,7 +98,7 @@ public class AssigningServiceImpl implements AssigningService {
         for (OpeCarDistribute o : list) {
             AssigningDetailScooterResult scooter = new AssigningDetailScooterResult();
             scooter.setTotalCount(1);
-            if (null != o.getSpecificatTypeId()) {
+            if (StringManaConstant.entityIsNotNull(o.getSpecificatTypeId())) {
                 scooter.setSpecificatId(o.getSpecificatTypeId());
                 scooter.setSpecificatName(toBeAssignServiceImpl.getSpecificatNameById(o.getSpecificatTypeId()));
             }
@@ -111,7 +113,7 @@ public class AssigningServiceImpl implements AssigningService {
             model.setRsn(o.getRsn());
             model.setBluetoothAddress(o.getBluetoothAddress());
             model.setTabletSn(o.getTabletSn());
-            if (null != o.getColorId()) {
+            if (StringManaConstant.entityIsNotNull(o.getColorId())) {
                 Map<String, String> map = toBeAssignServiceImpl.getColorNameAndValueById(o.getColorId());
                 model.setColorName(map.get("colorName"));
                 model.setColorValue(map.get("colorValue"));

@@ -59,7 +59,7 @@ public class SalesAreaServiceImpl implements SalesAreaService {
 
         List<SalesAreaTressResult> treeList = new ArrayList<>();
 
-        if (list.size() > 0) {
+        if (0 < list.size()) {
             list.forEach(li -> {
                 SalesAreaTressResult tree = new SalesAreaTressResult();
                 tree.setId(li.getId());
@@ -72,12 +72,12 @@ public class SalesAreaServiceImpl implements SalesAreaService {
             });
         }
 
-        if (enter.getId() != 0) {
+        if (0 != enter.getId()) {
             QueryWrapper<OpeSysRoleSalesCidy> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq(OpeSysRoleSalesCidy.COL_ROLE_ID, enter.getId());
             List<OpeSysRoleSalesCidy> salesCidies = sysRoleSalesCidyService.list(queryWrapper);
 
-            if (salesCidies.size() > 0) {
+            if (0 < salesCidies.size()) {
                 salesCidies.forEach(city -> {
                     treeList.forEach(tr -> {
                         if (city.getCityId() == tr.getId()) {

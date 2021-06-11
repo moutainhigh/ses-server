@@ -20,6 +20,7 @@ import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionPartsDraftServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionPartsServiceMapper;
 import com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper;
@@ -222,8 +223,8 @@ public class PartsRestRosServiceImpl implements PartsRosService {
      **/
     public boolean checkMsgPer(RosPartsSaveOrUpdateEnter rosPartsSaveOrUpdateEnter) {
         boolean falg = false;
-        if (!Strings.isNullOrEmpty(rosPartsSaveOrUpdateEnter.getPartsNo()) && rosPartsSaveOrUpdateEnter.getPartsSec() != null && rosPartsSaveOrUpdateEnter.getPartsType() != null && rosPartsSaveOrUpdateEnter.getSnClass() != null &&
-                rosPartsSaveOrUpdateEnter.getIdCalss() != null && rosPartsSaveOrUpdateEnter.getSupplierId() != null && rosPartsSaveOrUpdateEnter.getProcurementCycle() != null && rosPartsSaveOrUpdateEnter.getProcurementCycle() > 0 && !Strings.isNullOrEmpty(rosPartsSaveOrUpdateEnter.getCnName()) &&
+        if (!Strings.isNullOrEmpty(rosPartsSaveOrUpdateEnter.getPartsNo()) && StringManaConstant.entityIsNotNull(rosPartsSaveOrUpdateEnter.getPartsSec()) && StringManaConstant.entityIsNotNull(rosPartsSaveOrUpdateEnter.getPartsType()) && StringManaConstant.entityIsNotNull(rosPartsSaveOrUpdateEnter.getSnClass()) &&
+                StringManaConstant.entityIsNotNull(rosPartsSaveOrUpdateEnter.getIdCalss()) && StringManaConstant.entityIsNotNull(rosPartsSaveOrUpdateEnter.getSupplierId()) && StringManaConstant.entityIsNotNull(rosPartsSaveOrUpdateEnter.getProcurementCycle()) && 0 < rosPartsSaveOrUpdateEnter.getProcurementCycle() && !Strings.isNullOrEmpty(rosPartsSaveOrUpdateEnter.getCnName()) &&
                 !Strings.isNullOrEmpty(rosPartsSaveOrUpdateEnter.getEnName())) {
             // 上面这些都不为空的时候  才是true
             falg = true;
@@ -341,7 +342,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
             case 1:
                 // 草稿的列表
                 totalNum = rosProductionPartsDraftServiceMapper.partsDraftTotal(enter);
-                if (totalNum == 0) {
+                if (0 == totalNum) {
                     return PageResult.createZeroRowResult(enter);
                 }
                 resultList = rosProductionPartsDraftServiceMapper.partsDraftList(enter);
@@ -350,7 +351,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
             case 2:
                 // 部件的列表
                 totalNum = rosProductionPartsServiceMapper.partsTotal(enter);
-                if (totalNum == 0) {
+                if (0 == totalNum) {
                     return PageResult.createZeroRowResult(enter);
                 }
                 resultList = rosProductionPartsServiceMapper.partsList(enter);
@@ -437,7 +438,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
         // 先校验信息完善度
         boolean flag = true;
         for (OpeProductionPartsDraft draft : draftList) {
-            if (draft.getPerfectFlag() != null && !draft.getPerfectFlag()) {
+            if (StringManaConstant.entityIsNotNull(draft.getPerfectFlag()) && !draft.getPerfectFlag()) {
                 flag = false;
                 break;
             }
@@ -460,7 +461,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
     public List<OpeProductionPartsDraft> importParts(ImportPartsEnter enter) {
         // 逻辑需要调整
         ExcelImportResult<RosParseExcelData> excelImportResult = importExcelService.setiExcelVerifyHandler(new RosExcelParse()).importOssExcel(enter.getUrl(), RosParseExcelData.class, new ImportParams());
-        if (excelImportResult == null) {
+        if (StringManaConstant.entityIsNull(excelImportResult)) {
             throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
         }
         // 拿到需要导入的数据
@@ -600,11 +601,11 @@ public class PartsRestRosServiceImpl implements PartsRosService {
     @Override
     public BooleanResult checkAnnounUserSafeCode(RosCheckAnnounSafeCodeEnter enter) {
         OpeSysStaff staff = opeSysStaffService.getById(enter.getPrincipal());
-        if (staff == null) {
+        if (StringManaConstant.entityIsNull(staff)) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
         boolean flag = true;
-        if (staff.getIfSafeCode() == null || staff.getIfSafeCode() != 1) {
+        if (StringManaConstant.entityIsNull(staff.getIfSafeCode()) || 1 != staff.getIfSafeCode()) {
             // 没有安全码 返回false
             flag = false;
         } else {
@@ -753,12 +754,12 @@ public class PartsRestRosServiceImpl implements PartsRosService {
 //            exportEnter.setForAssembly(list.getPartsIsForAssembly()==null?"No":(list.getPartsIsForAssembly()==1?"Yes":"No"));
             exportEnter.setPartsSecName(list.getPartsSecName());
             String type = "--";
-            if (list.getPartsType() != null) {
-                if (list.getPartsType() == 1) {
+            if (StringManaConstant.entityIsNotNull(list.getPartsType())) {
+                if (1 == list.getPartsType()) {
                     type = "Parts";
-                } else if (list.getPartsType() == 2) {
+                } else if (2 == list.getPartsType()) {
                     type = "Accessory";
-                } else if (list.getPartsType() == 3) {
+                } else if (3 == list.getPartsType()) {
                     type = "Battery";
                 }
             }
@@ -795,8 +796,8 @@ public class PartsRestRosServiceImpl implements PartsRosService {
 //            return list;
 //        }
         for (RosPartsSaveOrUpdateEnter saveOrUpdateEnter : enters) {
-            if (Strings.isNullOrEmpty(saveOrUpdateEnter.getPartsNo()) || saveOrUpdateEnter.getPartsSec() == null || saveOrUpdateEnter.getPartsType() == null || saveOrUpdateEnter.getSnClass() == null ||
-                    saveOrUpdateEnter.getIdCalss() == null && saveOrUpdateEnter.getSupplierId() == null || saveOrUpdateEnter.getProcurementCycle() == null || saveOrUpdateEnter.getProcurementCycle() == 0 || Strings.isNullOrEmpty(saveOrUpdateEnter.getCnName()) ||
+            if (Strings.isNullOrEmpty(saveOrUpdateEnter.getPartsNo()) || StringManaConstant.entityIsNull(saveOrUpdateEnter.getPartsSec()) || StringManaConstant.entityIsNull(saveOrUpdateEnter.getPartsType()) || StringManaConstant.entityIsNull(saveOrUpdateEnter.getSnClass()) ||
+                    StringManaConstant.entityIsNull(saveOrUpdateEnter.getIdCalss()) && StringManaConstant.entityIsNull(saveOrUpdateEnter.getSupplierId()) || StringManaConstant.entityIsNull(saveOrUpdateEnter.getProcurementCycle()) || 0 == saveOrUpdateEnter.getProcurementCycle() || Strings.isNullOrEmpty(saveOrUpdateEnter.getCnName()) ||
                     Strings.isNullOrEmpty(saveOrUpdateEnter.getEnName())) {
                 // 上面这些都不为空的时候  信息才是完善的
                 throw new SesWebRosException(ExceptionCodeEnums.PLEASE_COMPLETE_MSG.getCode(), ExceptionCodeEnums.PLEASE_COMPLETE_MSG.getMessage());
@@ -805,7 +806,7 @@ public class PartsRestRosServiceImpl implements PartsRosService {
         // 进行到这里 说明有重复的 需要把重复的数据找出来
         Map<String, List<RosPartsSaveOrUpdateEnter>> map = enters.stream().collect(Collectors.groupingBy(RosPartsSaveOrUpdateEnter::getPartsNo));
         for (String key : map.keySet()) {
-            if (map.get(key).size() > 1) {
+            if (1 < map.get(key).size()) {
                 // 根据部件号分组  一个部件号对应的list长度大于1 说明这个部件号是重复的 要做处理
                 List<RosPartsSaveOrUpdateEnter> repeatList = map.get(key);
                 for (RosPartsSaveOrUpdateEnter repeat : repeatList) {

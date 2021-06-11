@@ -29,6 +29,7 @@ import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.map.MapUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.CustomerServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeStock;
@@ -41,6 +42,7 @@ import com.redescooter.ses.web.ros.service.base.OpeStockBillService;
 import com.redescooter.ses.web.ros.service.base.OpeStockProdProductService;
 import com.redescooter.ses.web.ros.service.base.OpeStockService;
 import com.redescooter.ses.web.ros.service.customer.TransferScooterService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.customer.ChooseScooterResult;
 import com.redescooter.ses.web.ros.vo.customer.ScooterCustomerResult;
 import com.redescooter.ses.web.ros.vo.customer.TransferScooterEnter;
@@ -113,7 +115,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
     @Override
     public PageResult<ScooterCustomerResult> scooterCustomerResult(PageEnter enter) {
         int count = customerServiceMapper.scooterCustomerCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             PageResult.createZeroRowResult(enter);
         }
         List<ScooterCustomerResult> scooterCustomerResults = customerServiceMapper.scooterCustomerResult(enter);
@@ -144,7 +146,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
     @Override
     public ChooseScooterListResult chooseScooterList(IdEnter enter) {
         OpeCustomer opeCustomer = opeCustomerService.getById(enter.getId());
-        if (opeCustomer == null) {
+        if (StringManaConstant.entityIsNull(opeCustomer)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
 
@@ -217,7 +219,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
 
         //验证客户 状态
         OpeCustomer opeCustomer = opeCustomerService.getById(enter.getId());
-        if (opeCustomer == null) {
+        if (StringManaConstant.entityIsNull(opeCustomer)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
@@ -227,13 +229,13 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         }
 
         //验证前端输入的车辆数量
-        if (opeCustomer.getAssignationScooterQty() != null && opeCustomer.getAssignationScooterQty() != 0) {
+        if (StringManaConstant.entityIsNotNull(opeCustomer.getAssignationScooterQty()) && 0 != opeCustomer.getAssignationScooterQty()) {
             if ((opeCustomer.getScooterQuantity() - opeCustomer.getAssignationScooterQty()) < transferScooterListEnterList.size()) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getMessage());
             }
         }
         //验证可以已分配的车辆数量
-        if (opeCustomer.getAssignationScooterQty() != null && opeCustomer.getAssignationScooterQty().equals(0)) {
+        if (StringManaConstant.entityIsNotNull(opeCustomer.getAssignationScooterQty()) && opeCustomer.getAssignationScooterQty().equals(0)) {
             if (opeCustomer.getScooterQuantity() < transferScooterListEnterList.size()) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getCode(), ExceptionCodeEnums.CUSTOMER_TRANSFERSCOOTER_QTY_IS_WRONG.getMessage());
             }
@@ -314,7 +316,7 @@ public class TransferScooterServiceImpl implements TransferScooterService {
         });
 
         // 维护客户表中 客户的车辆分配数量的字段
-        if (opeCustomer.getScooterQuantity() != null && opeCustomer.getScooterQuantity() != 0) {
+        if (StringManaConstant.entityIsNotNull(opeCustomer.getScooterQuantity()) && 0 != opeCustomer.getScooterQuantity()) {
             opeCustomer.setAssignationScooterQty(opeCustomer.getAssignationScooterQty() + Long.valueOf(stockBillMap.values().stream().count()).intValue());
         } else {
             opeCustomer.setAssignationScooterQty(Long.valueOf(stockBillMap.values().stream().count()).intValue());

@@ -22,6 +22,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.production.AllocateServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeAllocate;
 import com.redescooter.ses.web.ros.dm.OpeAllocateB;
@@ -42,6 +43,7 @@ import com.redescooter.ses.web.ros.service.base.OpeStockService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.base.OpeWhseService;
 import com.redescooter.ses.web.ros.service.production.allocate.AllocateService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.ProductPartsListEnter;
 import com.redescooter.ses.web.ros.vo.production.ProductPartsResult;
@@ -155,7 +157,7 @@ public class AllocateServiceImpl implements AllocateService {
      */
     @Override
     public PageResult<AllocateOrderResult> list(AllocateOrderEnter enter) {
-        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+        if (NumberUtil.notNullAndGtFifty(enter.getKeyword())) {
             return PageResult.createZeroRowResult(enter);
         }
         List<String> statusList = new ArrayList();
@@ -171,7 +173,7 @@ public class AllocateServiceImpl implements AllocateService {
         }
 
         int count = allocateServiceMapper.allocateListCount(enter, statusList);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<AllocateOrderResult> allocateOrderResultList = allocateServiceMapper.allocateList(enter, statusList);
@@ -187,7 +189,7 @@ public class AllocateServiceImpl implements AllocateService {
     @Override
     public AllocateOrderResult detail(IdEnter enter) {
         AllocateOrderResult detail = allocateServiceMapper.detail(enter);
-        if (detail == null) {
+        if (StringManaConstant.entityIsNull(detail)) {
             throw new SesWebRosException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
         }
         return detail;
@@ -302,12 +304,12 @@ public class AllocateServiceImpl implements AllocateService {
 
         //查询 出库单
         QueryWrapper<OpeStockBill> opeStockBillQueryWrapper = new QueryWrapper<>();
-        opeStockBillQueryWrapper.eq(OpeStockBill.COL_DR, 0);
+        opeStockBillQueryWrapper.eq(OpeStockBill.COL_DR, Constant.DR_FALSE);
         opeStockBillQueryWrapper.eq(OpeStockBill.COL_SOURCE_ID, opeAllocate.getId());
 
         List<OpeStockBill> stockBillList = opeStockBillService.list(opeStockBillQueryWrapper);
 
-        if (stockBillList == null) {
+        if (StringManaConstant.entityIsNull(stockBillList)) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
         List<Long> stockIds = Lists.newArrayList();
@@ -364,11 +366,11 @@ public class AllocateServiceImpl implements AllocateService {
     public List<ProductPartsResult> allocatePartsList(ProductPartsListEnter enter) {
         //查询采购仓库Id
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
-        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
+        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, Constant.DR_FALSE);
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue());
         opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
-        if (opeWhse == null) {
+        if (StringManaConstant.entityIsNull(opeWhse)) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
         }
 
@@ -432,7 +434,7 @@ public class AllocateServiceImpl implements AllocateService {
         //入库单形成
         //查询调拨单 条目
         QueryWrapper<OpeAllocateB> opeAllocateBQueryWrapper = new QueryWrapper<>();
-        opeAllocateBQueryWrapper.eq(OpeAllocateB.COL_DR, 0);
+        opeAllocateBQueryWrapper.eq(OpeAllocateB.COL_DR, Constant.DR_FALSE);
         opeAllocateBQueryWrapper.eq(OpeAllocateB.COL_ALLOCATE_ID, opeAllocate.getId());
         List<OpeAllocateB> opeAllocateBList = opeAllocateBService.list(opeAllocateBQueryWrapper);
 
@@ -445,16 +447,16 @@ public class AllocateServiceImpl implements AllocateService {
 
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.ALLOCATE.getValue());
-        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
+        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, Constant.DR_FALSE);
         opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
-        if (opeWhse == null) {
+        if (StringManaConstant.entityIsNull(opeWhse)) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
         }
 
         // 查询库存
         QueryWrapper<OpeStock> opeStockQueryWrapper = new QueryWrapper<>();
-        opeStockQueryWrapper.eq(OpeStock.COL_DR, 0);
+        opeStockQueryWrapper.eq(OpeStock.COL_DR, Constant.DR_FALSE);
         opeStockQueryWrapper.in(OpeStock.COL_MATERIEL_PRODUCT_ID, partIds);
         opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
         List<OpeStock> opeStockList = opeStockService.list(opeStockQueryWrapper);
@@ -550,17 +552,17 @@ public class AllocateServiceImpl implements AllocateService {
 
         //查询采购仓库
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
-        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
+        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, Constant.DR_FALSE);
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue());
         opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
-        if (opeWhse == null) {
+        if (StringManaConstant.entityIsNull(opeWhse)) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
         }
         //查询库存
         QueryWrapper<OpeStock> opeStockQueryWrapper = new QueryWrapper<>();
         opeStockQueryWrapper.in(OpeStock.COL_ID, partIds);
-        opeStockQueryWrapper.eq(OpeStock.COL_DR, 0);
+        opeStockQueryWrapper.eq(OpeStock.COL_DR, Constant.DR_FALSE);
         opeStockQueryWrapper.eq(OpeStock.COL_WHSE_ID, opeWhse.getId());
         opeStockList = opeStockService.list(opeStockQueryWrapper);
 
@@ -699,7 +701,7 @@ public class AllocateServiceImpl implements AllocateService {
     public List<ConsigneeResult> consigneeList(GeneralEnter enter) {
         List<ConsigneeResult> consigneeResultlist = new ArrayList<>();
         QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
-        opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
+        opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, Constant.DR_FALSE);
         opeSysUserProfileQueryWrapper.ne(OpeSysUserProfile.COL_SYS_USER_ID, Constant.ADMINUSERID);
         List<OpeSysUserProfile> opeSysUserProfileList = opeSysUserProfileService.list(opeSysUserProfileQueryWrapper);
         opeSysUserProfileList.forEach(item -> {
@@ -742,7 +744,7 @@ public class AllocateServiceImpl implements AllocateService {
 
     private OpeAllocate checkAllocate(Long id, String status) {
         OpeAllocate opeAllocate = opeAllocateService.getById(id);
-        if (opeAllocate == null) {
+        if (StringManaConstant.entityIsNull(opeAllocate)) {
             throw new SesWebRosException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
         }
         if (StringUtils.isNotEmpty(status)) {

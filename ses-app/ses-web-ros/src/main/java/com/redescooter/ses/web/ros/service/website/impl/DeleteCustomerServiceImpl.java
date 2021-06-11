@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.customer.CustomerSourceEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
@@ -18,6 +19,7 @@ import com.redescooter.ses.web.ros.service.website.DeleteService;
 import com.redescooter.ses.web.ros.vo.website.StorageEamilEnter;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.log4j.Log4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,7 +63,7 @@ public class DeleteCustomerServiceImpl implements DeleteService {
         OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>()
                 .eq(OpeCustomer::getId, email.getId())
                 .eq(OpeCustomer::getDr, Constant.DR_FALSE));
-        if (opeCustomer == null) {
+        if (StringManaConstant.entityIsNull(opeCustomer)) {
             return new GeneralResult(email.getRequestId());
         }
         /**
@@ -73,7 +75,7 @@ public class DeleteCustomerServiceImpl implements DeleteService {
         List<OpeCustomerInquiry> inquiryList = opeCustomerInquiryService.list(new LambdaQueryWrapper<OpeCustomerInquiry>()
                 .eq(OpeCustomerInquiry::getCustomerId, opeCustomer.getId())
                 .eq(OpeCustomerInquiry::getDr, Constant.DR_FALSE));
-        if (inquiryList.size() > 0) {
+        if (0 < inquiryList.size()) {
             inquiryList.forEach(inquiry -> {
                 deleteOrder(inquiry);
             });
@@ -84,11 +86,11 @@ public class DeleteCustomerServiceImpl implements DeleteService {
                 .eq(OpeSysUser::getDr, Constant.DR_FALSE)
                 .eq(OpeSysUser::getDef1, CustomerSourceEnum.WEBSITE.getValue()));
 
-        if (opeSysUser != null) {
+        if (StringManaConstant.entityIsNotNull(opeSysUser)) {
             List<OpeSysUserProfile> profileList = opeSysUserProfileService.list(new LambdaQueryWrapper<OpeSysUserProfile>()
                     .eq(OpeSysUserProfile::getSysUserId, opeSysUser.getId())
                     .eq(OpeSysUserProfile::getDr, Constant.DR_FALSE));
-            if (profileList.size() > 0) {
+            if (0 < profileList.size()) {
                 profileList.forEach(profile -> {
                     opeSysUserProfileService.removeById(profile.getId());
                 });
@@ -113,7 +115,7 @@ public class DeleteCustomerServiceImpl implements DeleteService {
                 opeCustomerInquiryService.getOne(new LambdaQueryWrapper<OpeCustomerInquiry>()
                         .eq(OpeCustomerInquiry::getId, enter.getId())
                         .eq(OpeCustomerInquiry::getDr, Constant.DR_FALSE));
-        if (opeCustomerInquiry != null) {
+        if (StringManaConstant.entityIsNotNull(opeCustomerInquiry)) {
             deleteOrder(opeCustomerInquiry);
         }
 
@@ -126,7 +128,7 @@ public class DeleteCustomerServiceImpl implements DeleteService {
         List<OpeCustomerInquiryB> list = opeCustomerInquiryBService.list(new LambdaQueryWrapper<OpeCustomerInquiryB>()
                 .eq(OpeCustomerInquiryB::getInquiryId, inquiry.getId())
                 .eq(OpeCustomerInquiryB::getDr, Constant.DR_FALSE));
-        if (list != null) {
+        if (CollectionUtils.isNotEmpty(list)) {
             list.forEach(inquiryb -> {
                 opeCustomerInquiryBService.removeById(inquiryb.getId());
             });

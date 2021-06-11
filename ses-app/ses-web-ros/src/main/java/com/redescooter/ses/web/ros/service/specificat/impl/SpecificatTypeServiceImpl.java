@@ -17,6 +17,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.specificat.SpecificatDefGroupMapper;
 import com.redescooter.ses.web.ros.dao.specificat.SpecificatDefMapper;
 import com.redescooter.ses.web.ros.dao.specificat.SpecificatGroupServiceMapper;
@@ -30,6 +31,7 @@ import com.redescooter.ses.web.ros.service.base.OpeSaleScooterService;
 import com.redescooter.ses.web.ros.service.base.OpeSpecificatTypeService;
 import com.redescooter.ses.web.ros.service.specificat.SpecificatDefService;
 import com.redescooter.ses.web.ros.service.specificat.SpecificatTypeService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatDefEnter;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatDefResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatTypeDataResult;
@@ -98,7 +100,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-        if (enters.size() > 8) {
+        if (8 < enters.size()) {
             throw new SesWebRosException(ExceptionCodeEnums.DEF_NUM_ERROR.getCode(), ExceptionCodeEnums.DEF_NUM_ERROR.getMessage());
         }
         // 校验名称的唯一性
@@ -134,7 +136,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         QueryWrapper<OpeSaleScooter> qw = new QueryWrapper<>();
         qw.eq(OpeSaleScooter.COL_SPECIFICAT_ID, enter.getId());
         int count = opeSaleScooterService.count(qw);
-        if (count > 0) {
+        if (0 < count) {
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_IS_USED.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_IS_USED.getMessage());
         }
         // 删除规格类型
@@ -160,11 +162,11 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
-        if (enters.size() > 8) {
+        if (8 < enters.size()) {
             throw new SesWebRosException(ExceptionCodeEnums.DEF_NUM_ERROR.getCode(), ExceptionCodeEnums.DEF_NUM_ERROR.getMessage());
         }
         OpeSpecificatType specificatType = opeSpecificatTypeService.getById(enter.getId());
-        if (specificatType == null) {
+        if (StringManaConstant.entityIsNull(specificatType)) {
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
         }
         checkSpecificatName(enter);
@@ -190,7 +192,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         // 去空格
         SesStringUtils.objStringTrim(enter);
         int num = specificatTypeServiceMapper.listNum(enter);
-        if (num == 0) {
+        if (NumberUtil.eqZero(num)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<SpecificatTypeListResult> list = specificatTypeServiceMapper.specificatTypeList(enter);
@@ -202,7 +204,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
     public SpecificatTypeDetailResult specificatTypeDetail(IdEnter enter) {
         SpecificatTypeDetailResult result = new SpecificatTypeDetailResult();
         OpeSpecificatType specificatType = opeSpecificatTypeService.getById(enter.getId());
-        if (specificatType == null) {
+        if (StringManaConstant.entityIsNull(specificatType)) {
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
         }
         result = specificatTypeServiceMapper.specificatTypeDetail(enter.getId());
@@ -236,12 +238,12 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
 //        }
         QueryWrapper<OpeSpecificatType> qw = new QueryWrapper<>();
         qw.eq(OpeSpecificatType.COL_SPECIFICAT_NAME, enter.getSpecificatName());
-        if (enter.getId() != null) {
+        if (StringManaConstant.entityIsNotNull(enter.getId())) {
             // 这个时候是修改 需要排除本身去校验
             qw.ne(OpeSpecificatType.COL_ID, enter.getId());
         }
         int count = opeSpecificatTypeService.count(qw);
-        if (count > 0) {
+        if (0 < count) {
             // 已经存在返回false
             flag = false;
         }
@@ -344,12 +346,12 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
     public GeneralResult updateSpecificType(InsertSpecificTypeParamDTO paramDTO) {
         Long userId = paramDTO.getUserId();
 
-        if (null == paramDTO.getId()) {
+        if (StringManaConstant.entityIsNull(paramDTO.getId())) {
             throw new SesWebRosException(ExceptionCodeEnums.ID_IS_NOT_NULL.getCode(), ExceptionCodeEnums.ID_IS_NOT_NULL.getMessage());
         }
 
         SpecificTypeDTO specificType = specificatTypeServiceMapper.getSpecificTypeById(paramDTO.getId());
-        if (null == specificType) {
+        if (StringManaConstant.entityIsNull(specificType)) {
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
         }
 
@@ -409,7 +411,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
     @Override
     public QuerySpecificTypeDetailResultDTO getSpecificTypeDetailById(IdEnter enter) {
         QuerySpecificTypeDetailResultDTO specificType = specificatTypeServiceMapper.getSpecificTypeDetailById(enter.getId());
-        if (null == specificType) {
+        if (StringManaConstant.entityIsNull(specificType)) {
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
         }
 
@@ -436,7 +438,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
             if (Strings.isNullOrEmpty(list.getDefName())) {
                 throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.DEF_NAME_NOT_NULL.getMessage());
             }
-            if (list.getDefName().length() > 50) {
+            if (50 < list.getDefName().length()) {
                 throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_NAME_ILLEGAL.getMessage());
             }
 //            // 校验正则
@@ -450,7 +452,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
                 throw new SesWebRosException(ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getMessage());
             }
 //            String defValue = String.valueOf(list.getDefValue());
-            if (list.getDefValue().length() > 50) {
+            if (50 < list.getDefValue().length()) {
                 throw new SesWebRosException(ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getMessage());
             }
         }
@@ -470,7 +472,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
          * 检查规格分组是否存在
          */
         SpecificGroupDTO specificGroup = specificatGroupServiceMapper.getSpecifiGroupById(paramDTO.getGroupId());
-        if (null == specificGroup) {
+        if (StringManaConstant.entityIsNull(specificGroup)) {
             throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
         }
 
@@ -488,7 +490,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
             if (StringUtils.isBlank(defGroup.getName())) {
                 throw new SesWebRosException(ExceptionCodeEnums.DEF_GROUP_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.DEF_GROUP_NAME_NOT_NULL.getMessage());
             }
-            if (defGroup.getName().length() > 50) {
+            if (50 < defGroup.getName().length()) {
                 throw new SesWebRosException(ExceptionCodeEnums.DEF_GROUP_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_GROUP_NAME_ILLEGAL.getMessage());
             }
             specificDefList.addAll(defGroup.getGroupList());
@@ -501,13 +503,13 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
             if (StringUtils.isBlank(def.getDefName())) {
                 throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_NOT_NULL.getCode(), ExceptionCodeEnums.DEF_NAME_NOT_NULL.getMessage());
             }
-            if (def.getDefName().length() > 50) {
+            if (50 < def.getDefName().length()) {
                 throw new SesWebRosException(ExceptionCodeEnums.DEF_NAME_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_NAME_ILLEGAL.getMessage());
             }
             if (StringUtils.isBlank(def.getDefValue())) {
                 throw new SesWebRosException(ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getMessage());
             }
-            if (def.getDefValue().length() > 50) {
+            if (50 < def.getDefValue().length()) {
                 throw new SesWebRosException(ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getCode(), ExceptionCodeEnums.DEF_VALUE_ILLEGAL.getMessage());
             }
         });
@@ -535,12 +537,12 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         }
         QueryWrapper<OpeSpecificatType> qw = new QueryWrapper<>();
         qw.eq(OpeSpecificatType.COL_SPECIFICAT_NAME, enter.getSpecificatName());
-        if (enter.getId() != null) {
+        if (StringManaConstant.entityIsNotNull(enter.getId())) {
             // 这个时候是修改 需要排除本身去校验
             qw.ne(OpeSpecificatType.COL_ID, enter.getId());
         }
         int count = opeSpecificatTypeService.count(qw);
-        if (count > 0) {
+        if (0 < count) {
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NAME_EXIST.getMessage());
         }
     }
@@ -559,7 +561,7 @@ public class SpecificatTypeServiceImpl implements SpecificatTypeService {
         qw.orderByDesc(OpeSpecificatType.COL_SPECIFICAT_CODE);
         qw.last("limit 1");
         OpeSpecificatType specificatType = opeSpecificatTypeService.getOne(qw);
-        if (specificatType != null && !Strings.isNullOrEmpty(specificatType.getSpecificatCode())) {
+        if (StringManaConstant.entityIsNotNull(specificatType) && !Strings.isNullOrEmpty(specificatType.getSpecificatCode())) {
             String oldCode = specificatType.getSpecificatCode();
             Integer i = Integer.parseInt(oldCode.substring(oldCode.length() - 3));
             i++;

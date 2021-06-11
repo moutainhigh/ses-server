@@ -20,6 +20,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.ProductionAssemblyOrderServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeCombinOrder;
@@ -50,6 +51,7 @@ import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumbe
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.outbound.OutboundOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.restproduct.BomNameData;
 import com.redescooter.ses.web.ros.vo.restproduct.BomNoEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.CombinNameData;
@@ -193,7 +195,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     public PageResult<ProductionAssemblyOrderListResult> list(ProductionAssemblyOrderListEnter enter) {
         SesStringUtils.objStringTrim(enter);
         int count = productionAssemblyOrderServiceMapper.listCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         return PageResult.create(enter, count, productionAssemblyOrderServiceMapper.list(enter));
@@ -211,7 +213,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     @Override
     public ProductionAssemblyOrderDetailResult detail(AssemblyOrderDetailEnter enter) {
         ProductionAssemblyOrderDetailResult detail = productionAssemblyOrderServiceMapper.detail(enter);
-        if (detail == null) {
+        if (StringManaConstant.entityIsNull(detail)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         detail.setProductList(this.detailProductList(enter));
@@ -355,7 +357,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
         OpeCombinOrder opeCombinOrder = buildOpeCombinOrder(enter, productQty);
 
         SaveOpTraceEnter saveOpTraceEnter = null;
-        if (enter.getId() == null || enter.getId() == 0) {
+        if (StringManaConstant.entityIsNull(enter.getId()) || 0 == enter.getId()) {
             Long assemblyProductId = idAppService.getId(SequenceName.OPE_COMBIN_ORDER);
             opeCombinOrder.setId(assemblyProductId);
             opeCombinOrder.setCreatedBy(enter.getUserId());
@@ -419,7 +421,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     @Override
     public GeneralResult materialPreparation(IdEnter enter) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(enter.getId());
-        if (opeCombinOrder == null) {
+        if (StringManaConstant.entityIsNull(opeCombinOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (!opeCombinOrder.getCombinStatus().equals(NewCombinOrderStatusEnums.DRAF.getValue())) {
@@ -506,7 +508,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
                                 partStockQw.eq(OpeWmsPartsStock.COL_STOCK_TYPE, 1);
                                 partStockQw.last("limit 1");
                                 OpeWmsPartsStock partStock = opeWmsPartsStockService.getOne(partStockQw);
-                                if (partStock == null || (partStock.getAbleStockQty() < scootermap.get(partsId))) {
+                                if (StringManaConstant.entityIsNull(partStock) || (partStock.getAbleStockQty() < scootermap.get(partsId))) {
                                     // 中国仓库原料库的库存不足
                                     throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                                 }
@@ -542,7 +544,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
                                 partStockQw.eq(OpeWmsPartsStock.COL_STOCK_TYPE, 1);
                                 partStockQw.last("limit 1");
                                 OpeWmsPartsStock partStock = opeWmsPartsStockService.getOne(partStockQw);
-                                if (partStock == null || (partStock.getAbleStockQty() < scootercombinMap.get(combinPartsId))) {
+                                if (StringManaConstant.entityIsNull(partStock) || (partStock.getAbleStockQty() < scootercombinMap.get(combinPartsId))) {
                                     // 中国仓库原料库的库存不足
                                     throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                                 }
@@ -568,7 +570,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     @Override
     public GeneralResult assembly(IdEnter enter) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(enter.getId());
-        if (opeCombinOrder == null) {
+        if (StringManaConstant.entityIsNull(opeCombinOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (!opeCombinOrder.getCombinStatus().equals(NewCombinOrderStatusEnums.PREPARATION_COMPLETED.getValue())) {
@@ -605,7 +607,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     @Override
     public GeneralResult delete(IdEnter enter) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(enter.getId());
-        if (opeCombinOrder == null) {
+        if (StringManaConstant.entityIsNull(opeCombinOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (!opeCombinOrder.getCombinStatus().equals(NewCombinOrderStatusEnums.DRAF.getValue())) {
@@ -725,7 +727,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     @Override
     public GeneralResult export(Long id, HttpServletResponse response) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(id);
-        if (opeCombinOrder == null) {
+        if (StringManaConstant.entityIsNull(opeCombinOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         List<ProductionCombinScooterExport> scooterExportList = new ArrayList<>();
@@ -841,7 +843,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     @GlobalTransactional(rollbackFor = Exception.class)
     public void materialPreparationFinish(Long combinOrderId, Long userId) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(combinOrderId);
-        if (opeCombinOrder == null) {
+        if (StringManaConstant.entityIsNull(opeCombinOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (opeCombinOrder.getCombinStatus().equals(NewCombinOrderStatusEnums.PREPARATION_COMPLETED.getValue())) {
@@ -872,7 +874,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     @Override
     public GeneralResult startCombin(IdEnter enter) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(enter.getId());
-        if (opeCombinOrder == null) {
+        if (StringManaConstant.entityIsNull(opeCombinOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (opeCombinOrder.getCombinStatus().equals(NewCombinOrderStatusEnums.ASSEMBLING.getValue())) {
@@ -904,7 +906,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult endCombin(IdEnter enter) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(enter.getId());
-        if (opeCombinOrder == null) {
+        if (StringManaConstant.entityIsNull(opeCombinOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.WAIT_QC.getValue())) {
@@ -937,7 +939,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     @Override
     public GeneralResult startQc(IdEnter enter) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(enter.getId());
-        if (opeCombinOrder == null) {
+        if (StringManaConstant.entityIsNull(opeCombinOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.INSPECTING.getValue())) {
@@ -970,7 +972,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     @Override
     public GeneralResult endQc(IdEnter enter) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(enter.getId());
-        if (opeCombinOrder == null) {
+        if (StringManaConstant.entityIsNull(opeCombinOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.WAIT_IN_WH.getValue())) {
@@ -1003,7 +1005,7 @@ public class ProductionAssemblyOrderServiceImpl implements ProductionAssemblyOrd
     @Override
     public void statusToPartWhOrAllInWh(Long combinId, Long inWhId, Long userId) {
         OpeCombinOrder opeCombinOrder = opeCombinOrderService.getById(combinId);
-        if (opeCombinOrder == null) {
+        if (StringManaConstant.entityIsNull(opeCombinOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (!opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.WAIT_IN_WH.getValue()) && !opeCombinOrder.getCombinStatus().equals(CombinOrderStatusEnums.PART_IN_WH.getValue())) {

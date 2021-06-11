@@ -19,6 +19,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.config.ConstantUsEmailConfig;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.website.ContactUsMapper;
 import com.redescooter.ses.web.ros.dm.OpeContactUs;
 import com.redescooter.ses.web.ros.dm.OpeContactUsTrace;
@@ -29,6 +30,7 @@ import com.redescooter.ses.web.ros.service.base.OpeContactUsTraceService;
 import com.redescooter.ses.web.ros.service.website.ContactUsService;
 import com.redescooter.ses.web.ros.service.website.ContactUsTraceService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.customer.ContactUsDetailResult;
 import com.redescooter.ses.web.ros.vo.customer.ContactUsEnter;
 import com.redescooter.ses.web.ros.vo.customer.ContactUsHistoryReplyResult;
@@ -105,11 +107,11 @@ public class ContactUsServiceImpl implements ContactUsService {
 
     @Override
     public PageResult<ContactUsListResult> list(ContactUsListEnter enter) {
-        if (enter.getKeyWord() != null && enter.getKeyWord().length() > 50) {
+        if (NumberUtil.notNullAndGtFifty(enter.getKeyWord())) {
             return PageResult.createZeroRowResult(enter);
         }
         int totalRows = contactUsMapper.totalRows(enter);
-        if (totalRows == 0) {
+        if (NumberUtil.eqZero(totalRows)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<ContactUsListResult> list = contactUsMapper.list(enter);
@@ -139,7 +141,7 @@ public class ContactUsServiceImpl implements ContactUsService {
         //list时间降序
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        if (result.size() > 1) {
+        if (1 < result.size()) {
             //list 集合倒叙排序
             result.sort((a1, a2) -> {
                 try {
@@ -156,7 +158,7 @@ public class ContactUsServiceImpl implements ContactUsService {
     @Override
     public GeneralResult message(ContactUsMessageEnter enter) {
         OpeContactUsTrace one = opeContactUsTraceService.getOne(new QueryWrapper<OpeContactUsTrace>().eq(OpeContactUsTrace.COL_ID, enter.getId()));
-        if (one == null) {
+        if (StringManaConstant.entityIsNull(one)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         OpeContactUsTrace trace = new OpeContactUsTrace();
@@ -189,7 +191,7 @@ public class ContactUsServiceImpl implements ContactUsService {
 
 
     public OpeContactUs createContactUsEntity(SaveAboutUsEnter enter, OpeContactUs opeContactUs) {
-        if (opeContactUs != null) {
+        if (StringManaConstant.entityIsNotNull(opeContactUs)) {
             // 说明这个邮箱已经存在
             opeContactUs.setFrequency(opeContactUs.getFrequency() + 1);
         } else {

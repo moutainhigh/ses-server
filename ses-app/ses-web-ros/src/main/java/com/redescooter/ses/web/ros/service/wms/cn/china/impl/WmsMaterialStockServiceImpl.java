@@ -7,6 +7,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsFinishStockMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsMaterialStockMapper;
@@ -45,6 +46,7 @@ import com.redescooter.ses.web.ros.service.base.OpeWmsPartsStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsScooterStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsStockRecordService;
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsMaterialStockService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialpartsStockDetailResult;
@@ -134,16 +136,16 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
     public PageResult<MaterialStockPartsListResult> materialStockPartsList(MaterialStockPartsListEnter enter) {
         SesStringUtils.objStringTrim(enter);
         int totalRows = wmsMaterialStockMapper.partsCotalRows(enter);
-        if (totalRows == 0) {
+        if (NumberUtil.eqZero(totalRows)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<MaterialStockPartsListResult> list = wmsMaterialStockMapper.materialPartsList(enter);
         if (CollectionUtils.isNotEmpty(list)) {
             for (MaterialStockPartsListResult model : list) {
                 Long partsId = model.getPartsId();
-                if (null != partsId) {
+                if (StringManaConstant.entityIsNotNull(partsId)) {
                     OpeProductionParts parts = opeProductionPartsService.getById(partsId);
-                    if (null != parts) {
+                    if (StringManaConstant.entityIsNotNull(parts)) {
                         Integer idClass = parts.getIdCalss();
                         model.setIdClass(idClass);
                     }
@@ -156,7 +158,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
     @Override
     public MaterialpartsStockDetailResult materialStockPartsDetail(IdEnter enter) {
         OpeWmsPartsStock partsStock = opeWmsPartsStockService.getById(enter.getId());
-        if (partsStock == null) {
+        if (StringManaConstant.entityIsNull(partsStock)) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
         MaterialpartsStockDetailResult result = wmsMaterialStockMapper.materialStockPartsDetail(enter.getId());
@@ -211,7 +213,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbScooterStock.eq(OpeWmsScooterStock.COL_STOCK_TYPE, stockType);
                         dbScooterStock.last("limit 1");
                         OpeWmsScooterStock dbScooter = opeWmsScooterStockService.getOne(dbScooterStock);
-                        if (dbScooter != null) {
+                        if (StringManaConstant.entityIsNotNull(dbScooter)) {
                             // 说明已经存在这样的数据了
                             dbScooter.setWaitInStockQty(dbScooter.getWaitInStockQty() + scooterB.getInWhQty());
                             dbScooter.setUpdatedBy(userId);
@@ -252,7 +254,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbCombinStock.eq(OpeWmsCombinStock.COL_STOCK_TYPE, stockType);
                         dbCombinStock.last("limit 1");
                         OpeWmsCombinStock dbCombine = opeWmsCombinStockService.getOne(dbCombinStock);
-                        if (dbCombine != null) {
+                        if (StringManaConstant.entityIsNotNull(dbCombine)) {
                             // 说明已经存在该组装件的库存  编辑
                             dbCombine.setUpdatedBy(userId);
                             dbCombine.setUpdatedTime(new Date());
@@ -265,7 +267,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             combinStock.setCombinNo(combinB.getCombinNo());
                             // 找到组装件的中文/英文/法文
                             OpeProductionCombinBom combinBom = opeProductionCombinBomService.getById(combinB.getProductionCombinBomId());
-                            if (combinBom != null) {
+                            if (StringManaConstant.entityIsNotNull(combinBom)) {
                                 combinStock.setEnName(combinBom.getEnName());
                                 combinStock.setFrName(combinBom.getFrName());
                                 combinStock.setCnName(combinBom.getCnName());
@@ -299,7 +301,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbPartsStock.eq(OpeWmsPartsStock.COL_STOCK_TYPE, stockType);
                         dbPartsStock.last("limit 1");
                         OpeWmsPartsStock wmsPartsStock = opeWmsPartsStockService.getOne(dbPartsStock);
-                        if (wmsPartsStock != null) {
+                        if (StringManaConstant.entityIsNotNull(wmsPartsStock)) {
                             // 说明已经有了  编辑就行
                             wmsPartsStock.setWaitInStockQty(wmsPartsStock.getWaitInStockQty() + partsB.getInWhQty());
                             wmsPartsStock.setUpdatedBy(userId);
@@ -321,7 +323,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             partsStock.setUpdatedTime(new Date());
                             // 找到部件的中文/英文/法文名称
                             OpeProductionParts partsBom = opeProductionPartsService.getById(partsB.getPartsId());
-                            if (partsBom != null) {
+                            if (StringManaConstant.entityIsNotNull(partsBom)) {
                                 partsStock.setCnName(partsBom.getCnName());
                                 partsStock.setEnName(partsBom.getEnName());
                                 partsStock.setFrName(partsBom.getFrName());
@@ -367,7 +369,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbScooterStock.eq(OpeWmsScooterStock.COL_STOCK_TYPE, stockType);
                         dbScooterStock.last("limit 1");
                         OpeWmsScooterStock dbScooter = opeWmsScooterStockService.getOne(dbScooterStock);
-                        if (dbScooter != null) {
+                        if (StringManaConstant.entityIsNotNull(dbScooter)) {
                             // 讲道理  到这里之后 库存里面必定会有同车型/颜色的数据（因为待入库时就插入数据了，如果没找到 就说明时前面有问题）
                             dbScooter.setAbleStockQty((dbScooter.getAbleStockQty() == null ? 0 : dbScooter.getAbleStockQty()) + scooterB.getInWhQty());
                             // 入库的时候  待入库的数量要相应的减少
@@ -404,7 +406,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbCombinStock.eq(OpeWmsCombinStock.COL_STOCK_TYPE, stockType);
                         dbCombinStock.last("limit 1");
                         OpeWmsCombinStock dbCombine = opeWmsCombinStockService.getOne(dbCombinStock);
-                        if (dbCombine != null) {
+                        if (StringManaConstant.entityIsNotNull(dbCombine)) {
                             // 说明已经存在该组装件的库存  编辑
                             dbCombine.setUpdatedBy(userId);
                             dbCombine.setUpdatedTime(new Date());
@@ -439,7 +441,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbPartsStock.eq(OpeWmsPartsStock.COL_STOCK_TYPE, stockType);
                         dbPartsStock.last("limit 1");
                         OpeWmsPartsStock wmsPartsStock = opeWmsPartsStockService.getOne(dbPartsStock);
-                        if (wmsPartsStock != null) {
+                        if (StringManaConstant.entityIsNotNull(wmsPartsStock)) {
                             // 说明已经有了  编辑就行
                             wmsPartsStock.setAbleStockQty((wmsPartsStock.getAbleStockQty() == null ? 0 : wmsPartsStock.getAbleStockQty()) + partsB.getActInWhQty());
                             // 待入库的数量也要相应的减少
@@ -494,7 +496,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
 //     * @param inWhType
 //     */
 //    @Override
-//    @GlobalTransactional(rollbackFor = Exception.class) 
+//    @GlobalTransactional(rollbackFor = Exception.class)
 //    @Async
 //    public void ableLowWaitOutUp(Integer productionType, Long id, Integer stockType, Long userId, Integer inWhType) {
 //        switch (productionType) {
@@ -595,7 +597,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbScooterStock.eq(OpeWmsScooterStock.COL_COLOR_ID, outScooterB.getColorId());
                         dbScooterStock.last("limit 1");
                         OpeWmsScooterStock dbScooter = opeWmsScooterStockService.getOne(dbScooterStock);
-                        if (dbScooter != null) {
+                        if (StringManaConstant.entityIsNotNull(dbScooter)) {
                             // 讲道理  这里不可能为空  如果为空 就说明之前的地方有误
                             dbScooter.setWaitOutStockQty(dbScooter.getWaitOutStockQty() - outScooterB.getQty());
                             dbScooter.setUpdatedBy(userId);
@@ -616,12 +618,12 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                     List<OpeWmsCombinStock> combinStockList = new ArrayList<>();
                     for (OpeOutWhCombinB outWhCombinB : outWhCombinBS) {
                         OpeProductionCombinBom combinBom = opeProductionCombinBomService.getById(outWhCombinB.getProductionCombinBomId());
-                        if (combinBom != null) {
+                        if (StringManaConstant.entityIsNotNull(combinBom)) {
                             QueryWrapper<OpeWmsCombinStock> dbCombinStock = new QueryWrapper<>();
                             dbCombinStock.eq(OpeWmsCombinStock.COL_COMBIN_NO, combinBom.getBomNo());
                             dbCombinStock.last("limit 1");
                             OpeWmsCombinStock dbCombin = opeWmsCombinStockService.getOne(dbCombinStock);
-                            if (dbCombin != null) {
+                            if (StringManaConstant.entityIsNotNull(dbCombin)) {
                                 dbCombin.setWaitOutStockQty(dbCombin.getWaitOutStockQty() - outWhCombinB.getQty());
                                 dbCombin.setUpdatedBy(userId);
                                 dbCombin.setUpdatedTime(new Date());
@@ -645,7 +647,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbPartsStock.eq(OpeWmsPartsStock.COL_PARTS_TYPE, outWhPartsB.getPartsType());
                         dbPartsStock.last("limit 1");
                         OpeWmsPartsStock partsStock = opeWmsPartsStockService.getOne(dbPartsStock);
-                        if (partsStock != null) {
+                        if (StringManaConstant.entityIsNotNull(partsStock)) {
                             partsStock.setWaitOutStockQty(partsStock.getWaitOutStockQty() - outWhPartsB.getQty());
                             partsStock.setUpdatedBy(userId);
                             partsStock.setUpdatedTime(new Date());
@@ -659,7 +661,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
     }
 
 
-//    @GlobalTransactional(rollbackFor = Exception.class) 
+//    @GlobalTransactional(rollbackFor = Exception.class)
 //    @Async
 //    @Override
 //    public void usedlUpWaitOutLow(Integer productionType, Long id, Integer stockType, Long userId, Integer inWhType) {
@@ -773,7 +775,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbScooterStock.eq(OpeWmsScooterStock.COL_STOCK_TYPE, stockType);
                         dbScooterStock.last("limit 1");
                         OpeWmsScooterStock dbScooter = opeWmsScooterStockService.getOne(dbScooterStock);
-                        if (dbScooter != null) {
+                        if (StringManaConstant.entityIsNotNull(dbScooter)) {
                             // 说明已经存在这样的数据了
                             dbScooter.setWaitOutStockQty(dbScooter.getWaitOutStockQty() + scooterB.getQty());
                             dbScooter.setUpdatedBy(userId);
@@ -814,7 +816,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbCombinStock.eq(OpeWmsCombinStock.COL_STOCK_TYPE, stockType);
                         dbCombinStock.last("limit 1");
                         OpeWmsCombinStock dbCombine = opeWmsCombinStockService.getOne(dbCombinStock);
-                        if (dbCombine != null) {
+                        if (StringManaConstant.entityIsNotNull(dbCombine)) {
                             // 说明已经存在该组装件的库存  编辑
                             dbCombine.setUpdatedBy(userId);
                             dbCombine.setUpdatedTime(new Date());
@@ -826,7 +828,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             combinStock.setStockType(stockType);
                             // 找到组装件的中文/英文/法文
                             OpeProductionCombinBom combinBom = opeProductionCombinBomService.getById(combinB.getProductionCombinBomId());
-                            if (combinBom != null) {
+                            if (StringManaConstant.entityIsNotNull(combinBom)) {
                                 combinStock.setEnName(combinBom.getEnName());
                                 combinStock.setFrName(combinBom.getFrName());
                                 combinStock.setCnName(combinBom.getCnName());
@@ -861,7 +863,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbPartsStock.eq(OpeWmsPartsStock.COL_STOCK_TYPE, stockType);
                         dbPartsStock.last("limit 1");
                         OpeWmsPartsStock wmsPartsStock = opeWmsPartsStockService.getOne(dbPartsStock);
-                        if (wmsPartsStock != null) {
+                        if (StringManaConstant.entityIsNotNull(wmsPartsStock)) {
                             // 说明已经有了  编辑就行
                             wmsPartsStock.setWaitOutStockQty(wmsPartsStock.getWaitOutStockQty() + partsB.getQty());
                             wmsPartsStock.setUpdatedBy(userId);
@@ -883,7 +885,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             partsStock.setUpdatedTime(new Date());
                             // 找到部件的中文/英文/法文名称
                             OpeProductionParts partsBom = opeProductionPartsService.getById(partsB.getPartsId());
-                            if (partsBom != null) {
+                            if (StringManaConstant.entityIsNotNull(partsBom)) {
                                 partsStock.setCnName(partsBom.getCnName());
                                 partsStock.setEnName(partsBom.getEnName());
                                 partsStock.setFrName(partsBom.getFrName());
@@ -928,11 +930,11 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbScooterStock.eq(OpeWmsScooterStock.COL_STOCK_TYPE, stockType);
                         dbScooterStock.last("limit 1");
                         OpeWmsScooterStock dbScooter = opeWmsScooterStockService.getOne(dbScooterStock);
-                        if (dbScooter != null) {
+                        if (StringManaConstant.entityIsNotNull(dbScooter)) {
                             // 说明已经存在这样的数据了
                             dbScooter.setWaitOutStockQty(dbScooter.getWaitOutStockQty() - scooterB.getQty());
                             Integer ableNum = dbScooter.getAbleStockQty() - scooterB.getQty();
-                            if (ableNum < 0) {
+                            if (0 > ableNum) {
                                 throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                             }
                             dbScooter.setAbleStockQty(ableNum);
@@ -970,12 +972,12 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbCombinStock.eq(OpeWmsCombinStock.COL_STOCK_TYPE, stockType);
                         dbCombinStock.last("limit 1");
                         OpeWmsCombinStock dbCombine = opeWmsCombinStockService.getOne(dbCombinStock);
-                        if (dbCombine != null) {
+                        if (StringManaConstant.entityIsNotNull(dbCombine)) {
                             // 说明已经存在该组装件的库存  编辑
                             dbCombine.setUpdatedBy(userId);
                             dbCombine.setUpdatedTime(new Date());
                             Integer ableNum = dbCombine.getAbleStockQty() - combinB.getQty();
-                            if (ableNum < 0) {
+                            if (0 > ableNum) {
                                 throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                             }
                             dbCombine.setWaitOutStockQty(ableNum);
@@ -1011,11 +1013,11 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbPartsStock.eq(OpeWmsPartsStock.COL_STOCK_TYPE, stockType);
                         dbPartsStock.last("limit 1");
                         OpeWmsPartsStock wmsPartsStock = opeWmsPartsStockService.getOne(dbPartsStock);
-                        if (wmsPartsStock != null) {
+                        if (StringManaConstant.entityIsNotNull(wmsPartsStock)) {
                             // 说明已经有了  编辑就行
                             wmsPartsStock.setWaitOutStockQty(wmsPartsStock.getWaitOutStockQty() - partsB.getQty());
                             Integer ableNum = wmsPartsStock.getAbleStockQty() - partsB.getQty();
-                            if (ableNum < 0) {
+                            if (0 > ableNum) {
                                 throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                             }
                             wmsPartsStock.setAbleStockQty(ableNum);
@@ -1071,7 +1073,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbScooterStock.eq(OpeWmsScooterStock.COL_STOCK_TYPE, stockType);
                         dbScooterStock.last("limit 1");
                         OpeWmsScooterStock dbScooter = opeWmsScooterStockService.getOne(dbScooterStock);
-                        if (dbScooter != null) {
+                        if (StringManaConstant.entityIsNotNull(dbScooter)) {
                             // 说明已经存在这样的数据了
                             dbScooter.setWaitInStockQty(dbScooter.getWaitInStockQty() + scooterB.getQty());
                             dbScooter.setUpdatedBy(userId);
@@ -1112,7 +1114,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbCombinStock.eq(OpeWmsCombinStock.COL_STOCK_TYPE, stockType);
                         dbCombinStock.last("limit 1");
                         OpeWmsCombinStock dbCombine = opeWmsCombinStockService.getOne(dbCombinStock);
-                        if (dbCombine != null) {
+                        if (StringManaConstant.entityIsNotNull(dbCombine)) {
                             // 说明已经存在该组装件的库存  编辑
                             dbCombine.setUpdatedBy(userId);
                             dbCombine.setUpdatedTime(new Date());
@@ -1124,7 +1126,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             combinStock.setStockType(stockType);
                             // 找到组装件的中文/英文/法文
                             OpeProductionCombinBom combinBom = opeProductionCombinBomService.getById(combinB.getProductionCombinBomId());
-                            if (combinBom != null) {
+                            if (StringManaConstant.entityIsNotNull(combinBom)) {
                                 combinStock.setEnName(combinBom.getEnName());
                                 combinStock.setFrName(combinBom.getFrName());
                                 combinStock.setCnName(combinBom.getCnName());
@@ -1159,7 +1161,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbPartsStock.eq(OpeWmsPartsStock.COL_STOCK_TYPE, stockType);
                         dbPartsStock.last("limit 1");
                         OpeWmsPartsStock wmsPartsStock = opeWmsPartsStockService.getOne(dbPartsStock);
-                        if (wmsPartsStock != null) {
+                        if (StringManaConstant.entityIsNotNull(wmsPartsStock)) {
                             // 说明已经有了  编辑就行
                             wmsPartsStock.setWaitInStockQty(wmsPartsStock.getWaitInStockQty() + partsB.getQty());
                             wmsPartsStock.setUpdatedBy(userId);
@@ -1181,7 +1183,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                             partsStock.setUpdatedTime(new Date());
                             // 找到部件的中文/英文/法文名称
                             OpeProductionParts partsBom = opeProductionPartsService.getById(partsB.getPartsId());
-                            if (partsBom != null) {
+                            if (StringManaConstant.entityIsNotNull(partsBom)) {
                                 partsStock.setCnName(partsBom.getCnName());
                                 partsStock.setEnName(partsBom.getEnName());
                                 partsStock.setFrName(partsBom.getFrName());
@@ -1227,7 +1229,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbScooterStock.eq(OpeWmsScooterStock.COL_STOCK_TYPE, stockType);
                         dbScooterStock.last("limit 1");
                         OpeWmsScooterStock dbScooter = opeWmsScooterStockService.getOne(dbScooterStock);
-                        if (dbScooter != null) {
+                        if (StringManaConstant.entityIsNotNull(dbScooter)) {
                             // 讲道理  到这里之后 库存里面必定会有同车型/颜色的数据（因为待入库时就插入数据了，如果没找到 就说明时前面有问题）
                             dbScooter.setAbleStockQty((dbScooter.getAbleStockQty() == null ? 0 : dbScooter.getAbleStockQty()) + scooterB.getQty());
                             // 入库的时候  待入库的数量要相应的减少
@@ -1278,7 +1280,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbCombinStock.eq(OpeWmsCombinStock.COL_STOCK_TYPE, stockType);
                         dbCombinStock.last("limit 1");
                         OpeWmsCombinStock dbCombine = opeWmsCombinStockService.getOne(dbCombinStock);
-                        if (dbCombine != null) {
+                        if (StringManaConstant.entityIsNotNull(dbCombine)) {
                             // 说明已经存在该组装件的库存  编辑
                             dbCombine.setUpdatedBy(userId);
                             dbCombine.setUpdatedTime(new Date());
@@ -1288,7 +1290,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         } else {
                             // 新增库存
                             OpeProductionCombinBom combinBom = opeProductionCombinBomService.getById(combinB.getProductionCombinBomId());
-                            if (null != combinBom) {
+                            if (StringManaConstant.entityIsNotNull(combinBom)) {
                                 // 新增库存
                                 dbCombine.setId(idAppService.getId(SequenceName.OPE_WMS_COMBIN_STOCK));
                                 dbCombine.setDr(DelStatusEnum.VALID.getCode());
@@ -1334,7 +1336,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         dbPartsStock.eq(OpeWmsPartsStock.COL_STOCK_TYPE, stockType);
                         dbPartsStock.last("limit 1");
                         OpeWmsPartsStock wmsPartsStock = opeWmsPartsStockService.getOne(dbPartsStock);
-                        if (wmsPartsStock != null) {
+                        if (StringManaConstant.entityIsNotNull(wmsPartsStock)) {
                             // 说明已经有了  编辑就行
                             wmsPartsStock.setAbleStockQty((wmsPartsStock.getAbleStockQty() == null ? 0 : wmsPartsStock.getAbleStockQty()) + partsB.getQty());
                             // 待入库的数量也要相应的减少
@@ -1345,7 +1347,7 @@ public class WmsMaterialStockServiceImpl implements WmsMaterialStockService {
                         } else {
                             // 新增库存
                             OpeProductionParts part = opeProductionPartsService.getById(partsB.getPartsId());
-                            if (null != part) {
+                            if (StringManaConstant.entityIsNotNull(part)) {
                                 wmsPartsStock.setId(idAppService.getId(SequenceName.OPE_WMS_PARTS_STOCK));
                                 wmsPartsStock.setDr(DelStatusEnum.VALID.getCode());
                                 wmsPartsStock.setStockType(stockType);

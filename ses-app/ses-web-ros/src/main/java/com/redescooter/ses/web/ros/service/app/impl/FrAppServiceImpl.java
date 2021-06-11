@@ -42,6 +42,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.map.MapUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeExMapper;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeNodeMapper;
@@ -56,6 +57,7 @@ import com.redescooter.ses.web.ros.service.app.FrAppService;
 import com.redescooter.ses.web.ros.service.assign.impl.ToBeAssignServiceImpl;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.sim.OpeSimInformationService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.app.*;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
 import io.seata.spring.annotation.GlobalTransactional;
@@ -202,7 +204,7 @@ public class FrAppServiceImpl implements FrAppService {
         qw.eq(OpeWarehouseAccount::getEmail, decryptEmail);
         qw.last("limit 1");
         OpeWarehouseAccount account = opeWarehouseAccountService.getOne(qw);
-        if (null == account) {
+        if (StringManaConstant.entityIsNull(account)) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
         // 拿着解密后的密码再次md5加密,和db存储的md5加密的密码相比较
@@ -275,7 +277,7 @@ public class FrAppServiceImpl implements FrAppService {
         Boolean flag = jedisCluster.exists(token);
         if (flag) {
             Map<String, String> map = jedisCluster.hgetAll(token);
-            if (null != map) {
+            if (StringManaConstant.entityIsNotNull(map)) {
                 String userId = map.get("userId");
                 return Long.valueOf(userId);
             }
@@ -300,7 +302,7 @@ public class FrAppServiceImpl implements FrAppService {
         checkToken(enter);
         Long userId = getUserId(enter);
         OpeWarehouseAccount account = opeWarehouseAccountService.getById(userId);
-        if (null == account) {
+        if (StringManaConstant.entityIsNull(account)) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
         return account;
@@ -314,10 +316,10 @@ public class FrAppServiceImpl implements FrAppService {
         checkToken(enter);
         Long userId = getUserId(enter);
         int count = opeCarDistributeExMapper.getInquiryListCount(enter, userId);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
-        if (StringUtils.isBlank(enter.getKeyword()) && null == enter.getStatus()) {
+        if (StringUtils.isBlank(enter.getKeyword()) && StringManaConstant.entityIsNull(enter.getStatus())) {
             return PageResult.createZeroRowResult(enter);
         }
         List<InquiryListResult> list = opeCarDistributeExMapper.getInquiryList(enter, userId);
@@ -388,9 +390,9 @@ public class FrAppServiceImpl implements FrAppService {
         lqw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
         lqw.last("limit 1");
         OpeCarDistribute instance = opeCarDistributeMapper.selectOne(lqw);
-        if (null != instance) {
+        if (StringManaConstant.entityIsNotNull(instance)) {
             Long warehouseAccountId = instance.getWarehouseAccountId();
-            if (null != warehouseAccountId && !userId.equals(warehouseAccountId)) {
+            if (StringManaConstant.entityIsNotNull(warehouseAccountId) && !userId.equals(warehouseAccountId)) {
                 throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getCode(), ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getMessage());
             }
         }
@@ -403,12 +405,12 @@ public class FrAppServiceImpl implements FrAppService {
         if (CollectionUtils.isEmpty(nodeList)) {
 
             OpeCustomerInquiry inquiry = opeCustomerInquiryService.getById(enter.getId());
-            if (null == inquiry) {
+            if (StringManaConstant.entityIsNull(inquiry)) {
                 throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
             }
             Long productId = inquiry.getProductId();
             OpeSaleScooter saleScooter = opeSaleScooterService.getById(productId);
-            if (null == saleScooter) {
+            if (StringManaConstant.entityIsNull(saleScooter)) {
                 throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
             }
             // 根据询价单id获得车辆型号id和颜色id
@@ -442,7 +444,7 @@ public class FrAppServiceImpl implements FrAppService {
         }
 
         InquiryDetailResult result = opeCarDistributeExMapper.getInquiryDetail(enter);
-        if (null != result) {
+        if (StringManaConstant.entityIsNotNull(result)) {
             String battery = result.getBattery();
             if (StringUtils.isBlank(battery)) {
                 result.setBatteryNumber(0);
@@ -475,14 +477,14 @@ public class FrAppServiceImpl implements FrAppService {
         lqw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
         lqw.last("limit 1");
         OpeCarDistribute instance = opeCarDistributeMapper.selectOne(lqw);
-        if (null != instance) {
+        if (StringManaConstant.entityIsNotNull(instance)) {
             Long warehouseAccountId = instance.getWarehouseAccountId();
-            if (null != warehouseAccountId) {
+            if (StringManaConstant.entityIsNotNull(warehouseAccountId)) {
                 throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getCode(), ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getMessage());
             }
         }
 
-        if (vinCode.length() != 17) {
+        if (17 != vinCode.length()) {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
         }
         if (!vinCode.startsWith("VXSR2A")) {
@@ -507,7 +509,7 @@ public class FrAppServiceImpl implements FrAppService {
         checkWrapper.eq(OpeCarDistribute::getVinCode, vinCode);
         checkWrapper.last("limit 1");
         OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
-        if (null != checkModel) {
+        if (StringManaConstant.entityIsNotNull(checkModel)) {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_HAS_INPUT.getCode(), ExceptionCodeEnums.VIN_HAS_INPUT.getMessage());
         }
 
@@ -517,7 +519,7 @@ public class FrAppServiceImpl implements FrAppService {
         existWrapper.eq(OpeCodebaseVin::getStatus, 1);
         existWrapper.eq(OpeCodebaseVin::getVin, vinCode);
         int count = opeCodebaseVinService.count(existWrapper);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getMessage());
         }
 
@@ -551,7 +553,7 @@ public class FrAppServiceImpl implements FrAppService {
         vinWrapper.eq(OpeCodebaseVin::getVin, vinCode);
         vinWrapper.last("limit 1");
         OpeCodebaseVin codebaseVin = opeCodebaseVinService.getOne(vinWrapper);
-        if (null != codebaseVin) {
+        if (StringManaConstant.entityIsNotNull(codebaseVin)) {
             codebaseVin.setStatus(2);
             codebaseVin.setUpdatedBy(userId);
             codebaseVin.setUpdatedTime(new Date());
@@ -564,7 +566,7 @@ public class FrAppServiceImpl implements FrAppService {
         relationWrapper.eq(OpeCodebaseRelation::getVin, vinCode);
         relationWrapper.last("limit 1");
         OpeCodebaseRelation codebaseRelation = opeCodebaseRelationService.getOne(relationWrapper);
-        if (null == codebaseRelation) {
+        if (StringManaConstant.entityIsNull(codebaseRelation)) {
             OpeCodebaseRelation relation = new OpeCodebaseRelation();
             relation.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
             relation.setDr(Constant.DR_FALSE);
@@ -593,7 +595,7 @@ public class FrAppServiceImpl implements FrAppService {
         checkWrapper.eq(OpeCarDistribute::getLicensePlate, licensePlate);
         checkWrapper.last("limit 1");
         OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
-        if (null != checkModel) {
+        if (StringManaConstant.entityIsNotNull(checkModel)) {
             throw new SesWebRosException(ExceptionCodeEnums.PLATE_HAS_USED.getCode(), ExceptionCodeEnums.PLATE_HAS_USED.getMessage());
         }
 
@@ -643,7 +645,7 @@ public class FrAppServiceImpl implements FrAppService {
         lqw.eq(OpeCarDistribute::getRsn, rsn);
         lqw.last("limit 1");
         OpeCarDistribute model = opeCarDistributeMapper.selectOne(lqw);
-        if (null != model) {
+        if (StringManaConstant.entityIsNotNull(model)) {
             throw new SesWebRosException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
         }
 
@@ -652,7 +654,7 @@ public class FrAppServiceImpl implements FrAppService {
         checkWrapper.eq(OpeCarDistribute::getCustomerId, customerId);
         checkWrapper.last("limit 1");
         OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
-        if (null != checkModel && null != checkModel.getWarehouseAccountId() && StringUtils.isNotBlank(checkModel.getRsn())) {
+        if (StringManaConstant.entityIsNotNull(checkModel) && StringManaConstant.entityIsNotNull(checkModel.getWarehouseAccountId()) && StringUtils.isNotBlank(checkModel.getRsn())) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DEAL.getCode(), ExceptionCodeEnums.ORDER_HAS_DEAL.getMessage());
         }
 
@@ -662,7 +664,7 @@ public class FrAppServiceImpl implements FrAppService {
         existWrapper.eq(OpeCodebaseRsn::getStatus, 1);
         existWrapper.eq(OpeCodebaseRsn::getRsn, rsn);
         int count = opeCodebaseRsnService.count(existWrapper);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getMessage());
         }
 
@@ -709,7 +711,7 @@ public class FrAppServiceImpl implements FrAppService {
         rsnWrapper.eq(OpeCodebaseRsn::getRsn, rsn);
         rsnWrapper.last("limit 1");
         OpeCodebaseRsn codebaseRsn = opeCodebaseRsnService.getOne(rsnWrapper);
-        if (null != codebaseRsn) {
+        if (StringManaConstant.entityIsNotNull(codebaseRsn)) {
             codebaseRsn.setStatus(2);
             codebaseRsn.setUpdatedBy(userId);
             codebaseRsn.setUpdatedTime(new Date());
@@ -743,7 +745,7 @@ public class FrAppServiceImpl implements FrAppService {
         checkWrapper.like(OpeCarDistribute::getBattery, enter.getBattery());
         checkWrapper.last("limit 1");
         OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
-        if (null != checkModel) {
+        if (StringManaConstant.entityIsNotNull(checkModel)) {
             throw new SesWebRosException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
         }
 
@@ -760,7 +762,7 @@ public class FrAppServiceImpl implements FrAppService {
         queryWrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
         queryWrapper.last("limit 1");
         OpeCarDistribute model = opeCarDistributeMapper.selectOne(queryWrapper);
-        if (null != model) {
+        if (StringManaConstant.entityIsNotNull(model)) {
             String modelBattery = model.getBattery();
             if (StringUtils.isBlank(modelBattery)) {
                 // 第一次扫描电池
@@ -787,7 +789,7 @@ public class FrAppServiceImpl implements FrAppService {
 
         // 查询最新的已经扫描过的电池数量
         OpeCarDistribute distribute = opeCarDistributeMapper.selectOne(queryWrapper);
-        if (null != distribute) {
+        if (StringManaConstant.entityIsNotNull(distribute)) {
             String[] split = distribute.getBattery().split(",");
             List<String> batteryList = new ArrayList<>(Arrays.asList(split));
             // 如果已经扫描过的电池数量=询价单的电池数量
@@ -828,7 +830,7 @@ public class FrAppServiceImpl implements FrAppService {
 
         // 客户信息
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getCustomerId());
-        if (null == opeCustomer) {
+        if (StringManaConstant.entityIsNull(opeCustomer)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(opeCustomer.getStatus(), CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue())) {
@@ -837,7 +839,7 @@ public class FrAppServiceImpl implements FrAppService {
 
         // 查询客户的账号信息(查pla_user表)
         QueryAccountResult accountInfo = accountBaseService.customerAccountDeatil(opeCustomer.getEmail());
-        if (null == accountInfo) {
+        if (StringManaConstant.entityIsNull(accountInfo)) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
 
@@ -877,7 +879,7 @@ public class FrAppServiceImpl implements FrAppService {
         Integer ableStockQty = stock.getAbleStockQty();
         Integer usedStockQty = stock.getUsedStockQty();
 
-        if (ableStockQty < 1) {
+        if (1 > ableStockQty) {
             throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getCode(), ExceptionCodeEnums.SCOOTER_STOCK_IS_NOT_ENOUGH.getMessage());
         }
 
@@ -891,7 +893,7 @@ public class FrAppServiceImpl implements FrAppService {
         opeWmsScooterStockMapper.updateById(scooterStock);
 
         // 新增出库记录
-        if (null != stock) {
+        if (StringManaConstant.entityIsNotNull(stock)) {
             log.info(" 新增出库记录");
             OpeWmsStockRecord record = new OpeWmsStockRecord();
             record.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_RECORD));
@@ -911,11 +913,11 @@ public class FrAppServiceImpl implements FrAppService {
 
         // 根据rsn查询sco_scooter表
         ScoScooterResult scoScooter = scooterService.getScoScooterByTableSn(model.getRsn());
-        if (null == scoScooter) {
+        if (StringManaConstant.entityIsNull(scoScooter)) {
             throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
         }
         Long scooterId = scoScooter.getId();
-        if (null == scooterId) {
+        if (StringManaConstant.entityIsNull(scooterId)) {
             throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
         }
 
@@ -944,7 +946,7 @@ public class FrAppServiceImpl implements FrAppService {
         List<OpeWmsStockSerialNumber> serialNumberList = opeWmsStockSerialNumberService.list(qw);
         if (CollectionUtils.isNotEmpty(serialNumberList)) {
             for (OpeWmsStockSerialNumber serialNumber : serialNumberList) {
-                if (null != serialNumber) {
+                if (StringManaConstant.entityIsNotNull(serialNumber)) {
                     serialNumber.setStockStatus(WmsStockStatusEnum.UNAVAILABLE.getStatus());
                     opeWmsStockSerialNumberService.updateById(serialNumber);
                 }
@@ -954,16 +956,16 @@ public class FrAppServiceImpl implements FrAppService {
 
         // 创建车辆
         AdmScooter admScooter = scooterModelService.getScooterBySn(model.getTabletSn());
-        if (null != admScooter) {
+        if (StringManaConstant.entityIsNotNull(admScooter)) {
             throw new SesWebRosException(ExceptionCodeEnums.SN_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.SN_ALREADY_EXISTS.getMessage());
         }
         log.info("车辆不存在");
         SpecificGroupDTO group = specificService.getSpecificGroupById(specificatId);
         ColorDTO color = colorService.getColorInfoById(inquiryColorId);
-        if (null == group) {
+        if (StringManaConstant.entityIsNull(group)) {
             throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
         }
-        if (null == color) {
+        if (StringManaConstant.entityIsNull(color)) {
             throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
         }
 
@@ -997,7 +999,7 @@ public class FrAppServiceImpl implements FrAppService {
 
         // 设置软体
         AdmScooter scooterModel = scooterModelService.getScooterById(scooter.getId());
-        if (null == scooterModel) {
+        if (StringManaConstant.entityIsNull(scooterModel)) {
             throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
         }
         // 只允许车辆关闭状态时进行软体设置
@@ -1006,11 +1008,11 @@ public class FrAppServiceImpl implements FrAppService {
             throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_CLOSED.getCode(), ExceptionCodeEnums.SCOOTER_NOT_CLOSED.getMessage());
         }
         SpecificTypeDTO specificType = specificService.getSpecificTypeByName(specificatName);
-        if (null == specificType) {
+        if (StringManaConstant.entityIsNull(specificType)) {
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
         }
         Integer type = ScooterModelEnum.getScooterModelType(specificType.getSpecificatName());
-        if (type == 0) {
+        if (NumberUtil.eqZero(type)) {
             throw new SesWebRosException(ExceptionCodeEnums.SELECT_SCOOTER_MODEL_ERROR.getCode(), ExceptionCodeEnums.SELECT_SCOOTER_MODEL_ERROR.getMessage());
         }
 
@@ -1071,7 +1073,7 @@ public class FrAppServiceImpl implements FrAppService {
         qwOpeCar.eq(OpeCarDistribute::getCustomerId, opeCustomer.getId());
         qwOpeCar.last("limit 1");
         OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectOne(qwOpeCar);
-        if (null != opeCarDistribute) {
+        if (StringManaConstant.entityIsNotNull(opeCarDistribute)) {
             OpeSimInformation simInfo = new OpeSimInformation();
             String iccid = jedisCluster.get(opeCarDistribute.getTabletSn());
             if (StringUtils.isNotBlank(iccid)) {
@@ -1101,7 +1103,7 @@ public class FrAppServiceImpl implements FrAppService {
         if (CollectionUtils.isNotEmpty(specificDefList)) {
             // 旧数据ope_specificat_def表里面def_group_id字段值是空的,这里会导致stream分组的时候报错
             specificDefList.forEach(def -> {
-                if (null == def.getSpecificDefGroupId()) {
+                if (StringManaConstant.entityIsNull(def.getSpecificDefGroupId())) {
                     throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
                 }
             });
@@ -1182,22 +1184,22 @@ public class FrAppServiceImpl implements FrAppService {
         qw.eq(OpeWmsStockSerialNumber::getRsn, rsn);
         qw.last("limit 1");
         OpeWmsStockSerialNumber serialNumber = opeWmsStockSerialNumberService.getOne(qw);
-        if (null == serialNumber) {
+        if (StringManaConstant.entityIsNull(serialNumber)) {
             throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EXIST.getCode(), ExceptionCodeEnums.RSN_NOT_EXIST.getMessage());
         }
         Long relationId = serialNumber.getRelationId();
         OpeWmsScooterStock stock = opeWmsScooterStockMapper.selectById(relationId);
-        if (null == stock) {
+        if (StringManaConstant.entityIsNull(stock)) {
             throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_STOCK_IS_EMPTY.getCode(), ExceptionCodeEnums.SCOOTER_STOCK_IS_EMPTY.getMessage());
         }
         Long groupId = stock.getGroupId();
         Long colorId = stock.getColorId();
         OpeSpecificatGroup group = opeSpecificatGroupService.getById(groupId);
         OpeColor color = opeColorService.getById(colorId);
-        if (null == group) {
+        if (StringManaConstant.entityIsNull(group)) {
             throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
         }
-        if (null == color) {
+        if (StringManaConstant.entityIsNull(color)) {
             throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
         }
 
@@ -1217,12 +1219,12 @@ public class FrAppServiceImpl implements FrAppService {
         qw.eq(OpeCustomerInquiry::getCustomerId, customerId);
         qw.last("limit 1");
         OpeCustomerInquiry inquiry = opeCustomerInquiryService.getOne(qw);
-        if (null == inquiry) {
+        if (StringManaConstant.entityIsNull(inquiry)) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
         Long productId = inquiry.getProductId();
         OpeSaleScooter saleScooter = opeSaleScooterService.getById(productId);
-        if (null == saleScooter) {
+        if (StringManaConstant.entityIsNull(saleScooter)) {
             throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
         }
         return saleScooter;

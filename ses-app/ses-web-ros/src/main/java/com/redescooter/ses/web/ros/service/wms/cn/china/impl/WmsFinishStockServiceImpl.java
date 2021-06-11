@@ -15,6 +15,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.base.OpeColorMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeProductionPartsRelationMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeProductionScooterBomMapper;
@@ -60,6 +61,7 @@ import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderSt
 import com.redescooter.ses.web.ros.service.restproductionorder.purchas.ProductionPurchasService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsFinishStockService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
@@ -189,7 +191,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
     public PageResult<WmsFinishScooterListResult> finishScooterList(WmsFinishScooterListEnter enter) {
         SesStringUtils.objStringTrim(enter);
         int totalRows = wmsFinishStockMapper.totalRows(enter);
-        if (totalRows == 0) {
+        if (NumberUtil.eqZero(totalRows)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<WmsFinishScooterListResult> list = wmsFinishStockMapper.finishScooterList(enter);
@@ -206,7 +208,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
     @Override
     public WmsfinishScooterDetailResult finishScooterDetail(IdEnter enter) {
         OpeWmsScooterStock scooterStock = opeWmsScooterStockService.getById(enter.getId());
-        if (scooterStock == null) {
+        if (StringManaConstant.entityIsNull(scooterStock)) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
         WmsfinishScooterDetailResult result = wmsFinishStockMapper.finishScooterDetail(enter.getId());
@@ -240,7 +242,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 result = wmsFinishStockMapper.wmsPartsStockCount(enter.getStockType());
                 break;
         }
-        if (result == null) {
+        if (StringManaConstant.entityIsNull(result)) {
             result = new WmsStockCountResult();
         }
         return result;
@@ -323,11 +325,11 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 OpeWmsPartsStock stock = list.get(0);
                 Integer ableStockQty = stock.getAbleStockQty();
                 ableStockQty = null == ableStockQty ? 0 : ableStockQty;
-                if (ableStockQty == 0) {
+                if (NumberUtil.eqZero(ableStockQty)) {
                     break;
                 }
                 int num = ableStockQty / partsQty;
-                if (num > 0) {
+                if (0 < num) {
                     numList.add(num);
                 }
             }
@@ -353,7 +355,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
     public PageResult<WmsFinishCombinListResult> finishCombinList(CombinationListEnter enter) {
         SesStringUtils.objStringTrim(enter);
         int totalRows = wmsFinishStockMapper.combinCotalRows(enter);
-        if (totalRows == 0) {
+        if (NumberUtil.eqZero(totalRows)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<WmsFinishCombinListResult> list = wmsFinishStockMapper.finishCombinList(enter);
@@ -370,7 +372,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
     @Override
     public WmsfinishCombinDetailResult finishCombinDetail(IdEnter enter) {
         OpeWmsCombinStock combinStock = opeWmsCombinStockService.getById(enter.getId());
-        if (combinStock == null) {
+        if (StringManaConstant.entityIsNull(combinStock)) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
         WmsfinishCombinDetailResult result = wmsFinishStockMapper.finishCombinDetail(enter.getId());
@@ -384,11 +386,11 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
      * 根据colorId获取colorName
      */
     public String getColorNameById(Long colorId) {
-        if (null == colorId) {
+        if (StringManaConstant.entityIsNull(colorId)) {
             throw new SesWebRosException(ExceptionCodeEnums.COLOR_ID_NOT_EMPTY.getCode(), ExceptionCodeEnums.COLOR_ID_NOT_EMPTY.getMessage());
         }
         OpeColor color = opeColorMapper.selectById(colorId);
-        if (null != color) {
+        if (StringManaConstant.entityIsNotNull(color)) {
             return color.getColorName();
         }
         throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
@@ -398,11 +400,11 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
      * 根据groupId获取groupName
      */
     public String getGroupNameById(Long groupId) {
-        if (null == groupId) {
+        if (StringManaConstant.entityIsNull(groupId)) {
             throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
         }
         OpeSpecificatGroup group = opeSpecificatGroupMapper.selectById(groupId);
-        if (null != group) {
+        if (StringManaConstant.entityIsNotNull(group)) {
             return group.getGroupName();
         }
         throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
@@ -422,12 +424,12 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
         // 入库单
         QueryWrapper<OpeInWhouseOrder> in = new QueryWrapper<>();
         in.eq(OpeInWhouseOrder.COL_COUNTRY_TYPE, enter.getStockType());
-        if (enter.getSource() == null) {
+        if (StringManaConstant.entityIsNull(enter.getSource())) {
             in.eq(OpeInWhouseOrder.COL_SOURCE, 0);
         } else {
             in.eq(OpeInWhouseOrder.COL_SOURCE, enter.getSource());
         }
-        if (enter.getOrderType() != null) {
+        if (StringManaConstant.entityIsNotNull(enter.getOrderType())) {
             in.eq(OpeInWhouseOrder.COL_ORDER_TYPE, enter.getOrderType());
         }
         map.put("1", opeInWhouseOrderService.count(in));
@@ -435,12 +437,12 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
         // 出库单
         QueryWrapper<OpeOutWhouseOrder> out = new QueryWrapper<>();
         out.eq(OpeOutWhouseOrder.COL_COUNTRY_TYPE, enter.getStockType());
-        if (enter.getSource() == null) {
+        if (StringManaConstant.entityIsNull(enter.getSource())) {
             out.eq(OpeOutWhouseOrder.COL_SOURCE, 0);
         } else {
             out.eq(OpeOutWhouseOrder.COL_SOURCE, enter.getSource());
         }
-        if (enter.getOrderType() != null) {
+        if (StringManaConstant.entityIsNotNull(enter.getOrderType())) {
             out.eq(OpeOutWhouseOrder.COL_OUT_WH_TYPE, enter.getOrderType());
         }
         map.put("2", opeOutWhouseOrderService.count(out));
@@ -467,7 +469,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                     result.setValue(0);
                 } else {
                     OpeWmsCombinStock stock = list.get(0);
-                    if (null != stock) {
+                    if (StringManaConstant.entityIsNotNull(stock)) {
                         Integer ableStockQty = stock.getAbleStockQty();
                         result.setValue(ableStockQty);
                     }
@@ -480,7 +482,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 qw.eq(OpeWmsQualifiedCombinStock.COL_PRODUCTION_COMBIN_BOM_ID, enter.getId());
                 qw.last("limit 1");
                 OpeWmsQualifiedCombinStock qualifiedCombinStock = opeWmsQualifiedCombinStockService.getOne(qw);
-                if (qualifiedCombinStock != null) {
+                if (StringManaConstant.entityIsNotNull(qualifiedCombinStock)) {
                     result.setValue(qualifiedCombinStock.getQty());
                 } else {
                     result.setValue(0);
@@ -498,7 +500,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
     public GeneralResult inWhConfirm(OutOrInWhConfirmEnter enter) {
         // 不管怎么说 先找到入库单
         OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
-        if (inWhouseOrder == null) {
+        if (StringManaConstant.entityIsNull(inWhouseOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         inWhouseOrder.setInWhStatus(NewInWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
@@ -540,10 +542,10 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                 }
         }
 
-        if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue())) {
+        if (StringManaConstant.entityIsNotNull(inWhouseOrder.getRelationOrderType()) && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue())) {
             // 如果是部件入库单  点击确认入库  需要改变部件采购单的状态
             productionPurchasService.statusToPartWhOrAllInWh(inWhouseOrder.getRelationOrderId(), inWhouseOrder.getId(), enter.getUserId());
-        } else if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
+        } else if (StringManaConstant.entityIsNotNull(inWhouseOrder.getRelationOrderType()) && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
             // 如果是关联的组装单  点击确认入库  需要改变组装单的状态
             productionAssemblyOrderService.statusToPartWhOrAllInWh(inWhouseOrder.getRelationOrderId(), inWhouseOrder.getId(), enter.getUserId());
         }
@@ -571,7 +573,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                         scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_STOCK_TYPE, enter.getStockType());
                         scooterStockQueryWrapper.last("limit 1");
                         OpeWmsScooterStock scooterStock = opeWmsScooterStockService.getOne(scooterStockQueryWrapper);
-                        if (scooterStock != null) {
+                        if (StringManaConstant.entityIsNotNull(scooterStock)) {
                             scooterStock.setAbleStockQty(scooterStock.getAbleStockQty() + scooterB.getInWhQty());
                             scooterStock.setWaitInStockQty(scooterStock.getWaitInStockQty() - scooterB.getInWhQty());
                             scooterStocks.add(scooterStock);
@@ -610,7 +612,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                         combinStockQueryWrapper.eq(OpeWmsCombinStock.COL_STOCK_TYPE, enter.getStockType());
                         combinStockQueryWrapper.last("limit 1");
                         OpeWmsCombinStock combinStock = opeWmsCombinStockService.getOne(combinStockQueryWrapper);
-                        if (combinStock != null) {
+                        if (StringManaConstant.entityIsNotNull(combinStock)) {
                             combinStock.setAbleStockQty(combinStock.getAbleStockQty() + combinB.getInWhQty());
                             combinStock.setWaitInStockQty(combinStock.getWaitInStockQty() - combinB.getInWhQty());
                             combinStocks.add(combinStock);
@@ -648,7 +650,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                         partsStockQueryWrapper.eq(OpeWmsPartsStock.COL_STOCK_TYPE, enter.getStockType());
                         partsStockQueryWrapper.last("limit 1");
                         OpeWmsPartsStock partsStock = opeWmsPartsStockService.getOne(partsStockQueryWrapper);
-                        if (partsStock != null) {
+                        if (StringManaConstant.entityIsNotNull(partsStock)) {
                             partsStock.setAbleStockQty(partsStock.getAbleStockQty() + partsB.getInWhQty());
                             partsStock.setWaitInStockQty(partsStock.getWaitInStockQty() - partsB.getInWhQty());
                             partsStocks.add(partsStock);
@@ -701,7 +703,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
     public GeneralResult outWhConfirm(OutOrInWhConfirmEnter enter) {
         // 不管怎么说 先找到出库单
         OpeOutWhouseOrder outWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
-        if (outWhouseOrder == null) {
+        if (StringManaConstant.entityIsNull(outWhouseOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         outWhouseOrder.setOutWhStatus(NewOutBoundOrderStatusEnums.OUT_STOCK.getValue());
@@ -775,7 +777,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                         scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_STOCK_TYPE, enter.getStockType());
                         scooterStockQueryWrapper.last("limit 1");
                         OpeWmsScooterStock scooterStock = opeWmsScooterStockService.getOne(scooterStockQueryWrapper);
-                        if (scooterStock != null) {
+                        if (StringManaConstant.entityIsNotNull(scooterStock)) {
                             if (scooterStock.getAbleStockQty() - scooterB.getQty() < 0) {
                                 throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                             }
@@ -817,7 +819,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                         combinStockQueryWrapper.eq(OpeWmsCombinStock.COL_STOCK_TYPE, enter.getStockType());
                         combinStockQueryWrapper.last("limit 1");
                         OpeWmsCombinStock combinStock = opeWmsCombinStockService.getOne(combinStockQueryWrapper);
-                        if (combinStock != null) {
+                        if (StringManaConstant.entityIsNotNull(combinStock)) {
                             if (combinStock.getAbleStockQty() - combinB.getQty() < 0) {
                                 throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                             }
@@ -858,7 +860,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
                         partsStockQueryWrapper.eq(OpeWmsPartsStock.COL_STOCK_TYPE, enter.getStockType());
                         partsStockQueryWrapper.last("limit 1");
                         OpeWmsPartsStock partsStock = opeWmsPartsStockService.getOne(partsStockQueryWrapper);
-                        if (partsStock != null) {
+                        if (StringManaConstant.entityIsNotNull(partsStock)) {
                             if (partsStock.getAbleStockQty() - partsB.getQty() < 0) {
                                 throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                             }
@@ -897,7 +899,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
     public PageResult<WmsDetailResult> getMaterialPartsDetail(MaterialDetailEnter enter) {
         SesStringUtils.objStringTrim(enter);
         int count = wmsFinishStockMapper.getMaterialPartsDetailCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<WmsDetailResult> list = wmsFinishStockMapper.getMaterialPartsDetail(enter);
@@ -911,7 +913,7 @@ public class WmsFinishStockServiceImpl implements WmsFinishStockService {
     public PageResult<WmsDetailResult> getScooterAndCombinDetail(WmsDetailEnter enter) {
         SesStringUtils.objStringTrim(enter);
         int count = wmsFinishStockMapper.getScooterAndCombinDetailCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<WmsDetailResult> list = wmsFinishStockMapper.getScooterAndCombinDetail(enter);

@@ -15,6 +15,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.restproductionorder.AllocateOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderCombinBServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderPartsBServiceMapper;
@@ -58,6 +59,7 @@ import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderSt
 import com.redescooter.ses.web.ros.service.restproductionorder.purchas.ProductionPurchasService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsMaterialStockService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhRelationOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseDetailCombinResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseDetailPartsResult;
@@ -186,7 +188,7 @@ public class InWhouseServiceImpl implements InWhouseService {
     public PageResult<InWhouseListResult> inWhouseList(InWhouseListEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         int totalNum = inWhouseOrderServiceMapper.totalNum(enter);
-        if (totalNum == 0) {
+        if (NumberUtil.eqZero(totalNum)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<InWhouseListResult> list = inWhouseOrderServiceMapper.inWhList(enter);
@@ -386,7 +388,7 @@ public class InWhouseServiceImpl implements InWhouseService {
     public GeneralResult inWhouseEdit(InWhouseSaveOrUpdateEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
-        if (inWhouseOrder == null) {
+        if (StringManaConstant.entityIsNull(inWhouseOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (!inWhouseOrder.getInWhStatus().equals(NewInWhouseOrderStatusEnum.DRAFT.getValue())) {
@@ -530,7 +532,7 @@ public class InWhouseServiceImpl implements InWhouseService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult inWhouseDelete(IdEnter enter) {
         OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
-        if (inWhouseOrder == null) {
+        if (StringManaConstant.entityIsNull(inWhouseOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (!inWhouseOrder.getInWhStatus().equals(NewInWhouseOrderStatusEnum.DRAFT.getValue())) {
@@ -538,7 +540,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         }
         opeInWhouseOrderService.removeById(enter.getId());
         // 追加 入库单（车辆/组装件）新增的时候 会把库存的待入库数量增加  删除的时候要相应的减少
-        if (inWhouseOrder.getOrderType() == 1 || inWhouseOrder.getOrderType() == 2) {
+        if (1 == inWhouseOrder.getOrderType() || 2 == inWhouseOrder.getOrderType()) {
             changeStock(inWhouseOrder);
         }
         return new GeneralResult(enter.getRequestId());
@@ -562,7 +564,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                         stockQueryWrapper.eq(OpeWmsScooterStock.COL_STOCK_TYPE, inWhouseOrder.getCountryType());
                         stockQueryWrapper.last("limit 1");
                         OpeWmsScooterStock scooterStock = opeWmsScooterStockService.getOne(stockQueryWrapper);
-                        if (scooterStock != null) {
+                        if (StringManaConstant.entityIsNotNull(scooterStock)) {
                             scooterStock.setWaitInStockQty(scooterStock.getWaitInStockQty() - scooterB.getInWhQty());
                             scooterStockList.add(scooterStock);
                         }
@@ -585,7 +587,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                         combinQueryWrapper.eq(OpeWmsCombinStock.COL_STOCK_TYPE, inWhouseOrder.getCountryType());
                         combinQueryWrapper.last("limit 1");
                         OpeWmsCombinStock combinStock = opeWmsCombinStockService.getOne(combinQueryWrapper);
-                        if (combinStock != null) {
+                        if (StringManaConstant.entityIsNotNull(combinStock)) {
                             combinStock.setWaitInStockQty(combinStock.getWaitInStockQty() - combinB.getInWhQty());
                             combinStockList.add(combinStock);
                         }
@@ -600,7 +602,7 @@ public class InWhouseServiceImpl implements InWhouseService {
     @Override
     public InWhouseDetailResult inWhouseDetail(IdEnter enter) {
         OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
-        if (inWhouseOrder == null) {
+        if (StringManaConstant.entityIsNull(inWhouseOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         InWhouseDetailResult result = new InWhouseDetailResult();
@@ -622,10 +624,10 @@ public class InWhouseServiceImpl implements InWhouseService {
                 List<InWhouseDetailScooterResult> scooterResults = inWhouseOrderScooterBServiceMapper.scooterBs(inWhouseOrder.getId());
                 if (CollectionUtils.isNotEmpty(scooterResults)) {
                     // 计算可入库数量 整车只会关联调拨单或者组装单
-                    if (inWhouseOrder.getRelationOrderType() != null && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.ALLOCATE.getValue())) {
+                    if (StringManaConstant.entityIsNotNull(inWhouseOrder.getRelationOrderType()) && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.ALLOCATE.getValue())) {
                         // 关联的是调拨单
                         inWhOrderRelationScooterAllocate(inWhouseOrder, scooterResults);
-                    } else if (inWhouseOrder.getRelationOrderType() != null && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
+                    } else if (StringManaConstant.entityIsNotNull(inWhouseOrder.getRelationOrderType()) && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
                         // 关联的组装单
                         inWhOrderRelationScooterCombin(inWhouseOrder, scooterResults);
                     }
@@ -638,10 +640,10 @@ public class InWhouseServiceImpl implements InWhouseService {
                 List<InWhouseDetailCombinResult> combinResults = inWhouseOrderCombinBServiceMapper.combinBs(inWhouseOrder.getId());
                 if (CollectionUtils.isNotEmpty(combinResults)) {
                     // 计算可入库的数量
-                    if (inWhouseOrder.getRelationOrderType() != null && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.ALLOCATE.getValue())) {
+                    if (StringManaConstant.entityIsNotNull(inWhouseOrder.getRelationOrderType()) && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.ALLOCATE.getValue())) {
                         // 关联的是调拨单
                         inWhOrderRelationCombinAllocate(inWhouseOrder, combinResults);
-                    } else if (inWhouseOrder.getRelationOrderType() != null && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
+                    } else if (StringManaConstant.entityIsNotNull(inWhouseOrder.getRelationOrderType()) && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
                         // 关联的组装单
                         inWhOrderRelationCombinCombin(inWhouseOrder, combinResults);
                     }
@@ -653,13 +655,13 @@ public class InWhouseServiceImpl implements InWhouseService {
                 List<InWhouseDetailPartsResult> partsResults = inWhouseOrderPartsBServiceMapper.partsBs(inWhouseOrder.getId());
                 if (CollectionUtils.isNotEmpty(partsResults)) {
                     // 计算可入库数量
-                    if (inWhouseOrder.getRelationOrderType() != null && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.ALLOCATE.getValue())) {
+                    if (StringManaConstant.entityIsNotNull(inWhouseOrder.getRelationOrderType()) && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.ALLOCATE.getValue())) {
                         // 关联的是调拨单
                         inWhOrderRelationPartsAllocate(inWhouseOrder, partsResults);
-                    } else if (inWhouseOrder.getRelationOrderType() != null && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
+                    } else if (StringManaConstant.entityIsNotNull(inWhouseOrder.getRelationOrderType()) && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
                         // 关联的组装单
                         inWhOrderRelationPartsCombin(inWhouseOrder, partsResults);
-                    } else if (inWhouseOrder.getRelationOrderType() != null && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue())) {
+                    } else if (StringManaConstant.entityIsNotNull(inWhouseOrder.getRelationOrderType()) && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue())) {
                         // 关联的生产采购单
                         inWhOrderRelationPartsPurchase(inWhouseOrder, partsResults);
                     }
@@ -673,13 +675,13 @@ public class InWhouseServiceImpl implements InWhouseService {
         // 关联的单据（可能关联生产采购单或者组装单）
         // 先判断关联的是哪种单据
         List<PurchaseRelationOrderResult> relationOrderResults = new ArrayList<>();
-        if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue()) && InWhTypeEnums.PURCHASE_IN_WHOUSE.getValue().equals(inWhouseOrder.getInWhType())) {
+        if (StringManaConstant.entityIsNotNull(inWhouseOrder.getRelationOrderType()) && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue()) && InWhTypeEnums.PURCHASE_IN_WHOUSE.getValue().equals(inWhouseOrder.getInWhType())) {
             // 生产采购单
             QueryWrapper<OpeProductionPurchaseOrder> purchaseQueryWrapper = new QueryWrapper<>();
             purchaseQueryWrapper.eq(OpeProductionPurchaseOrder.COL_ID, inWhouseOrder.getRelationOrderId());
             purchaseQueryWrapper.last("limit 1");
             OpeProductionPurchaseOrder purchaseOrder = opeProductionPurchaseOrderService.getOne(purchaseQueryWrapper);
-            if (purchaseOrder != null) {
+            if (StringManaConstant.entityIsNotNull(purchaseOrder)) {
                 PurchaseRelationOrderResult relationOrderResult = new PurchaseRelationOrderResult();
                 relationOrderResult.setId(purchaseOrder.getId());
                 relationOrderResult.setOrderNo(purchaseOrder.getPurchaseNo());
@@ -687,13 +689,13 @@ public class InWhouseServiceImpl implements InWhouseService {
                 relationOrderResult.setCreatedTime(purchaseOrder.getCreatedTime());
                 relationOrderResults.add(relationOrderResult);
             }
-        } else if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue()) && InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue().equals(inWhouseOrder.getInWhType())) {
+        } else if (StringManaConstant.entityIsNotNull(inWhouseOrder.getRelationOrderType()) && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue()) && InWhTypeEnums.PRODUCTIN_IN_WHOUSE.getValue().equals(inWhouseOrder.getInWhType())) {
             // 组装单
             QueryWrapper<OpeCombinOrder> combinOrderQueryWrapper = new QueryWrapper<>();
             combinOrderQueryWrapper.eq(OpeCombinOrder.COL_ID, inWhouseOrder.getRelationOrderId());
             combinOrderQueryWrapper.last("limit 1");
             OpeCombinOrder combinOrder = opeCombinOrderService.getOne(combinOrderQueryWrapper);
-            if (combinOrder != null) {
+            if (StringManaConstant.entityIsNotNull(combinOrder)) {
                 PurchaseRelationOrderResult relationOrderResult = new PurchaseRelationOrderResult();
                 relationOrderResult.setId(combinOrder.getId());
                 relationOrderResult.setOrderNo(combinOrder.getCombinNo());
@@ -701,13 +703,13 @@ public class InWhouseServiceImpl implements InWhouseService {
                 relationOrderResult.setCreatedTime(combinOrder.getCreatedTime());
                 relationOrderResults.add(relationOrderResult);
             }
-        } else if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.ALLOCATE.getValue())) {
+        } else if (StringManaConstant.entityIsNotNull(inWhouseOrder.getRelationOrderType()) && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.ALLOCATE.getValue())) {
             // 调拨单
             QueryWrapper<OpeAllocateOrder> allocateQueryWrapper = new QueryWrapper<>();
             allocateQueryWrapper.eq(OpeAllocateOrder.COL_ID, inWhouseOrder.getRelationOrderId());
             allocateQueryWrapper.last("limit 1");
             OpeAllocateOrder allocateOrder = opeAllocateOrderService.getOne(allocateQueryWrapper);
-            if (allocateOrder != null) {
+            if (StringManaConstant.entityIsNotNull(allocateOrder)) {
                 PurchaseRelationOrderResult relationOrderResult = new PurchaseRelationOrderResult();
                 relationOrderResult.setId(allocateOrder.getId());
                 relationOrderResult.setOrderNo(allocateOrder.getAllocateNo());
@@ -728,7 +730,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         // 还没有入库的车辆入库单集合
         Map<String, List<OpeInWhouseScooterB>> unInWhScooterMap = new HashMap<>();
         OpeCombinOrder combinOrder = opeCombinOrderService.getById(inWhouseOrder.getRelationOrderId());
-        if (combinOrder != null) {
+        if (StringManaConstant.entityIsNotNull(combinOrder)) {
             // 找到组装单所对应的入库单
             QueryWrapper<OpeInWhouseOrder> combinInWhouseOrderQw = new QueryWrapper<>();
             combinInWhouseOrderQw.eq(OpeInWhouseOrder.COL_RELATION_ORDER_ID, combinOrder.getId());
@@ -758,14 +760,14 @@ public class InWhouseServiceImpl implements InWhouseService {
                 for (InWhouseDetailScooterResult scooterResult : scooterResults) {
                     // 定义已经入库的数量
                     Integer alreadyNum = 0;
-                    if (inWhScooterMap != null && inWhScooterMap.size() > 0) {
+                    if (StringManaConstant.entityIsNotNull(inWhScooterMap) && inWhScooterMap.size() > 0) {
                         for (String key : inWhScooterMap.keySet()) {
                             if ((scooterResult.getGroupId() + "" + scooterResult.getColorId()).equals(key)) {
                                 alreadyNum = alreadyNum + (inWhScooterMap.get(key).stream().mapToInt(OpeInWhouseScooterB::getActInWhQty).sum());
                             }
                         }
                     }
-                    if (unInWhScooterMap != null && unInWhScooterMap.size() > 0) {
+                    if (StringManaConstant.entityIsNotNull(unInWhScooterMap) && unInWhScooterMap.size() > 0) {
                         for (String key : unInWhScooterMap.keySet()) {
                             if ((scooterResult.getGroupId() + "" + scooterResult.getColorId()).equals(key)) {
                                 alreadyNum = alreadyNum + (unInWhScooterMap.get(key).stream().mapToInt(OpeInWhouseScooterB::getInWhQty).sum());
@@ -787,7 +789,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         // 还没有入库的组装件入库单集合
         Map<Long, List<OpeInWhouseCombinB>> unInWhCombinMap = new HashMap<>();
         OpeCombinOrder combinOrder = opeCombinOrderService.getById(inWhouseOrder.getRelationOrderId());
-        if (combinOrder != null) {
+        if (StringManaConstant.entityIsNotNull(combinOrder)) {
             // 找到组装单所对应的入库单
             QueryWrapper<OpeInWhouseOrder> combinInWhouseOrderQw = new QueryWrapper<>();
             combinInWhouseOrderQw.eq(OpeInWhouseOrder.COL_RELATION_ORDER_ID, combinOrder.getId());
@@ -817,14 +819,14 @@ public class InWhouseServiceImpl implements InWhouseService {
                 for (InWhouseDetailCombinResult combinResult : combinResults) {
                     // 定义已经入库的数量
                     Integer alreadyNum = 0;
-                    if (inWhCombinMap != null && inWhCombinMap.size() > 0) {
+                    if (StringManaConstant.entityIsNotNull(inWhCombinMap) && 0 < inWhCombinMap.size()) {
                         for (Long key : inWhCombinMap.keySet()) {
                             if (key.equals(combinResult.getProductionCombinBomId())) {
                                 alreadyNum = alreadyNum + (inWhCombinMap.get(key).stream().mapToInt(OpeInWhouseCombinB::getActInWhQty).sum());
                             }
                         }
                     }
-                    if (unInWhCombinMap != null && unInWhCombinMap.size() > 0) {
+                    if (StringManaConstant.entityIsNotNull(unInWhCombinMap) && 0 < unInWhCombinMap.size()) {
                         for (Long key : unInWhCombinMap.keySet()) {
                             if (key.equals(combinResult.getProductionCombinBomId())) {
                                 alreadyNum = alreadyNum + (unInWhCombinMap.get(key).stream().mapToInt(OpeInWhouseCombinB::getInWhQty).sum());
@@ -846,7 +848,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         // 还没有入库的车辆入库单集合
         Map<Long, List<OpeInWhousePartsB>> unInWhCombinMap = new HashMap<>();
         OpeCombinOrder combinOrder = opeCombinOrderService.getById(inWhouseOrder.getRelationOrderId());
-        if (combinOrder != null) {
+        if (StringManaConstant.entityIsNotNull(combinOrder)) {
             // 找到组装单所对应的入库单
             QueryWrapper<OpeInWhouseOrder> combinInWhouseOrderQw = new QueryWrapper<>();
             combinInWhouseOrderQw.eq(OpeInWhouseOrder.COL_RELATION_ORDER_ID, combinOrder.getId());
@@ -876,14 +878,14 @@ public class InWhouseServiceImpl implements InWhouseService {
                 for (InWhouseDetailPartsResult partsResult : partsResults) {
                     // 定义已经入库的数量
                     Integer alreadyNum = 0;
-                    if (inWhCombinMap != null && inWhCombinMap.size() > 0) {
+                    if (StringManaConstant.entityIsNotNull(inWhCombinMap) && 0 < inWhCombinMap.size()) {
                         for (Long key : inWhCombinMap.keySet()) {
                             if (key.equals(partsResult.getPartsId())) {
                                 alreadyNum = alreadyNum + (inWhCombinMap.get(key).stream().mapToInt(OpeInWhousePartsB::getActInWhQty).sum());
                             }
                         }
                     }
-                    if (unInWhCombinMap != null && unInWhCombinMap.size() > 0) {
+                    if (StringManaConstant.entityIsNotNull(unInWhCombinMap) && 0 < unInWhCombinMap.size()) {
                         for (Long key : unInWhCombinMap.keySet()) {
                             if (key.equals(partsResult.getPartsId())) {
                                 alreadyNum = alreadyNum + (unInWhCombinMap.get(key).stream().mapToInt(OpeInWhousePartsB::getInWhQty).sum());
@@ -905,7 +907,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         // 还没有入库的车辆入库单集合
         Map<Long, List<OpeInWhousePartsB>> unInWhCombinMap = new HashMap<>();
         OpeProductionPurchaseOrder purchaseOrder = opeProductionPurchaseOrderService.getById(inWhouseOrder.getRelationOrderId());
-        if (purchaseOrder != null) {
+        if (StringManaConstant.entityIsNotNull(purchaseOrder)) {
             // 找到组装单所对应的入库单
             QueryWrapper<OpeInWhouseOrder> combinInWhouseOrderQw = new QueryWrapper<>();
             combinInWhouseOrderQw.eq(OpeInWhouseOrder.COL_RELATION_ORDER_ID, purchaseOrder.getId());
@@ -935,14 +937,14 @@ public class InWhouseServiceImpl implements InWhouseService {
                 for (InWhouseDetailPartsResult partsResult : partsResults) {
                     // 定义已经入库的数量
                     Integer alreadyNum = 0;
-                    if (inWhCombinMap != null && inWhCombinMap.size() > 0) {
+                    if (StringManaConstant.entityIsNotNull(inWhCombinMap) && 0 < inWhCombinMap.size()) {
                         for (Long key : inWhCombinMap.keySet()) {
                             if (key.equals(partsResult.getPartsId())) {
                                 alreadyNum = alreadyNum + (inWhCombinMap.get(key).stream().mapToInt(OpeInWhousePartsB::getActInWhQty).sum());
                             }
                         }
                     }
-                    if (unInWhCombinMap != null && unInWhCombinMap.size() > 0) {
+                    if (StringManaConstant.entityIsNotNull(unInWhCombinMap) && 0 < unInWhCombinMap.size()) {
                         for (Long key : unInWhCombinMap.keySet()) {
                             if (key.equals(partsResult.getPartsId())) {
                                 alreadyNum = alreadyNum + (unInWhCombinMap.get(key).stream().mapToInt(OpeInWhousePartsB::getInWhQty).sum());
@@ -969,7 +971,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         Map<String, List<OpeInWhouseScooterB>> frUnInMap = new HashMap<>();
         // 关联的是调拨单（法国仓库）  先找到调拨单
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(inWhouseOrder.getRelationOrderId());
-        if (allocateOrder != null) {
+        if (StringManaConstant.entityIsNotNull(allocateOrder)) {
             // 找到调拨单产生的中国的出库单（就是法国要入库的）
             List<OpeOutWhouseOrder> outWhouseOrders = inWhouseOrderServiceMapper.outOrderByAllocateId(allocateOrder.getId());
             if (CollectionUtils.isNotEmpty(outWhouseOrders)) {
@@ -1025,7 +1027,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         for (InWhouseDetailScooterResult scooterResult : scooterResults) {
             // 定义已经入库的数量
             Integer alreadyNum = 0;
-            if (outMap != null && outMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(outMap) && 0 < outMap.size()) {
                 // 中国仓库 已经出库的出库单
                 for (String key : outMap.keySet()) {
                     if ((scooterResult.getGroupId() + "" + scooterResult.getColorId()).equals(key)) {
@@ -1033,7 +1035,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     }
                 }
             }
-            if (unOutMap != null && unOutMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(unOutMap) && 0 < unOutMap.size()) {
                 // 中国仓库 还没有出库的出库单
                 for (String key : unOutMap.keySet()) {
                     if ((scooterResult.getGroupId() + "" + scooterResult.getColorId()).equals(key)) {
@@ -1041,7 +1043,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     }
                 }
             }
-            if (frInMap != null && frInMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(frInMap) && 0 < frInMap.size()) {
                 // 法国仓库  已经入库的车辆信息
                 for (String key : frInMap.keySet()) {
                     if ((scooterResult.getGroupId() + "" + scooterResult.getColorId()).equals(key)) {
@@ -1049,7 +1051,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     }
                 }
             }
-            if (frUnInMap != null && frUnInMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(frUnInMap) && 0 < frUnInMap.size()) {
                 // 法国仓库  已经入库的车辆信息
                 for (String key : frUnInMap.keySet()) {
                     if ((scooterResult.getGroupId() + "" + scooterResult.getColorId()).equals(key)) {
@@ -1075,7 +1077,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         Map<Long, List<OpeInWhouseCombinB>> frUnInMap = new HashMap<>();
         // 关联的是调拨单（法国仓库）  先找到调拨单
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(inWhouseOrder.getRelationOrderId());
-        if (allocateOrder != null) {
+        if (StringManaConstant.entityIsNotNull(allocateOrder)) {
             // 找到调拨单产生的中国的出库单（就是法国要入库的）
             List<OpeOutWhouseOrder> outWhouseOrders = inWhouseOrderServiceMapper.outOrderByAllocateId(allocateOrder.getId());
             if (CollectionUtils.isNotEmpty(outWhouseOrders)) {
@@ -1131,7 +1133,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         for (InWhouseDetailCombinResult combinResult : combinResults) {
             // 定义已经入库的数量
             Integer alreadyNum = 0;
-            if (outMap != null && outMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(outMap) && 0 < outMap.size()) {
                 // 中国仓库 已经出库的出库单
                 for (Long key : outMap.keySet()) {
                     if (combinResult.getProductionCombinBomId().equals(key)) {
@@ -1139,7 +1141,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     }
                 }
             }
-            if (unOutMap != null && unOutMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(unOutMap) && 0 < unOutMap.size()) {
                 // 中国仓库 还没有出库的出库单
                 for (Long key : unOutMap.keySet()) {
                     if (combinResult.getProductionCombinBomId().equals(key)) {
@@ -1147,7 +1149,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     }
                 }
             }
-            if (frInMap != null && frInMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(frInMap) && 0 < frInMap.size()) {
                 // 法国仓库  已经入库的车辆信息
                 for (Long key : frInMap.keySet()) {
                     if (combinResult.getProductionCombinBomId().equals(key)) {
@@ -1155,7 +1157,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     }
                 }
             }
-            if (frUnInMap != null && frUnInMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(frUnInMap) && 0 < frUnInMap.size()) {
                 // 法国仓库  已经入库的车辆信息
                 for (Long key : frUnInMap.keySet()) {
                     if (combinResult.getProductionCombinBomId().equals(key)) {
@@ -1181,7 +1183,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         Map<Long, List<OpeInWhousePartsB>> frUnInMap = new HashMap<>();
         // 关联的是调拨单（法国仓库）  先找到调拨单
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(inWhouseOrder.getRelationOrderId());
-        if (allocateOrder != null) {
+        if (StringManaConstant.entityIsNotNull(allocateOrder)) {
             // 找到调拨单产生的中国的出库单（就是法国要入库的）
             List<OpeOutWhouseOrder> outWhouseOrders = inWhouseOrderServiceMapper.outOrderByAllocateId(allocateOrder.getId());
             if (CollectionUtils.isNotEmpty(outWhouseOrders)) {
@@ -1237,7 +1239,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         for (InWhouseDetailPartsResult partsResult : partsResults) {
             // 定义已经入库的数量
             Integer alreadyNum = 0;
-            if (outMap != null && outMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(outMap) && 0 < outMap.size()) {
                 // 中国仓库 已经出库的出库单
                 for (Long key : outMap.keySet()) {
                     if (partsResult.getPartsId().equals(key)) {
@@ -1245,7 +1247,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     }
                 }
             }
-            if (unOutMap != null && unOutMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(unOutMap) && 0 < unOutMap.size()) {
                 // 中国仓库 还没有出库的出库单
                 for (Long key : unOutMap.keySet()) {
                     if (partsResult.getPartsId().equals(key)) {
@@ -1253,7 +1255,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     }
                 }
             }
-            if (frInMap != null && frInMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(frInMap) && 0 < frInMap.size()) {
                 // 法国仓库  已经入库的车辆信息
                 for (Long key : frInMap.keySet()) {
                     if (partsResult.getPartsId().equals(key)) {
@@ -1261,7 +1263,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     }
                 }
             }
-            if (frUnInMap != null && frUnInMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(frUnInMap) && 0 < frUnInMap.size()) {
                 // 法国仓库  已经入库的车辆信息
                 for (Long key : frUnInMap.keySet()) {
                     if (partsResult.getPartsId().equals(key)) {
@@ -1291,7 +1293,7 @@ public class InWhouseServiceImpl implements InWhouseService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult inWhConfirm(IdEnter enter) {
         OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
-        if (inWhouseOrder == null) {
+        if (StringManaConstant.entityIsNull(inWhouseOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if ((inWhouseOrder.getOrderType().equals(ProductTypeEnums.SCOOTER.getValue()) || inWhouseOrder.getOrderType().equals(ProductTypeEnums.COMBINATION.getValue())) && !inWhouseOrder.getInWhStatus().equals(NewInWhouseOrderStatusEnum.DRAFT.getValue())) {
@@ -1314,10 +1316,10 @@ public class InWhouseServiceImpl implements InWhouseService {
         opTraceEnter.setUserId(enter.getUserId());
         productionOrderTraceService.save(opTraceEnter);
 //        if (inWhouseOrder.getOrderType().equals(ProductTypeEnums.PARTS.getValue())){
-        if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue())) {
+        if (StringManaConstant.entityIsNotNull(inWhouseOrder.getRelationOrderType()) && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue())) {
             // 如果是部件入库单  点击确认入库  需要改变部件采购单的状态
             productionPurchasService.statusToPartWhOrAllInWh(inWhouseOrder.getRelationOrderId(), inWhouseOrder.getId(), enter.getUserId());
-        } else if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
+        } else if (StringManaConstant.entityIsNotNull(inWhouseOrder.getRelationOrderType()) && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.COMBIN_ORDER.getValue())) {
             // 如果是关联的组装单  点击确认入库  需要改变组装单的状态
             productionAssemblyOrderService.statusToPartWhOrAllInWh(inWhouseOrder.getRelationOrderId(), inWhouseOrder.getId(), enter.getUserId());
         }
@@ -1373,7 +1375,7 @@ public class InWhouseServiceImpl implements InWhouseService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult inWhReadyQc(IdEnter enter) {
         OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
-        if (inWhouseOrder == null) {
+        if (StringManaConstant.entityIsNull(inWhouseOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (!inWhouseOrder.getInWhStatus().equals(NewInWhouseOrderStatusEnum.DRAFT.getValue())) {
@@ -1392,7 +1394,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         orderStatusFlowEnter.setUserId(enter.getUserId());
         orderStatusFlowService.save(orderStatusFlowEnter);
         // todo 生成质检单
-        if (null != inWhouseOrder.getRelationOrderType() && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue())) {
+        if (StringManaConstant.entityIsNotNull(inWhouseOrder.getRelationOrderType()) && inWhouseOrder.getRelationOrderType().equals(OrderTypeEnums.FACTORY_PURCHAS.getValue())) {
             // 如果是部件 将对应的部件采购单的状态变为待入库
             productionPurchasService.statusToBeStored(inWhouseOrder.getRelationOrderId(), enter.getUserId());
         }
@@ -1503,7 +1505,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         // 还没有入库的组装件入库单集合
         Map<Long, List<OpeInWhouseCombinB>> unInWhCombinMap = new HashMap<>();
         OpeCombinOrder combinOrder = opeCombinOrderService.getById(enter.getId());
-        if (combinOrder != null) {
+        if (StringManaConstant.entityIsNotNull(combinOrder)) {
             // 找到组装单所对应的入库单
             QueryWrapper<OpeInWhouseOrder> combinInWhouseOrderQw = new QueryWrapper<>();
             combinInWhouseOrderQw.eq(OpeInWhouseOrder.COL_RELATION_ORDER_ID, combinOrder.getId());
@@ -1532,14 +1534,14 @@ public class InWhouseServiceImpl implements InWhouseService {
                 for (SaveOrUpdateCombinBEnter combinResult : list) {
                     // 定义需要减去的数量
                     Integer alreadyNum = 0;
-                    if (inWhCombinMap != null && inWhCombinMap.size() > 0) {
+                    if (StringManaConstant.entityIsNotNull(inWhCombinMap) && 0 < inWhCombinMap.size()) {
                         for (Long key : inWhCombinMap.keySet()) {
                             if (key.equals(combinResult.getProductionCombinBomId())) {
                                 alreadyNum = alreadyNum + (inWhCombinMap.get(key).stream().mapToInt(OpeInWhouseCombinB::getActInWhQty).sum());
                             }
                         }
                     }
-                    if (unInWhCombinMap != null && unInWhCombinMap.size() > 0) {
+                    if (StringManaConstant.entityIsNotNull(unInWhCombinMap) && 0 < unInWhCombinMap.size()) {
                         for (Long key : unInWhCombinMap.keySet()) {
                             if (key.equals(combinResult.getProductionCombinBomId())) {
                                 alreadyNum = alreadyNum + (unInWhCombinMap.get(key).stream().mapToInt(OpeInWhouseCombinB::getInWhQty).sum());
@@ -1565,7 +1567,7 @@ public class InWhouseServiceImpl implements InWhouseService {
             scooterCombinAbleNum(enter, list);
             // 追加 把可入库数量为0的数据过滤掉
             for (SaveOrUpdateScooterBEnter bEnter : list) {
-                if (bEnter.getAbleInWhQty() > 0) {
+                if (0 < bEnter.getAbleInWhQty()) {
                     result.add(bEnter);
                 }
             }
@@ -1580,7 +1582,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         // 还没有入库的车辆入库单集合
         Map<String, List<OpeInWhouseScooterB>> unInWhScooterMap = new HashMap<>();
         OpeCombinOrder combinOrder = opeCombinOrderService.getById(enter.getId());
-        if (combinOrder != null) {
+        if (StringManaConstant.entityIsNotNull(combinOrder)) {
             // 找到组装单所对应的入库单
             QueryWrapper<OpeInWhouseOrder> combinInWhouseOrderQw = new QueryWrapper<>();
             combinInWhouseOrderQw.eq(OpeInWhouseOrder.COL_RELATION_ORDER_ID, combinOrder.getId());
@@ -1609,14 +1611,14 @@ public class InWhouseServiceImpl implements InWhouseService {
                 for (SaveOrUpdateScooterBEnter bEnter : list) {
                     // 定义已经入库的数量
                     Integer alreadyNum = 0;
-                    if (inWhScooterMap != null && inWhScooterMap.size() > 0) {
+                    if (StringManaConstant.entityIsNotNull(inWhScooterMap) && 0 < inWhScooterMap.size()) {
                         for (String key : inWhScooterMap.keySet()) {
                             if (key.equals(bEnter.getGroupId() + "" + bEnter.getColorId())) {
                                 alreadyNum = alreadyNum + (inWhScooterMap.get(key).stream().mapToInt(OpeInWhouseScooterB::getActInWhQty).sum());
                             }
                         }
                     }
-                    if (unInWhScooterMap != null && unInWhScooterMap.size() > 0) {
+                    if (StringManaConstant.entityIsNotNull(unInWhScooterMap) && 0 < unInWhScooterMap.size()) {
                         for (String key : unInWhScooterMap.keySet()) {
                             if (key.equals(bEnter.getGroupId() + "" + bEnter.getColorId())) {
                                 alreadyNum = alreadyNum + (unInWhScooterMap.get(key).stream().mapToInt(OpeInWhouseScooterB::getInWhQty).sum());
@@ -1637,7 +1639,7 @@ public class InWhouseServiceImpl implements InWhouseService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult startQc(IdEnter enter) {
         OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
-        if (inWhouseOrder == null) {
+        if (StringManaConstant.entityIsNull(inWhouseOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (!inWhouseOrder.getInWhStatus().equals(InWhouseOrderStatusEnum.WAIT_INSPECTED.getValue())) {
@@ -1660,7 +1662,7 @@ public class InWhouseServiceImpl implements InWhouseService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult finishQc(IdEnter enter) {
         OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
-        if (inWhouseOrder == null) {
+        if (StringManaConstant.entityIsNull(inWhouseOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (!inWhouseOrder.getInWhStatus().equals(InWhouseOrderStatusEnum.INSPECTING.getValue())) {

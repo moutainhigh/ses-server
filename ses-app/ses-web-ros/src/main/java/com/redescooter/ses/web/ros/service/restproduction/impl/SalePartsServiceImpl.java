@@ -13,6 +13,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionPartsServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproduction.SalePartsMapper;
 import com.redescooter.ses.web.ros.dm.OpeProductionParts;
@@ -22,6 +23,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
 import com.redescooter.ses.web.ros.service.base.OpeSalePartsService;
 import com.redescooter.ses.web.ros.service.restproduction.SalePartsService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.restproduct.PartsNameData;
 import com.redescooter.ses.web.ros.vo.restproduct.PartsNoData;
 import com.redescooter.ses.web.ros.vo.restproduct.PartsNoEnter;
@@ -94,11 +96,11 @@ public class SalePartsServiceImpl implements SalePartsService {
         }
         QueryWrapper<OpeSaleParts> qw = new QueryWrapper<>();
         qw.eq(OpeSaleParts.COL_PRODUCT_NAME, enter.getProductName());
-        if (enter.getId() != null) {
+        if (StringManaConstant.entityIsNotNull(enter.getId())) {
             qw.ne(OpeSaleParts.COL_ID, enter.getId());
         }
         int count = opeSalePartsService.count(qw);
-        if (count > 0) {
+        if (0 < count) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
         }
     }
@@ -111,7 +113,7 @@ public class SalePartsServiceImpl implements SalePartsService {
         // 新增的校验
         check(enter);
         OpeSaleParts saleParts = opeSalePartsService.getById(enter.getId());
-        if (saleParts == null) {
+        if (StringManaConstant.entityIsNull(saleParts)) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         saleParts.setProductName(enter.getProductName());
@@ -130,7 +132,7 @@ public class SalePartsServiceImpl implements SalePartsService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult deleteSaleParts(IdEnter enter) {
         OpeSaleParts parts = opeSalePartsService.getById(enter.getId());
-        if (null == parts) {
+        if (StringManaConstant.entityIsNull(parts)) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         opeSalePartsService.removeById(enter.getId());
@@ -150,7 +152,7 @@ public class SalePartsServiceImpl implements SalePartsService {
         }
         jedisService.delKey(key);
         OpeSaleParts saleParts = opeSalePartsService.getById(enter.getId());
-        if (saleParts == null) {
+        if (StringManaConstant.entityIsNull(saleParts)) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         Integer saleStatus = saleParts.getSaleStutas();
@@ -165,7 +167,7 @@ public class SalePartsServiceImpl implements SalePartsService {
     void syncData(OpeSaleParts saleParts) {
         Long partsId = saleParts.getPartsId();
         OpeProductionParts parts = opeProductionPartsService.getById(partsId);
-        if (null != parts) {
+        if (StringManaConstant.entityIsNotNull(parts)) {
             SyncSalePartsDataEnter model = new SyncSalePartsDataEnter();
             model.setStatus(saleParts.getSaleStutas() == 1 ? 1 : -1);
             model.setPartsType(parts.getPartsType());
@@ -191,7 +193,7 @@ public class SalePartsServiceImpl implements SalePartsService {
         // 去空格
         enter = SesStringUtils.objStringTrim(enter);
         int totalNum = salePartsMapper.salePartsTotal(enter);
-        if (totalNum == 0) {
+        if (NumberUtil.eqZero(totalNum)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<SalePartsListResult> resultList = salePartsMapper.salePartsList(enter);

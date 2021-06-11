@@ -35,6 +35,7 @@ import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.website.WebsiteInquiryServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerAccessories;
@@ -167,7 +168,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      */
     @Override
     public List<ProductResult> scooters(ScootersEnter enter) {
-        if (ProductModelEnums.getProductModelEnumsByValue(enter.getModelCode()) == null) {
+        if (StringManaConstant.entityIsNull(ProductModelEnums.getProductModelEnumsByValue(enter.getModelCode()))) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         return websiteInquiryServiceMapper.scooters(enter);
@@ -211,12 +212,12 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
         //判断当前客户已经为正式客户 如果为正式客户 不允许添加 预订单
         OpeSysUser opeSysUser = opeSysUserService.getById(enter.getUserId());
-        if (opeSysUser == null) {
+        if (StringManaConstant.entityIsNull(opeSysUser)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail, opeSysUser.getLoginName()).eq(OpeCustomer::getCustomerSource,
                 CustomerSourceEnum.WEBSITE.getValue()));
-        if (opeCustomer == null) {
+        if (StringManaConstant.entityIsNull(opeCustomer)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         if (StringUtils.equals(opeCustomer.getStatus(), CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue())) {
@@ -233,20 +234,20 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         OpeCustomerAccessories topCase = null;
         if (enter.getBuyTopCase()) {
             topCase = opeCustomerAccessoriesService.getById(enter.getTopCaseId());
-            if (topCase == null) {
+            if (StringManaConstant.entityIsNull(topCase)) {
                 throw new SesWebRosException(ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getMessage());
             }
         }
 
         //电池的校验
         OpeCustomerAccessories battery = opeCustomerAccessoriesService.getById(enter.getAccessoryBatteryId());
-        if (battery == null) {
+        if (StringManaConstant.entityIsNull(battery)) {
             throw new SesWebRosException(ExceptionCodeEnums.BATTERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.BATTERY_IS_NOT_EXIST.getMessage());
         }
 
         //产品校验
         ProductResult product = websiteInquiryServiceMapper.queryProductById(enter.getProductId());
-        if (product == null) {
+        if (StringManaConstant.entityIsNull(product)) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
         //配件保存集合
@@ -326,7 +327,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         SesStringUtils.objStringTrim(enter);
 
         OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(enter.getId());
-        if (customerInquiry == null) {
+        if (StringManaConstant.entityIsNull(customerInquiry)) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
 
@@ -343,20 +344,20 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         OpeCustomerAccessories topCase = null;
         if (enter.getBuyTopCase()) {
             topCase = opeCustomerAccessoriesService.getById(enter.getTopCaseId());
-            if (topCase == null) {
+            if (StringManaConstant.entityIsNull(topCase)) {
                 throw new SesWebRosException(ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TOP_CASE_IS_NOT_EXIST.getMessage());
             }
         }
 
         //电池的校验
         OpeCustomerAccessories battery = opeCustomerAccessoriesService.getById(enter.getAccessoryBatteryId());
-        if (battery == null) {
+        if (StringManaConstant.entityIsNull(battery)) {
             throw new SesWebRosException(ExceptionCodeEnums.BATTERY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.BATTERY_IS_NOT_EXIST.getMessage());
         }
 
         //产品校验
         ProductResult product = websiteInquiryServiceMapper.queryProductById(enter.getProductId());
-        if (product == null) {
+        if (StringManaConstant.entityIsNull(product)) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_PRODUCT_IS_NOT_EXIST.getMessage());
         }
 
@@ -405,12 +406,12 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
 
         //查询客户个人信息
         OpeSysUser opeSysUser = opeSysUserService.getById(enter.getUserId());
-        if (opeSysUser == null) {
+        if (StringManaConstant.entityIsNull(opeSysUser)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail, opeSysUser.getLoginName()).eq(OpeCustomer::getCustomerSource,
                 CustomerSourceEnum.WEBSITE.getValue()));
-        if (opeCustomer == null) {
+        if (StringManaConstant.entityIsNull(opeCustomer)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
 
@@ -491,7 +492,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         queryWrapper.orderByDesc(OpeCustomerInquiry.COL_ORDER_NO);
         queryWrapper.last("limit 1");
         OpeCustomerInquiry inquiry = opeCustomerInquiryService.getOne(queryWrapper);
-        if(inquiry != null){
+        if(StringManaConstant.entityIsNotNull(inquiry)){
             // 说明今天已经有过单据了  只需要流水号递增
             code = OrderNoGenerateUtil.orderNoGenerate(inquiry.getOrderNo(),orderNoEnum);
         }else {
@@ -535,12 +536,12 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Override
     public OrderFormInfoResult orderFormInfo(IdEnter enter) {
         OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(enter.getId());
-        if (customerInquiry == null) {
+        if (StringManaConstant.entityIsNull(customerInquiry)) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
         //查询产品
         OpePartsProduct opePartsProduct = opePartsProductService.getById(customerInquiry.getProductId());
-        if (opePartsProduct == null) {
+        if (StringManaConstant.entityIsNull(opePartsProduct)) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
 
@@ -596,7 +597,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Override
     public GeneralResult payLastParagraph(IdEnter enter) {
         OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(enter.getId());
-        if (customerInquiry == null) {
+        if (StringManaConstant.entityIsNull(customerInquiry)) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(customerInquiry.getStatus(), InquiryStatusEnums.PAY_DEPOSIT.getValue())) {
@@ -608,7 +609,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         opeCustomerInquiryService.updateById(customerInquiry);
 
         OpeCustomer opeCustomer = opeCustomerService.getById(customerInquiry.getCustomerId());
-        if (opeCustomer == null) {
+        if (StringManaConstant.entityIsNull(opeCustomer)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(opeCustomer.getStatus(), CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue())) {
@@ -655,12 +656,12 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Override
     public CustomerInfoResult customerInfo(GeneralEnter enter) {
         OpeSysUser opeSysUser = opeSysUserService.getById(enter.getUserId());
-        if (opeSysUser == null) {
+        if (StringManaConstant.entityIsNull(opeSysUser)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         OpeCustomer opeCustomer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail, opeSysUser.getLoginName()).eq(OpeCustomer::getCustomerSource,
                 CustomerSourceEnum.WEBSITE.getValue()));
-        if (opeCustomer == null) {
+        if (StringManaConstant.entityIsNull(opeCustomer)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
 
@@ -707,7 +708,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Override
     public BooleanResult payAgainCheck(IdEnter enter) {
         OpeCustomerInquiry customerInquiry = opeCustomerInquiryService.getById(enter.getId());
-        if (customerInquiry == null) {
+        if (StringManaConstant.entityIsNull(customerInquiry)) {
             throw new SesWebRosException(ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
@@ -752,7 +753,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         switch (product.getProductModel()) {
             case "1":
                 //50CC 默认配置 一组电池
-                if (enter.getAccessoryBatteryQty() < 1) {
+                if (1 > enter.getAccessoryBatteryQty()) {
                     throw new SesWebRosException(ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getCode(), ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getMessage());
                 }
 
@@ -760,7 +761,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 break;
             case "2":
                 //100CC 默认配置 两组电池
-                if (enter.getAccessoryBatteryQty() < 2) {
+                if (2 > enter.getAccessoryBatteryQty()) {
                     throw new SesWebRosException(ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getCode(), ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getMessage());
                 }
                 qty = enter.getAccessoryBatteryQty() - 2;
@@ -768,7 +769,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
                 break;
             case "3":
                 //125CC 默认配置 配置四组电池
-                if (enter.getAccessoryBatteryQty() < 4) {
+                if (4 > enter.getAccessoryBatteryQty()) {
                     throw new SesWebRosException(ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getCode(), ExceptionCodeEnums.BATTERIES_DOES_NOT_MEET_THE_STANDARD.getMessage());
                 }
                 qty = enter.getAccessoryBatteryQty() - 4;
@@ -825,7 +826,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      * @param enter
      */
     private void checkCustomer(OpeCustomer enter) {
-        if (enter.getCity() == null) {
+        if (StringManaConstant.entityIsNull(enter.getCity())) {
             throw new SesWebRosException(ExceptionCodeEnums.CITY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CITY_CANNOT_EMPTY.getMessage());
         }
         if (enter.getCustomerType().equals(CustomerTypeEnum.PERSONAL.getValue())) {

@@ -26,6 +26,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.wms.cn.WhOutServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeFrStock;
 import com.redescooter.ses.web.ros.dm.OpeFrStockBill;
@@ -54,6 +55,7 @@ import com.redescooter.ses.web.ros.service.base.OpeStockService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserProfileService;
 import com.redescooter.ses.web.ros.service.base.OpeWhseService;
 import com.redescooter.ses.web.ros.service.wms.cn.WhOutService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.wms.cn.SavePartProductEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.StartWhOutOrderEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.WhOutConsigneeResult;
@@ -159,7 +161,7 @@ public class WhOutServiceImpl implements WhOutService {
         }
 
         Integer count = whOutServiceMapper.whOrderListCount(enter, statusList);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         return PageResult.create(enter, count, whOutServiceMapper.whOrderList(enter, statusList));
@@ -174,7 +176,7 @@ public class WhOutServiceImpl implements WhOutService {
     @Override
     public WhOutDetailResult detail(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
-        if (opeOutwhOrder == null) {
+        if (StringManaConstant.entityIsNull(opeOutwhOrder)) {
             //异常
             throw new SesWebRosException(ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getMessage());
         }
@@ -190,7 +192,7 @@ public class WhOutServiceImpl implements WhOutService {
     @Override
     public List<CommonNodeResult> nodeList(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
-        if (opeOutwhOrder == null) {
+        if (StringManaConstant.entityIsNull(opeOutwhOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getMessage());
         }
         return whOutServiceMapper.nodeList(enter);
@@ -205,11 +207,11 @@ public class WhOutServiceImpl implements WhOutService {
     @Override
     public PageResult<WhOutDetailProductPartListResult> detailProductPartList(WhOutDetailProductPartListEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
-        if (opeOutwhOrder == null) {
+        if (StringManaConstant.entityIsNull(opeOutwhOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getMessage());
         }
         int count = whOutServiceMapper.detailProductPartListCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         return PageResult.create(enter, count, whOutServiceMapper.detailProductPartList(enter));
@@ -225,7 +227,7 @@ public class WhOutServiceImpl implements WhOutService {
     @Override
     public GeneralResult cancel(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
-        if (opeOutwhOrder == null) {
+        if (StringManaConstant.entityIsNull(opeOutwhOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(WhOutStatusEnums.PENDING.getValue(), opeOutwhOrder.getStatus())) {
@@ -257,7 +259,7 @@ public class WhOutServiceImpl implements WhOutService {
     @Override
     public GeneralResult start(StartWhOutOrderEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
-        if (opeOutwhOrder == null) {
+        if (StringManaConstant.entityIsNull(opeOutwhOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(WhOutStatusEnums.PENDING.getValue(), opeOutwhOrder.getStatus())) {
@@ -265,7 +267,7 @@ public class WhOutServiceImpl implements WhOutService {
         }
 
         if (StringUtils.equals(opeOutwhOrder.getConsignType(), ConsignTypeEnums.AIR_PARCEL.getValue())) {
-            if (ConsignMethodEnums.getEnumByValue(enter.getAirParcelType()) == null) {
+            if (StringManaConstant.entityIsNull(ConsignMethodEnums.getEnumByValue(enter.getAirParcelType()))) {
                 throw new SesWebRosException(ExceptionCodeEnums.NO_LOAN.getCode(), ExceptionCodeEnums.NO_LOAN.getMessage());
             }
         }
@@ -302,7 +304,7 @@ public class WhOutServiceImpl implements WhOutService {
     @Override
     public GeneralResult prepareMaterial(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
-        if (opeOutwhOrder == null) {
+        if (StringManaConstant.entityIsNull(opeOutwhOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(WhOutStatusEnums.START_PREPARE_MATERIAL.getValue(), opeOutwhOrder.getStatus())) {
@@ -338,7 +340,7 @@ public class WhOutServiceImpl implements WhOutService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult outwh(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
-        if (opeOutwhOrder == null) {
+        if (StringManaConstant.entityIsNull(opeOutwhOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(WhOutStatusEnums.PREPARE_MATERIAL.getValue(), opeOutwhOrder.getStatus())) {
@@ -400,7 +402,7 @@ public class WhOutServiceImpl implements WhOutService {
     @Override
     public GeneralResult inWh(IdEnter enter) {
         OpeOutwhOrder opeOutwhOrder = opeOutwhOrderService.getById(enter.getId());
-        if (opeOutwhOrder == null) {
+        if (StringManaConstant.entityIsNull(opeOutwhOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.WH_OUT_ORDER_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(WhOutStatusEnums.OUT_WH.getValue(), opeOutwhOrder.getStatus())) {
@@ -466,16 +468,16 @@ public class WhOutServiceImpl implements WhOutService {
 
         //校验收货人
         OpeSysUserProfile opeSysUserProfile = opeSysUserProfileService.getOne(new LambdaQueryWrapper<OpeSysUserProfile>().eq(OpeSysUserProfile::getSysUserId, enter.getUserId()));
-        if (opeSysUserProfile == null) {
+        if (StringManaConstant.entityIsNull(opeSysUserProfile)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         //校验物流方式
-        if (ConsignTypeEnums.getEnumsByValue(enter.getConsignType()) == null) {
+        if (StringManaConstant.entityIsNull(ConsignTypeEnums.getEnumsByValue(enter.getConsignType()))) {
             throw new SesWebRosException(ExceptionCodeEnums.CONSIGN_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.CONSIGN_TYPE_NOT_EXIST.getMessage());
         }
         //查询仓库是否存在
         OpeWhse gogalWh = opeWhseService.getById(enter.getGogalId());
-        if (gogalWh == null) {
+        if (StringManaConstant.entityIsNull(gogalWh)) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
         }
         //库存校验
@@ -637,12 +639,12 @@ public class WhOutServiceImpl implements WhOutService {
     public PageResult<WhOutProductListResult> productList(WhOutProductListEnter enter) {
         //采购仓库 成品仓库
         List<OpeWhse> opeWhseList = opeWhseService.list(new LambdaQueryWrapper<OpeWhse>().in(OpeWhse::getType, WhseTypeEnums.ASSEMBLY.getValue(), WhseTypeEnums.PURCHAS.getValue()));
-        if (opeWhseList == null) {
+        if (StringManaConstant.entityIsNull(opeWhseList)) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
         }
         //采购仓库 成品仓库库存
         Integer count = whOutServiceMapper.productListCount(enter, opeWhseList);
-        if (count == null) {
+        if (StringManaConstant.entityIsNull(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         return PageResult.create(enter, count, whOutServiceMapper.productListList(enter, opeWhseList));
@@ -986,7 +988,7 @@ public class WhOutServiceImpl implements WhOutService {
                                 part.setUpdatedBy(enter.getUserId());
                                 part.setUpdatedTime(new Date());
                                 part.setAvailableQty(0);
-                                if (count == 0) {
+                                if (NumberUtil.eqZero(count)) {
                                     break;
                                 }
                             }
@@ -996,7 +998,7 @@ public class WhOutServiceImpl implements WhOutService {
                                 part.setUpdatedTime(new Date());
                             }
 
-                            if (count == 0) {
+                            if (NumberUtil.eqZero(count)) {
                                 break;
                             }
                         }
@@ -1025,7 +1027,7 @@ public class WhOutServiceImpl implements WhOutService {
     private void buildProductItem(IdEnter enter, List<OpeFrStockBill> opeStockBillList, List<OpeFrStock> opeFrStockList, List<OpeFrStockProduct> opeFrStockProductList) {
         //查询法国仓库
         OpeWhse opeWhse = opeWhseService.getOne(new LambdaQueryWrapper<OpeWhse>().eq(OpeWhse::getType, WhseTypeEnums.FR_WHSE.getValue()));
-        if (opeWhse == null) {
+        if (StringManaConstant.entityIsNull(opeWhse)) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
         }
 

@@ -35,6 +35,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.map.MapUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeExMapper;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeNodeMapper;
@@ -61,6 +62,7 @@ import com.redescooter.ses.web.ros.service.base.OpeCodebaseVinService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
 import com.redescooter.ses.web.ros.service.sim.OpeSimInformationService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.assign.done.enter.AssignedListEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignInputBatteryDetailEnter;
@@ -205,7 +207,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         SesStringUtils.objStringTrim(enter);
 
         int count = opeCarDistributeExMapper.getToBeAssignListCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<ToBeAssignListResult> list = opeCarDistributeExMapper.getToBeAssignList(enter);
@@ -267,7 +269,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
         // 客户信息
         ToBeAssignDetailCustomerInfoResult customerInfo = opeCarDistributeExMapper.getCustomerInfo(enter.getCustomerId());
-        if (null == customerInfo) {
+        if (StringManaConstant.entityIsNull(customerInfo)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         String customerType = customerInfo.getCustomerType();
@@ -296,12 +298,12 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             ToBeAssignDetailScooterInfoSubResult sub = new ToBeAssignDetailScooterInfoSubResult();
 
             Long productId = o.getProductId();
-            if (null == productId) {
+            if (StringManaConstant.entityIsNull(productId)) {
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
             }
             // 拿着产品id去ope_sale_scooter查询
             OpeSaleScooter opeSaleScooter = opeSaleScooterMapper.selectById(productId);
-            if (null == opeSaleScooter) {
+            if (StringManaConstant.entityIsNull(opeSaleScooter)) {
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
             }
             // 得到型号id和颜色id
@@ -309,14 +311,14 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             Long colorId = opeSaleScooter.getColorId();
 
             // 拿着型号id去ope_specificat_type查询
-            if (null != specificatId) {
+            if (StringManaConstant.entityIsNotNull(specificatId)) {
                 String specificatName = getSpecificatNameById(specificatId);
                 scooter.setSpecificatId(specificatId);
                 scooter.setSpecificatName(specificatName);
             }
 
             // 拿着颜色id去ope_color查询
-            if (null != colorId) {
+            if (StringManaConstant.entityIsNotNull(colorId)) {
                 Map<String, String> map = getColorNameAndValueById(colorId);
                 sub.setColorName(map.get("colorName"));
                 sub.setColorValue(map.get("colorValue"));
@@ -329,7 +331,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             wrapper.eq(OpeCustomerInquiryB::getInquiryId, o.getId());
             wrapper.last("limit 1");
             OpeCustomerInquiryB inquiryB = opeCustomerInquiryBService.getOne(wrapper);
-            if (null != inquiryB) {
+            if (StringManaConstant.entityIsNotNull(inquiryB)) {
                 sub.setBatteryNum(inquiryB.getProductQty());
             }
             sub.setToBeAssignCount(o.getScooterQuantity());
@@ -353,7 +355,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult getSeatNext(ToBeAssignSeatNextEnter enter) {
         logger.info("填写完座位数点击下一步的入参是:[{}]", enter);
-        if (null == enter || StringUtils.isBlank(enter.getList())) {
+        if (StringManaConstant.entityIsNull(enter) || StringUtils.isBlank(enter.getList())) {
             throw new SesWebRosException(ExceptionCodeEnums.SEAT_NOT_EMPTY.getCode(), ExceptionCodeEnums.SEAT_NOT_EMPTY.getMessage());
         }
 
@@ -378,7 +380,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             /*String vinCode = generateVINCode(specificatId, specificatName, seatNumber);
             logger.info("生成的VIN Code是:[{}]", vinCode);*/
 
-            if (vinCode.length() != 17) {
+            if (17 != vinCode.length()) {
                 throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
             }
             if (!vinCode.startsWith("VXSR2A")) {
@@ -387,7 +389,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
             // 根据车型id获得车型名称
             OpeSpecificatType specificatType = opeSpecificatTypeMapper.selectById(specificatId);
-            if (null == specificatType) {
+            if (StringManaConstant.entityIsNull(specificatType)) {
                 throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
             }
             String productType = ProductTypeEnum.showCode(specificatType.getSpecificatName());
@@ -408,7 +410,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             checkWrapper.eq(OpeCarDistribute::getVinCode, vinCode);
             checkWrapper.last("limit 1");
             OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
-            if (null != checkModel) {
+            if (StringManaConstant.entityIsNotNull(checkModel)) {
                 throw new SesWebRosException(ExceptionCodeEnums.VIN_HAS_USED.getCode(), ExceptionCodeEnums.VIN_HAS_USED.getMessage());
             }
 
@@ -441,7 +443,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             vinWrapper.eq(OpeCodebaseVin::getVin, vinCode);
             vinWrapper.last("limit 1");
             OpeCodebaseVin codebaseVin = opeCodebaseVinService.getOne(vinWrapper);
-            if (null != codebaseVin) {
+            if (StringManaConstant.entityIsNotNull(codebaseVin)) {
                 codebaseVin.setStatus(2);
                 codebaseVin.setUpdatedBy(enter.getUserId());
                 codebaseVin.setUpdatedTime(new Date());
@@ -454,7 +456,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             relationWrapper.eq(OpeCodebaseRelation::getVin, vinCode);
             relationWrapper.last("limit 1");
             OpeCodebaseRelation codebaseRelation = opeCodebaseRelationService.getOne(relationWrapper);
-            if (null == codebaseRelation) {
+            if (StringManaConstant.entityIsNull(codebaseRelation)) {
                 OpeCodebaseRelation relation = new OpeCodebaseRelation();
                 relation.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
                 relation.setDr(Constant.DR_FALSE);
@@ -487,7 +489,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult getLicensePlateNext(ToBeAssignLicensePlateNextEnter enter) {
         logger.info("填写完车牌点击下一步的入参是:[{}]", enter);
-        if (null == enter || StringUtils.isBlank(enter.getList())) {
+        if (StringManaConstant.entityIsNull(enter) || StringUtils.isBlank(enter.getList())) {
             throw new SesWebRosException(ExceptionCodeEnums.LICENSE_PLATE_NOT_EMPTY.getCode(), ExceptionCodeEnums.LICENSE_PLATE_NOT_EMPTY.getMessage());
         }
 
@@ -511,7 +513,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             checkWrapper.eq(OpeCarDistribute::getLicensePlate, licensePlate);
             checkWrapper.last("limit 1");
             OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
-            if (null != checkModel) {
+            if (StringManaConstant.entityIsNotNull(checkModel)) {
                 throw new SesWebRosException(ExceptionCodeEnums.PLATE_HAS_USED.getCode(), ExceptionCodeEnums.PLATE_HAS_USED.getMessage());
             }
 
@@ -553,16 +555,16 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         if (CollectionUtils.isNotEmpty(list)) {
             OpeInWhouseOrderSerialBind model = list.get(0);
             Long productId = model.getProductId();
-            if (null == productId) {
+            if (StringManaConstant.entityIsNull(productId)) {
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
             }
             OpeProductionScooterBom bom = opeProductionScooterBomMapper.selectById(productId);
             Long colorId = bom.getColorId();
-            if (null == colorId) {
+            if (StringManaConstant.entityIsNull(colorId)) {
                 throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
             }
             OpeColor color = opeColorMapper.selectById(colorId);
-            if (null != color) {
+            if (StringManaConstant.entityIsNotNull(color)) {
                 result.setColorId(color.getId());
                 result.setColorName(color.getColorName());
                 result.setColorValue(color.getColorValue());
@@ -579,7 +581,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult submit(ToBeAssignSubmitEnter enter) {
         logger.info("填写完R.SN并点击提交的入参是:[{}]", enter);
-        if (null == enter || StringUtils.isBlank(enter.getList())) {
+        if (StringManaConstant.entityIsNull(enter) || StringUtils.isBlank(enter.getList())) {
             throw new SesWebRosException(ExceptionCodeEnums.RSN_NOT_EMPTY.getCode(), ExceptionCodeEnums.RSN_NOT_EMPTY.getMessage());
         }
 
@@ -611,7 +613,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             lqw.eq(OpeCarDistribute::getRsn, rsn);
             lqw.last("limit 1");
             OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(lqw);
-            if (null != checkModel) {
+            if (StringManaConstant.entityIsNotNull(checkModel)) {
                 throw new SesWebRosException(ExceptionCodeEnums.RSN_HAS_USED.getCode(), ExceptionCodeEnums.RSN_HAS_USED.getMessage());
             }
 
@@ -648,7 +650,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             rsnWrapper.eq(OpeCodebaseRsn::getRsn, rsn);
             rsnWrapper.last("limit 1");
             OpeCodebaseRsn codebaseRsn = opeCodebaseRsnService.getOne(rsnWrapper);
-            if (null != codebaseRsn) {
+            if (StringManaConstant.entityIsNotNull(codebaseRsn)) {
                 codebaseRsn.setStatus(2);
                 codebaseRsn.setUpdatedBy(enter.getUserId());
                 codebaseRsn.setUpdatedTime(new Date());
@@ -686,7 +688,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult inputBattery(ToBeAssignInputBatteryEnter enter) {
         logger.info("录入电池的入参是:[{}]", enter);
-        if (null == enter || StringUtils.isBlank(enter.getList())) {
+        if (StringManaConstant.entityIsNull(enter) || StringUtils.isBlank(enter.getList())) {
             throw new SesWebRosException(ExceptionCodeEnums.BATTERY_NOT_EMPTY.getCode(), ExceptionCodeEnums.BATTERY_NOT_EMPTY.getMessage());
         }
 
@@ -703,7 +705,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
         // 客户信息
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getCustomerId());
-        if (null == opeCustomer) {
+        if (StringManaConstant.entityIsNull(opeCustomer)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(opeCustomer.getStatus(), CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue())) {
@@ -712,7 +714,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
         // 查询客户的账号信息(查pla_user表)
         QueryAccountResult accountInfo = accountBaseService.customerAccountDeatil(opeCustomer.getEmail());
-        if (null == accountInfo) {
+        if (StringManaConstant.entityIsNull(accountInfo)) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
 
@@ -729,7 +731,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             checkWrapper.like(OpeCarDistribute::getBattery, battery);
             checkWrapper.last("limit 1");
             OpeCarDistribute checkModel = opeCarDistributeMapper.selectOne(checkWrapper);
-            if (null != checkModel) {
+            if (StringManaConstant.entityIsNotNull(checkModel)) {
                 throw new SesWebRosException(ExceptionCodeEnums.BATTERY_HAS_USED.getCode(), ExceptionCodeEnums.BATTERY_HAS_USED.getMessage());
             }
 
@@ -787,7 +789,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             }
 
             // 新增出库记录
-            if (null != stock) {
+            if (StringManaConstant.entityIsNotNull(stock)) {
                 OpeWmsStockRecord record = new OpeWmsStockRecord();
                 record.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_RECORD));
                 record.setDr(DelStatusEnum.VALID.getCode());
@@ -807,7 +809,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             // 数据同步
             // 根据rsn查询sco_scooter表
             ScoScooterResult scoScooter = scooterService.getScoScooterByTableSn(rsn);
-            if (null == scoScooter) {
+            if (StringManaConstant.entityIsNull(scoScooter)) {
                 throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
             }
             Long scooterId = scoScooter.getId();
@@ -881,7 +883,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             List<OpeWmsStockSerialNumber> serialNumberList = opeWmsStockSerialNumberMapper.selectList(qw);
             if (CollectionUtils.isNotEmpty(serialNumberList)) {
                 for (OpeWmsStockSerialNumber serialNumber : serialNumberList) {
-                    if (null != serialNumber) {
+                    if (StringManaConstant.entityIsNotNull(serialNumber)) {
                         serialNumber.setStockStatus(WmsStockStatusEnum.UNAVAILABLE.getStatus());
                         opeWmsStockSerialNumberService.updateById(serialNumber);
                     }
@@ -899,7 +901,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         qw.eq(OpeCarDistribute::getCustomerId, opeCustomer.getId());
         qw.last("limit 1");
         OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectOne(qw);
-        if (null != opeCarDistribute) {
+        if (StringManaConstant.entityIsNotNull(opeCarDistribute)) {
             OpeSimInformation simInfo = new OpeSimInformation();
             String iccid = jedisCluster.get(opeCarDistribute.getTabletSn());
             if (StringUtils.isNotBlank(iccid)) {
@@ -952,7 +954,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
         // 客户信息
         ToBeAssignDetailCustomerInfoResult customerInfo = opeCarDistributeExMapper.getCustomerInfo(enter.getCustomerId());
-        if (null == customerInfo) {
+        if (StringManaConstant.entityIsNull(customerInfo)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         String customerType = customerInfo.getCustomerType();
@@ -983,12 +985,12 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             ToBeAssignDetailScooterInfoSubResult sub = new ToBeAssignDetailScooterInfoSubResult();
 
             Long productId = o.getProductId();
-            if (null == productId) {
+            if (StringManaConstant.entityIsNull(productId)) {
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
             }
             // 拿着产品id去ope_sale_scooter查询
             OpeSaleScooter opeSaleScooter = opeSaleScooterMapper.selectById(productId);
-            if (null == opeSaleScooter) {
+            if (StringManaConstant.entityIsNull(opeSaleScooter)) {
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
             }
             // 得到型号id和颜色id
@@ -996,14 +998,14 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             Long colorId = opeSaleScooter.getColorId();
 
             // 拿着型号id去ope_specificat_type查询
-            if (null != specificatId) {
+            if (StringManaConstant.entityIsNotNull(specificatId)) {
                 String specificatName = getSpecificatNameById(specificatId);
                 task.setSpecificatId(specificatId);
                 task.setSpecificatName(specificatName);
             }
 
             // 拿着颜色id去ope_color查询
-            if (null != colorId) {
+            if (StringManaConstant.entityIsNotNull(colorId)) {
                 Map<String, String> map = getColorNameAndValueById(colorId);
                 sub.setColorName(map.get("colorName"));
                 sub.setColorValue(map.get("colorValue"));
@@ -1016,7 +1018,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             lqw.eq(OpeCustomerInquiryB::getInquiryId, inquiryId);
             lqw.last("limit 1");
             OpeCustomerInquiryB inquiryB = opeCustomerInquiryBService.getOne(lqw);
-            if (null != inquiryB) {
+            if (StringManaConstant.entityIsNotNull(inquiryB)) {
                 sub.setBatteryNum(inquiryB.getProductQty());
             }
 
@@ -1048,7 +1050,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             ToBeAssignNodeScooterInfoSubResult sub = new ToBeAssignNodeScooterInfoSubResult();
             sub.setId(model.getId());
             sub.setToBeAssignCount(model.getQty());
-            if (null != model.getQty()) {
+            if (StringManaConstant.entityIsNotNull(model.getQty())) {
                 totalCount += model.getQty();
             }
 
@@ -1063,11 +1065,11 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             lqw.eq(OpeCustomerInquiryB::getInquiryId, inquiryId);
             lqw.last("limit 1");
             OpeCustomerInquiryB inquiryB = opeCustomerInquiryBService.getOne(lqw);
-            if (null != inquiryB) {
+            if (StringManaConstant.entityIsNotNull(inquiryB)) {
                 sub.setBatteryNum(inquiryB.getProductQty());
             }
 
-            if (null != model.getColorId()) {
+            if (StringManaConstant.entityIsNotNull(model.getColorId())) {
                 Map<String, String> map = getColorNameAndValueById(model.getColorId());
                 sub.setColorId(model.getColorId());
                 sub.setColorName(map.get("colorName"));
@@ -1088,7 +1090,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             subList.add(sub);
 
             ToBeAssignNodeScooterInfoResult scooter = new ToBeAssignNodeScooterInfoResult();
-            if (null != model.getSpecificatTypeId()) {
+            if (StringManaConstant.entityIsNotNull(model.getSpecificatTypeId())) {
                 String specificatName = getSpecificatNameById(model.getSpecificatTypeId());
                 scooter.setSpecificatId(model.getSpecificatTypeId());
                 scooter.setSpecificatName(specificatName);
@@ -1206,13 +1208,13 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         }
         OpeCustomerInquiry customerInquiry = list.get(0);
         Long productId = customerInquiry.getProductId();
-        if (null == productId) {
+        if (StringManaConstant.entityIsNull(productId)) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
 
         // 拿着产品id去ope_sale_scooter查询
         OpeSaleScooter opeSaleScooter = opeSaleScooterMapper.selectById(productId);
-        if (null == opeSaleScooter) {
+        if (StringManaConstant.entityIsNull(opeSaleScooter)) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         // 得到型号id和颜色id
@@ -1227,11 +1229,11 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      * 根据型号id获取型号名称
      */
     public String getSpecificatNameById(Long specificatId) {
-        if (null == specificatId) {
+        if (StringManaConstant.entityIsNull(specificatId)) {
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_ID_NOT_EMPTY.getCode(), ExceptionCodeEnums.SPECIFICAT_ID_NOT_EMPTY.getMessage());
         }
         OpeSpecificatType specificatType = opeSpecificatTypeMapper.selectById(specificatId);
-        if (null != specificatType) {
+        if (StringManaConstant.entityIsNotNull(specificatType)) {
             String name = specificatType.getSpecificatName();
             if (StringUtils.isNotBlank(name)) {
                 return name;
@@ -1244,12 +1246,12 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
      * 根据颜色id获取颜色名称和色值
      */
     public Map<String, String> getColorNameAndValueById(Long colorId) {
-        if (null == colorId) {
+        if (StringManaConstant.entityIsNull(colorId)) {
             throw new SesWebRosException(ExceptionCodeEnums.COLOR_ID_NOT_EMPTY.getCode(), ExceptionCodeEnums.COLOR_ID_NOT_EMPTY.getMessage());
         }
         Map<String, String> map = Maps.newHashMapWithExpectedSize(2);
         OpeColor color = opeColorMapper.selectById(colorId);
-        if (null != color) {
+        if (StringManaConstant.entityIsNotNull(color)) {
             String colorName = color.getColorName();
             String colorValue = color.getColorValue();
             if (StringUtils.isNotBlank(colorName)) {
@@ -1393,13 +1395,13 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
 
 //排除字母O、I
 
-        if (vin == null || uppervin.indexOf("O") >= 0 || uppervin.indexOf("I") >= 0) {
+        if (StringManaConstant.entityIsNull(vin) || 0 <=uppervin.indexOf("O") || 0 <= uppervin.indexOf("I")) {
             reultFlag = false;
 
         } else {
 //1:长度为17
 
-            if (vin.length() == 17) {
+            if (17 == vin.length()) {
                 int amount = 0;
                 char[] vinArr = uppervin.toCharArray();
                 for (int i = 0; i < vinArr.length; i++) {

@@ -16,15 +16,25 @@ public class NumberUtil {
 
     static final Integer NUM_ZERO = 0;
 
+    static final Integer NUM_ONE = 1;
+
+    static final Integer NUM_SIX = 6;
+
     static final Integer NUM_TWO = 2;
+
+    static final Integer NUM_EIGHT = 8;
 
     static final Integer NUM_TEN = 10;
 
     static final Integer NUM_TWENTY = 20;
 
+    static final Integer NUM_THIRTY = 30;
+
     static final Integer NUM_FORTY = 40;
 
     static final Integer NUM_FIFTY = 50;
+
+    static final Integer NUM_TWO_HUNDRED = 200;
 
 
     public static int getStrToNum(String str) {
@@ -50,6 +60,54 @@ public class NumberUtil {
             throw new SesWebRosException(ExceptionCodeEnums.QUANTITY_ILLEGAL.getCode(), ExceptionCodeEnums.QUANTITY_ILLEGAL.getMessage());
         }
         return num;
+    }
+
+    /**
+     * 小于 1 或者 大于 6
+     * @param num
+     * @return
+     */
+    public static boolean ltOneOrGtSix(int num){
+        if (NUM_ONE > num || NUM_SIX < num) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 小于 2 或者 大于 30
+     * @param num
+     * @return
+     */
+    public static boolean ltTwoOrGtThirty(int num){
+        if (NUM_TWO > num || NUM_THIRTY < num) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 小于8 或者 大于20
+     * @param num
+     * @return
+     */
+    public static boolean ltEightOrGtTwenty(int num) {
+        if (NUM_EIGHT > num || NUM_TWENTY < num) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 小于2 或者 大于 200
+     * @param num
+     * @return
+     */
+    public static boolean ltTwoOrGtTwoHundred(int num){
+        if (NUM_TWO > num || NUM_TWO_HUNDRED < num) {
+            return true;
+        }
+        return false;
     }
 
     /**

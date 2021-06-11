@@ -13,6 +13,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsFinishStockMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsQualifiedMapper;
@@ -50,6 +51,7 @@ import com.redescooter.ses.web.ros.service.base.OpeWmsQualifiedScooterStockServi
 import com.redescooter.ses.web.ros.service.base.OpeWmsStockRecordService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsQualifiedService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListEnter;
@@ -149,7 +151,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
     public PageResult<WmsQualifiedScooterListResult> scooterList(WmsFinishScooterListEnter enter) {
         SesStringUtils.objStringTrim(enter);
         int totalRows = wmsQualifiedMapper.totalRows(enter);
-        if (totalRows == 0) {
+        if (NumberUtil.eqZero(totalRows)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<WmsQualifiedScooterListResult> list = wmsQualifiedMapper.scooterList(enter);
@@ -160,7 +162,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
     @Override
     public WmsfinishScooterDetailResult scooterDetail(IdEnter enter) {
         OpeWmsQualifiedScooterStock scooterStock = opeWmsQualifiedScooterStockService.getById(enter.getId());
-        if (scooterStock == null) {
+        if (StringManaConstant.entityIsNull(scooterStock)) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
         WmsfinishScooterDetailResult result = wmsQualifiedMapper.scooterDetail(enter.getId());
@@ -175,7 +177,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
     public PageResult<WmsQualifiedCombinListResult> combineList(CombinationListEnter enter) {
         SesStringUtils.objStringTrim(enter);
         int totalRows = wmsQualifiedMapper.combinCotalRows(enter);
-        if (totalRows == 0) {
+        if (NumberUtil.eqZero(totalRows)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<WmsQualifiedCombinListResult> list = wmsQualifiedMapper.combinList(enter);
@@ -186,7 +188,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
     @Override
     public WmsfinishCombinDetailResult combinDetail(IdEnter enter) {
         OpeWmsQualifiedCombinStock combinStock = opeWmsQualifiedCombinStockService.getById(enter.getId());
-        if (combinStock == null) {
+        if (StringManaConstant.entityIsNull(combinStock)) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
         WmsfinishCombinDetailResult result = wmsQualifiedMapper.combinDetail(enter.getId());
@@ -201,16 +203,16 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
     public PageResult<WmsQualifiedPartsListResult> partsList(MaterialStockPartsListEnter enter) {
         SesStringUtils.objStringTrim(enter);
         int totalRows = wmsQualifiedMapper.partsCotalRows(enter);
-        if (totalRows == 0) {
+        if (NumberUtil.eqZero(totalRows)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<WmsQualifiedPartsListResult> list = wmsQualifiedMapper.partsList(enter);
         if (CollectionUtils.isNotEmpty(list)) {
             for (WmsQualifiedPartsListResult model : list) {
                 Long partsId = model.getPartsId();
-                if (null != partsId) {
+                if (StringManaConstant.entityIsNotNull(partsId)) {
                     OpeProductionParts parts = opeProductionPartsService.getById(partsId);
-                    if (null != parts) {
+                    if (StringManaConstant.entityIsNotNull(parts)) {
                         Integer idClass = parts.getIdCalss();
                         model.setIdClass(idClass);
                     }
@@ -224,7 +226,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
     @Override
     public MaterialpartsStockDetailResult partsDetail(IdEnter enter) {
         OpeWmsQualifiedPartsStock partsStock = opeWmsQualifiedPartsStockService.getById(enter.getId());
-        if (partsStock == null) {
+        if (StringManaConstant.entityIsNull(partsStock)) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
         MaterialpartsStockDetailResult result = wmsQualifiedMapper.partsDetail(enter.getId());
@@ -302,7 +304,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
     public GeneralResult inWhConfirm(OutOrInWhConfirmEnter enter) {
         // 不管怎么样 先找到入库单
         OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getById(enter.getId());
-        if (inWhouseOrder == null) {
+        if (StringManaConstant.entityIsNull(inWhouseOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         inWhouseOrder.setInWhStatus(NewInWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
@@ -366,7 +368,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
                         scooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_COLOR_ID, scooterB.getColorId());
                         scooterStockQueryWrapper.last("limit 1");
                         OpeWmsQualifiedScooterStock scooterStock = opeWmsQualifiedScooterStockService.getOne(scooterStockQueryWrapper);
-                        if (scooterStock != null) {
+                        if (StringManaConstant.entityIsNotNull(scooterStock)) {
                             scooterStock.setQty(scooterStock.getQty() + scooterB.getInWhQty());
                             scooterStocks.add(scooterStock);
                         } else {
@@ -408,7 +410,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
                         combinStockQueryWrapper.eq(OpeWmsQualifiedCombinStock.COL_PRODUCTION_COMBIN_BOM_ID, combinB.getProductionCombinBomId());
                         combinStockQueryWrapper.last("limit 1");
                         OpeWmsQualifiedCombinStock combinStock = opeWmsQualifiedCombinStockService.getOne(combinStockQueryWrapper);
-                        if (combinStock != null) {
+                        if (StringManaConstant.entityIsNotNull(combinStock)) {
                             combinStock.setQty(combinStock.getQty() + combinB.getInWhQty());
                             combinStocks.add(combinStock);
                         } else {
@@ -416,7 +418,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
                             combinStock.setId(idAppService.getId(SequenceName.OPE_WMS_COMBIN_STOCK));
                             // 找到组装件的中文/英文/法文
                             OpeProductionCombinBom combinBom = opeProductionCombinBomservice.getById(combinB.getProductionCombinBomId());
-                            if (combinBom != null) {
+                            if (StringManaConstant.entityIsNotNull(combinBom)) {
                                 combinStock.setEnName(combinBom.getEnName());
                                 combinStock.setFrName(combinBom.getFrName());
                                 combinStock.setCnName(combinBom.getCnName());
@@ -457,7 +459,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
                         partsStockQueryWrapper.eq(OpeWmsQualifiedPartsStock.COL_PARTS_ID, partsB.getPartsId());
                         partsStockQueryWrapper.last("limit 1");
                         OpeWmsQualifiedPartsStock partsStock = opeWmsQualifiedPartsStockService.getOne(partsStockQueryWrapper);
-                        if (partsStock != null) {
+                        if (StringManaConstant.entityIsNotNull(partsStock)) {
                             partsStock.setQty(partsStock.getQty() + partsB.getInWhQty());
                             partsStocks.add(partsStock);
                         } else {
@@ -472,7 +474,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
                             partsStock.setUpdatedTime(new Date());
                             // 找到部件的中文/英文/法文名称
                             OpeProductionParts partsBom = opeProductionPartsService.getById(partsB.getPartsId());
-                            if (partsBom != null) {
+                            if (StringManaConstant.entityIsNotNull(partsBom)) {
                                 partsStock.setCnName(partsBom.getCnName());
                                 partsStock.setEnName(partsBom.getEnName());
                                 partsStock.setFrName(partsBom.getFrName());
@@ -521,7 +523,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
     public GeneralResult outWhConfirm(OutOrInWhConfirmEnter enter) {
         // 不管怎么说 先找到出库单
         OpeOutWhouseOrder outWhouseOrder = opeOutWhouseOrderService.getById(enter.getId());
-        if (outWhouseOrder == null) {
+        if (StringManaConstant.entityIsNull(outWhouseOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         outWhouseOrder.setOutWhStatus(NewOutBoundOrderStatusEnums.OUT_STOCK.getValue());
@@ -590,7 +592,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
                         scooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_COLOR_ID, scooterB.getColorId());
                         scooterStockQueryWrapper.last("limit 1");
                         OpeWmsQualifiedScooterStock scooterStock = opeWmsQualifiedScooterStockService.getOne(scooterStockQueryWrapper);
-                        if (scooterStock != null) {
+                        if (StringManaConstant.entityIsNotNull(scooterStock)) {
                             scooterStock.setQty(scooterStock.getQty() - scooterB.getQty());
                             scooterStocks.add(scooterStock);
 
@@ -622,7 +624,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
                         combinStockQueryWrapper.eq(OpeWmsQualifiedCombinStock.COL_PRODUCTION_COMBIN_BOM_ID, combinB.getProductionCombinBomId());
                         combinStockQueryWrapper.last("limit 1");
                         OpeWmsQualifiedCombinStock combinStock = opeWmsQualifiedCombinStockService.getOne(combinStockQueryWrapper);
-                        if (combinStock != null) {
+                        if (StringManaConstant.entityIsNotNull(combinStock)) {
                             combinStock.setQty(combinStock.getQty() - combinB.getQty());
                             combinStocks.add(combinStock);
 
@@ -653,7 +655,7 @@ public class WmsQualifiedServiceImpl implements WmsQualifiedService {
                         partsStockQueryWrapper.eq(OpeWmsQualifiedPartsStock.COL_PARTS_ID, partsB.getPartsId());
                         partsStockQueryWrapper.last("limit 1");
                         OpeWmsQualifiedPartsStock partsStock = opeWmsQualifiedPartsStockService.getOne(partsStockQueryWrapper);
-                        if (partsStock != null) {
+                        if (StringManaConstant.entityIsNotNull(partsStock)) {
                             partsStock.setQty(partsStock.getQty() - partsB.getQty());
                             partsStocks.add(partsStock);
 

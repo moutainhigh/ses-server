@@ -14,6 +14,7 @@ import com.redescooter.ses.api.foundation.vo.common.CityResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.base.OpeSysStaffMapper;
 import com.redescooter.ses.web.ros.dao.sys.RoleServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
@@ -33,6 +34,7 @@ import com.redescooter.ses.web.ros.service.sys.MenuService;
 import com.redescooter.ses.web.ros.service.sys.RolePermissionService;
 import com.redescooter.ses.web.ros.service.sys.RoleService;
 import com.redescooter.ses.web.ros.service.sys.SalesAreaService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptAuthorityDetailsResult;
 import com.redescooter.ses.web.ros.vo.sys.position.PositionIdEnter;
 import com.redescooter.ses.web.ros.vo.sys.role.DeptRoleListResult;
@@ -125,7 +127,7 @@ public class RoleServiceImpl implements RoleService {
     public GeneralResult save(RoleEnter enter) {
         //employeeListEnter参数值去空格
         RoleEnter roleEnter = SesStringUtils.objStringTrim(enter);
-        if (roleEnter.getRoleName().length() < 2 || roleEnter.getRoleName().length() > 20) {
+        if (NumberUtil.ltTwoOrGtTwenty(roleEnter.getRoleName().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getCode(), ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getMessage());
         }
         String roleName = SesStringUtils.upperCaseString(enter.getRoleName());
@@ -143,7 +145,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult edit(RoleEnter roleEnter) {
-        if (roleEnter.getRoleName().length() < 2 || roleEnter.getRoleName().length() > 20) {
+        if (NumberUtil.ltTwoOrGtTwenty(roleEnter.getRoleName().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getCode(), ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getMessage());
         }
         //employeeListEnter参数值去空格
@@ -164,7 +166,7 @@ public class RoleServiceImpl implements RoleService {
         LambdaQueryWrapper<OpeSysUserRole> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeSysUserRole::getRoleId, enter.getId());
         int count = sysUserRoleService.count(wrapper);
-        if (count > 0) {
+        if (0 < count) {
             throw new SesWebRosException(ExceptionCodeEnums.UNBUNDLING_OF_EMPLOYEES.getCode(), ExceptionCodeEnums.UNBUNDLING_OF_EMPLOYEES.getMessage());
         }
         //删除角色
@@ -186,7 +188,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public List<DeptRoleListResult> list(RoleListEnter enter) {
-        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+        if (NumberUtil.notNullAndGtFifty(enter.getKeyword())) {
             return new ArrayList<>();
         }
         //查询所有部门
@@ -248,13 +250,13 @@ public class RoleServiceImpl implements RoleService {
 
     private OpeSysRole builderRole(Long id, RoleEnter enter) {
         OpeSysRole role = new OpeSysRole();
-        if (id == null || id == 0) {
+        if (StringManaConstant.entityIsNull(id) || 0 == id) {
             role.setId(idAppService.getId(SequenceName.OPE_SYS_ROLE));
             role.setDr(Constant.DR_FALSE);
             role.setCreatedBy(enter.getUserId());
             role.setCreateTime(new Date());
         } else {
-            if (sysRoleService.getById(enter.getRoleId()) == null) {
+            if (StringManaConstant.entityIsNull(sysRoleService.getById(enter.getRoleId()))) {
                 throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
             }
             role.setId(id);
@@ -314,7 +316,7 @@ public class RoleServiceImpl implements RoleService {
 
     private void checkRoleAuothParameter(RoleEnter enter, Set<Long> salesPermissionIds, Set<Long> meunPermissionIds) {
         // 部门过滤
-        if (sysDeptService.getById(enter.getDeptId()) == null) {
+        if (StringManaConstant.entityIsNull(sysDeptService.getById(enter.getDeptId()))) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
         }
 
@@ -352,13 +354,13 @@ public class RoleServiceImpl implements RoleService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult roleSave(RoleSaveOrEditEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
-        if (enter.getSort() != null && enter.getSort() < 0) {
+        if (StringManaConstant.entityIsNotNull(enter.getSort()) && 0 > enter.getSort()) {
             throw new SesWebRosException(ExceptionCodeEnums.SORT_NOT_NEG.getCode(), ExceptionCodeEnums.SORT_NOT_NEG.getMessage());
         }
-        if (enter.getRoleName().length() < 2 || enter.getRoleName().length() > 20) {
+        if (NumberUtil.ltTwoOrGtTwenty(enter.getRoleName().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getCode(), ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getMessage());
         }
-        if (!Strings.isNullOrEmpty(enter.getRoleDesc()) && enter.getRoleDesc().length() > 100) {
+        if (!Strings.isNullOrEmpty(enter.getRoleDesc()) && 100 < enter.getRoleDesc().length()) {
             throw new SesWebRosException(ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getMessage());
         }
         // 校验角色名称是否重复
@@ -383,12 +385,12 @@ public class RoleServiceImpl implements RoleService {
     public void checkRoleName(String roleName, Long roleId) {
         QueryWrapper<OpeSysRole> qw = new QueryWrapper<>();
         qw.eq(OpeSysRole.COL_ROLE_NAME, roleName);
-        if (roleId != null) {
+        if (StringManaConstant.entityIsNotNull(roleId)) {
             // 编辑
             qw.ne(OpeSysRole.COL_ID, roleId);
         }
         int count = sysRoleService.count(qw);
-        if (count > 0) {
+        if (0 < count) {
             throw new SesWebRosException(ExceptionCodeEnums.ROLE_NAME_EXIST.getCode(), ExceptionCodeEnums.ROLE_NAME_EXIST.getMessage());
         }
     }
@@ -400,7 +402,7 @@ public class RoleServiceImpl implements RoleService {
         QueryWrapper<OpeSysRole> qw = new QueryWrapper<>();
         qw.eq(OpeSysRole.COL_ROLE_CODE, roleCode);
         int count = sysRoleService.count(qw);
-        if (count > 0) {
+        if (0 < count) {
             createCode();
         }
         return roleCode;
@@ -410,20 +412,20 @@ public class RoleServiceImpl implements RoleService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult roleEdit(RoleSaveOrEditEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
-        if (enter.getRoleName().length() < 2 || enter.getRoleName().length() > 20) {
+        if (NumberUtil.ltTwoOrGtTwenty(enter.getRoleName().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getCode(), ExceptionCodeEnums.JOB_TITLE_IS_ILLEGAL.getMessage());
         }
-        if (!Strings.isNullOrEmpty(enter.getRoleDesc()) && enter.getRoleDesc().length() > 100) {
+        if (!Strings.isNullOrEmpty(enter.getRoleDesc()) && 100 < enter.getRoleDesc().length()) {
             throw new SesWebRosException(ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getMessage());
         }
         // 校验角色名称是否重复
         checkRoleName(enter.getRoleName(), enter.getId());
         OpeSysRole role = sysRoleService.getById(enter.getId());
-        if (role == null) {
+        if (StringManaConstant.entityIsNull(role)) {
             throw new SesWebRosException(ExceptionCodeEnums.ROLE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ROLE_IS_NOT_EXIST.getMessage());
         }
         // 如果角色的状态从正常变为禁用，需要把这个角色下面的员工全部禁用
-        if (role.getRoleStatus() == 1 && enter.getRoleStatus() == 2) {
+        if (1 == role.getRoleStatus() && 2 == enter.getRoleStatus()) {
             forbiddenStaff(role);
         }
         role.setPositionId(enter.getPositionId());
@@ -442,7 +444,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public GeneralResult roleDelete(RoleOpEnter enter) {
         OpeSysRole role = sysRoleService.getById(enter.getId());
-        if (role == null) {
+        if (StringManaConstant.entityIsNull(role)) {
             throw new SesWebRosException(ExceptionCodeEnums.ROLE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ROLE_IS_NOT_EXIST.getMessage());
         }
         // 检验角色下面是否有员工，有员工则不能删除
@@ -460,7 +462,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public RoleDetailResult roleDetail(RoleOpEnter enter) {
         OpeSysRole role = sysRoleService.getById(enter.getId());
-        if (role == null) {
+        if (StringManaConstant.entityIsNull(role)) {
             throw new SesWebRosException(ExceptionCodeEnums.ROLE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ROLE_IS_NOT_EXIST.getMessage());
         }
         RoleDetailResult roleDetail = roleServiceMapper.roleDetail(role.getId());
@@ -490,7 +492,7 @@ public class RoleServiceImpl implements RoleService {
             }
         }
         int totalRows = roleServiceMapper.totalRows(enter, flag ? null : deptIds, Constant.SYSTEM_ROOT);
-        if (totalRows == 0) {
+        if (NumberUtil.eqZero(totalRows)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<RoleListResult> list = roleServiceMapper.roleList(enter, flag ? null : deptIds, Constant.SYSTEM_ROOT);
