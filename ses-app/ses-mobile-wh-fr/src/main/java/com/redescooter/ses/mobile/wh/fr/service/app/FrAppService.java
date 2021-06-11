@@ -3,6 +3,7 @@ package com.redescooter.ses.mobile.wh.fr.service.app;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.mobile.wh.fr.dm.OpeWarehouseAccount;
 import com.redescooter.ses.mobile.wh.fr.vo.AppLoginEnter;
@@ -16,6 +17,8 @@ import com.redescooter.ses.mobile.wh.fr.vo.InquiryDetailResult;
 import com.redescooter.ses.mobile.wh.fr.vo.InquiryListAppEnter;
 import com.redescooter.ses.mobile.wh.fr.vo.InquiryListResult;
 
+
+import java.util.List;
 
 /**
  * @Description
@@ -38,6 +41,11 @@ public interface FrAppService {
      * 获得个人信息
      */
     OpeWarehouseAccount getUserInfo(GeneralEnter enter);
+
+    /**
+     * 检索数据下拉接口
+     */
+    List<String> getDataList(StringEnter enter);
 
     /**
      * 询价单列表

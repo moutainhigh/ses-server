@@ -53,11 +53,11 @@
                 and op.Import_lot=#{importLot}
             </if>
             <if test="keyword != null and keyword != ''">
-                and (op.cn_name like concat("%",#{keyword},"%")
-                or op.en_name like concat("%",#{keyword},"%")
-                or op.fr_name like concat("%",#{keyword},"%")
-                or os.supplier_name like concat("%",#{keyword},"%")
-                or op.parts_number LIKE CONCAT("%",#{keyword},"%")
+                and (op.cn_name like concat('%',#{keyword},'%')
+                or op.en_name like concat('%',#{keyword},'%')
+                or op.fr_name like concat('%',#{keyword},'%')
+                or os.supplier_name like concat('%',#{keyword},'%')
+                or op.parts_number LIKE CONCAT('%',#{keyword},'%')
                 )
             </if>
             <if test="ids != null and ids.size() != 0">
@@ -80,11 +80,11 @@
                 and parts.sec =#{sec}
             </if>
             <if test="keyword != null and keyword != ''">
-                and (parts.cn_name like concat("%",#{keyword},"%")
-                or parts.en_name like concat("%",#{keyword},"%")
-                or parts.fr_name like concat("%",#{keyword},"%")
-                or os.supplier_name like concat("%",#{keyword},"%")
-                or parts.parts_number LIKE CONCAT("%",#{keyword},"%")
+                and (parts.cn_name like concat('%',#{keyword},'%')
+                or parts.en_name like concat('%',#{keyword},'%')
+                or parts.fr_name like concat('%',#{keyword},'%')
+                or os.supplier_name like concat('%',#{keyword},'%')
+                or parts.parts_number LIKE CONCAT('%',#{keyword},'%')
                 )
             </if>
         </where>

@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.mobile.wh.fr.dm.OpeWarehouseAccount;
 import com.redescooter.ses.mobile.wh.fr.service.app.FrAppService;
@@ -26,6 +27,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @Description
@@ -67,6 +70,16 @@ public class FrAppController {
     @ApiOperation(value = "获得个人信息", notes = "获得个人信息")
     public Response<OpeWarehouseAccount> getUserInfo(@ModelAttribute GeneralEnter enter) {
         return new Response<>(frAppService.getUserInfo(enter));
+    }
+
+    /**
+     * 检索数据下拉列表
+     */
+    @PostMapping("/data")
+    @ApiOperation(value = "检索数据下拉列表", notes = "检索数据下拉列表")
+    @IgnoreLoginCheck
+    public Response<List<String>> getDataList(@ModelAttribute StringEnter enter) {
+        return new Response<>(frAppService.getDataList(enter));
     }
 
     /**

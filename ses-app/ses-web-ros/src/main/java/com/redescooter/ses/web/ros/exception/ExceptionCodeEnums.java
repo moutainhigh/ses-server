@@ -468,21 +468,21 @@ public enum ExceptionCodeEnums {
 
     PRODUCT_DOES_ALRADY_EXIST(10225, "当前产品类型已存在"),
 
-    QTY_IS_ILLEGAL(10226,"数量不合法"),
+    QTY_IS_ILLEGAL(10226, "数量不合法"),
 
-    DEPT_NAME_EXIST(10227,"当前父级部门下面部门名称重复"),
+    DEPT_NAME_EXIST(10227, "当前父级部门下面部门名称重复"),
 
-    ROLE_NAME_EXIST(10228,"角色名称已存在"),
+    ROLE_NAME_EXIST(10228, "角色名称已存在"),
 
-    PARENT_DEPT_ERROR(10229,"不允许将自己设置为父级部门！"),
+    PARENT_DEPT_ERROR(10229, "不允许将自己设置为父级部门！"),
 
-    PARENT_DEPT_NOT_EXIST(10230,"父级部门不存在！"),
+    PARENT_DEPT_NOT_EXIST(10230, "父级部门不存在！"),
 
-    PARENT_DEPT_IS_DISABLE(10231,"父级部门被禁用！"),
+    PARENT_DEPT_IS_DISABLE(10231, "父级部门被禁用！"),
 
-    TOP_DEPT_IS_NOT_DISABLE(10232,"顶级部门不能禁用！"),
+    TOP_DEPT_IS_NOT_DISABLE(10232, "顶级部门不能禁用！"),
 
-    DEPT_IS_ERROR(10233,"只能选择当前部门及其子部门！"),
+    DEPT_IS_ERROR(10233, "只能选择当前部门及其子部门！"),
 
     DEF_GROUP_IS_NOT_NULL(10234, "自定义项分组不能为空"),
 
@@ -534,11 +534,11 @@ public enum ExceptionCodeEnums {
 
     COLOR_NOT_FOUND(10258, "颜色找不到"),
 
-    CUSTOMERINQUIRY_NOT_FOUND(10259,"客户咨询找不到"),
+    CUSTOMERINQUIRY_NOT_FOUND(10259, "客户咨询找不到"),
 
-    SPECIFICAT_NOT_FOUND(10260,"规格找不到"),
+    SPECIFICAT_NOT_FOUND(10260, "规格找不到"),
 
-    ORDER_NOT_FOUND(10261,"订单不存在"),
+    ORDER_NOT_FOUND(10261, "订单不存在"),
 
     REFRESH_TOKEN_NOT_EXIST(10262, "刷新token不存在"),
 
@@ -576,11 +576,11 @@ public enum ExceptionCodeEnums {
 
     ORDER_HAS_DISTRIBUTED(10279, "此询价单已分配给其他账户"),
 
-    NOT_FOUND_BATTERY(10280,"配件中不存在电池"),
+    NOT_FOUND_BATTERY(10280, "配件中不存在电池"),
 
-    NOT_FOUND_PARTS(10281,"销售配件表中找不到电池配件"),
+    NOT_FOUND_PARTS(10281, "销售配件表中找不到电池配件"),
 
-    EDIT_FAIL(10282,"修改失败"),
+    EDIT_FAIL(10282, "修改失败"),
 
     PLEASE_MAINTAIN(10283, "请先维护车型和颜色"),
 
@@ -596,12 +596,15 @@ public enum ExceptionCodeEnums {
 
     STEP_HAS_INPUT_IN_APP(10289, "该步骤已在APP录入,请刷新页面"),
 
-    SPECIFICAT_NOT_MATCH(10290, "车型不匹配")
+    SPECIFICAT_NOT_MATCH(10290, "车型不匹配"),
 
+    NO_DEPOSIT_SET(10291, "请设置定金"),
 
+    SALE_PRICE_NOT_FOUND(10292,"销售价格不存在"),
 
+    DEPOSIT_ERROR(10293,"设置定金不能大于最小价格"),
 
-    ;
+    DEPOSIT_NOT_ZERO(10294,"设置定金不能为0");
 
     private int code;
 

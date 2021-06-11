@@ -1,12 +1,13 @@
 package com.redescooter.ses.service.scooter.service.base.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.redescooter.ses.service.scooter.dao.base.ScoScooterBbiMapper;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooterBbi;
+import com.redescooter.ses.service.scooter.service.base.ScoScooterBbiService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
 
-import com.redescooter.ses.service.scooter.dao.base.ScoScooterBbiMapper;
-import com.redescooter.ses.service.scooter.service.base.ScoScooterBbiService;
+import javax.annotation.Resource;
 
 /**
  * @author assert
@@ -14,7 +15,7 @@ import com.redescooter.ses.service.scooter.service.base.ScoScooterBbiService;
  */
 @Slf4j
 @Service
-public class ScoScooterBbiServiceImpl implements ScoScooterBbiService{
+public class ScoScooterBbiServiceImpl extends ServiceImpl<ScoScooterBbiMapper, ScoScooterBbi> implements ScoScooterBbiService{
 
     @Resource
     private ScoScooterBbiMapper scoScooterBbiMapper;

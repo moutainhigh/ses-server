@@ -1,18 +1,19 @@
 package com.redescooter.ses.service.scooter.service.base.impl;
 
-import com.redescooter.ses.service.scooter.dm.base.ScoScooterBms;
-import org.springframework.stereotype.Service;
-import javax.annotation.Resource;
-
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.service.scooter.dao.base.ScoScooterBmsMapper;
+import com.redescooter.ses.service.scooter.dm.base.ScoScooterBms;
 import com.redescooter.ses.service.scooter.service.base.ScoScooterBmsService;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * @author assert
  * @date 2020/11/20 14:26
  */
 @Service
-public class ScoScooterBmsServiceImpl implements ScoScooterBmsService {
+public class ScoScooterBmsServiceImpl extends ServiceImpl<ScoScooterBmsMapper, ScoScooterBms> implements ScoScooterBmsService {
 
     @Resource
     private ScoScooterBmsMapper scoScooterBmsMapper;

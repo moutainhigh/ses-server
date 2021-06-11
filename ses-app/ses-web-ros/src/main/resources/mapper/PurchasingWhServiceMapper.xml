@@ -11,9 +11,9 @@
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
             and (
-            part.parts_no like concat ("%",#{enter.keyword},"%") or
-            part.en_name like concat ("%",#{enter.keyword},"%") or
-            part.cn_name like concat ("%",#{enter.keyword},"%")
+            part.parts_no like concat ('%',#{enter.keyword},'%') or
+            part.en_name like concat ('%',#{enter.keyword},'%') or
+            part.cn_name like concat ('%',#{enter.keyword},'%')
             )
         </if>
     </sql>
@@ -27,9 +27,9 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and (
-            part.parts_no like concat ("%",#{keyword},"%") or
-            part.en_name like concat ("%",#{keyword},"%") or
-            part.cn_name like concat ("%",#{keyword},"%")
+            part.parts_no like concat ('%',#{keyword},'%') or
+            part.en_name like concat ('%',#{keyword},'%') or
+            part.cn_name like concat ('%',#{keyword},'%')
             )
         </if>
         group by id, partN, type, en_name, cn_name
@@ -43,9 +43,9 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and (
-            part.parts_no like concat ("%",#{keyword},"%") or
-            part.en_name like concat ("%",#{keyword},"%") or
-            part.cn_name like concat ("%",#{keyword},"%")
+            part.parts_no like concat ('%',#{keyword},'%') or
+            part.en_name like concat ('%',#{keyword},'%') or
+            part.cn_name like concat ('%',#{keyword},'%')
             )
         </if>
         group by id, partN, type, en_name, cn_name
@@ -65,9 +65,9 @@
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
             and (
-            product.product_number like concat ("%",#{enter.keyword},"%") or
-            product.en_name like concat ("%",#{enter.keyword},"%") or
-            product.cn_name like concat ("%",#{enter.keyword},"%")
+            product.product_number like concat ('%',#{enter.keyword},'%') or
+            product.en_name like concat ('%',#{enter.keyword},'%') or
+            product.cn_name like concat ('%',#{enter.keyword},'%')
             )
         </if>
     </sql>
@@ -86,9 +86,9 @@
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
             and (
-            parts.parts_no like concat ("%",#{enter.keyword},"%") or
-            parts.en_name like concat ("%",#{enter.keyword},"%") or
-            parts.cn_name like concat ("%",#{enter.keyword},"%")
+            parts.parts_no like concat ('%',#{enter.keyword},'%') or
+            parts.en_name like concat ('%',#{enter.keyword},'%') or
+            parts.cn_name like concat ('%',#{enter.keyword},'%')
             )
         </if>
     </sql>
@@ -365,9 +365,9 @@ from (
         </if>
         <if test="param1.keyword != null and param1.keyword != ''">
             and (
-            product.product_number like concat ("%",#{param1.keyword},"%") or
-            product.en_name like concat ("%",#{param1.keyword},"%") or
-            product.cn_name like concat ("%",#{param1.keyword},"%")
+            product.product_number like concat ('%',#{param1.keyword},'%') or
+            product.en_name like concat ('%',#{param1.keyword},'%') or
+            product.cn_name like concat ('%',#{param1.keyword},'%')
             )
         </if>
     </sql>
@@ -386,9 +386,9 @@ from (
         </if>
         <if test="param1.keyword != null and param1.keyword != ''">
             and (
-            parts.parts_no like concat ("%",#{param1.keyword},"%") or
-            parts.en_name like concat ("%",#{param1.keyword},"%") or
-            parts.cn_name like concat ("%",#{param1.keyword},"%")
+            parts.parts_no like concat ('%',#{param1.keyword},'%') or
+            parts.en_name like concat ('%',#{param1.keyword},'%') or
+            parts.cn_name like concat ('%',#{param1.keyword},'%')
             )
         </if>
     </sql>

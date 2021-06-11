@@ -110,7 +110,7 @@ public class SalePriceServiceImpl implements SalePriceService {
             int minNum = numMap.get(configKey);
             int i = minNum;
             for (int period : collect.keySet()) {
-                BigDecimal batteryPeriod = battery.divide(new BigDecimal(period), 2, BigDecimal.ROUND_DOWN);//电池分期的价格
+                BigDecimal batteryPeriod = battery.divide(new BigDecimal(period), 2, BigDecimal.ROUND_UP);//电池分期的价格
                 for (i = minNum; i <= 4; i++) {
                     Map<String, SalesPriceResult> map1 = new HashMap<>();
                     BigDecimal shouldPayPeriod = collect.get(period).getShouldPayPeriod().add(batteryPeriod.multiply(new BigDecimal(i - minNum)));

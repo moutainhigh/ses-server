@@ -38,4 +38,7 @@ public interface OrderMapper {
      * @return
      */
     List<OrderDetailsResult> getOrderlist(GeneralEnter enter);
+
+
+    int deleteOrder(Long id);
 }

@@ -16,6 +16,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.website.constant.SequenceName;
+import com.redescooter.ses.web.website.dao.OrderBMapper;
 import com.redescooter.ses.web.website.dao.OrderMapper;
 import com.redescooter.ses.web.website.dao.ScooterPurchaseMapper;
 import com.redescooter.ses.web.website.dm.SiteCustomer;
@@ -110,6 +111,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private OrderMapper orderMapper;
+
+    @Autowired
+    private OrderBMapper orderBMapper;
 
     @Autowired
     private ScooterPurchaseMapper scooterPurchaseMapper;
@@ -618,15 +622,16 @@ public class OrderServiceImpl implements OrderService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult deleteOrder(IdEnter enter) {
         SiteOrder siteOrder = siteOrderService.getById(enter.getId());
-        if (siteOrder == null) {
+        if (null == siteOrder) {
             throw new SesWebsiteException(ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST_EXIST.getMessage());
         }
-        siteOrderService.removeById(enter.getId());
+        orderMapper.deleteOrder(enter.getId());
         QueryWrapper<SiteOrderB> qw = new QueryWrapper<>();
         qw.eq(SiteOrderB.COL_ORDER_ID, enter.getId());
+
         List<SiteOrderB> orderBS = siteOrderBService.list(qw);
         if (CollectionUtils.isNotEmpty(orderBS)) {
-            siteOrderBService.removeByIds(orderBS.stream().map(SiteOrderB::getId).collect(Collectors.toList()));
+            orderBMapper.deleteOrderB(enter.getId());
         }
         // 官网数据删除  需要把ROS那边对应的订单删除
         try {

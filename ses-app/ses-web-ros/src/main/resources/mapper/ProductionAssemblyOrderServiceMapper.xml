@@ -177,13 +177,13 @@
     </select>
 
     <select id="scooterGroupData" resultType="com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult">
-        select distinct bom.group_id       as groupId,
+        select distinct
+               bom.group_id       as groupId,
                spgroup.group_name as groupName,
                1                  as productionType
         from ope_production_scooter_bom bom
-                 left join ope_specificat_group spgroup on bom.group_id = spgroup.id and spgroup.dr = 0
-        where bom.dr = 0
-          and bom.bom_status = 1
+        inner join ope_specificat_group spgroup on bom.group_id = spgroup.id and spgroup.dr = 0
+        where bom.dr = 0 and bom.bom_status = 1
     </select>
 
     <select id="colorData" resultType="com.redescooter.ses.web.ros.vo.specificat.ColorDataResult">

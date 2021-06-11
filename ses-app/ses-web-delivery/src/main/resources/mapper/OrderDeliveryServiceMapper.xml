@@ -16,12 +16,12 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and (
-            cdy.order_no like concat("%",#{keyword},"%")
-            or cdy.recipient like concat("%",#{keyword},"%")
-            or cdy.recipient_tel like concat("%",#{keyword},"%")
-            or cup.last_name like concat("%",#{keyword},"%")
-            or cup.first_name like concat("%",#{keyword},"%")
-            or cts.license_plate like concat("%",#{keyword},"%")
+            cdy.order_no like concat('%',#{keyword},'%')
+            or cdy.recipient like concat('%',#{keyword},'%')
+            or cdy.recipient_tel like concat('%',#{keyword},'%')
+            or cup.last_name like concat('%',#{keyword},'%')
+            or cup.first_name like concat('%',#{keyword},'%')
+            or cts.license_plate like concat('%',#{keyword},'%')
             )
         </if>
     </sql>
@@ -194,7 +194,7 @@
         left join cor_user_profile profile on cd.user_id = profile.USER_ID and profile.dr = 0
         where scooter.tenant_id = #{tenantId}
         <if test="licensePlate != null and licensePlate != ''">
-            and scooter.license_plate like concat("%",#{licensePlate},"%")
+            and scooter.license_plate like concat('%',#{licensePlate},'%')
         </if>
     </select>
 

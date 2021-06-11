@@ -1,13 +1,14 @@
 package com.redescooter.ses.service.scooter.service.base;
 
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooterEcu;
 
 /**
  * @author assert
  * @date 2020/11/20 14:32
  */
-public interface ScoScooterEcuService{
+public interface ScoScooterEcuService extends IService<ScoScooterEcu> {
 
     int deleteByPrimaryKey(Long id);
 

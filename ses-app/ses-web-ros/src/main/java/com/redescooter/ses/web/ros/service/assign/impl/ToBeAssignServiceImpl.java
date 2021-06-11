@@ -11,6 +11,9 @@ import com.redescooter.ses.api.common.enums.assign.ScooterTypeEnum;
 import com.redescooter.ses.api.common.enums.assign.YearEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
+import com.redescooter.ses.api.common.enums.date.DayCodeEnum;
+import com.redescooter.ses.api.common.enums.date.MonthCodeEnum;
+import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
 import com.redescooter.ses.api.common.enums.wms.WmsStockStatusEnum;
@@ -19,12 +22,19 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.common.vo.scooter.ColorDTO;
+import com.redescooter.ses.api.common.vo.scooter.SpecificGroupDTO;
+import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.scooter.AssignScooterService;
 import com.redescooter.ses.api.foundation.vo.tenant.QueryAccountResult;
+import com.redescooter.ses.api.hub.service.admin.ScooterModelService;
 import com.redescooter.ses.api.hub.service.corporate.CorporateScooterService;
 import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
+import com.redescooter.ses.api.hub.service.operation.ColorService;
+import com.redescooter.ses.api.hub.service.operation.SpecificService;
 import com.redescooter.ses.api.hub.vo.HubSaveScooterEnter;
+import com.redescooter.ses.api.hub.vo.admin.AdmScooter;
 import com.redescooter.ses.api.mobile.b.service.ScooterMobileBService;
 import com.redescooter.ses.api.mobile.b.vo.CorDriver;
 import com.redescooter.ses.api.mobile.b.vo.CorDriverScooter;
@@ -205,11 +215,20 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @Autowired
     private JedisCluster jedisCluster;
 
+    @Autowired
+    private ScooterModelService scooterModelService;
+
     /**
      * sim card
      */
     @Autowired
     private OpeSimInformationService simInformationService;
+
+    @DubboReference
+    private SpecificService specificService;
+
+    @DubboReference
+    private ColorService colorService;
 
     /**
      * 待分配列表
@@ -822,12 +841,12 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
             }
 
             // 修改主表
-            OpeCarDistribute model = new OpeCarDistribute();
-            model.setId(id);
-            model.setBattery(battery);
-            model.setUpdatedBy(enter.getUserId());
-            model.setUpdatedTime(new Date());
-            opeCarDistributeMapper.updateById(model);
+            OpeCarDistribute obj = new OpeCarDistribute();
+            obj.setId(id);
+            obj.setBattery(battery);
+            obj.setUpdatedBy(enter.getUserId());
+            obj.setUpdatedTime(new Date());
+            opeCarDistributeMapper.updateById(obj);
 
             // 获得车牌号
             OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectById(id);
@@ -974,6 +993,68 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                         opeWmsStockSerialNumberService.updateById(serialNumber);
                     }
                 }
+            }
+
+            // 创建oms车辆信息
+            LambdaQueryWrapper<OpeCarDistribute> omsWrapper = new LambdaQueryWrapper<>();
+            omsWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+            omsWrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
+            omsWrapper.last("limit 1");
+            OpeCarDistribute model = opeCarDistributeMapper.selectOne(omsWrapper);
+            if (null == model) {
+                throw new SesWebRosException(ExceptionCodeEnums.ASSIGN_SCOOTER_WRONG.getCode(), ExceptionCodeEnums.ASSIGN_SCOOTER_WRONG.getMessage());
+            }
+
+            // 型号名称
+            String modelName = getSpecificatNameById(model.getSpecificatTypeId());
+
+            CustomerIdEnter customerEnter = new CustomerIdEnter();
+            customerEnter.setCustomerId(enter.getCustomerId());
+            Map<String, Long> inquiryMap = getSpecificatIdAndColorId(customerEnter);
+            logger.info("询价单型号和颜色分别是:[{}]", inquiryMap);
+            Long groupId = inquiryMap.get("specificatId");
+            Long colorId = inquiryMap.get("colorId");
+
+            AdmScooter admScooter = scooterModelService.getScooterBySn(model.getTabletSn());
+            if (null != admScooter) {
+                throw new SesWebRosException(ExceptionCodeEnums.SN_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.SN_ALREADY_EXISTS.getMessage());
+            }
+            logger.info("车辆不存在");
+            SpecificGroupDTO group = specificService.getSpecificGroupById(groupId);
+            ColorDTO color = colorService.getColorInfoById(colorId);
+            if (null == group) {
+                throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
+            }
+            if (null == color) {
+                throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+            }
+
+            // 新增adm_scooter表
+            AdmScooter scooter = new AdmScooter();
+            scooter.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE_NODE));
+            scooter.setDr(Constant.DR_FALSE);
+            scooter.setSn(model.getTabletSn());
+            scooter.setGroupId(groupId);
+            scooter.setColorId(colorId);
+            scooter.setMacAddress(model.getBluetoothAddress());
+            scooter.setScooterController(ScooterModelEnum.getScooterModelType(modelName));
+            scooter.setCreatedBy(0L);
+            scooter.setCreatedTime(new Date());
+            scooter.setUpdatedBy(0L);
+            scooter.setUpdatedTime(new Date());
+            scooter.setColorName(color.getColorName());
+            scooter.setColorValue(color.getColorValue());
+            scooter.setGroupName(group.getGroupName());
+            scooter.setMacName(model.getBluetoothAddress());
+            scooterModelService.insertScooter(scooter);
+            logger.info("新增adm_scooter表成功");
+
+            // 根据平板序列号(sn)查询在sco_scooter表是否存在 不存在返回true 存在返回false
+            Boolean flag = scooterService.getSnIsExist(scooter.getSn());
+            if (flag) {
+                logger.info("sn在sco_scooter表不存在");
+                String scooterNo = generateScooterNo();
+                scooterService.syncScooterData(buildData(scooter.getId(), scooter.getSn(), scooter.getScooterController(), enter.getUserId(), scooterNo));
             }
         }
 
@@ -1280,6 +1361,44 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     }
 
     /**
+     * 组装同步车辆数据
+     */
+    private List<SyncScooterDataDTO> buildData(Long scooterId, String tabletSn, Integer scooterModel, Long userId, String scooterNo) {
+        SyncScooterDataDTO model = new SyncScooterDataDTO();
+        model.setId(scooterId);
+        model.setScooterNo(scooterNo);
+        model.setTabletSn(tabletSn);
+        model.setModel(String.valueOf(scooterModel));
+        model.setUserId(userId);
+        return new ArrayList<>(Arrays.asList(model));
+    }
+
+    /**
+     * 生成车辆编号
+     */
+    private String generateScooterNo() {
+        Calendar cal = Calendar.getInstance();
+        String year = String.valueOf(cal.get(Calendar.YEAR));
+        int month = cal.get(Calendar.MONTH) + 1;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        // 编号规则：区域 + 产品范围 + 结构类型 + 额定功率 + 生产地点 + 年份 + 月份 + 生产流水号(数量从1开始)
+        StringBuilder sb = new StringBuilder();
+        sb.append("FR");
+        sb.append("ED");
+        sb.append("D");
+        sb.append("0");
+        sb.append(year.substring(2, 4));
+        sb.append(MonthCodeEnum.getMonthCodeByMonth(month));
+        // 获取当前时间戳,并截取最后6位拼接在编号最后
+        String timeStamp = String.valueOf(System.currentTimeMillis());
+        String sub = timeStamp.substring(timeStamp.length() - 6);
+        String number = String.format("%s%s%s", DayCodeEnum.getDayCodeByDay(day), "1", sub);
+        sb.append(number);
+        return sb.toString();
+    }
+
+    /**
      * 点击分配按钮校验询价单是否被操作过
      */
     /*@Override
@@ -1383,7 +1502,6 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
         int index = (int) (Math.random() * array.length);
         return array[index];
     }
-
 
     /**
      * 替换Vin的第九位数字（校验vin）

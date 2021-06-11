@@ -1,12 +1,13 @@
 package com.redescooter.ses.service.scooter.dao.base;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooterBbiBatteryWare;
 
 /**
  * @author assert
  * @date 2020/11/20 16:36
  */
-public interface ScoScooterBbiBatteryWareMapper {
+public interface ScoScooterBbiBatteryWareMapper extends BaseMapper<ScoScooterBbiBatteryWare> {
     int deleteByPrimaryKey(Long id);
 
     int insert(ScoScooterBbiBatteryWare record);
