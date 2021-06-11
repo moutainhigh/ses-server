@@ -143,7 +143,7 @@ public class SyncPriceServiceImpl implements SyncPriceService {
                 // 全款支付
                 BigDecimal deposit = enter.getDeposit();
                 BigDecimal balance = enter.getBalance();
-                BigDecimal price = deposit.add(balance);
+                BigDecimal price = balance;
                 model.setPrice(price);
             }
             model.setTax(enter.getTax());
