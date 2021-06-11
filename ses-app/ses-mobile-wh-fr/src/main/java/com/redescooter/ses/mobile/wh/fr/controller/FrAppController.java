@@ -77,7 +77,6 @@ public class FrAppController {
      */
     @PostMapping("/data")
     @ApiOperation(value = "检索数据下拉列表", notes = "检索数据下拉列表")
-    @IgnoreLoginCheck
     public Response<List<String>> getDataList(@ModelAttribute StringEnter enter) {
         return new Response<>(frAppService.getDataList(enter));
     }

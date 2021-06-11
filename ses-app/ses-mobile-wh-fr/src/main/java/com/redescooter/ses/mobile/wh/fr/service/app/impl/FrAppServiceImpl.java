@@ -339,15 +339,13 @@ public class FrAppServiceImpl implements FrAppService {
      */
     @Override
     public List<String> getDataList(StringEnter enter) {
-        checkToken(enter);
-        Long userId = getUserId(enter);
         if (null == enter || StringUtils.isBlank(enter.getKeyword())) {
             return Collections.EMPTY_LIST;
         }
         // 定义返回出参
         List<String> resultList = Lists.newArrayList();
 
-        List<String> nameList = opeCarDistributeExMapper.getNameDataList(enter, userId);
+        List<String> nameList = opeCarDistributeExMapper.getNameDataList(enter, enter.getUserId());
         if (CollectionUtils.isNotEmpty(nameList)) {
             for (String name : nameList) {
                 resultList.add(name);
@@ -357,7 +355,7 @@ public class FrAppServiceImpl implements FrAppService {
             }
         }
 
-        List<String> orderNoList = opeCarDistributeExMapper.getOrderNoDataList(enter, userId);
+        List<String> orderNoList = opeCarDistributeExMapper.getOrderNoDataList(enter, enter.getUserId());
         if (CollectionUtils.isNotEmpty(orderNoList)) {
             for (String orderNo : orderNoList) {
                 resultList.add(orderNo);
