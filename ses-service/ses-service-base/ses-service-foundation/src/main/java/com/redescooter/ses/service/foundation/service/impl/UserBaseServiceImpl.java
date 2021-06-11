@@ -32,6 +32,7 @@ import com.redescooter.ses.service.foundation.service.base.PlaUserNodeService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
@@ -266,35 +267,42 @@ public class UserBaseServiceImpl implements UserBaseService {
     }
 
     @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void deletePlaUser(String email) {
         LambdaQueryWrapper<PlaUser> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(PlaUser::getLoginName, email);
         wrapper.last("limit 1");
         PlaUser plaUser = plaUserMapper.selectOne(wrapper);
         if (null != plaUser) {
+            // 删除pla_user
             accountBaseServiceMapper.deletePlaUser(email);
-            LambdaQueryWrapper<PlaUserNode> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(PlaUserNode::getUserId, plaUser.getId());
-            queryWrapper.last("limit 1");
-            PlaUserNode plaUserNode = plaUserNodeMapper.selectOne(queryWrapper);
-            if (null != plaUserNode) {
+
+            LambdaQueryWrapper<PlaUserNode> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(PlaUserNode::getUserId, plaUser.getId());
+            lqw.last("limit 1");
+            PlaUserNode node = plaUserNodeMapper.selectOne(lqw);
+            if (null != node) {
+                // 删除pla_user_node
                 accountBaseServiceMapper.deletePlaUserNode(plaUser.getId());
-                LambdaQueryWrapper<PlaUserPermission> queryWrapper1 = new LambdaQueryWrapper<>();
-                queryWrapper1.eq(PlaUserPermission::getUserId, plaUser.getId());
-                queryWrapper1.last("limit 1");
-                PlaUserPermission plaUserPermission = plaUserPermissionMapper.selectOne(queryWrapper1);
-                if (null != plaUserPermission) {
-                    accountBaseServiceMapper.deletePlaUserPermission(plaUser.getId());
+
+                // 删除pla_user_permission
+                LambdaQueryWrapper<PlaUserPermission> qw = new LambdaQueryWrapper<>();
+                qw.eq(PlaUserPermission::getUserId, plaUser.getId());
+                List<PlaUserPermission> list = plaUserPermissionMapper.selectList(qw);
+                if (CollectionUtils.isNotEmpty(list)) {
+                    for (PlaUserPermission permission : list) {
+                        accountBaseServiceMapper.deletePlaUserPermission(permission.getUserId());
+                    }
                 }
             }
-
         }
 
-        LambdaQueryWrapper<PlaUserPassword> wrapper1 = new LambdaQueryWrapper<>();
-        wrapper1.eq(PlaUserPassword::getLoginName, email);
-        wrapper1.last("limit 1");
-        PlaUserPassword plaUserPassword = plaUserPasswordMapper.selectOne(wrapper1);
-        if (null != plaUserPassword) {
+        // 删除pla_user_password
+        LambdaQueryWrapper<PlaUserPassword> pwdWrapper = new LambdaQueryWrapper<>();
+        pwdWrapper.eq(PlaUserPassword::getLoginName, email);
+        pwdWrapper.last("limit 1");
+        PlaUserPassword password = plaUserPasswordMapper.selectOne(pwdWrapper);
+        if (null != password) {
             accountBaseServiceMapper.deletePlaUserPassword(email);
         }
     }

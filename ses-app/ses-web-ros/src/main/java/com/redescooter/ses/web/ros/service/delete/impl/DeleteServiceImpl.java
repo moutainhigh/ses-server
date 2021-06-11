@@ -27,7 +27,10 @@ import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerContact;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
+import com.redescooter.ses.web.ros.dm.OpeProductPrice;
+import com.redescooter.ses.web.ros.dm.OpeProductPriceHistory;
 import com.redescooter.ses.web.ros.dm.OpeProductionCombinBom;
+import com.redescooter.ses.web.ros.dm.OpeProductionParts;
 import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
@@ -38,7 +41,10 @@ import com.redescooter.ses.web.ros.service.base.OpeCodebaseRelationService;
 import com.redescooter.ses.web.ros.service.base.OpeCodebaseRsnService;
 import com.redescooter.ses.web.ros.service.base.OpeCodebaseVinService;
 import com.redescooter.ses.web.ros.service.base.OpeColorService;
+import com.redescooter.ses.web.ros.service.base.OpeProductPriceHistoryService;
+import com.redescooter.ses.web.ros.service.base.OpeProductPriceService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
+import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
 import com.redescooter.ses.web.ros.service.base.OpeSpecificatGroupService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
@@ -106,6 +112,15 @@ public class DeleteServiceImpl implements DeleteService {
     private DeleteMapper deleteMapper;
 
     @Autowired
+    private OpeProductionPartsService opeProductionPartsService;
+
+    @Autowired
+    private OpeProductPriceService opeProductPriceService;
+
+    @Autowired
+    private OpeProductPriceHistoryService opeProductPriceHistoryService;
+
+    @Autowired
     private OpeWmsScooterStockMapper opeWmsScooterStockMapper;
 
     @Autowired
@@ -128,52 +143,52 @@ public class DeleteServiceImpl implements DeleteService {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
 
-        //删除con_user_profile这个表的信息和con_user_scooter这个表的信息
+        // 删除con_user_profile这个表的信息和con_user_scooter这个表的信息
         deleteConUser(opeCustomer.getEmail());
 
+        // 删除ope_customer
         deleteMapper.deleteCustomer(idEnter.getId());
 
-        //开始删除ope_customer，ope_customer_contact，ope_customer_inquiry，ope_customer_inquiry_b这几张表的信息
+        // 删除ope_customer_contact
         LambdaQueryWrapper<OpeCustomerContact> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(OpeCustomerContact::getCustomerId, idEnter.getId());
         wrapper.last("limit 1");
-        OpeCustomerContact opeCustomerContact = opeCustomerContactMapper.selectOne(wrapper);
-        if (opeCustomerContact != null) {
+        OpeCustomerContact contact = opeCustomerContactMapper.selectOne(wrapper);
+        if (contact != null) {
             deleteMapper.deleteCustomerContact(opeCustomer.getId());
         }
 
-
-        LambdaQueryWrapper<OpeCustomerInquiry> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(OpeCustomerInquiry::getCustomerId, idEnter.getId());
-        queryWrapper.last("limit 1");
-        OpeCustomerInquiry opeCustomerInquiry = opeCustomerInquiryMapper.selectOne(queryWrapper);
-        if (opeCustomerInquiry != null) {
+        // 删除ope_customer_inquiry，ope_customer_inquiry_b
+        LambdaQueryWrapper<OpeCustomerInquiry> inquiryWrapper = new LambdaQueryWrapper<>();
+        inquiryWrapper.eq(OpeCustomerInquiry::getCustomerId, idEnter.getId());
+        inquiryWrapper.last("limit 1");
+        OpeCustomerInquiry inquiry = opeCustomerInquiryMapper.selectOne(inquiryWrapper);
+        if (inquiry != null) {
             deleteMapper.deleteCustomerInquiry(opeCustomer.getId());
-            LambdaQueryWrapper<OpeCustomerInquiryB> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-            lambdaQueryWrapper.eq(OpeCustomerInquiryB::getInquiryId, opeCustomerInquiry.getId());
-            lambdaQueryWrapper.last("limit 1");
-            OpeCustomerInquiryB opeCustomerInquiryB = opeCustomerInquiryBMapper.selectOne(lambdaQueryWrapper);
-            if (opeCustomerInquiryB != null) {
-                deleteMapper.deleteCustomerInquiryB(opeCustomerInquiry.getId());
+
+            LambdaQueryWrapper<OpeCustomerInquiryB> inquiryBWrapper = new LambdaQueryWrapper<>();
+            inquiryBWrapper.eq(OpeCustomerInquiryB::getInquiryId, inquiry.getId());
+            inquiryBWrapper.last("limit 1");
+            OpeCustomerInquiryB inquiryB = opeCustomerInquiryBMapper.selectOne(inquiryBWrapper);
+            if (inquiryB != null) {
+                deleteMapper.deleteCustomerInquiryB(inquiry.getId());
             }
         }
 
-
-        //开始删除ope_car_distribute，ope_car_distribute_node
-        LambdaQueryWrapper<OpeCarDistribute> wrapper1 = new LambdaQueryWrapper<>();
-        wrapper1.eq(OpeCarDistribute::getCustomerId, idEnter.getId());
-        wrapper1.last("limit 1");
-        OpeCarDistribute opeCarDistribute = opeCarDistributeMapper.selectOne(wrapper1);
-        if (opeCarDistribute != null) {
+        // 删除ope_car_distribute，ope_car_distribute_node
+        LambdaQueryWrapper<OpeCarDistribute> distributeWrapper = new LambdaQueryWrapper<>();
+        distributeWrapper.eq(OpeCarDistribute::getCustomerId, idEnter.getId());
+        distributeWrapper.last("limit 1");
+        OpeCarDistribute distribute = opeCarDistributeMapper.selectOne(distributeWrapper);
+        if (distribute != null) {
             deleteMapper.deleteCarDistribute(idEnter.getId());
         }
 
-
-        LambdaQueryWrapper<OpeCarDistributeNode> queryWrapper1 = new LambdaQueryWrapper<>();
-        queryWrapper1.eq(OpeCarDistributeNode::getCustomerId, idEnter.getId());
-        queryWrapper1.last("limit 1");
-        OpeCarDistributeNode opeCarDistributeNode = opeCarDistributeNodeMapper.selectOne(queryWrapper1);
-        if (opeCarDistributeNode != null) {
+        LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
+        nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, idEnter.getId());
+        nodeWrapper.last("limit 1");
+        OpeCarDistributeNode node = opeCarDistributeNodeMapper.selectOne(nodeWrapper);
+        if (node != null) {
             deleteMapper.deleteCarDistributeNode(idEnter.getId());
         }
 
@@ -294,6 +309,41 @@ public class DeleteServiceImpl implements DeleteService {
                 OpeCodebaseRelation relation = opeCodebaseRelationService.getOne(wrapper);
                 if (null != relation) {
                     deleteMapper.deleteCodebaseRelation(relation.getId());
+                }
+            }
+        }
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 删除部件
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult deletePart(IdEnter enter) {
+        OpeProductionParts parts = opeProductionPartsService.getById(enter.getId());
+        if (null != parts) {
+            // 删除ope_production_parts
+            deleteMapper.deletePart(parts.getId());
+
+            // 删除ope_product_price
+            LambdaQueryWrapper<OpeProductPrice> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeProductPrice::getDr, Constant.DR_FALSE);
+            qw.eq(OpeProductPrice::getProductPriceType, 1);
+            qw.eq(OpeProductPrice::getProductId, parts.getId());
+            qw.last("limit 1");
+            OpeProductPrice price = opeProductPriceService.getOne(qw);
+            if (null != price) {
+                deleteMapper.deletePrice(price.getId());
+
+                // 删除ope_product_price_history
+                LambdaQueryWrapper<OpeProductPriceHistory> lqw = new LambdaQueryWrapper<>();
+                lqw.eq(OpeProductPriceHistory::getDr, Constant.DR_FALSE);
+                lqw.eq(OpeProductPriceHistory::getProductPriceId, price.getId());
+                lqw.last("limit 1");
+                OpeProductPriceHistory history = opeProductPriceHistoryService.getOne(lqw);
+                if (null != history) {
+                    deleteMapper.deletePriceHistory(history.getId());
                 }
             }
         }

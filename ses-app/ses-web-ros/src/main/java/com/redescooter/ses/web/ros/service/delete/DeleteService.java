@@ -33,4 +33,9 @@ public interface DeleteService {
      */
     GeneralResult deleteScooter(StringEnter enter);
 
+    /**
+     * 删除部件
+     */
+    GeneralResult deletePart(IdEnter enter);
+
 }

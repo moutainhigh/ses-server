@@ -150,6 +150,7 @@ public class UserProfileProServiceImpl implements UserProfileProService {
     }
 
     @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void deleteUserProfile(String email) {
         LambdaQueryWrapper<ConUserProfile> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ConUserProfile::getEmail1, email);
@@ -158,9 +159,9 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             for (ConUserProfile profile : list) {
                 userProfileMapper.deleteUserProfile(profile.getEmail1());
 
-                LambdaQueryWrapper<ConUserScooter> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-                lambdaQueryWrapper.eq(ConUserScooter::getUserId, profile.getUserId());
-                List<ConUserScooter> userScooterList = conUserScooterMapper.selectList(lambdaQueryWrapper);
+                LambdaQueryWrapper<ConUserScooter> qw = new LambdaQueryWrapper<>();
+                qw.eq(ConUserScooter::getUserId, profile.getUserId());
+                List<ConUserScooter> userScooterList = conUserScooterMapper.selectList(qw);
                 if (CollectionUtils.isNotEmpty(userScooterList)) {
                     for (ConUserScooter userScooter : userScooterList) {
                         userScooterMapper.deleteUserScooter(userScooter.getUserId());
