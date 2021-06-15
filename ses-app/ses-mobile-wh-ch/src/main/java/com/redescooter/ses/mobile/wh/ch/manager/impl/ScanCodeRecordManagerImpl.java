@@ -1,20 +1,20 @@
-package com.redescooter.ses.web.ros.manager.impl;
+package com.redescooter.ses.mobile.wh.ch.manager.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.mobile.wh.ch.constant.SequenceName;
+import com.redescooter.ses.mobile.wh.ch.dao.base.OpeCodebaseRsnMapper;
+import com.redescooter.ses.mobile.wh.ch.dm.OpeCodebaseRsn;
+import com.redescooter.ses.mobile.wh.ch.dm.OpeScanCodeRecord;
+import com.redescooter.ses.mobile.wh.ch.exception.ExceptionCodeEnums;
+import com.redescooter.ses.mobile.wh.ch.exception.SesMobileChWhException;
+import com.redescooter.ses.mobile.wh.ch.manager.ScanCodeRecordManager;
+import com.redescooter.ses.mobile.wh.ch.service.app.OpeScanCodeRecordService;
+import com.redescooter.ses.mobile.wh.ch.vo.ScanCodeRecordEnter;
+import com.redescooter.ses.mobile.wh.ch.vo.ScanCodeRecordReqEnter;
+import com.redescooter.ses.mobile.wh.ch.vo.ScanCodeRecordResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.web.ros.constant.SequenceName;
-import com.redescooter.ses.web.ros.dao.base.OpeCodebaseRsnMapper;
-import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
-import com.redescooter.ses.web.ros.dm.OpeScanCodeRecord;
-import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
-import com.redescooter.ses.web.ros.exception.SesWebRosException;
-import com.redescooter.ses.web.ros.manager.ScanCodeRecordManager;
-import com.redescooter.ses.web.ros.service.base.OpeScanCodeRecordService;
-import com.redescooter.ses.web.ros.vo.app.ScanCodeRecordEnter;
-import com.redescooter.ses.web.ros.vo.app.ScanCodeRecordReqEnter;
-import com.redescooter.ses.web.ros.vo.app.ScanCodeRecordResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -75,7 +75,7 @@ public class ScanCodeRecordManagerImpl implements ScanCodeRecordManager {
             record.setCreatedTime(new Date());
             return recordService.saveOrUpdate(record);
         } catch (Exception e) {
-            throw new SesWebRosException(ExceptionCodeEnums.INSERT_SCAN_CODE_RECORD_WRONG.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
+            throw new SesMobileChWhException(ExceptionCodeEnums.INSERT_SCAN_CODE_RECORD_WRONG.getCode(), ExceptionCodeEnums.INQUIRY_IS_NOT_EXIST.getMessage());
         }
     }
 

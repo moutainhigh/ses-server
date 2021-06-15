@@ -1,9 +1,9 @@
-package com.redescooter.ses.web.ros.manager;
+package com.redescooter.ses.mobile.wh.ch.manager;
 
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.web.ros.vo.app.ScanCodeRecordEnter;
-import com.redescooter.ses.web.ros.vo.app.ScanCodeRecordReqEnter;
-import com.redescooter.ses.web.ros.vo.app.ScanCodeRecordResult;
+import com.redescooter.ses.mobile.wh.ch.vo.ScanCodeRecordEnter;
+import com.redescooter.ses.mobile.wh.ch.vo.ScanCodeRecordReqEnter;
+import com.redescooter.ses.mobile.wh.ch.vo.ScanCodeRecordResult;
 
 /**
  * @ClassName ScanManager
