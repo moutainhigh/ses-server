@@ -71,9 +71,11 @@
             deposit  from
             ope_sale_price
             USER
+        where dr = 0
         GROUP BY
             deposit
         HAVING
             count( deposit ) > 1
+        limit 1
     </select>
 </mapper>

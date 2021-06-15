@@ -37,8 +37,8 @@
                 and ofa.status =#{status}
             </if>
             <if test="keyword != null and keyword != ''">
-                and (ofa.factory_name like concat("%",#{keyword},"%")
-                or ofa.factory_tag like concat("%",#{keyword},"%"))
+                and (ofa.factory_name like concat('%',#{keyword},'%')
+                or ofa.factory_tag like concat('%',#{keyword},'%'))
             </if>
         </where>
     </sql>

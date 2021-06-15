@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class SimResult {
 
     @ApiModelProperty(value = "可用余额")
-    private Double current_balance;
+    private Double currentBalance;
 
     @ApiModelProperty(value = "sim卡数")
     private int simCount;

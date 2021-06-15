@@ -61,7 +61,7 @@
         </if>
         <if test="enter.keyword != null and enter.keyword != ''">
             and (
-            purchas.contract_no like concat ("%",#{enter.keyword},"%")
+            purchas.contract_no like concat ('%',#{enter.keyword},'%')
             )
         </if>
         order by purchas.created_time desc
@@ -105,9 +105,9 @@
             </foreach>
             <if test="enter.keyword != null and enter.keyword != ''">
                 and (
-                product.parts_no like concat("%",#{enter.keyword},"%")
-                or product.en_name like concat("%",#{enter.keyword},"%")
-                or product.cn_name like concat("%",#{enter.keyword},"%")
+                product.parts_no like concat('%',#{enter.keyword},'%')
+                or product.en_name like concat('%',#{enter.keyword},'%')
+                or product.cn_name like concat('%',#{enter.keyword},'%')
                 )
             </if>
         </where>
@@ -126,9 +126,9 @@
             and product.bom_status=1
             <if test="enter.keyword != null and enter.keyword != ''">
                 and (
-                product.bom_no like concat("%",#{enter.keyword},"%")
-                or product.en_name like concat("%",#{enter.keyword},"%")
-                or product.cn_name like concat("%",#{enter.keyword},"%")
+                product.bom_no like concat('%',#{enter.keyword},'%')
+                or product.en_name like concat('%',#{enter.keyword},'%')
+                or product.cn_name like concat('%',#{enter.keyword},'%')
                 )
             </if>
         </where>
@@ -220,9 +220,9 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and (
-            parts.cn_name like concat ("%",#{keyword},"%") or
-            parts.en_name like concat ("%",#{keyword},"%") or
-            parts.parts_no like concat ("%",#{keyword},"%")
+            parts.cn_name like concat ('%',#{keyword},'%') or
+            parts.en_name like concat ('%',#{keyword},'%') or
+            parts.parts_no like concat ('%',#{keyword},'%')
             )
         </if>
     </select>
@@ -291,9 +291,9 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and(
-            parts.parts_no like concat ("%",#{keyword},"%") or
-            parts.en_name like concat ("%",#{keyword},"%") or
-            parts.cn_name like concat ("%",#{keyword},"%")
+            parts.parts_no like concat ('%',#{keyword},'%') or
+            parts.en_name like concat ('%',#{keyword},'%') or
+            parts.cn_name like concat ('%',#{keyword},'%')
             )
         </if>
     </select>

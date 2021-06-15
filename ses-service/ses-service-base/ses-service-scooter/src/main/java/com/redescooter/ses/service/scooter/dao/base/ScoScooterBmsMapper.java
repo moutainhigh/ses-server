@@ -1,12 +1,13 @@
 package com.redescooter.ses.service.scooter.dao.base;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooterBms;
 
 /**
  * @author assert
  * @date 2020/11/20 18:43
  */
-public interface ScoScooterBmsMapper {
+public interface ScoScooterBmsMapper extends BaseMapper<ScoScooterBms> {
     int deleteByPrimaryKey(Long id);
 
     int insert(ScoScooterBms record);

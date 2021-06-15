@@ -15,7 +15,7 @@
             and dept.dept_id=#{deptId}
         </if>
         <if test="keyword != null and keyword != ''">
-            and role.role_name like concat ("%",#{keyword},"%")
+            and role.role_name like concat ('%',#{keyword},'%')
         </if>
     </select>
 

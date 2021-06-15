@@ -57,7 +57,7 @@ public class SyncCustomerDataEnter implements Serializable {
     @ApiModelProperty(value = "客户头像")
     private String picture;
 
-    @ApiModelProperty(value = "客户来源渠道 官网/email/电话")
+    @ApiModelProperty(value = "客户来源渠道 1系统添加 2官网")
     private String customerSource;
 
     @ApiModelProperty(value = "客户类型 1企业/2个人")

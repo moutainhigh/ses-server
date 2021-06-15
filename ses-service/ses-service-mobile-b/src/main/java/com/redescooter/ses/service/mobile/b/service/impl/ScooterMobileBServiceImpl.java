@@ -95,7 +95,7 @@ public class ScooterMobileBServiceImpl implements ScooterMobileBService {
         /**
          * 开关车辆锁
          */
-        return scooterEmqXService.lock(scooterLockDTO, scooter.getScooterId());
+        return scooterEmqXService.lock(scooterLockDTO, scooter.getScooterId(), UserServiceTypeEnum.B.getType());
     }
 
     @Override

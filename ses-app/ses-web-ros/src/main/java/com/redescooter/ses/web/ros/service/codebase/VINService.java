@@ -8,6 +8,7 @@ import com.redescooter.ses.web.ros.vo.codebase.SpecificatResult;
 import com.redescooter.ses.web.ros.vo.codebase.VINDetailResult;
 import com.redescooter.ses.web.ros.vo.codebase.VINListEnter;
 import com.redescooter.ses.web.ros.vo.codebase.VINListResult;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -38,4 +39,5 @@ public interface VINService {
      */
     GeneralResult export(VINListEnter enter);
 
+    Boolean importVin(MultipartFile file);
 }

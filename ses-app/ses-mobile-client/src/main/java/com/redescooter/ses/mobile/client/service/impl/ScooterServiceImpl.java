@@ -87,22 +87,22 @@ public class ScooterServiceImpl implements ScooterService {
     }
 
     @Override
-    public GeneralResult scooterNavigation(ScooterNavigationDTO scooterNavigation) {
+    public GeneralResult scooterNavigation(ScooterNavigationDTO enter) {
         GeneralResult result = null;
 
-        if (!CommonEvent.START.getValue().equals(scooterNavigation.getEvent())
-                && !CommonEvent.END.getValue().equals(scooterNavigation.getEvent())) {
+        if (!CommonEvent.START.getValue().equals(enter.getEvent())
+                && !CommonEvent.END.getValue().equals(enter.getEvent())) {
             throw new SesMobileClientException(ExceptionCodeEnums.EVENT_ERROR.getCode(), ExceptionCodeEnums.EVENT_ERROR.getMessage());
         }
 
         /**
          * 业务分发
          */
-        Integer userServiceType = userComponent.getUserServiceTypeById(scooterNavigation);
+        Integer userServiceType = userComponent.getUserServiceTypeById(enter);
         if (UserServiceTypeEnum.B.getType().equals(userServiceType)) {
-            result = scooterMobileBService.scooterNavigation(scooterNavigation);
+            result = scooterMobileBService.scooterNavigation(enter);
         } else if (UserServiceTypeEnum.C.getType().equals(userServiceType)) {
-            result = scooterMobileCService.scooterNavigation(scooterNavigation);
+            result = scooterMobileCService.scooterNavigation(enter);
         }
         return result;
     }

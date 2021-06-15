@@ -185,7 +185,7 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
             SitePaymentType paymentType = sitePaymentTypeService.getOne(wrapper);
 
             fullPay.setPrepaidDeposit(price.getPrepaidDeposit());
-            BigDecimal balance = price.getPrice().subtract(price.getPrepaidDeposit());
+            BigDecimal balance = price.getPrice();
             fullPay.setBalance(balance);
             fullPay.setPaymentTypeId(paymentType.getId());
         }

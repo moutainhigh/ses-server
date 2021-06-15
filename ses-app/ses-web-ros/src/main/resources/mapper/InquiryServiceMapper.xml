@@ -31,12 +31,12 @@
             </if>
             <if test="keyword != null and keyword != ''">
                 and (
-                inquiry.first_name like concat("%",#{keyword},"%")
-                or inquiry.last_name like concat("%",#{keyword},"%")
-                or inquiry.full_name like concat("%",#{keyword},"%")
-                or inquiry.contant_full_name like concat("%",#{keyword},"%")
-                or inquiry.first_name like concat("%",#{keyword},"%")
-                or inquiry.last_name like concat("%",#{keyword},"%")
+                inquiry.first_name like concat('%',#{keyword},'%')
+                or inquiry.last_name like concat('%',#{keyword},'%')
+                or inquiry.full_name like concat('%',#{keyword},'%')
+                or inquiry.contant_full_name like concat('%',#{keyword},'%')
+                or inquiry.first_name like concat('%',#{keyword},'%')
+                or inquiry.last_name like concat('%',#{keyword},'%')
                 )
             </if>
             <if test="source != null and source != ''">
@@ -103,18 +103,6 @@
         from ope_customer_inquiry inquiry
         where inquiry.dr = 0
           and inquiry.id = #{id}
-    </select>
-
-    <select id="usingEmailList" resultType="java.lang.String">
-        select email
-        from ope_customer_inquiry
-        where dr = 0
-          and status != 3
-        union
-        select email
-        from ope_customer
-        where dr = 0
-          and ope_customer.status in (1, 2)
     </select>
 
     <select id="exportInquiry" resultType="com.redescooter.ses.web.ros.vo.inquiry.InquiryExportResult">

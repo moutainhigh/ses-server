@@ -6,7 +6,10 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.app.common.service.FileAppService;
+import com.redescooter.ses.app.common.service.excel.ImportExcelService;
+import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.date.DateUtil;
+import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeNodeMapper;
@@ -15,17 +18,26 @@ import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
 import com.redescooter.ses.web.ros.dm.OpeCarDistributeNode;
 import com.redescooter.ses.web.ros.dm.OpeCodebaseRsn;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
+import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCodebaseRsnService;
 import com.redescooter.ses.web.ros.service.base.OpeCodebaseVinService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
 import com.redescooter.ses.web.ros.service.codebase.RSNService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
+import com.redescooter.ses.web.ros.vo.codebase.ExportRSNResult;
+import com.redescooter.ses.web.ros.vo.codebase.Node;
+import com.redescooter.ses.web.ros.vo.codebase.RSNDetailResult;
+import com.redescooter.ses.web.ros.vo.codebase.RSNDetailScooterResult;
+import com.redescooter.ses.web.ros.vo.codebase.RSNListEnter;
+import com.redescooter.ses.web.ros.vo.codebase.RSNListResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import com.redescooter.ses.web.ros.utils.NumberUtil;
-import com.redescooter.ses.web.ros.vo.codebase.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +48,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +88,12 @@ public class RSNServiceImpl implements RSNService {
      */
     @Autowired
     private FileAppService fileAppService;
+
+    @Autowired
+    private ImportExcelService importExcelService;
+
+    @DubboReference
+    private IdAppService idAppService;
 
     /**
      * 列表
@@ -126,15 +145,6 @@ public class RSNServiceImpl implements RSNService {
         OpeWmsStockSerialNumber frSerialNumber = opeWmsStockSerialNumberService.getOne(wrapper);
         nodes.add(new Node("3", frSerialNumber == null ? "-" : DateUtil.getTimeStr(frSerialNumber.getCreatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
 
-        // 绑定询价单
-        LambdaQueryWrapper<OpeCarDistribute> inquiryWrapper = new LambdaQueryWrapper<>();
-        inquiryWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
-        inquiryWrapper.eq(OpeCarDistribute::getRsn, rsn);
-        inquiryWrapper.isNotNull(OpeCarDistribute::getWarehouseAccountId);
-        inquiryWrapper.last("limit 1");
-        OpeCarDistribute inquiryDistribute = opeCarDistributeMapper.selectOne(inquiryWrapper);
-        nodes.add(new Node("4", inquiryDistribute == null ? "-" : DateUtil.getTimeStr(inquiryDistribute.getCreatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
-
         // 绑定VIN
         LambdaQueryWrapper<OpeCarDistribute> vinWrapper = new LambdaQueryWrapper<>();
         vinWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
@@ -142,7 +152,18 @@ public class RSNServiceImpl implements RSNService {
         vinWrapper.isNotNull(OpeCarDistribute::getVinCode);
         vinWrapper.last("limit 1");
         OpeCarDistribute vinDistribute = opeCarDistributeMapper.selectOne(vinWrapper);
-        nodes.add(new Node("5", vinDistribute == null || null == vinDistribute.getUpdatedTime() ? "-" : DateUtil.getTimeStr(vinDistribute.getUpdatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
+        nodes.add(new Node("4", vinDistribute == null || null == vinDistribute.getUpdatedTime() ? "-" : DateUtil.getTimeStr(vinDistribute.getUpdatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
+
+        // 绑定询价单
+        LambdaQueryWrapper<OpeCarDistribute> inquiryWrapper = new LambdaQueryWrapper<>();
+        inquiryWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
+        inquiryWrapper.eq(OpeCarDistribute::getRsn, rsn);
+        inquiryWrapper.isNotNull(OpeCarDistribute::getRsn);
+        inquiryWrapper.isNotNull(OpeCarDistribute::getTabletSn);
+        inquiryWrapper.isNotNull(OpeCarDistribute::getBluetoothAddress);
+        inquiryWrapper.last("limit 1");
+        OpeCarDistribute inquiryDistribute = opeCarDistributeMapper.selectOne(inquiryWrapper);
+        nodes.add(new Node("5", inquiryDistribute == null || null == inquiryDistribute.getUpdatedTime() ? "-" : DateUtil.getTimeStr(inquiryDistribute.getUpdatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
 
         // 设置软体
         LambdaQueryWrapper<OpeCarDistribute> setWrapper = new LambdaQueryWrapper<>();
@@ -222,6 +243,38 @@ public class RSNServiceImpl implements RSNService {
             log.error("导出RSN异常", e);
         }
         return new GeneralResult(excelPath);
+    }
+
+    @GlobalTransactional(rollbackFor = Exception.class)
+    @Override
+    public Boolean importRsn(MultipartFile file) {
+        List<List<Object>> read = ExcelUtil.readExcel(file);
+        List<String> rsnCodes = Lists.newArrayList();
+        for (int i = 0; i < read.size(); i++) {
+            List list = read.get(i);
+            if (CollectionUtils.isEmpty(list)) {
+                continue;
+            }
+            rsnCodes.addAll(list);
+        }
+        List<OpeCodebaseRsn> rsnList = Lists.newArrayList();
+        LambdaQueryWrapper<OpeCodebaseRsn> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
+        queryWrapper.in(OpeCodebaseRsn::getRsn, rsnCodes);
+        List<OpeCodebaseRsn> list = opeCodebaseRsnService.list(queryWrapper);
+        if (CollectionUtils.isNotEmpty(list)) {
+            throw new SesWebRosException(ExceptionCodeEnums.BASECODE_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.BASECODE_EXISTS_CODEBASE.getMessage());
+        }
+        for (String rsnCode : rsnCodes) {
+            OpeCodebaseRsn rsn = new OpeCodebaseRsn();
+            rsn.setId(idAppService.getId(SequenceName.OPE_CODEBASE_RSN));
+            rsn.setDr(Constant.DR_FALSE);
+            rsn.setStatus(1);
+            rsn.setRsn(rsnCode);
+            rsn.setCreatedTime(new Date());
+            rsnList.add(rsn);
+        }
+        return opeCodebaseRsnService.saveBatch(rsnList);
     }
 
     private Map<String, Object> toMap(ExportRSNResult param, Integer i) {

@@ -30,9 +30,6 @@ public class SimEnter extends PageEnter {
     @ApiModelProperty("iccid")
     private String iccid;
 
-    @ApiModelProperty("仪表sn")
-    private String tabledSn;
-
     @ApiModelProperty("连接开始时间")
     private String connectStartTime;
 
@@ -42,6 +39,6 @@ public class SimEnter extends PageEnter {
     @ApiModelProperty("国家代码")
     private String countryCode;
 
-    @ApiModelProperty("每日统计日期")
+    @ApiModelProperty("每日统计日期  年月")
     private String dailyStatisticsDate;
 }

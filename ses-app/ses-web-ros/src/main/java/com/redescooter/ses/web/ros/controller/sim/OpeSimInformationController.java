@@ -42,7 +42,7 @@ public class OpeSimInformationController {
 
     /**
      * @Title: getSimTransactionRecords
-     * @Description: // 获取交易记录
+     * @Description: // 获取交易记录  分页必传
      * @Param: [simEnter]
      * @Return: com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.web.ros.vo.sim.SimDataResult>
      * @Date: 2021/5/28 8:58 上午
@@ -56,7 +56,7 @@ public class OpeSimInformationController {
 
     /**
      * @Title: getSimCardList
-     * @Description: // Sim卡 列表信息
+     * @Description: // Sim卡 列表信息 状态 分页必传
      * @Param: [simEnter]
      * @Return: com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.web.ros.vo.sim.SimDataResult>
      * @Date: 2021/5/28 8:58 上午
@@ -70,7 +70,7 @@ public class OpeSimInformationController {
 
     /**
      * @Title: getSimConnectRecord
-     * @Description: // 获取连接记录
+     * @Description: // 获取连接记录 sccid 必传  分页
      * @Param: [simEnter]
      * @Return: com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.web.ros.vo.sim.SimDataResult>
      * @Date: 2021/5/28 8:58 上午
@@ -84,7 +84,7 @@ public class OpeSimInformationController {
 
     /**
      * @Title: getSimDetails
-     * @Description: // Sim卡 详情
+     * @Description: // Sim卡 详情 sccid 必传
      * @Param: [simEnter]
      * @Return: com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.web.ros.vo.sim.SimBaseCodeResult>
      * @Date: 2021/5/28 8:59 上午
@@ -98,7 +98,7 @@ public class OpeSimInformationController {
 
     /**
      * @Title: getSimDailyStatistics
-     * @Description: // Sim卡 日统计
+     * @Description: // Sim卡 日统计 sccid 必传  默认当前月份 billing_cycle=2021-04
      * @Param: [simEnter]
      * @Return: com.redescooter.ses.api.common.vo.base.Response<java.util.List < com.redescooter.ses.web.ros.vo.sim.SimDailyStatisticsResult>>
      * @Date: 2021/5/28 8:59 上午
@@ -112,7 +112,7 @@ public class OpeSimInformationController {
 
     /**
      * @Title: activationSim
-     * @Description: // Sim卡 激活
+     * @Description: // Sim卡 激活 sccid 必传
      * @Param: [simEnter]
      * @Return: com.redescooter.ses.api.common.vo.base.Response
      * @Date: 2021/5/28 8:59 上午
@@ -126,7 +126,7 @@ public class OpeSimInformationController {
 
     /**
      * @Title: deactivatedSim
-     * @Description: // Sim卡 停用
+     * @Description: // Sim卡 停用 sccid 必传
      * @Param: [simEnter]
      * @Return: com.redescooter.ses.api.common.vo.base.Response
      * @Date: 2021/5/28 9:00 上午

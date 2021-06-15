@@ -1,11 +1,13 @@
 package com.redescooter.ses.web.ros.controller.warehouse.fr;
 
 import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.wms.cn.fr.FrInWhOrderService;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderAddEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderCheckEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,15 @@ public class FrInWhOrderController {
     @ApiOperation(value = "确认入库", response = GeneralResult.class)
     public Response<GeneralResult> confirmInWh(@ModelAttribute IdEnter enter) {
         return new Response<>(frInWhOrderService.confirmInWh(enter));
+    }
+
+    /**
+     * 校验rsn在法国库存产品序列号表是否存在
+     */
+    @PostMapping("/check")
+    @ApiOperation(value = "校验rsn在法国库存产品序列号表是否存在")
+    public Response<BooleanResult> checkRsn(@ModelAttribute FrInWhOrderCheckEnter enter) {
+        return new Response<>(frInWhOrderService.checkRsn(enter));
     }
 
 }

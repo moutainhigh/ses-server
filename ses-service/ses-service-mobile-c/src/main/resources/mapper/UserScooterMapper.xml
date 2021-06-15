@@ -10,4 +10,8 @@
           and `status` = #{status}
           and dr = '0'
     </select>
+
+    <delete id="deleteUserScooter" parameterType="java.lang.Long">
+        delete from con_user_scooter where USER_ID = #{id}
+    </delete>
 </mapper>

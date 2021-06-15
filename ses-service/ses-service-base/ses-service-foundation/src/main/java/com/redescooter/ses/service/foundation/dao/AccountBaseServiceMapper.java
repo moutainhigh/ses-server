@@ -17,7 +17,7 @@ import java.util.List;
  */
 public interface AccountBaseServiceMapper {
 
-  List<CountByStatusResult> accountCountStatus();
+    List<CountByStatusResult> accountCountStatus();
 
     /**
      * ros客户账户列表 状态分组
@@ -25,7 +25,7 @@ public interface AccountBaseServiceMapper {
      * @param accountType
      * @return
      */
-    List<CountByStatusResult> customerAccountCountByStatus(@Param("enter")QueryAccountCountStatusEnter enter,@Param("accountType") List<Integer> accountType);
+    List<CountByStatusResult> customerAccountCountByStatus(@Param("enter") QueryAccountCountStatusEnter enter, @Param("accountType") List<Integer> accountType);
 
     /**
      * 查询客户账户列表统计
@@ -51,4 +51,12 @@ public interface AccountBaseServiceMapper {
      * @return
      */
     QueryAccountResult customerAccountDeatil(@Param("email") String email, @Param("accountType") List<Integer> accountType);
+
+    int deletePlaUser(String email);
+
+    int deletePlaUserNode(Long id);
+
+    int deletePlaUserPassword(String email);
+
+    int deletePlaUserPermission(Long id);
 }

@@ -34,10 +34,13 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, dr, status, product_model_id, price_type, installment_time, price, start_price, effective_time, currency_type, currency_unit, standard_currency, prepaid_deposit, amount_discount, country_code, country_city, country_language, synchronize_flag, revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
+        id
+        , dr, status, product_model_id, price_type, installment_time, price, start_price, effective_time, currency_type, currency_unit, standard_currency, prepaid_deposit, amount_discount, country_code, country_city, country_language, synchronize_flag, revision, created_by, created_time, updated_by, updated_time, def1, def2, def3, def5, def6
     </sql>
 
     <update id="synchronizeDeposit" parameterType="com.redescooter.ses.service.hub.source.website.dm.SiteProductPrice">
-        update site_product_price set prepaid_deposit = #{enter.prepaidDeposit} where dr = 0
+        update site_product_price
+        set prepaid_deposit = #{enter.prepaidDeposit}
+           where dr = 0
     </update>
 </mapper>

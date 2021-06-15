@@ -10,19 +10,19 @@
                 <when test="map==false">
                     <if test="keyword != null and keyword != ''">
                         and (
-                        cup.first_name like concat("%",#{keyword},"%")
-                        or cup.last_name like concat("%",#{keyword},"%")
-                        or cup.email_1 like concat("%",#{keyword},"%")
-                        or cup.tel_number_1 like concat("%",#{keyword},"%")
-                        or cup.place_birth like concat("%",#{keyword},"%")
+                        cup.first_name like concat('%',#{keyword},'%')
+                        or cup.last_name like concat('%',#{keyword},'%')
+                        or cup.email_1 like concat('%',#{keyword},'%')
+                        or cup.tel_number_1 like concat('%',#{keyword},'%')
+                        or cup.place_birth like concat('%',#{keyword},'%')
                         )
                     </if>
                 </when>
                 <when test="map==true">
                     <if test="keyword != null and keyword != ''">
                         and (
-                        cup.first_name like concat("%",#{keyword},"%")
-                        or cup.last_name like concat("%",#{keyword},"%")
+                        cup.first_name like concat('%',#{keyword},'%')
+                        or cup.last_name like concat('%',#{keyword},'%')
                         )
                     </if>
                 </when>

@@ -24,8 +24,22 @@ import com.redescooter.ses.service.scooter.constant.SequenceName;
 import com.redescooter.ses.service.scooter.dao.ScooterEcuMapper;
 import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooter;
+import com.redescooter.ses.service.scooter.dm.base.ScoScooterBbi;
+import com.redescooter.ses.service.scooter.dm.base.ScoScooterBbiBatteryWare;
+import com.redescooter.ses.service.scooter.dm.base.ScoScooterBms;
+import com.redescooter.ses.service.scooter.dm.base.ScoScooterEcu;
+import com.redescooter.ses.service.scooter.dm.base.ScoScooterMcu;
+import com.redescooter.ses.service.scooter.dm.base.ScoScooterMcuControllerInfo;
+import com.redescooter.ses.service.scooter.dm.base.ScoScooterNavigation;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooterStatus;
 import com.redescooter.ses.service.scooter.exception.ExceptionCodeEnums;
+import com.redescooter.ses.service.scooter.service.base.ScoScooterBbiBatteryWareService;
+import com.redescooter.ses.service.scooter.service.base.ScoScooterBbiService;
+import com.redescooter.ses.service.scooter.service.base.ScoScooterBmsService;
+import com.redescooter.ses.service.scooter.service.base.ScoScooterEcuService;
+import com.redescooter.ses.service.scooter.service.base.ScoScooterMcuControllerInfoService;
+import com.redescooter.ses.service.scooter.service.base.ScoScooterMcuService;
+import com.redescooter.ses.service.scooter.service.base.ScoScooterNavigationService;
 import com.redescooter.ses.service.scooter.service.base.ScoScooterService;
 import com.redescooter.ses.service.scooter.service.base.ScoScooterStatusService;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -66,6 +80,27 @@ public class ScooterServiceImpl implements ScooterService {
 
     @Autowired
     private ScoScooterStatusService scoScooterStatusService;
+
+    @Autowired
+    private ScoScooterBbiService scoScooterBbiService;
+
+    @Autowired
+    private ScoScooterBbiBatteryWareService scoScooterBbiBatteryWareService;
+
+    @Autowired
+    private ScoScooterBmsService scoScooterBmsService;
+
+    @Autowired
+    private ScoScooterEcuService scoScooterEcuService;
+
+    @Autowired
+    private ScoScooterMcuService scoScooterMcuService;
+
+    @Autowired
+    private ScoScooterMcuControllerInfoService scoScooterMcuControllerInfoService;
+
+    @Autowired
+    private ScoScooterNavigationService scoScooterNavigationService;
 
     @Autowired
     private ScooterEcuMapper scooterEcuMapper;
@@ -376,6 +411,107 @@ public class ScooterServiceImpl implements ScooterService {
             return Boolean.FALSE;
         }
         return Boolean.TRUE;
+    }
+
+    /**
+     * 删除车辆
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public String deleteScooter(String tabletSn) {
+        String rsn = null;
+        LambdaQueryWrapper<ScoScooter> qw = new LambdaQueryWrapper<>();
+        qw.eq(ScoScooter::getDr, Constant.DR_FALSE);
+        qw.eq(ScoScooter::getTabletSn, tabletSn);
+        qw.last("limit 1");
+        ScoScooter scooter = scoScooterService.getOne(qw);
+        if (null != scooter) {
+            log.info("删除的车辆不为空");
+            Long scooterId = scooter.getId();
+            rsn = scooter.getScooterNo();
+
+            // 删除sco_scooter表
+            scooterServiceMapper.deleteScooter(scooterId);
+
+            // 删除sco_scooter_bbi表
+            LambdaQueryWrapper<ScoScooterBbi> bbiWrapper = new LambdaQueryWrapper<>();
+            bbiWrapper.eq(ScoScooterBbi::getDr, Constant.DR_FALSE);
+            bbiWrapper.eq(ScoScooterBbi::getScooterNo, rsn);
+            List<ScoScooterBbi> bbiList = scoScooterBbiService.list(bbiWrapper);
+            if (CollectionUtils.isNotEmpty(bbiList)) {
+                for (ScoScooterBbi bbi : bbiList) {
+                    scooterServiceMapper.deleteBbi(bbi.getId());
+                }
+            }
+
+            // 删除sco_scooter_bbi_battery_ware表
+            LambdaQueryWrapper<ScoScooterBbiBatteryWare> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(ScoScooterBbiBatteryWare::getDr, Constant.DR_FALSE);
+            lqw.eq(ScoScooterBbiBatteryWare::getScooterNo, rsn);
+            List<ScoScooterBbiBatteryWare> list = scoScooterBbiBatteryWareService.list(lqw);
+            if (CollectionUtils.isNotEmpty(list)) {
+                for (ScoScooterBbiBatteryWare ware : list) {
+                    scooterServiceMapper.deleteBbiBatteryWare(ware.getId());
+                }
+            }
+
+            // 删除sco_scooter_bms表
+            LambdaQueryWrapper<ScoScooterBms> bmsWrapper = new LambdaQueryWrapper<>();
+            bmsWrapper.eq(ScoScooterBms::getDr, Constant.DR_FALSE);
+            bmsWrapper.eq(ScoScooterBms::getScooterNo, rsn);
+            List<ScoScooterBms> bmsList = scoScooterBmsService.list(bmsWrapper);
+            if (CollectionUtils.isNotEmpty(bmsList)) {
+                for (ScoScooterBms bms : bmsList) {
+                    scooterServiceMapper.deleteBms(bms.getId());
+                }
+            }
+
+            // 删除sco_scooter_ecu表
+            LambdaQueryWrapper<ScoScooterEcu> ecuWrapper = new LambdaQueryWrapper<>();
+            ecuWrapper.eq(ScoScooterEcu::getDr, Constant.DR_FALSE);
+            ecuWrapper.eq(ScoScooterEcu::getScooterNo, rsn);
+            ecuWrapper.eq(ScoScooterEcu::getSn, tabletSn);
+            List<ScoScooterEcu> ecuList = scoScooterEcuService.list(ecuWrapper);
+            if (CollectionUtils.isNotEmpty(ecuList)) {
+                for (ScoScooterEcu ecu : ecuList) {
+                    scooterServiceMapper.deleteEcu(ecu.getId());
+                }
+            }
+
+            // 删除sco_scooter_mcu表
+            LambdaQueryWrapper<ScoScooterMcu> mcuWrapper = new LambdaQueryWrapper<>();
+            mcuWrapper.eq(ScoScooterMcu::getDr, Constant.DR_FALSE);
+            mcuWrapper.eq(ScoScooterMcu::getScooterNo, rsn);
+            mcuWrapper.last("limit 1");
+            ScoScooterMcu mcu = scoScooterMcuService.getOne(mcuWrapper);
+            if (null != mcu) {
+                Long mcuId = mcu.getId();
+                scooterServiceMapper.deleteMcu(mcuId);
+
+                // 删除sco_scooter_mcu_controller_info表
+                LambdaQueryWrapper<ScoScooterMcuControllerInfo> wrapper = new LambdaQueryWrapper<>();
+                wrapper.eq(ScoScooterMcuControllerInfo::getDr, Constant.DR_FALSE);
+                wrapper.eq(ScoScooterMcuControllerInfo::getMcuId, mcuId);
+                List<ScoScooterMcuControllerInfo> controllerList = scoScooterMcuControllerInfoService.list(wrapper);
+                if (CollectionUtils.isNotEmpty(controllerList)) {
+                    for (ScoScooterMcuControllerInfo controller : controllerList) {
+                        scooterServiceMapper.deleteMcuController(controller.getId());
+                    }
+                }
+            }
+
+            // 删除sco_scooter_navigation表
+            LambdaQueryWrapper<ScoScooterNavigation> navigationWrapper = new LambdaQueryWrapper<>();
+            navigationWrapper.eq(ScoScooterNavigation::getDr, Constant.DR_FALSE);
+            navigationWrapper.eq(ScoScooterNavigation::getScooterId, scooterId);
+            List<ScoScooterNavigation> navigationList = scoScooterNavigationService.list(navigationWrapper);
+            if (CollectionUtils.isNotEmpty(navigationList)) {
+                for (ScoScooterNavigation navigation : navigationList) {
+                    scooterServiceMapper.deleteNavigation(navigation.getScooterId());
+                }
+            }
+        }
+        return rsn;
     }
 
 }

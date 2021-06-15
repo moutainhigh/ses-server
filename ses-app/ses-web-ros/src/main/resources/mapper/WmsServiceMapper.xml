@@ -20,9 +20,9 @@
         </if>
         <if test="enter.keyword != ''and enter.keyword != null">
             and (
-            product.cn_name like concat ("%",#{enter.keyword},"%") or
-            product.en_name like concat ("%",#{enter.keyword},"%") or
-            product.product_number like concat ("%",#{enter.keyword},"%")
+            product.cn_name like concat ('%',#{enter.keyword},'%') or
+            product.en_name like concat ('%',#{enter.keyword},'%') or
+            product.product_number like concat ('%',#{enter.keyword},'%')
             )
         </if>
     </sql>
@@ -45,9 +45,9 @@
         </if>
         <if test="enter.keyword != ''and enter.keyword != null">
             and (
-            parts.cn_name like concat ("%",#{enter.keyword},"%") or
-            parts.en_name like concat ("%",#{enter.keyword},"%") or
-            parts.parts_number like concat ("%",#{enter.keyword},"%")
+            parts.cn_name like concat ('%',#{enter.keyword},'%') or
+            parts.en_name like concat ('%',#{enter.keyword},'%') or
+            parts.parts_number like concat ('%',#{enter.keyword},'%')
             )
         </if>
     </sql>
@@ -60,9 +60,9 @@
         </if>
         <if test="enter.keyword != ''and enter.keyword != null">
             and (
-            part.cn_name like concat ("%",#{enter.keyword},"%") or
-            part.en_name like concat ("%",#{enter.keyword},"%") or
-            part.product_number like concat ("%",#{enter.keyword},"%")
+            part.cn_name like concat ('%',#{enter.keyword},'%') or
+            part.en_name like concat ('%',#{enter.keyword},'%') or
+            part.product_number like concat ('%',#{enter.keyword},'%')
             )
         </if>
     </sql>
@@ -74,9 +74,9 @@
         </if>
         <if test="enter.keyword != ''and enter.keyword != null">
             and (
-            part.cn_name like concat ("%",#{enter.keyword},"%") or
-            part.en_name like concat ("%",#{enter.keyword},"%") or
-            part.product_number like concat ("%",#{enter.keyword},"%")
+            part.cn_name like concat ('%',#{enter.keyword},'%') or
+            part.en_name like concat ('%',#{enter.keyword},'%') or
+            part.product_number like concat ('%',#{enter.keyword},'%')
             )
         </if>
     </sql>
@@ -96,9 +96,9 @@
         </if>
         <if test="enter.keyword != ''and enter.keyword != null">
             and (
-            part.cn_name like concat ("%",#{enter.keyword},"%") or
-            part.en_name like concat ("%",#{enter.keyword},"%") or
-            part.parts_number like concat ("%",#{enter.keyword},"%")
+            part.cn_name like concat ('%',#{enter.keyword},'%') or
+            part.en_name like concat ('%',#{enter.keyword},'%') or
+            part.parts_number like concat ('%',#{enter.keyword},'%')
             )
         </if>
     </sql>
@@ -118,9 +118,9 @@
         </if>
         <if test="enter.keyword != ''and enter.keyword != null">
             and (
-            product.cn_name like concat ("%",#{enter.keyword},"%") or
-            product.en_name like concat ("%",#{enter.keyword},"%") or
-            product.product_number like concat ("%",#{enter.keyword},"%")
+            product.cn_name like concat ('%',#{enter.keyword},'%') or
+            product.en_name like concat ('%',#{enter.keyword},'%') or
+            product.product_number like concat ('%',#{enter.keyword},'%')
             )
         </if>
     </sql>
@@ -143,9 +143,9 @@
         </if>
         <if test="enter.keyword != ''and enter.keyword != null">
             and (
-            parts.cn_name like concat ("%",#{enter.keyword},"%") or
-            parts.en_name like concat ("%",#{enter.keyword},"%") or
-            parts.parts_number like concat ("%",#{enter.keyword},"%")
+            parts.cn_name like concat ('%',#{enter.keyword},'%') or
+            parts.en_name like concat ('%',#{enter.keyword},'%') or
+            parts.parts_number like concat ('%',#{enter.keyword},'%')
             )
         </if>
     </sql>
@@ -158,9 +158,9 @@
         </if>
         <if test="enter.keyword != ''and enter.keyword != null">
             and (
-            allocate.allocate_num like concat ("%",#{enter.keyword},"%") or
-            pro.first_name like concat ("%",#{enter.keyword},"%") or
-            pro.last_name like concat ("%",#{enter.keyword},"%")
+            allocate.allocate_num like concat ('%',#{enter.keyword},'%') or
+            pro.first_name like concat ('%',#{enter.keyword},'%') or
+            pro.last_name like concat ('%',#{enter.keyword},'%')
             )
         </if>
     </sql>
@@ -173,9 +173,9 @@
         </if>
         <if test="enter.keyword != ''and enter.keyword != null">
             and (
-            ord.assembly_number like concat ("%",#{enter.keyword},"%") or
-            pro.first_name like concat ("%",#{enter.keyword},"%") or
-            pro.last_name like concat ("%",#{enter.keyword},"%")
+            ord.assembly_number like concat ('%',#{enter.keyword},'%') or
+            pro.first_name like concat ('%',#{enter.keyword},'%') or
+            pro.last_name like concat ('%',#{enter.keyword},'%')
             )
         </if>
     </sql>
@@ -316,9 +316,9 @@
         </if>
         <if test="enter.keyword != ''and enter.keyword != null">
             and (
-            allocate.allocate_num like concat ("%",#{enter.keyword},"%") or
-            pro.first_name like concat ("%",#{enter.keyword},"%") or
-            pro.last_name like concat ("%",#{enter.keyword},"%")
+            allocate.allocate_num like concat ('%',#{enter.keyword},'%') or
+            pro.first_name like concat ('%',#{enter.keyword},'%') or
+            pro.last_name like concat ('%',#{enter.keyword},'%')
             )
         </if>
     </sql>
@@ -331,9 +331,9 @@
         </if>
         <if test="enter.keyword != ''and enter.keyword != null">
             and (
-            ord.assembly_number like concat ("%",#{enter.keyword},"%") or
-            pro.first_name like concat ("%",#{enter.keyword},"%") or
-            pro.last_name like concat ("%",#{enter.keyword},"%")
+            ord.assembly_number like concat ('%',#{enter.keyword},'%') or
+            pro.first_name like concat ('%',#{enter.keyword},'%') or
+            pro.last_name like concat ('%',#{enter.keyword},'%')
             )
         </if>
     </sql>

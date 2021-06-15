@@ -178,7 +178,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         if (StringUtils.isNoneBlank(enter.getCustomerFirstName(), enter.getCustomerLastName())) {
             model.setCustomerFullName(new StringBuffer().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
         }
-        model.setCustomerSource(String.valueOf(WebSiteCustomerSourceEnums.OFFICIAL.getValue()));
+        model.setCustomerSource("2");
         model.setCustomerType(String.valueOf(CustomerTypeEnums.PERSONAL.getValue()));
         model.setAddress(enter.getAddress());
         model.setPlaceId(enter.getPlaceId());
@@ -305,7 +305,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         if (StringUtils.isNoneBlank(enter.getCustomerFirstName(), enter.getCustomerLastName())) {
             model.setCustomerFullName(new StringBuffer().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
         }
-        model.setCustomerSource(String.valueOf(WebSiteCustomerSourceEnums.OFFICIAL.getValue()));
+        model.setCustomerSource("2");
         model.setCustomerType(String.valueOf(CustomerTypeEnums.PERSONAL.getValue()));
         model.setAddress(enter.getAddress());
         model.setPlaceId(enter.getPlaceId());

@@ -116,7 +116,7 @@ public class PushServiceImpl implements PushService {
         //查询用户与极光关系
         List<JpushUserResult> jpushUserlist = jpushUserService.queryJGUserInfo(userId);
 
-        if (jpushUserlist == null) {
+        if (null == jpushUserlist) {
             return result;
         } else {
             //由于每个用户平台的不确定性，故所有从

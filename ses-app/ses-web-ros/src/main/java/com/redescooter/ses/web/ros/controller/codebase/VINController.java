@@ -6,18 +6,21 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.codebase.VINService;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.codebase.SpecificatResult;
 import com.redescooter.ses.web.ros.vo.codebase.VINDetailResult;
 import com.redescooter.ses.web.ros.vo.codebase.VINListEnter;
 import com.redescooter.ses.web.ros.vo.codebase.VINListResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -69,6 +72,20 @@ public class VINController {
     @ApiOperation(value = "VIN导出", notes = "VIN导出")
     public Response<GeneralResult> export(@ModelAttribute VINListEnter enter) {
         return new Response<>(vinService.export(enter));
+    }
+
+    /**
+     * @Title: saveScooterImportExcel
+     * @Description: //
+     * @Param: [enter]
+     * @Return: com.redescooter.ses.api.common.vo.base.Response<com.redescooter.ses.api.common.vo.base.GeneralResult>
+     * @Date: 2021/6/11 4:44 下午
+     * @Author: Charles
+     */
+    @PostMapping(value = "/importVin")
+    @ApiOperation(value = "导入VIN")
+    public Response<Boolean> saveScooterImportExcel(@ModelAttribute @ApiParam("请求参数") MultipartFile file) {
+        return new Response<>(vinService.importVin(file));
     }
 
 }

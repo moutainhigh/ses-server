@@ -4,7 +4,15 @@ import com.redescooter.ses.api.common.constant.DateConstant;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * description: DateUtil 时间工具类
@@ -1019,5 +1027,17 @@ public class DateUtil {
     public static String getTimestamp() {
         long l = System.currentTimeMillis() / 1000;
         return String.format("%010d", l);
+    }
+
+    /**
+     * @Title: getUTCPlusDays
+     * @Description: // sim 更新UTC时间加天数
+     * @Param: [days]
+     * @Return: java.lang.String
+     * @Date: 2021/6/2 4:07 下午
+     * @Author: Charles
+     */
+    public static String getUTCPlusDays(int days) {
+        return LocalDate.now(ZoneOffset.UTC).plusDays(days).toString();
     }
 }

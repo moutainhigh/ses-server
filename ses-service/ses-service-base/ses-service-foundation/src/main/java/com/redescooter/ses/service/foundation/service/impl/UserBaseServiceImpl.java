@@ -1,6 +1,8 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.vo.base.BaseUserResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -14,17 +16,24 @@ import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeEnter;
 import com.redescooter.ses.api.foundation.vo.user.QueryUserResult;
 import com.redescooter.ses.api.foundation.vo.user.SaveAccountNodeEnter;
 import com.redescooter.ses.service.foundation.constant.SequenceName;
+import com.redescooter.ses.service.foundation.dao.AccountBaseServiceMapper;
 import com.redescooter.ses.service.foundation.dao.UserTokenMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaTenantMapper;
 import com.redescooter.ses.service.foundation.dao.base.PlaUserMapper;
+import com.redescooter.ses.service.foundation.dao.base.PlaUserNodeMapper;
+import com.redescooter.ses.service.foundation.dao.base.PlaUserPasswordMapper;
+import com.redescooter.ses.service.foundation.dao.base.PlaUserPermissionMapper;
 import com.redescooter.ses.service.foundation.dm.base.PlaTenant;
 import com.redescooter.ses.service.foundation.dm.base.PlaUser;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserNode;
+import com.redescooter.ses.service.foundation.dm.base.PlaUserPassword;
+import com.redescooter.ses.service.foundation.dm.base.PlaUserPermission;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.foundation.service.base.PlaUserNodeService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
@@ -56,10 +65,25 @@ public class UserBaseServiceImpl implements UserBaseService {
     private PlaUserNodeService plaUserNodeService;
 
     @Autowired
+    private PlaUserMapper plaUserMapper;
+
+    @Autowired
+    private PlaUserNodeMapper plaUserNodeMapper;
+
+    @Autowired
+    private PlaUserPermissionMapper plaUserPermissionMapper;
+
+    @Autowired
+    private PlaUserPasswordMapper plaUserPasswordMapper;
+
+    @Autowired
     private UserTokenMapper userTokenMapper;
 
     @Autowired
     private PlaTenantMapper tenantMapper;
+
+    @Autowired
+    private AccountBaseServiceMapper accountBaseServiceMapper;
 
     /**
      * 根据邮箱获取用户信息
@@ -78,10 +102,10 @@ public class UserBaseServiceImpl implements UserBaseService {
 
         QueryWrapper<PlaUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getKeyword());
-        queryWrapper.eq(PlaUser.COL_DR, 0);
+        queryWrapper.eq(PlaUser.COL_DR, Constant.DR_FALSE);
         List<PlaUser> plaUserList = userMapper.selectList(queryWrapper);
 
-        if (plaUserList == null) {
+        if (null == plaUserList) {
             return resultList;
         }
         plaUserList.forEach(user -> {
@@ -103,7 +127,7 @@ public class UserBaseServiceImpl implements UserBaseService {
     public QueryUserResult queryUserById(GeneralEnter enter) {
 
         PlaUser plaUser = userMapper.selectById(enter.getUserId());
-        if (plaUser == null) {
+        if (null == plaUser) {
             throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
 
@@ -123,7 +147,7 @@ public class UserBaseServiceImpl implements UserBaseService {
     public GeneralResult saveAccountNode(SaveAccountNodeEnter enter) {
         PlaUserNode plaUserNode = new PlaUserNode();
         plaUserNode.setId(idAppService.getId(SequenceName.PLA_USER_NODE));
-        plaUserNode.setDr(0);
+        plaUserNode.setDr(Constant.DR_FALSE);
         plaUserNode.setUserId(enter.getInputUserId());
         plaUserNode.setTenantId(enter.getTenantId());
         plaUserNode.setEvent(enter.getEvent());
@@ -150,7 +174,7 @@ public class UserBaseServiceImpl implements UserBaseService {
         enter.forEach(item -> {
             PlaUserNode plaUserNode = new PlaUserNode();
             plaUserNode.setId(idAppService.getId(SequenceName.PLA_USER_NODE));
-            plaUserNode.setDr(0);
+            plaUserNode.setDr(Constant.DR_FALSE);
             plaUserNode.setUserId(item.getInputUserId());
             plaUserNode.setTenantId(item.getTenantId());
             plaUserNode.setEvent(item.getEvent());
@@ -207,7 +231,7 @@ public class UserBaseServiceImpl implements UserBaseService {
         qw.isNotNull(PlaUser.COL_LAST_LOGIN_TIME);
         qw.last(" limit 1");
         PlaUser user = userMapper.selectOne(qw);
-        if (user != null) {
+        if (null != user) {
             flag = true;
         }
         return flag;
@@ -221,7 +245,7 @@ public class UserBaseServiceImpl implements UserBaseService {
         qw.in(PlaUser.COL_USER_TYPE, types);
         qw.last("limit 1");
         PlaUser user = userMapper.selectOne(qw);
-        if (user != null) {
+        if (null != user) {
             userId = user.getId();
         }
         return userId;
@@ -236,10 +260,51 @@ public class UserBaseServiceImpl implements UserBaseService {
         qw.eq(PlaTenant.COL_EMAIL, synchTenantEnter.getEmail());
         qw.last("limit 1");
         PlaTenant tenant = tenantMapper.selectOne(qw);
-        if (tenant != null) {
+        if (null != tenant) {
             tenant.setAddress(synchTenantEnter.getAddress());
             tenant.setTenantName(synchTenantEnter.getCompanyName());
             tenantMapper.updateById(tenant);
+        }
+    }
+
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public void deletePlaUser(String email) {
+        LambdaQueryWrapper<PlaUser> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(PlaUser::getLoginName, email);
+        wrapper.last("limit 1");
+        PlaUser plaUser = plaUserMapper.selectOne(wrapper);
+        if (null != plaUser) {
+            // 删除pla_user
+            accountBaseServiceMapper.deletePlaUser(email);
+
+            LambdaQueryWrapper<PlaUserNode> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(PlaUserNode::getUserId, plaUser.getId());
+            lqw.last("limit 1");
+            PlaUserNode node = plaUserNodeMapper.selectOne(lqw);
+            if (null != node) {
+                // 删除pla_user_node
+                accountBaseServiceMapper.deletePlaUserNode(plaUser.getId());
+
+                // 删除pla_user_permission
+                LambdaQueryWrapper<PlaUserPermission> qw = new LambdaQueryWrapper<>();
+                qw.eq(PlaUserPermission::getUserId, plaUser.getId());
+                List<PlaUserPermission> list = plaUserPermissionMapper.selectList(qw);
+                if (CollectionUtils.isNotEmpty(list)) {
+                    for (PlaUserPermission permission : list) {
+                        accountBaseServiceMapper.deletePlaUserPermission(permission.getUserId());
+                    }
+                }
+            }
+        }
+
+        // 删除pla_user_password
+        LambdaQueryWrapper<PlaUserPassword> pwdWrapper = new LambdaQueryWrapper<>();
+        pwdWrapper.eq(PlaUserPassword::getLoginName, email);
+        pwdWrapper.last("limit 1");
+        PlaUserPassword password = plaUserPasswordMapper.selectOne(pwdWrapper);
+        if (null != password) {
+            accountBaseServiceMapper.deletePlaUserPassword(email);
         }
     }
 

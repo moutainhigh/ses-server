@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.service.app.FrAppService;
@@ -26,6 +27,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @Description
@@ -69,6 +72,16 @@ public class FrAppController {
     @IgnoreLoginCheck
     public Response<OpeWarehouseAccount> getUserInfo(@ModelAttribute GeneralEnter enter) {
         return new Response<>(frAppService.getUserInfo(enter));
+    }
+
+    /**
+     * 检索数据下拉列表
+     */
+    @PostMapping("/data")
+    @ApiOperation(value = "检索数据下拉列表", notes = "检索数据下拉列表")
+    @IgnoreLoginCheck
+    public Response<List<String>> getDataList(@ModelAttribute StringEnter enter) {
+        return new Response<>(frAppService.getDataList(enter));
     }
 
     /**
@@ -140,5 +153,15 @@ public class FrAppController {
     public Response<GeneralResult> setScooterModel(@ModelAttribute CustomerIdEnter enter) {
         return new Response<>(frAppService.setScooterModel(enter));
     }
+
+    /**
+     * 校验询价单是否被操作过
+     */
+    /*@ApiOperation(value = "校验询价单是否被操作过", notes = "校验询价单是否被操作过")
+    @PostMapping("/check")
+    @IgnoreLoginCheck
+    public Response<BooleanResult> checkOperation(@ModelAttribute CustomerIdEnter enter) {
+        return new Response<>(frAppService.checkOperation(enter));
+    }*/
 
 }

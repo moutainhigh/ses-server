@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.vo.codebase.RSNDetailResult;
 import com.redescooter.ses.web.ros.vo.codebase.RSNListEnter;
 import com.redescooter.ses.web.ros.vo.codebase.RSNListResult;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @Description
@@ -29,4 +30,5 @@ public interface RSNService {
      */
     GeneralResult export(RSNListEnter enter);
 
+    Boolean importRsn(MultipartFile file);
 }

@@ -38,7 +38,7 @@ public class SyncPriceServiceImpl implements SyncPriceService {
 
     @Autowired
     private SiteProductPriceService siteProductPriceService;
-    
+
     @Autowired
     private SiteProductModelService siteProductModelService;
 
@@ -134,7 +134,7 @@ public class SyncPriceServiceImpl implements SyncPriceService {
                 // 期数(期数-定金的1个月)
                 //Integer period = enter.getPeriod() - 1;
                 // 期数
-                Integer period = enter.getPeriod() ;
+                Integer period = enter.getPeriod();
                 // 每期应付*期数
                 BigDecimal balance = enter.getShouldPayPeriod().multiply(new BigDecimal(String.valueOf(period)));
                 BigDecimal price = deposit.add(balance);
@@ -143,7 +143,7 @@ public class SyncPriceServiceImpl implements SyncPriceService {
                 // 全款支付
                 BigDecimal deposit = enter.getDeposit();
                 BigDecimal balance = enter.getBalance();
-                BigDecimal price = deposit.add(balance);
+                BigDecimal price = balance;
                 model.setPrice(price);
             }
             model.setTax(enter.getTax());

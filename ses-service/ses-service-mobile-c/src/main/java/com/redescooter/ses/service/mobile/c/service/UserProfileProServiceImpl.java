@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.mobile.c.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -9,12 +10,17 @@ import com.redescooter.ses.api.mobile.c.service.UserProfileProService;
 import com.redescooter.ses.api.mobile.c.vo.EditUserProfile2CEnter;
 import com.redescooter.ses.api.mobile.c.vo.SaveUserProfileEnter;
 import com.redescooter.ses.service.mobile.c.constant.SequenceName;
+import com.redescooter.ses.service.mobile.c.dao.UserProfileMapper;
+import com.redescooter.ses.service.mobile.c.dao.UserScooterMapper;
 import com.redescooter.ses.service.mobile.c.dao.base.ConUserProfileMapper;
+import com.redescooter.ses.service.mobile.c.dao.base.ConUserScooterMapper;
 import com.redescooter.ses.service.mobile.c.dm.base.ConUserProfile;
+import com.redescooter.ses.service.mobile.c.dm.base.ConUserScooter;
 import com.redescooter.ses.service.mobile.c.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.mobile.c.service.base.ConUserProfileService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.spring.annotation.GlobalTransactional;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -38,7 +44,17 @@ public class UserProfileProServiceImpl implements UserProfileProService {
     private ConUserProfileMapper conUserProfileMapper;
 
     @Autowired
+    private UserProfileMapper userProfileMapper;
+
+    @Autowired
+    private UserScooterMapper userScooterMapper;
+
+    @Autowired
     private ConUserProfileService userProfileService;
+
+    @Autowired
+    private ConUserScooterMapper conUserScooterMapper;
+
 
     @DubboReference
     private CustomerService customerService;
@@ -131,6 +147,28 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             conUserProfileMapper.updateById(conUserProfile);
         }
         return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public void deleteUserProfile(String email) {
+        LambdaQueryWrapper<ConUserProfile> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ConUserProfile::getEmail1, email);
+        List<ConUserProfile> list = conUserProfileMapper.selectList(wrapper);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (ConUserProfile profile : list) {
+                userProfileMapper.deleteUserProfile(profile.getEmail1());
+
+                LambdaQueryWrapper<ConUserScooter> qw = new LambdaQueryWrapper<>();
+                qw.eq(ConUserScooter::getUserId, profile.getUserId());
+                List<ConUserScooter> userScooterList = conUserScooterMapper.selectList(qw);
+                if (CollectionUtils.isNotEmpty(userScooterList)) {
+                    for (ConUserScooter userScooter : userScooterList) {
+                        userScooterMapper.deleteUserScooter(userScooter.getUserId());
+                    }
+                }
+            }
+        }
     }
 
     /**

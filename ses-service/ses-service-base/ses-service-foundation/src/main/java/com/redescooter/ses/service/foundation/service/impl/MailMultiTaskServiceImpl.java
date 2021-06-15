@@ -385,7 +385,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         //将模板赋值
         List<PlaMailConfig> configList = getPayTemplateById(mailtemplate.getMailTemplateNo());
         Map<String, String> map = new HashMap();
-        if (configList != null && configList.size() > 0) {
+        if (null != configList && 0 < configList.size()) {
             map = configList.stream().collect(Collectors.toMap(PlaMailConfig::getParamKey, MailConfig -> MailConfig.getParamValue() == null ? "" : (MailConfig.getParamValue()), (a, b) -> b));
         }
         map.put("name", enter.getFullName());
@@ -418,7 +418,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
         List<PlaMailConfig> configList = getPayTemplateById(mailtemplate.getMailTemplateNo());
         //参数的map
         Map<String, String> map = new HashMap();
-        if (configList != null && configList.size() > 0) {
+        if (null != configList && 0 < configList.size()) {
             map = configList.stream().collect(Collectors.toMap(PlaMailConfig::getParamKey, MailConfig -> MailConfig.getParamValue() == null ? "" : (MailConfig.getParamValue()), (a, b) -> b));
         }
         //保存邮箱任务
@@ -583,7 +583,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
                     getContent(map, getTemplateByNo(mailTask.getMailTemplateNo())));
             mailTask.setStatus(MailTaskStatusEnums.SUCCESS.getCode());
         }
-        if (mailTasks != null && mailTasks.size() > 0) {
+        if (null != mailTasks && 0 < mailTasks.size()) {
             mailTaskMapper.updateBatch(mailTasks);
         }
         return new GeneralResult();
@@ -607,7 +607,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
 
         List<PlaMailConfig> configList = getTemplateById(mailTemplateNo, systemId, appId);
         Map<String, String> map = new HashMap();
-        if (configList != null && configList.size() > 0) {
+        if (null != configList && 0 < configList.size()) {
             map = configList.stream().collect(Collectors.toMap(PlaMailConfig::getParamKey, MailConfig -> MailConfig.getParamValue() == null ? "" : (MailConfig.getParamValue()), (a, b) -> b));
         }
         //默认必须有的参数
@@ -624,7 +624,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
 
         List<PlaMailConfig> configList = getTemplateById(mailTemplateNo, systemId, appId);
         Map<String, String> map = new HashMap();
-        if (configList != null && configList.size() > 0) {
+        if (null != configList && 0 < configList.size()) {
             map = configList.stream().collect(Collectors.toMap(PlaMailConfig::getParamKey, MailConfig -> MailConfig.getParamValue() == null ? "" : (MailConfig.getParamValue()), (a, b) -> b));
         }
         //默认必须有的参数
@@ -643,7 +643,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
 
         List<PlaMailConfig> configList = getTemplateById(mailTemplateNo, systemId, appId);
         Map<String, String> map = new HashMap();
-        if (configList != null && configList.size() > 0) {
+        if (null != configList && 0 < configList.size()) {
             map = configList.stream().collect(Collectors.toMap(PlaMailConfig::getParamKey, MailConfig -> MailConfig.getParamValue() == null ? "" : (MailConfig.getParamValue()), (a, b) -> b));
         }
         //默认必须有的参数
@@ -685,7 +685,7 @@ public class MailMultiTaskServiceImpl implements MailMultiTaskService {
     }
 
     private String getContent(Map map, PlaMailTemplate mailTemplate) {
-        if (map == null) {
+        if (null == map) {
             map = new HashMap();
         }
         SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();

@@ -395,10 +395,13 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                 } else {
                     siteOrder.setAmountObligation(siteProductPrice.getShouldPayPeriod().add(batteryResult2).add(new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()), 2, BigDecimal.ROUND_UP)));
                 }
+                BigDecimal peijian = new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()),2,BigDecimal.ROUND_UP).multiply(new BigDecimal(siteProductPrice.getInstallmentTime()));
+                BigDecimal installmentTime = new BigDecimal(siteProductPrice.getInstallmentTime());
+                siteOrder.setTotalPrice(siteOrder.getTotalPrice());
                 Integer restPeriods = Integer.parseInt(siteOrder.getDef2());
                 siteOrder.setDef2(restPeriods.toString());
             } else {
-                siteOrder.setTotalPrice(siteOrder.getTotalPrice().add(new BigDecimal(siteOrder.getDef1())));
+                siteOrder.setTotalPrice(siteOrder.getTotalPrice());
                 siteOrder.setAmountPaid(siteOrder.getPrepaidDeposit().add(siteOrder.getFreight()));
                 siteOrder.setAmountObligation(siteOrder.getTotalPrice().subtract(siteOrder.getAmountPaid()));
             }
@@ -421,7 +424,10 @@ public class StripePaymentServiceImpl implements StripePaymentService {
                     siteOrder.setPayStatus(PaymentStatusEnums.ON_INSTALMENT.getValue());
                     siteOrder.setStatus(SiteOrderStatusEnums.IN_PROGRESS.getValue());
                     siteOrder.setDef2(restPeriods.toString());
-                    siteOrder.setTotalPrice(siteOrder.getAmountPaid().add(siteOrder.getAmountObligation()));
+                    BigDecimal peijian = new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()),2,BigDecimal.ROUND_UP).multiply(new BigDecimal(siteProductPrice.getInstallmentTime()));
+                    BigDecimal installmentTime = new BigDecimal(siteProductPrice.getInstallmentTime());
+//                    siteOrder.setTotalPrice(siteOrder.getPrepaidDeposit().add(siteOrder.getFreight()).add(siteProductPrice.getShouldPayPeriod().multiply(installmentTime)).add(batteryResult2.multiply(installmentTime)).add(peijian));
+                    siteOrder.setTotalPrice(siteOrder.getTotalPrice());
                     siteOrder.setAmountPaid(siteOrder.getAmountPaid().add(siteOrder.getAmountObligation()));
                 }
             } else {
@@ -456,19 +462,15 @@ public class StripePaymentServiceImpl implements StripePaymentService {
         IdEnter idEnter = new IdEnter();
         idEnter.setId(siteOrder.getId());
         SyncOrderDataEnter syncOrderDataEnter = new SyncOrderDataEnter();
+        syncOrderDataEnter.setAmountPaid(siteOrder.getAmountPaid());
+        syncOrderDataEnter.setAmountDiscount(siteOrder.getAmountDiscount());
         if (siteProductPrice.getPriceType() == 1 || siteProductPrice.getPriceType() == 3) {
-            BigDecimal a = siteOrder.getPrepaidDeposit().add(siteOrder.getFreight());
-            BigDecimal add2 = new BigDecimal(siteOrder.getDef1()).divide(new BigDecimal(siteProductPrice.getInstallmentTime()), 2, BigDecimal.ROUND_UP).add(siteProductPrice.getShouldPayPeriod());
-            syncOrderDataEnter.setAmountPaid(siteOrder.getPrepaidDeposit().add(siteOrder.getFreight()).add(add2.multiply(new BigDecimal(siteOrder.getDef2()))));
-            syncOrderDataEnter.setAmountDiscount(siteOrder.getAmountDiscount());
-            syncOrderDataEnter.setAmountObligation(siteOrder.getAmountObligation().multiply(new BigDecimal(siteProductPrice.getInstallmentTime()).subtract(new BigDecimal(siteOrder.getDef2()))));
-            syncOrderDataEnter.setTotalPrice(siteOrder1.getTotalPrice());
-        } else {
-            syncOrderDataEnter.setAmountPaid(siteOrder.getTotalPrice());
+            //syncOrderDataEnter.setAmountObligation(siteOrder.getAmountObligation().multiply(new BigDecimal(siteOrder1.getDef5()).subtract(new BigDecimal(siteOrder1.getDef2()))));
+            syncOrderDataEnter.setAmountObligation(siteOrder.getTotalPrice().subtract(siteOrder.getAmountPaid()));
+        }else {
             syncOrderDataEnter.setAmountObligation(siteOrder.getAmountObligation());
-            syncOrderDataEnter.setTotalPrice(siteOrder.getTotalPrice());
-            syncOrderDataEnter.setAmountDiscount(siteOrder.getAmountDiscount());
         }
+        syncOrderDataEnter.setTotalPrice(siteOrder.getTotalPrice());
         syncOrderDataEnter.setPayStatus(siteOrder.getPayStatus());
         syncOrderDataEnter.setIsInstallment(sitePaymentType.getPaymentCode());
         synchronizationOfRosSuccess(idEnter, syncOrderDataEnter);
