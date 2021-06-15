@@ -5,7 +5,6 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.codebase.RSNService;
-import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.codebase.RSNDetailResult;
 import com.redescooter.ses.web.ros.vo.codebase.RSNListEnter;
 import com.redescooter.ses.web.ros.vo.codebase.RSNListResult;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @Description RSN管理控制器
@@ -62,8 +62,8 @@ public class RSNController {
 
     @PostMapping(value = "/importRsn")
     @ApiOperation(value = "导入rsn")
-    public Response<GeneralResult> saveScooterImportExcel(@ModelAttribute @ApiParam("请求参数") ImportPartsEnter enter) {
-        return new Response<>(rsnService.importRsn(enter));
+    public Response<Boolean> saveScooterImportExcel(@ModelAttribute @ApiParam("请求参数") MultipartFile file) {
+        return new Response<Boolean>(rsnService.importRsn(file));
     }
 
 }

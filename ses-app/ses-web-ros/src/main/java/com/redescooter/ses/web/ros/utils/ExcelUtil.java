@@ -1,8 +1,14 @@
 package com.redescooter.ses.web.ros.utils;
 
+import cn.hutool.poi.excel.ExcelReader;
+import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
+import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -269,6 +275,26 @@ public class ExcelUtil {
             e.printStackTrace();
         }
         return workbook;
+    }
+
+    public static List<List<Object>> readExcel(MultipartFile file){
+        String fileName = file.getOriginalFilename();
+        long size = file.getSize();
+        if (StringUtils.isBlank(fileName) || size == 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.EXCEL_IMPORT_DATA_IS_EMPTY.getCode(), ExceptionCodeEnums.EXCEL_IMPORT_DATA_IS_EMPTY.getMessage());
+        }
+        InputStream inputStream = null;
+        try {
+            inputStream = file.getInputStream();
+        } catch (Exception e) {
+            throw new SesWebRosException(ExceptionCodeEnums.EXCEL_IMPORT_DATA_IS_EMPTY.getCode(), ExceptionCodeEnums.EXCEL_IMPORT_DATA_IS_EMPTY.getMessage());
+        }
+        ExcelReader excelReader = cn.hutool.poi.excel.ExcelUtil.getReader(inputStream);
+        List<List<Object>> read = excelReader.read(1, excelReader.getRowCount());
+        if (CollectionUtils.isEmpty(read)) {
+            throw new SesWebRosException(ExceptionCodeEnums.EXCEL_NO_DATA.getCode(), ExceptionCodeEnums.EXCEL_NO_DATA.getMessage());
+        }
+        return read;
     }
 
 }
