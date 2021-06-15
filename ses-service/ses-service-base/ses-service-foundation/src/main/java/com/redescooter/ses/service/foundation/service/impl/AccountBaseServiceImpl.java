@@ -2,6 +2,7 @@ package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.MaggessConstant;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
@@ -227,7 +228,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 
         QueryWrapper<PlaUser> wrapper = new QueryWrapper<>();
         wrapper.eq(PlaUser.COL_LOGIN_NAME, nickname);
-        wrapper.eq(PlaUser.COL_DR, 0);
+        wrapper.eq(PlaUser.COL_DR, Constant.DR_FALSE);
 
         return userMapper.selectCount(wrapper) == 0 ? Boolean.TRUE : Boolean.FALSE;
     }
@@ -252,7 +253,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
             plaTenantQueryWrapper.eq(PlaTenant.COL_DR, 0);
             plaTenantQueryWrapper.eq(PlaTenant.COL_EMAIL, enter.getT().getEmail());
             PlaTenant plaTenant = plaTenantMapper.selectOne(plaTenantQueryWrapper);
-            if (plaTenant == null) {
+            if (null == plaTenant) {
                 throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
             }
             if (!StringUtils.equals(TenantStatusEnum.INOPERATION.getValue(), plaTenant.getStatus())) {
@@ -272,12 +273,12 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         List<PlaUser> plaUserList = new ArrayList<>();
         if (accountType == AccountTypeEnums.WEB_EXPRESS.getAccountType() || accountType == AccountTypeEnums.WEB_RESTAURANT.getAccountType()) {
             QueryWrapper<PlaUser> plaUserQueryWrapper = new QueryWrapper<>();
-            plaUserQueryWrapper.eq(PlaUser.COL_DR, 0);
+            plaUserQueryWrapper.eq(PlaUser.COL_DR, Constant.DR_FALSE);
             plaUserQueryWrapper.eq(PlaUser.COL_TENANT_ID, customerTenantId);
             plaUserList = plaUserMapper.selectList(plaUserQueryWrapper);
         } else {
             QueryWrapper<PlaUser> plaUserQueryWrapper = new QueryWrapper<>();
-            plaUserQueryWrapper.eq(PlaUser.COL_DR, 0);
+            plaUserQueryWrapper.eq(PlaUser.COL_DR, Constant.DR_FALSE);
             plaUserQueryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getT().getEmail());
             plaUserQueryWrapper.in(PlaUser.COL_USER_TYPE, customerTypeList());
             plaUserQueryWrapper.last("limit 1");
@@ -335,7 +336,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         if (CollectionUtils.isNotEmpty(plaUserPermissionList)) {
             Boolean tenantAccountPermission = Boolean.FALSE;
             for (PlaUserPermission item : plaUserPermissionList) {
-                if (tennatUserId != null && tennatUserId != 0 && item.getUserId().equals(tennatUserId)) {
+                if (null != tennatUserId && 0 != tennatUserId && item.getUserId().equals(tennatUserId)) {
                     tenantAccountPermission = Boolean.TRUE;
 
                     if (!StringUtils.equals(UserStatusEnum.NORMAL.getValue(), item.getStatus())) {
@@ -373,10 +374,10 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         Long customerTenantId = 0L;
         if (accountType == AccountTypeEnums.WEB_EXPRESS.getAccountType() || accountType == AccountTypeEnums.WEB_RESTAURANT.getAccountType()) {
             QueryWrapper<PlaTenant> plaTenantQueryWrapper = new QueryWrapper<>();
-            plaTenantQueryWrapper.eq(PlaTenant.COL_DR, 0);
+            plaTenantQueryWrapper.eq(PlaTenant.COL_DR, Constant.DR_FALSE);
             plaTenantQueryWrapper.eq(PlaTenant.COL_EMAIL, enter.getT().getEmail());
             PlaTenant plaTenant = plaTenantMapper.selectOne(plaTenantQueryWrapper);
-            if (plaTenant == null) {
+            if (null == plaTenant) {
                 throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
             }
             if (!StringUtils.equals(TenantStatusEnum.FROZEN.getValue(), plaTenant.getStatus())) {
@@ -396,12 +397,12 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         List<PlaUser> plaUserList = new ArrayList<>();
         if (accountType == AccountTypeEnums.WEB_EXPRESS.getAccountType() || accountType == AccountTypeEnums.WEB_RESTAURANT.getAccountType()) {
             QueryWrapper<PlaUser> plaUserQueryWrapper = new QueryWrapper<>();
-            plaUserQueryWrapper.eq(PlaUser.COL_DR, 0);
+            plaUserQueryWrapper.eq(PlaUser.COL_DR, Constant.DR_FALSE);
             plaUserQueryWrapper.eq(PlaUser.COL_TENANT_ID, customerTenantId);
             plaUserList = plaUserMapper.selectList(plaUserQueryWrapper);
         } else {
             QueryWrapper<PlaUser> plaUserQueryWrapper = new QueryWrapper<>();
-            plaUserQueryWrapper.eq(PlaUser.COL_DR, 0);
+            plaUserQueryWrapper.eq(PlaUser.COL_DR, Constant.DR_FALSE);
             plaUserQueryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getT().getEmail());
             plaUserQueryWrapper.in(PlaUser.COL_USER_TYPE, customerTypeList());
             PlaUser plaUser = plaUserMapper.selectOne(plaUserQueryWrapper);
@@ -454,7 +455,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         if (CollectionUtils.isNotEmpty(plaUserPermissionList)) {
             Boolean tenantAccountPermission = Boolean.FALSE;
             for (PlaUserPermission item : plaUserPermissionList) {
-                if (tennatUserId != null && tennatUserId != 0 && item.getUserId().equals(tennatUserId)) {
+                if (null != tennatUserId && 0 != tennatUserId && item.getUserId().equals(tennatUserId)) {
                     tenantAccountPermission = Boolean.TRUE;
 
                     if (!StringUtils.equals(UserStatusEnum.LOCK.getValue(), item.getStatus())) {
@@ -487,7 +488,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public GeneralResult renewAccont(DateTimeParmEnter<BaseCustomerResult> enter) {
-        if (DateUtil.timeComolete(enter.getStartDateTime(), enter.getEndDateTime()) < 0) {
+        if (0 > DateUtil.timeComolete(enter.getStartDateTime(), enter.getEndDateTime())) {
             throw new FoundationException(ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getCode(),
                     ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
         }
@@ -499,7 +500,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         PlaTenant plaTenant = null;
         if (accountType == AccountTypeEnums.WEB_EXPRESS.getAccountType() || accountType == AccountTypeEnums.WEB_RESTAURANT.getAccountType()) {
             plaTenant = plaTenantMapper.selectById(enter.getT().getTenantId());
-            if (plaTenant == null) {
+            if (null == plaTenant) {
                 throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(),
                         ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
             }
@@ -508,12 +509,12 @@ public class AccountBaseServiceImpl implements AccountBaseService {
                 throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),
                         ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
             }
-            if (DateUtil.timeComolete(plaTenant.getExpireTime(), enter.getEndDateTime()) < 0) {
+            if (0 > DateUtil.timeComolete(plaTenant.getExpireTime(), enter.getEndDateTime())) {
                 throw new FoundationException(ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getCode(),
                         ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
             }
 
-            if (DateUtil.timeComolete(plaTenant.getEffectiveTime(), enter.getStartDateTime()) <= 0) {
+            if (0 >= DateUtil.timeComolete(plaTenant.getEffectiveTime(), enter.getStartDateTime())) {
                 throw new FoundationException(ExceptionCodeEnums.RENEW_START_DATETIME_IS_NOT_AVAILABLE.getCode(),
                         ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
             }
@@ -527,11 +528,11 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         }
         // 账户信息
         QueryWrapper<PlaUser> plaUserQueryWrapper = new QueryWrapper<>();
-        plaUserQueryWrapper.eq(PlaUser.COL_DR, 0);
+        plaUserQueryWrapper.eq(PlaUser.COL_DR, Constant.DR_FALSE);
         plaUserQueryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getT().getEmail());
         plaUserQueryWrapper.in(PlaUser.COL_USER_TYPE, customerTypeList());
         PlaUser plaUser = plaUserMapper.selectOne(plaUserQueryWrapper);
-        if (plaUser == null) {
+        if (null == plaUser) {
             throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
@@ -540,12 +541,12 @@ public class AccountBaseServiceImpl implements AccountBaseService {
             throw new FoundationException(ExceptionCodeEnums.STATUS_IS_REASONABLE.getCode(),
                     ExceptionCodeEnums.STATUS_IS_REASONABLE.getMessage());
         }
-        if (DateUtil.timeComolete(plaUser.getExpireTime(), enter.getEndDateTime()) < 0) {
+        if (0 > DateUtil.timeComolete(plaUser.getExpireTime(), enter.getEndDateTime())) {
             throw new FoundationException(ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getCode(),
                     ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
         }
 
-        if (DateUtil.timeComolete(plaUser.getEffectiveTime(), enter.getStartDateTime()) <= 0) {
+        if (0 >= DateUtil.timeComolete(plaUser.getEffectiveTime(), enter.getStartDateTime())) {
             throw new FoundationException(ExceptionCodeEnums.RENEW_START_DATETIME_IS_NOT_AVAILABLE.getCode(),
                     ExceptionCodeEnums.RENEW_END_DATETIME_IS_NOT_AVAILABLE.getMessage());
         }
@@ -574,7 +575,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         QueryWrapper<PlaUserPassword> plaUserPasswordQueryWrapper = new QueryWrapper<>();
         plaUserPasswordQueryWrapper.eq(PlaUserPassword.COL_LOGIN_NAME, enter.getT().getEmail());
         PlaUserPassword plaUserPassword = userPasswordMapper.selectOne(plaUserPasswordQueryWrapper);
-        if (plaUserPassword == null) {
+        if (null == plaUserPassword) {
             throw new FoundationException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
@@ -608,7 +609,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         Long tenantId = 0L;
         QueryWrapper<PlaTenant> plaTenantQueryWrapper = new QueryWrapper<>();
         plaTenantQueryWrapper.eq(PlaTenant.COL_EMAIL, enter.getEmail());
-        plaTenantQueryWrapper.eq(PlaTenant.COL_DR, 0);
+        plaTenantQueryWrapper.eq(PlaTenant.COL_DR, Constant.DR_FALSE);
         PlaTenant tenant = plaTenantMapper.selectOne(plaTenantQueryWrapper);
         if (tenant != null) {
             tenantId = tenant.getId();
@@ -617,7 +618,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         if (tenantId.equals(0)) {
             QueryWrapper<PlaUser> wrapper = new QueryWrapper<>();
             wrapper.eq(PlaUser.COL_TENANT_ID, tenantId);
-            wrapper.eq(PlaUser.COL_DR, 0);
+            wrapper.eq(PlaUser.COL_DR, Constant.DR_FALSE);
             List<PlaUser> userList = plaUserMapper.selectList(wrapper);
             if (CollectionUtils.isNotEmpty(userList)) {
                 ids = userList.stream().map(user -> user.getId()).collect(Collectors.toList());
@@ -625,7 +626,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         } else {
             QueryWrapper<PlaUser> wrapper = new QueryWrapper<>();
             wrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getEmail());
-            wrapper.eq(PlaUser.COL_DR, 0);
+            wrapper.eq(PlaUser.COL_DR, Constant.DR_FALSE);
             wrapper.in(PlaUser.COL_USER_TYPE, customerTypeList());
             PlaUser plaUser = plaUserMapper.selectOne(wrapper);
             if (plaUser == null) {
@@ -642,13 +643,13 @@ public class AccountBaseServiceImpl implements AccountBaseService {
             //删除租户节点
             QueryWrapper<PlaTenantNode> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq(PlaTenantNode.COL_TENANT_ID, tenantId);
-            queryWrapper.eq(PlaTenantNode.COL_DR, 0);
+            queryWrapper.eq(PlaTenantNode.COL_DR, Constant.DR_FALSE);
             plaTenantNodeService.remove(queryWrapper);
 
             // 删除租户配置
             QueryWrapper<PlaTenantConfig> plaTenantConfigQueryWrapper = new QueryWrapper<>();
             plaTenantConfigQueryWrapper.eq(PlaTenantConfig.COL_TENANT_ID, tenantId);
-            plaTenantConfigQueryWrapper.eq(PlaTenantConfig.COL_DR, 0);
+            plaTenantConfigQueryWrapper.eq(PlaTenantConfig.COL_DR, Constant.DR_FALSE);
             plaTenantConfigService.remove(plaTenantConfigQueryWrapper);
         } else {
             // 删除个人--2C信息 TODO
@@ -659,7 +660,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 
         //删除账户节点信息
         QueryWrapper<PlaUserNode> plaUserNodeQueryWrapper = new QueryWrapper<>();
-        plaUserNodeQueryWrapper.eq(PlaUserNode.COL_DR, 0);
+        plaUserNodeQueryWrapper.eq(PlaUserNode.COL_DR, Constant.DR_FALSE);
         plaUserNodeQueryWrapper.in(PlaUserNode.COL_USER_ID, ids);
         plaUserNodeService.remove(plaUserNodeQueryWrapper);
 
@@ -694,12 +695,12 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         }
         QueryWrapper<PlaUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(PlaUser.COL_LOGIN_NAME, driverloginType == 1 ? dto.getEmail() : dto.getNickName());
-        queryWrapper.eq(PlaUser.COL_DR, 0);
+        queryWrapper.eq(PlaUser.COL_DR, Constant.DR_FALSE);
 
         List<PlaUser> userList = userMapper.selectList(queryWrapper);
         int count = userList.size();
-        if (driverloginType == 1) {
-            if (userList.size() > 0) {
+        if (1 == driverloginType) {
+            if (0 < userList.size()) {
                 for (PlaUser user : userList) {
                     if (user.getUserType() == accountType) {
                         throw new FoundationException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(),
@@ -708,7 +709,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
                 }
             }
         } else {
-            if (count > 0) {
+            if (0 < count) {
                 throw new FoundationException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(),
                         ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
             }
@@ -716,14 +717,14 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         //①、创建user信息
         PlaUser user = new PlaUser();
         user.setId(idAppService.getId(SequenceName.PLA_USER));
-        user.setDr(0);
+        user.setDr(Constant.DR_FALSE);
         user.setTenantId(tenant.getId());
         user.setAppId(AccountTypeUtils.getAppId(accountType));
         user.setSystemId(AccountTypeUtils.getSystemId(accountType));
         user.setLoginName(driverloginType == 1 ? dto.getEmail() : dto.getNickName());
         user.setLoginType(driverloginType);
         user.setUserType(accountType);
-        if (count > 0) {
+        if (0 < count) {
             user.setStatus(UserStatusEnum.NORMAL.getValue());
             //标识账号是否激活
             user.setDef1(MaggessConstant.ACCOUNT_ACTIVAT_AFTER);
@@ -743,10 +744,10 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         QueryWrapper<PlaUserPassword> queryPassWord = new QueryWrapper<>();
         queryPassWord.eq(PlaUserPassword.COL_LOGIN_NAME, driverloginType == 1 ? dto.getEmail() : dto.getNickName());
 
-        queryPassWord.eq(PlaUserPassword.COL_DR, 0);
+        queryPassWord.eq(PlaUserPassword.COL_DR, Constant.DR_FALSE);
         PlaUserPassword passwordServiceOne = userPasswordService.getOne(queryPassWord);
 
-        if (passwordServiceOne == null) {
+        if (null == passwordServiceOne) {
             String salt = String.valueOf(RandomUtils.nextInt(10000, 99999));
             PlaUserPassword savePassWord = new PlaUserPassword();
             savePassWord.setId(idAppService.getId(SequenceName.PLA_USER_PASSWORD));
@@ -803,7 +804,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     public GeneralResult cancelDriver2BAccout(IdEnter enter) {
         PlaUser plaUser = userMapper.selectById(enter.getId());
 
-        if (plaUser == null) {
+        if (null == plaUser) {
             return new GeneralResult(enter.getRequestId());
         }
         userMapper.deleteById(enter.getId());
@@ -812,9 +813,9 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         if (userMapper.selectCount(new LambdaQueryWrapper<PlaUser>().eq(PlaUser::getLoginName, plaUser.getLoginName()).eq(PlaUser::getDr, 0)) == 0) {
             QueryWrapper<PlaUserPassword> query = new QueryWrapper<>();
             query.eq(PlaUserPassword.COL_LOGIN_NAME, plaUser.getLoginName());
-            query.eq(PlaUserPassword.COL_DR, 0);
+            query.eq(PlaUserPassword.COL_DR, Constant.DR_FALSE);
             PlaUserPassword userPassword = userPasswordMapper.selectOne(query);
-            if (userPassword == null) {
+            if (null == userPassword) {
                 return new GeneralResult(enter.getRequestId());
             }
             userPasswordMapper.deleteById(userPassword.getId());
@@ -823,10 +824,10 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 
         QueryWrapper<PlaUserPermission> wrapper = new QueryWrapper<>();
         wrapper.eq(PlaUserPermission.COL_USER_ID, plaUser.getId());
-        wrapper.eq(PlaUserPermission.COL_DR, 0);
+        wrapper.eq(PlaUserPermission.COL_DR, Constant.DR_FALSE);
         PlaUserPermission permission = userPermissionMapper.selectOne(wrapper);
 
-        if (permission == null) {
+        if (null == permission) {
             return new GeneralResult(enter.getRequestId());
         }
         userPermissionMapper.deleteById(permission.getId());
@@ -846,7 +847,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 
         PlaUser user = userMapper.selectById(enter.getId());
 
-        if (user == null) {
+        if (null == user) {
             throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
@@ -957,7 +958,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
     public BooleanResult checkOpenAccount(CheckOpenAccountEnter enter) {
 
         PlaUser plaUser = plaUserMapper.selectOne(new LambdaQueryWrapper<PlaUser>().eq(PlaUser::getUserType, enter.getAccountType()).eq(PlaUser::getLoginName, enter.getEmail()));
-        if (plaUser == null) {
+        if (null == plaUser) {
             return BooleanResult.builder().success(Boolean.FALSE).build();
         }
         return BooleanResult.builder().success(plaUser.getActivationTime() == null ? Boolean.FALSE : Boolean.TRUE).build();
@@ -969,16 +970,16 @@ public class AccountBaseServiceImpl implements AccountBaseService {
 
         QueryWrapper<PlaUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getT().getEmail());
-        queryWrapper.eq(PlaUser.COL_DR, 0);
+        queryWrapper.eq(PlaUser.COL_DR, Constant.DR_FALSE);
         queryWrapper.eq(PlaUser.COL_USER_TYPE, accountType);
         queryWrapper.last("LIMIT 1");
         PlaUser user = userMapper.selectOne(queryWrapper);
 
-        if (user == null) {
+        if (null == user) {
             // 保存 user 信息
             user = new PlaUser();
             user.setId(idAppService.getId(SequenceName.PLA_USER));
-            user.setDr(0);
+            user.setDr(Constant.DR_FALSE);
             user.setTenantId(tenantId);
             user.setAppId(AccountTypeUtils.getAppId(accountType));
             user.setSystemId(AccountTypeUtils.getSystemId(accountType));
@@ -1001,7 +1002,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         plaUserPasswordQueryWrapper.last("LIMIT 1");
         PlaUserPassword plaUserPassword = userPasswordMapper.selectOne(plaUserPasswordQueryWrapper);
         // 密码不存在创建，已存在 跳过
-        if (plaUserPassword == null) {
+        if (null == plaUserPassword) {
             PlaUserPassword savePassWord = new PlaUserPassword();
             savePassWord.setId(idAppService.getId(SequenceName.PLA_USER_PASSWORD));
             savePassWord.setLoginName(enter.getT().getEmail());
@@ -1021,7 +1022,7 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         queryuserPermission.eq(PlaUserPermission.COL_APP_ID, AccountTypeUtils.getAppId(accountType));
         queryuserPermission.last("LIMIT 1");
         PlaUserPermission userPermission = userPermissionMapper.selectOne(queryuserPermission);
-        if (userPermission == null) {
+        if (null == userPermission) {
             // 开通权限
             userPermission = new PlaUserPermission();
             userPermission.setId(idAppService.getId(SequenceName.PLA_USER_PERMISSION));

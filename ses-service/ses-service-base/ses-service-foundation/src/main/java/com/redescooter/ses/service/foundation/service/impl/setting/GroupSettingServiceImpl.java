@@ -2,6 +2,7 @@ package com.redescooter.ses.service.foundation.service.impl.setting;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -61,7 +62,7 @@ public class GroupSettingServiceImpl implements GroupSettingService {
         }
         int count =
                 plaSysGroupSettingService.count(groupQueryWrapper);
-        if (count == 0) {
+        if (0 == count) {
             return PageResult.createZeroRowResult(enter);
         }
         return PageResult.create(enter, count, groupSettingServiceMapper.groupList(enter));
@@ -99,7 +100,7 @@ public class GroupSettingServiceImpl implements GroupSettingService {
     @Override
     public GeneralResult save(SaveGroupEnter enter) {
         PlaSysGroupSetting plaSysGroupSetting = null;
-        if (enter.getId() == null || enter.getId() == 0) {
+        if (null == enter.getId() || 0 == enter.getId()) {
             //保存
             plaSysGroupSetting = buildGroup(enter);
             plaSysGroupSetting.setId(idAppService.getId(SequenceName.PLA_SYS_GROUP_SETTING));
@@ -110,7 +111,7 @@ public class GroupSettingServiceImpl implements GroupSettingService {
             plaSysGroupSetting = buildGroup(enter);
             plaSysGroupSetting.setId(enter.getId());
         }
-        if (plaSysGroupSetting != null) {
+        if (null != plaSysGroupSetting) {
             plaSysGroupSettingService.saveOrUpdate(plaSysGroupSetting);
         }
         return new GeneralResult(enter.getRequestId());
@@ -118,7 +119,7 @@ public class GroupSettingServiceImpl implements GroupSettingService {
 
     private PlaSysGroupSetting buildGroup(SaveGroupEnter enter) {
         return PlaSysGroupSetting.builder()
-                .dr(0)
+                .dr(Constant.DR_FALSE)
                 .groupName(enter.getGroupName())
                 .systemType(enter.getSystemType().getValue())
                 .desc(enter.getDesc())
@@ -138,7 +139,7 @@ public class GroupSettingServiceImpl implements GroupSettingService {
     @Override
     public GeneralResult delete(IdEnter enter) {
         PlaSysGroupSetting plaSysGroupSetting = plaSysGroupSettingService.getById(enter.getId());
-        if (plaSysGroupSetting == null) {
+        if (null == plaSysGroupSetting) {
             throw new FoundationException(ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getMessage());
         }
         if (plaSysGroupSetting.getEnable()) {

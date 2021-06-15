@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.mesage.MessagePriorityEnums;
 import com.redescooter.ses.api.common.enums.mesage.MessageStatus;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -67,7 +68,7 @@ public class MessageServiceImpl implements MessageService {
     public PageResult<MessageResult> messageList(MessageListEnter enter) {
 
         int count = messageServiceMapper.messageListCount(enter);
-        if (count == 0) {
+        if (0 == count) {
             return PageResult.createZeroRowResult(enter);
         }
         Locale locale = new Locale(enter.getLanguage(), enter.getCountry());
@@ -92,7 +93,7 @@ public class MessageServiceImpl implements MessageService {
     public PageResult<MessageResult> recentMessages(PageEnter enter) {
         //todo 缺少国家化配置
         int count = messageServiceMapper.recentMessagesCount(enter);
-        if (count == 0) {
+        if (0 == count) {
             return PageResult.createZeroRowResult(enter);
         }
         Locale locale = new Locale(enter.getLanguage(), enter.getCountry());
@@ -159,13 +160,13 @@ public class MessageServiceImpl implements MessageService {
      * @return
      */
     @Override
-    @GlobalTransactional(rollbackFor = Exception.class)  
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void save(MessageSaveEnter enter) {
         PlaMessage record = new PlaMessage();
 
         BeanUtils.copyProperties(enter, record);
         record.setId(idAppService.getId(SequenceName.PLA_MESSAGE));
-        record.setDr(0);
+        record.setDr(Constant.DR_FALSE);
         record.setTenantId(enter.getTenantId());
         record.setMessagePriority(enter.getMessagePriority());
         record.setBusinessStatus(enter.getBussinessStatus());
@@ -202,7 +203,7 @@ public class MessageServiceImpl implements MessageService {
         PlaMessage plaMessage = plaMessageMapper.selectOne(plaMessageQueryWrapper);
 
         MessageResult messageResult = new MessageResult();
-        if (plaMessage != null) {
+        if (null != plaMessage) {
             BeanUtils.copyProperties(plaMessage, messageResult);
             // 消息国际化
             Locale locale = new Locale(enter.getLanguage(), enter.getCountry());

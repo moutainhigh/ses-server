@@ -62,14 +62,14 @@ public class CityBaseServiceImpl implements CityBaseService {
         CityResult result = null;
 
         QueryWrapper<PlaCity> wrapper = new QueryWrapper<>();
-        if (enter.getId() != null) {
+        if (null != enter.getId()) {
             wrapper.eq("id", enter.getId());
-        } else if (enter.getPId() != null) {
+        } else if (null != enter.getPId()) {
             wrapper.eq(PlaCity.COL_P_ID, enter.getId());
         }
 
         Integer totalRows = cityMapper.selectCount(wrapper);
-        if (totalRows == null || totalRows == 0) {
+        if (null == totalRows || 0 == totalRows) {
             return PageResult.createZeroRowResult(enter);
         }
         wrapper.orderByAsc(PlaCity.COL_CODE);
@@ -93,14 +93,14 @@ public class CityBaseServiceImpl implements CityBaseService {
     @Override
     public CityResult queryCityDeatliById(IdEnter enter) {
 
-        if (enter == null) {
+        if (null == enter) {
             return new CityResult();
         }
 
         PlaCity city = cityMapper.selectById(enter.getId());
 
         CityResult result = new CityResult();
-        if (city != null) {
+        if (null != city) {
             BeanUtils.copyProperties(city, result);
         }
         return result;
@@ -119,7 +119,7 @@ public class CityBaseServiceImpl implements CityBaseService {
         List<CityResult> resultlist = new ArrayList<>();
         CityResult result = null;
 
-        if (enter.getId() == null) {
+        if (null == enter.getId()) {
             wrapper.eq(PlaCity.COL_LEVEL, 0);
         } else {
             wrapper.eq(PlaCity.COL_P_ID, enter.getId());
@@ -165,7 +165,7 @@ public class CityBaseServiceImpl implements CityBaseService {
         PlaCity city = cityMapper.selectOne(new LambdaQueryWrapper<PlaCity>().eq(PlaCity::getName, name));
 
         CityResult result = new CityResult();
-        if (city != null) {
+        if (null != city) {
             BeanUtils.copyProperties(city, result);
         }
         return result;
@@ -178,7 +178,7 @@ public class CityBaseServiceImpl implements CityBaseService {
         //存在所有城市
         List<PlaCity> saveList = new ArrayList<>();
 
-        if (list.size() > 0) {
+        if (0 < list.size()) {
             list.forEach(c -> {
                 PlaCity city = new PlaCity();
                 city.setId(idAppService.getId(SequenceName.PLA_CITY));
@@ -338,7 +338,7 @@ public class CityBaseServiceImpl implements CityBaseService {
         qw.eq(PlaCity.COL_POST_CODE, districtPost);
         qw.last("limit 1");
         PlaCity plaCity = cityMapper.selectOne(qw);
-        if (plaCity == null) {
+        if (null == plaCity) {
             return 0L;
         }
         return plaCity.getId();

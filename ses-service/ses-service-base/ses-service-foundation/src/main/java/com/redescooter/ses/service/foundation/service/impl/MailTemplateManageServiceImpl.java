@@ -98,7 +98,7 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
 
         PlaMailTemplate mailTemplate = new PlaMailTemplate();
         BeanUtils.copyProperties(enter, mailTemplate);
-        if (enter.getId() == null || enter.getId() == 0) {
+        if (null == enter.getId() || 0 == enter.getId()) {
             mailTemplate.setId(idSerService.getId(SequenceName.PLA_MAIL_TEMPLATE));
         }
         mailTemplate.setStatus(MailTemplateStatusEnums.NORMAL.getCode());
@@ -155,7 +155,7 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
 
         PlaMailConfig config = new PlaMailConfig();
 
-        if (enter.getId() == null || enter.getId() == 0) {
+        if (null == enter.getId() || 0 == enter.getId()) {
             //新增
             config.setId(idSerService.getId(SequenceName.PLA_MAIL_CONFIG));
             config.setDr(Constant.DR_FALSE);
@@ -166,11 +166,11 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
         } else {
             //更新
             PlaMailTemplate plaMailTemplate = mailTemplateMapper.selectOne(new QueryWrapper<PlaMailTemplate>().eq(PlaMailTemplate.COL_MAIL_TEMPLATE_NO, enter.getMailTemplateNo()));
-            if (plaMailTemplate == null) {
+            if (null == plaMailTemplate) {
                 throw new FoundationException(ExceptionCodeEnums.TEMPLATE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TEMPLATE_IS_NOT_EXIST.getMessage());
             }
             config = plaMailConfigService.getById(enter.getId());
-            if (config == null) {
+            if (null == config) {
                 throw new FoundationException(ExceptionCodeEnums.TEMPLATE_PARAM_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TEMPLATE_PARAM_IS_NOT_EXIST.getMessage());
             }
         }
@@ -181,7 +181,7 @@ public class MailTemplateManageServiceImpl implements MailTemplateManageService 
                 enter.getParamValue())) {
             throw new FoundationException(ExceptionCodeEnums.PARAMETER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PARAMETER_IS_NOT_EXIST.getMessage());
         }
-        if (AppIDEnums.checkAppId(enter.getMailAppId()) == null) {
+        if (null == AppIDEnums.checkAppId(enter.getMailAppId())) {
             throw new FoundationException(ExceptionCodeEnums.APPID_IS_NOT_MATCH.getCode(), ExceptionCodeEnums.APPID_IS_NOT_MATCH.getMessage());
         }
         config.setSystemId(AppIDEnums.getSystemId(enter.getMailAppId()));

@@ -56,7 +56,7 @@ public class VersionBaseServiceImpl implements VersionBaseService {
         queryWrapper.orderByDesc(PlaAppVersion.COL_CREATED_TIME);
         queryWrapper.last("limit 1");
         PlaAppVersion one = plaAppVersionService.getOne(queryWrapper);
-        if (one != null) {
+        if (null != one) {
             BeanUtils.copyProperties(one, ersionTypeResult);
         }
         return ersionTypeResult;
@@ -105,7 +105,7 @@ public class VersionBaseServiceImpl implements VersionBaseService {
         queryWrapper.orderByDesc(PlaAppVersion.COL_CREATED_TIME);
         queryWrapper.last("limit 1");
         PlaAppVersion one = plaAppVersionService.getOne(queryWrapper);
-        if (one != null) {
+        if (null != one) {
             BeanUtils.copyProperties(one, ersionTypeResult);
         }
         return ersionTypeResult;

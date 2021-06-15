@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.DateConstant;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.tenant.TenanNodeEventEnum;
@@ -155,7 +156,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
 
         PlaTenantConfig plaTenantConfig = buildTenantConfigSingle(enter.getInputTenantId(), enter);
         // 保存
-        if ((enter.getTenantConfigId() == null) || (enter.getTenantConfigId() == 0)) {
+        if ((null == enter.getTenantConfigId()) || (0 == enter.getTenantConfigId())) {
             plaTenantConfig.setId((idAppService.getId(SequenceName.PLA_TENANT_CONFIG)));
             plaTenantConfig.setCreatedBy(enter.getUserId());
             plaTenantConfig.setCreatedTime(new Date());
@@ -171,9 +172,9 @@ public class TenantBaseServiceImpl implements TenantBaseService {
     public TenantConfigInfoResult tenantConfigInfo(GeneralEnter enter) {
         QueryWrapper<PlaTenantConfig> plaTenantConfigQueryWrapper = new QueryWrapper<>();
         plaTenantConfigQueryWrapper.eq(PlaTenantConfig.COL_TENANT_ID, enter.getTenantId());
-        plaTenantConfigQueryWrapper.eq(PlaTenantConfig.COL_DR, 0);
+        plaTenantConfigQueryWrapper.eq(PlaTenantConfig.COL_DR, Constant.DR_FALSE);
         PlaTenantConfig plaTenantConfig = plaTenantConfigMapper.selectOne(plaTenantConfigQueryWrapper);
-        if (plaTenantConfig == null) {
+        if (null == plaTenantConfig) {
             throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
         }
         TenantConfigInfoResult tenantConfigInfoResult = new TenantConfigInfoResult();
@@ -190,7 +191,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
     @Override
     public QueryTenantResult queryTenantById(IdEnter enter) {
         PlaTenant plaTenant = plaTenantMapper.selectById(enter.getId());
-        if (plaTenant == null) {
+        if (null == plaTenant) {
             throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
         }
         QueryTenantResult result = new QueryTenantResult();
@@ -241,10 +242,10 @@ public class TenantBaseServiceImpl implements TenantBaseService {
             // 餐厅 配送范围 配送时间 参数过滤 修改
             if (AccountTypeEnums.WEB_RESTAURANT.getAccountType().equals(queryUserResult.getUserType())) {
                 // 参数校验
-                if (enter.getDistributionRange() == null || enter.getDistributionRange() == 0) {
+                if (null == enter.getDistributionRange() || 0 == enter.getDistributionRange()) {
                     throw new FoundationException(ExceptionCodeEnums.DISTRIBUTIONRANGE_IS_EMPTY.getCode(), ExceptionCodeEnums.DISTRIBUTIONRANGE_IS_EMPTY.getMessage());
                 }
-                if (enter.getEstimatedDuration() == null || enter.getEstimatedDuration() == 0) {
+                if (null == enter.getEstimatedDuration() || 0 == enter.getEstimatedDuration()) {
                     throw new FoundationException(ExceptionCodeEnums.ESTIMATEDDURATION_IS_EMPTY.getCode(), ExceptionCodeEnums.ESTIMATEDDURATION_IS_EMPTY.getMessage());
                 }
             }
@@ -255,7 +256,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
             tenantConfig = new PlaTenantConfig();
 
             tenant = plaTenantMapper.selectById(tennatId);
-            if (tenant == null) {
+            if (null == tenant) {
                 throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
             }
             tenantConfig.setStartWeek(TenantBussinessWeek.MON.getValue());
@@ -265,7 +266,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
             tenantConfig.setDistributionRange(TenantDefaultValue.DISTRIBUTION_RANGE);
             tenantConfig.setEstimatedDuration(TenantDefaultValue.ESTIMATED_DURATION);
             // 租户信息初始化
-            tenantConfig.setDr(0);
+            tenantConfig.setDr(Constant.DR_FALSE);
             tenantConfig.setAddress(tenant.getAddress());
             tenantConfig.setStatus(TenantBussinessStatus.OPEN.getValue());
             tenantConfig.setLanguage(enter.getLanguage());
@@ -279,13 +280,13 @@ public class TenantBaseServiceImpl implements TenantBaseService {
         } else {
             // 进行租户配置的查询
             PlaTenantConfig plaTenantConfig = plaTenantConfigMapper.selectById(enter.getTenantConfigId());
-            if (plaTenantConfig == null) {
+            if (null == plaTenantConfig) {
                 throw new FoundationException(ExceptionCodeEnums.TENANT_CONFIG_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_CONFIG_IS_NOT_EXIST.getMessage());
             }
             tenantConfig = plaTenantConfig;
 
             tenant = plaTenantMapper.selectById(enter.getTenantId());
-            if (tenant == null) {
+            if (null == tenant) {
                 throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(), ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
             }
             tenantConfig.setStartWeek(enter.getStartWeek());
@@ -303,7 +304,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
     private PlaTenantNode buildPlaTenantNodeSingle(DateTimeParmEnter<BaseCustomerResult> enter, String event) {
         PlaTenantNode plaTenantNode = new PlaTenantNode();
         plaTenantNode.setId(idAppService.getId(SequenceName.PLA_TENANT_NODE));
-        plaTenantNode.setDr(0);
+        plaTenantNode.setDr(Constant.DR_FALSE);
         plaTenantNode.setTenantId(enter.getT().getTenantId());
         plaTenantNode.setEvent(event);
         plaTenantNode.setEventTime(new Date());
@@ -318,7 +319,7 @@ public class TenantBaseServiceImpl implements TenantBaseService {
     private PlaTenant buildTenantSingle(DateTimeParmEnter<BaseCustomerResult> enter) {
         PlaTenant plaTenant = new PlaTenant();
         plaTenant.setId(idAppService.getId(SequenceName.PLA_TENANT));
-        plaTenant.setDr(0);
+        plaTenant.setDr(Constant.DR_FALSE);
         plaTenant.setPId(0L);
         plaTenant.setTenantName(enter.getT().getCompanyName());
         plaTenant.setEmail(enter.getT().getEmail());
