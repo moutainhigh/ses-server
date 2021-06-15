@@ -24,6 +24,7 @@ import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.codebase.VINService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
 import com.redescooter.ses.web.ros.vo.codebase.*;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -252,7 +253,7 @@ public class VINServiceImpl implements VINService {
      * @Date: 2021/6/11 4:44 下午
      * @Author: Charles
      */
-    @Transactional
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public Boolean importVin(MultipartFile file) {
         List<List<Object>> read = ExcelUtil.readExcel(file);

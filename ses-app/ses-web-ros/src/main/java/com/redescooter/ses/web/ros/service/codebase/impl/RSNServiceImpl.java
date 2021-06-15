@@ -32,6 +32,7 @@ import com.redescooter.ses.web.ros.vo.codebase.RSNDetailResult;
 import com.redescooter.ses.web.ros.vo.codebase.RSNDetailScooterResult;
 import com.redescooter.ses.web.ros.vo.codebase.RSNListEnter;
 import com.redescooter.ses.web.ros.vo.codebase.RSNListResult;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -246,7 +247,7 @@ public class RSNServiceImpl implements RSNService {
         return new GeneralResult(excelPath);
     }
 
-    @Transactional
+    @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public Boolean importRsn(MultipartFile file) {
         List<List<Object>> read = ExcelUtil.readExcel(file);
