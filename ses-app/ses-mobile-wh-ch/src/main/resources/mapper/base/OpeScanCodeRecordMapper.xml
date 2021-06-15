@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.mobile.wh.ch.dao.base.OpeScanCodeRecordMapper">
+
+    <select id="scanCodeRecordList" resultType="com.redescooter.ses.mobile.wh.ch.vo.ScanCodeRecordResult">
+        select
+            id, scooter_name as scooterName, rsn, remarks, created_time as createdTime
+        from ope_scan_code_record
+        where dr = 0
+        <if test="searchContent != null and searchContent != ''">
+            and rsn = #{searchContent} or scooter_name = #{searchContent}
+        </if>
+    </select>
+</mapper>
