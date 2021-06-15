@@ -263,7 +263,7 @@ public class VINServiceImpl implements VINService {
             if (CollectionUtils.isEmpty(list)) {
                 continue;
             }
-            if (StringUtils.isBlank(list.get(1).toString())) {
+            if (2 > list.size()) {
                 continue;
             }
             VinImportData data = new VinImportData();
