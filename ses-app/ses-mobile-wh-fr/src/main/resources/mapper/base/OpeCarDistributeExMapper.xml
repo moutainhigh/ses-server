@@ -76,7 +76,7 @@
         left join ope_car_distribute ocd on oci.customer_id = ocd.customer_id and ocd.dr = 0
         left join ope_car_distribute_node ocdn on ocdn.customer_id = oci.customer_id and ocdn.dr = 0
         where oci.dr = 0
-        and (  (ocdn.flag is null or ocdn.flag = 0) and ( (ocdn.app_node is null or ocdn.app_node = 1 ) or (ocdn.node is null or ocdn.node = 1 ) ) and oci.full_name like concat('%', #{param.keyword}, '%')    )
+        and ( ocdn.flag = 0 and ( (ocdn.app_node is null or ocdn.app_node = 1 ) or (ocdn.node is null or ocdn.node = 1 ) ) and oci.full_name like concat('%', #{param.keyword}, '%')    )
 
         or (  ocd.warehouse_account_id = #{warehouseAccountId} and ocdn.flag = 1 and ocdn.app_node in (2, 3, 4, 5) and oci.full_name like concat('%', #{param.keyword}, '%')     )
 
@@ -92,7 +92,7 @@
         left join ope_car_distribute ocd on oci.customer_id = ocd.customer_id and ocd.dr = 0
         left join ope_car_distribute_node ocdn on ocdn.customer_id = oci.customer_id and ocdn.dr = 0
         where oci.dr = 0
-        and (  (ocdn.flag is null or ocdn.flag = 0) and ( (ocdn.app_node is null or ocdn.app_node = 1 ) or (ocdn.node is null or ocdn.node = 1 ) ) and oci.order_no like concat('%', #{param.keyword}, '%')    )
+        and ( ocdn.flag = 0 and ( (ocdn.app_node is null or ocdn.app_node = 1 ) or (ocdn.node is null or ocdn.node = 1 ) ) and oci.order_no like concat('%', #{param.keyword}, '%')    )
 
         or (  ocd.warehouse_account_id = #{warehouseAccountId} and ocdn.flag = 1 and ocdn.app_node in (2, 3, 4, 5) and oci.order_no like concat('%', #{param.keyword}, '%')     )
 
