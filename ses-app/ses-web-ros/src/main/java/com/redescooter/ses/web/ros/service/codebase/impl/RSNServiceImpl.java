@@ -249,22 +249,7 @@ public class RSNServiceImpl implements RSNService {
     @Transactional
     @Override
     public Boolean importRsn(MultipartFile file) {
-        String fileName = file.getOriginalFilename();
-        long size = file.getSize();
-        if (StringUtils.isBlank(fileName) || size == 0) {
-            throw new SesWebRosException(ExceptionCodeEnums.EXCEL_IMPORT_DATA_IS_EMPTY.getCode(), ExceptionCodeEnums.EXCEL_IMPORT_DATA_IS_EMPTY.getMessage());
-        }
-        InputStream inputStream = null;
-        try {
-            inputStream = file.getInputStream();
-        } catch (Exception e) {
-            throw new SesWebRosException(ExceptionCodeEnums.EXCEL_IMPORT_DATA_IS_EMPTY.getCode(), ExceptionCodeEnums.EXCEL_IMPORT_DATA_IS_EMPTY.getMessage());
-        }
-        ExcelReader excelReader = cn.hutool.poi.excel.ExcelUtil.getReader(inputStream);
-        List<List<Object>> read = excelReader.read(1, excelReader.getRowCount());
-        if (CollectionUtils.isEmpty(read)) {
-            throw new SesWebRosException(ExceptionCodeEnums.EXCEL_NO_DATA.getCode(), ExceptionCodeEnums.EXCEL_NO_DATA.getMessage());
-        }
+        List<List<Object>> read = ExcelUtil.readExcel(file);
         List<String> rsnCodes = Lists.newArrayList();
         for (int i = 0; i < read.size(); i++) {
             List list = read.get(i);
@@ -279,7 +264,7 @@ public class RSNServiceImpl implements RSNService {
         queryWrapper.in(OpeCodebaseRsn::getRsn, rsnCodes);
         List<OpeCodebaseRsn> list = opeCodebaseRsnService.list(queryWrapper);
         if (CollectionUtils.isNotEmpty(list)) {
-            throw new SesWebRosException(ExceptionCodeEnums.VIN_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.VIN_EXISTS_CODEBASE.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.BASECODE_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.BASECODE_EXISTS_CODEBASE.getMessage());
         }
         for (String rsnCode : rsnCodes) {
             OpeCodebaseRsn rsn = new OpeCodebaseRsn();

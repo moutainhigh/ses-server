@@ -606,11 +606,11 @@ public enum ExceptionCodeEnums {
 
     DEPOSIT_NOT_ZERO(10294,"设置定金不能为0"),
 
-    VIN_EXISTS_CODEBASE(10300, "VIN已存在在码库中"),
+    BASECODE_EXISTS_CODEBASE(10295, "数据已存在码库中"),
 
-    EXCEL_NO_DATA(10301, "EXCEL读取无数据"),
+    EXCEL_NO_DATA(10296, "EXCEL读取无数据"),
 
-    EXCEL_IMPORT_DATA_IS_EMPTY(10302, "导入数据为空");
+    EXCEL_IMPORT_DATA_IS_EMPTY(10297, "导入数据为空");
 
     private int code;
 
