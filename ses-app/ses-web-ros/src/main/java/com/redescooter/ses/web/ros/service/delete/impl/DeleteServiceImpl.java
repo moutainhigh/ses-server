@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.delete.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
@@ -15,6 +16,7 @@ import com.redescooter.ses.web.ros.dao.base.OpeCustomerContactMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryBMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeSetDepositMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWmsScooterStockMapper;
 import com.redescooter.ses.web.ros.dao.delete.DeleteMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
@@ -347,6 +349,12 @@ public class DeleteServiceImpl implements DeleteService {
                 }
             }
         }
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    @Override
+    public GeneralResult deleteDeposit(GeneralEnter enter) {
+        int i = deleteMapper.deleteDeposit();
         return new GeneralResult(enter.getRequestId());
     }
 

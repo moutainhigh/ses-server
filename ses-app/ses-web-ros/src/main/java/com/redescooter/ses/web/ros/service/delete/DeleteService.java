@@ -1,5 +1,6 @@
 package com.redescooter.ses.web.ros.service.delete;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 
@@ -37,5 +38,7 @@ public interface DeleteService {
      * 删除部件
      */
     GeneralResult deletePart(IdEnter enter);
+
+    GeneralResult deleteDeposit(GeneralEnter enter);
 
 }
