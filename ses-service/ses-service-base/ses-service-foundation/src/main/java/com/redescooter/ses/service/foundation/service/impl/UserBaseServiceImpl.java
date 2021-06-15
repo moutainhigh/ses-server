@@ -2,6 +2,7 @@ package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.vo.base.BaseUserResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -101,10 +102,10 @@ public class UserBaseServiceImpl implements UserBaseService {
 
         QueryWrapper<PlaUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getKeyword());
-        queryWrapper.eq(PlaUser.COL_DR, 0);
+        queryWrapper.eq(PlaUser.COL_DR, Constant.DR_FALSE);
         List<PlaUser> plaUserList = userMapper.selectList(queryWrapper);
 
-        if (plaUserList == null) {
+        if (null == plaUserList) {
             return resultList;
         }
         plaUserList.forEach(user -> {
@@ -126,7 +127,7 @@ public class UserBaseServiceImpl implements UserBaseService {
     public QueryUserResult queryUserById(GeneralEnter enter) {
 
         PlaUser plaUser = userMapper.selectById(enter.getUserId());
-        if (plaUser == null) {
+        if (null == plaUser) {
             throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
 
@@ -146,7 +147,7 @@ public class UserBaseServiceImpl implements UserBaseService {
     public GeneralResult saveAccountNode(SaveAccountNodeEnter enter) {
         PlaUserNode plaUserNode = new PlaUserNode();
         plaUserNode.setId(idAppService.getId(SequenceName.PLA_USER_NODE));
-        plaUserNode.setDr(0);
+        plaUserNode.setDr(Constant.DR_FALSE);
         plaUserNode.setUserId(enter.getInputUserId());
         plaUserNode.setTenantId(enter.getTenantId());
         plaUserNode.setEvent(enter.getEvent());
@@ -173,7 +174,7 @@ public class UserBaseServiceImpl implements UserBaseService {
         enter.forEach(item -> {
             PlaUserNode plaUserNode = new PlaUserNode();
             plaUserNode.setId(idAppService.getId(SequenceName.PLA_USER_NODE));
-            plaUserNode.setDr(0);
+            plaUserNode.setDr(Constant.DR_FALSE);
             plaUserNode.setUserId(item.getInputUserId());
             plaUserNode.setTenantId(item.getTenantId());
             plaUserNode.setEvent(item.getEvent());
@@ -230,7 +231,7 @@ public class UserBaseServiceImpl implements UserBaseService {
         qw.isNotNull(PlaUser.COL_LAST_LOGIN_TIME);
         qw.last(" limit 1");
         PlaUser user = userMapper.selectOne(qw);
-        if (user != null) {
+        if (null != user) {
             flag = true;
         }
         return flag;
@@ -244,7 +245,7 @@ public class UserBaseServiceImpl implements UserBaseService {
         qw.in(PlaUser.COL_USER_TYPE, types);
         qw.last("limit 1");
         PlaUser user = userMapper.selectOne(qw);
-        if (user != null) {
+        if (null != user) {
             userId = user.getId();
         }
         return userId;
@@ -259,7 +260,7 @@ public class UserBaseServiceImpl implements UserBaseService {
         qw.eq(PlaTenant.COL_EMAIL, synchTenantEnter.getEmail());
         qw.last("limit 1");
         PlaTenant tenant = tenantMapper.selectOne(qw);
-        if (tenant != null) {
+        if (null != tenant) {
             tenant.setAddress(synchTenantEnter.getAddress());
             tenant.setTenantName(synchTenantEnter.getCompanyName());
             tenantMapper.updateById(tenant);

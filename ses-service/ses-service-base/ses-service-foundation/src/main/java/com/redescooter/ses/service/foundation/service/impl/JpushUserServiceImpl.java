@@ -2,6 +2,7 @@ package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.LoginPushStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.service.JpushUserService;
@@ -87,7 +88,7 @@ public class JpushUserServiceImpl implements JpushUserService {
         }
 
         //用户首次登录极光
-        if (jpushUserData == null) {
+        if (null == jpushUserData) {
             jpushUser = new PlaJpushUser();
             BeanUtils.copyProperties(enter, jpushUser);
             jpushUser.setId(idSerService.getId(SequenceName.PLA_JPUSHUSER));
@@ -105,12 +106,12 @@ public class JpushUserServiceImpl implements JpushUserService {
         }
 
         //登录绑定
-        if (enter.getStatus() == 0) {
+        if (0 == enter.getStatus()) {
             jpushUser = new PlaJpushUser();
             //BeanUtils.copyProperties(jpushUserData, jpushUser);
             //变更绑定用户ID,别名，标签，推送平台，推送类型，设备状态，设备状态值
             jpushUser.setId(jpushUserData.getId());
-            jpushUser.setDr(0);
+            jpushUser.setDr(Constant.DR_FALSE);
             jpushUser.setUserId(enter.getUserId());
             jpushUser.setAlias(enter.getAlias());
             jpushUser.setTag(enter.getTag());
@@ -125,7 +126,7 @@ public class JpushUserServiceImpl implements JpushUserService {
             return new GeneralResult(enter.getRequestId());
         }
         //注销解绑
-        if (enter.getStatus() == 1) {
+        if (1 == enter.getStatus()) {
 
             jpushUser = new PlaJpushUser();
             jpushUser.setId(jpushUserData.getId());

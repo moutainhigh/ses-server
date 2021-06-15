@@ -62,4 +62,6 @@ public interface DeleteMapper {
      */
     int deletePriceHistory(@Param("id") Long id);
 
+    int deleteDeposit();
+
 }

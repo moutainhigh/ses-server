@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.controller.delete;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
@@ -80,6 +81,18 @@ public class DeleteController {
     @IgnoreLoginCheck
     public Response<GeneralResult> deletePart(@ModelAttribute IdEnter enter) {
         return new Response<>(deleteService.deletePart(enter));
+    }
+
+    /**
+     * 清空定金
+     * @param enter
+     * @return
+     */
+    @PostMapping("/deleteDeposit")
+    @ApiOperation(value = "清空定金", tags = "清空定金")
+    @IgnoreLoginCheck
+    public Response<GeneralResult> deleteDeposit(@ModelAttribute GeneralEnter enter) {
+        return new Response<>(deleteService.deleteDeposit(enter));
     }
 
 }

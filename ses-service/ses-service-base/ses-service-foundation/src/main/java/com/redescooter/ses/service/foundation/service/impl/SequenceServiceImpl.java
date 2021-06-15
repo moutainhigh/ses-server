@@ -35,7 +35,7 @@ public class SequenceServiceImpl implements SequenceService {
 
     @Override
     public long get(String sequenceName) throws SequenceException {
-        if (sequenceName == null || sequenceName.trim().length() == 0) {
+        if (null == sequenceName || 0 == sequenceName.trim().length()) {
             throw new SequenceException("sequenceName is null.");
         }
         synchronized (sequenceName.intern()) {
@@ -44,7 +44,7 @@ public class SequenceServiceImpl implements SequenceService {
             }
             try {
                 Sequence sequence = getAvaibleSequence(sequenceName);
-                if (sequence.available() == 0) {
+                if (0 == sequence.available()) {
                     throw new SequenceException(
                             "Sequence[" + sequenceName + "] acquisition failure, please try again");
                 }
@@ -61,10 +61,10 @@ public class SequenceServiceImpl implements SequenceService {
 
     @Override
     public List<Long> batchGet(String sequenceName, int batch) throws SequenceException {
-        if (sequenceName == null || sequenceName.trim().length() == 0) {
+        if (null == sequenceName || 0 == sequenceName.trim().length()) {
             throw new SequenceException("sequenceName is null.");
         }
-        if (batch < 1 || batch > 10000) {
+        if (1 > batch || 10000 < batch) {
             throw new SequenceException("batch size Range is [1-100000].");
         }
         List<Long> ids = new ArrayList<>(batch);
@@ -73,13 +73,13 @@ public class SequenceServiceImpl implements SequenceService {
                 cacheSequence(sequenceName);
             }
             try {
-                while (batch > 0) {
+                while (0 < batch) {
                     Sequence sequence = getAvaibleSequence(sequenceName);
-                    if (sequence.available() == 0) {
+                    if (0 == sequence.available()) {
                         throw new SequenceException(
                                 "Sequence[" + sequenceName + "] acquisition failure, please try again");
                     }
-                    while (sequence.available() > 0 && batch > 0) {
+                    while (0 < sequence.available() && 0 < batch) {
                         ids.add(sequence.getNext());
                         batch--;
                     }
@@ -106,8 +106,8 @@ public class SequenceServiceImpl implements SequenceService {
         Sequence[] sequences = sequenceCache.get(sequenceName);
         Sequence lock = sequences[SEQUENCE_INDEX_LOCK];
         Sequence sequence = sequences[SEQUENCE_INDEX_MAIN];
-        if (sequences[SEQUENCE_INDEX_MAIN].available() == 0
-                && sequences[SEQUENCE_INDEX_RESERVE].available() == 0) {
+        if (0 == sequences[SEQUENCE_INDEX_MAIN].available()
+                && 0 == sequences[SEQUENCE_INDEX_RESERVE].available()) {
             initSequenceByDb(sequenceName, sequences[SEQUENCE_INDEX_MAIN], 10);
             log.info("sync update sequence(" + sequenceName + "):" + sequences[SEQUENCE_INDEX_MAIN]);
             sequence = sequences[SEQUENCE_INDEX_MAIN];
@@ -115,7 +115,7 @@ public class SequenceServiceImpl implements SequenceService {
             synchronized (lock) {
                 lock.notifyAll();
             }
-        } else if (sequences[SEQUENCE_INDEX_MAIN].available() == 0) {
+        } else if (0 == sequences[SEQUENCE_INDEX_MAIN].available()) {
             Sequence temp = sequences[SEQUENCE_INDEX_MAIN];
             sequences[SEQUENCE_INDEX_MAIN] = sequences[SEQUENCE_INDEX_RESERVE];
             sequences[SEQUENCE_INDEX_RESERVE] = temp;
@@ -195,7 +195,7 @@ public class SequenceServiceImpl implements SequenceService {
             throws SequenceException {
         for (int i = 0; i < retryTimes; i++) {
             SequenceDefination sequenceDefination = sequenceDao.getSequence(sequenceName);
-            if (sequenceDefination == null) {
+            if (null == sequenceDefination) {
                 try {
                     sequenceDao.insertSequence(sequenceName);
                     sequenceDefination = sequenceDao.getSequence(sequenceName);
@@ -209,7 +209,7 @@ public class SequenceServiceImpl implements SequenceService {
             long length = sequenceDefination.getCache() + random.nextInt(100);
             int updateSize =
                     sequenceDao.updateSequence(sequenceName, sequenceDefination.getCurrentValue(), length);
-            if (updateSize == 0) {
+            if (0 == updateSize) {
                 log.warn("sequence[" + sequenceName + "] update failure,retry times[" + i + "]");
                 try {
                     Thread.sleep(1 + random.nextInt(3));

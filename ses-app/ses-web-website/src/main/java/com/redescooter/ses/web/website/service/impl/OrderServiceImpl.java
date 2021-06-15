@@ -312,7 +312,6 @@ public class OrderServiceImpl implements OrderService {
             totalPrice = totalPrice.add(battery.getPrice().multiply(new BigDecimal(String.valueOf(paidBattery))));
         }
         addSiteOrderVO.setTotalPrice(totalPrice);
-        log.info("addSiteOrderVO.getTotalPrice()>>>>>>>>>>>>>>>>>>>:{}", addSiteOrderVO.getTotalPrice());
         //已付金额
         addSiteOrderVO.setAmountPaid(new BigDecimal("0"));
         //代付款金额
@@ -514,7 +513,6 @@ public class OrderServiceImpl implements OrderService {
                     Integer count = Integer.valueOf(installmentTime);
                     // 配件总额  平均分到每期
                     shouldPayPeriod = shouldPayPeriod.add(partAllTotalPrice.divide(new BigDecimal(String.valueOf(count)), 2, BigDecimal.ROUND_UP));
-                    log.info(shouldPayPeriod + "{>>>>>>>>>>>进入这里}");
                 }
             }
             if (shouldPayPeriod.compareTo(new BigDecimal("0")) == 0) {
@@ -537,11 +535,8 @@ public class OrderServiceImpl implements OrderService {
                 order.setTotalPrice(orderTotalPrice.add(new BigDecimal(String.valueOf(shouldPayPeriod)).multiply(new BigDecimal(productPrice.getInstallmentTime()))));
             } else {
                 order.setTotalPrice(orderTotalPrice.add(shouldPayPeriod));
-                log.info("order.setTotalPrice>>>>>>>>>>>>>>>>>>>>>{}", order.getTotalPrice());
-                log.info("shouldPayPeriod>>>>>>>>>>>>>>>>>>>>>>>>>{}", shouldPayPeriod);
             }
 
-            log.info("订单总价格new>>>>>>>>>>>>>>>>>>>>>：{}", order.getTotalPrice());
             order.setAmountObligation(order.getAmountObligation().add(new BigDecimal(String.valueOf(shouldPayPeriod))));
             //如果是分期的情况配件每期应付的价格
             orderB.setDef2(String.valueOf(shouldPayPeriod));
