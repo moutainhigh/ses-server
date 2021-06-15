@@ -277,4 +277,8 @@ public interface SequenceName {
 
     String OPE_SET_DEPOSIT = "OPE_SET_DEPOSIT";
 
+    String OPE_CODEBASE_RSN = "OPE_CODEBASE_RSN";
+
+    String OPE_CODEBASE_VIN = "OPE_CODEBASE_VIN";
+
 }

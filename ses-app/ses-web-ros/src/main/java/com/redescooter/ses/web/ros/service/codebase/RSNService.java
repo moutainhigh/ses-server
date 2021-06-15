@@ -3,6 +3,8 @@ package com.redescooter.ses.web.ros.service.codebase;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.codebase.RSNDetailResult;
 import com.redescooter.ses.web.ros.vo.codebase.RSNListEnter;
 import com.redescooter.ses.web.ros.vo.codebase.RSNListResult;
@@ -29,4 +31,5 @@ public interface RSNService {
      */
     GeneralResult export(RSNListEnter enter);
 
+    ImportExcelPartsResult importRsn(ImportPartsEnter enter);
 }
