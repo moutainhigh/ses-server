@@ -1,11 +1,6 @@
 package com.redescooter.ses.web.ros.dao.assign;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
-import com.redescooter.ses.web.ros.vo.app.InquiryDetailEnter;
-import com.redescooter.ses.web.ros.vo.app.InquiryDetailResult;
-import com.redescooter.ses.web.ros.vo.app.InquiryListAppEnter;
-import com.redescooter.ses.web.ros.vo.app.InquiryListResult;
 import com.redescooter.ses.web.ros.vo.assign.doing.result.AssigningListResult;
 import com.redescooter.ses.web.ros.vo.assign.done.enter.AssignedListEnter;
 import com.redescooter.ses.web.ros.vo.assign.done.result.AssignedListResult;
@@ -64,30 +59,5 @@ public interface OpeCarDistributeExMapper {
      * 处理中列表
      */
     List<AssigningListResult> getDoingList(@Param("param") ToBeAssignListEnter enter);
-
-    /**
-     * app询价单列表count
-     */
-    int getInquiryListCount(@Param("param") InquiryListAppEnter enter, @Param("warehouseAccountId") Long warehouseAccountId);
-
-    /**
-     * app询价单列表
-     */
-    List<InquiryListResult> getInquiryList(@Param("param") InquiryListAppEnter enter, @Param("warehouseAccountId") Long warehouseAccountId);
-
-    /**
-     * app询价单详情
-     */
-    InquiryDetailResult getInquiryDetail(@Param("param") InquiryDetailEnter enter);
-
-    /**
-     * 检索数据下拉接口(客户姓名)
-     */
-    List<String> getNameDataList(@Param("param") StringEnter enter, @Param("warehouseAccountId") Long warehouseAccountId);
-
-    /**
-     * 检索数据下拉接口(询价单号)
-     */
-    List<String> getOrderNoDataList(@Param("param") StringEnter enter, @Param("warehouseAccountId") Long warehouseAccountId);
 
 }
