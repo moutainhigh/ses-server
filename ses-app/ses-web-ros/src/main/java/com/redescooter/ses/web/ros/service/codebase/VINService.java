@@ -4,12 +4,11 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
-import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
-import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.codebase.SpecificatResult;
 import com.redescooter.ses.web.ros.vo.codebase.VINDetailResult;
 import com.redescooter.ses.web.ros.vo.codebase.VINListEnter;
 import com.redescooter.ses.web.ros.vo.codebase.VINListResult;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -40,5 +39,5 @@ public interface VINService {
      */
     GeneralResult export(VINListEnter enter);
 
-    ImportExcelPartsResult importVin(ImportPartsEnter enter);
+    Boolean importVin(MultipartFile file);
 }

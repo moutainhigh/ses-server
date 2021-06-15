@@ -604,7 +604,13 @@ public enum ExceptionCodeEnums {
 
     DEPOSIT_ERROR(10293,"设置定金不能大于最小价格"),
 
-    DEPOSIT_NOT_ZERO(10294,"设置定金不能为0");
+    DEPOSIT_NOT_ZERO(10294,"设置定金不能为0"),
+
+    VIN_EXISTS_CODEBASE(10300, "VIN已存在在码库中"),
+
+    EXCEL_NO_DATA(10301, "EXCEL读取无数据"),
+
+    EXCEL_IMPORT_DATA_IS_EMPTY(10302, "导入数据为空");
 
     private int code;
 
