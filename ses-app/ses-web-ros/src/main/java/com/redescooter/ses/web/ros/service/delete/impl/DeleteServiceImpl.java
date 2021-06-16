@@ -271,6 +271,17 @@ public class DeleteServiceImpl implements DeleteService {
             }
         }
 
+        // 防止上面删除ope_wms_stock_serial_number没删掉,这里再删一次
+        LambdaQueryWrapper<OpeWmsStockSerialNumber> checkWrapper = new LambdaQueryWrapper<>();
+        checkWrapper.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+        checkWrapper.eq(OpeWmsStockSerialNumber::getDef3, tabletSn);
+        List<OpeWmsStockSerialNumber> numberList = opeWmsStockSerialNumberService.list(checkWrapper);
+        if (CollectionUtils.isNotEmpty(numberList)) {
+            for (OpeWmsStockSerialNumber number : numberList) {
+                deleteMapper.deleteWmsStockSerialNumber(number.getId());
+            }
+        }
+
         LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
         lqw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
         lqw.eq(OpeCarDistribute::getRsn, rsn);
