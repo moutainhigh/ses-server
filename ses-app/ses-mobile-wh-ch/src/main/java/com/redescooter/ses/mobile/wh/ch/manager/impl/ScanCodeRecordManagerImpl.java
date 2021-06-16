@@ -10,7 +10,7 @@ import com.redescooter.ses.mobile.wh.ch.dm.OpeScanCodeRecord;
 import com.redescooter.ses.mobile.wh.ch.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.wh.ch.exception.SesMobileChWhException;
 import com.redescooter.ses.mobile.wh.ch.manager.ScanCodeRecordManager;
-import com.redescooter.ses.mobile.wh.ch.service.app.OpeScanCodeRecordService;
+import com.redescooter.ses.mobile.wh.ch.service.base.OpeScanCodeRecordService;
 import com.redescooter.ses.mobile.wh.ch.vo.ScanCodeRecordEnter;
 import com.redescooter.ses.mobile.wh.ch.vo.ScanCodeRecordReqEnter;
 import com.redescooter.ses.mobile.wh.ch.vo.ScanCodeRecordResult;

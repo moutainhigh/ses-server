@@ -1,9 +1,9 @@
-package com.redescooter.ses.mobile.wh.ch.service.app.impl;
+package com.redescooter.ses.mobile.wh.ch.service.base.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.mobile.wh.ch.dao.base.OpeScanCodeRecordMapper;
 import com.redescooter.ses.mobile.wh.ch.dm.OpeScanCodeRecord;
-import com.redescooter.ses.mobile.wh.ch.service.app.OpeScanCodeRecordService;
+import com.redescooter.ses.mobile.wh.ch.service.base.OpeScanCodeRecordService;
 import com.redescooter.ses.mobile.wh.ch.vo.ScanCodeRecordResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

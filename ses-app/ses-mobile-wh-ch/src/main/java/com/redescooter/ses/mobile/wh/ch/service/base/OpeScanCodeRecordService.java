@@ -1,4 +1,4 @@
-package com.redescooter.ses.mobile.wh.ch.service.app;
+package com.redescooter.ses.mobile.wh.ch.service.base;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.redescooter.ses.mobile.wh.ch.dm.OpeScanCodeRecord;
