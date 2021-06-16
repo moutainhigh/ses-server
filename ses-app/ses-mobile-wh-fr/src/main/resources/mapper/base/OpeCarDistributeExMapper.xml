@@ -105,6 +105,7 @@
     <select id="getInquiryDetail" resultType="com.redescooter.ses.mobile.wh.fr.vo.InquiryDetailResult">
         select
             ost.id as specificatTypeId,
+            oci.order_no,
             oci.customer_id,
             ost.specificat_name as scooterName,
             oc.color_name,
