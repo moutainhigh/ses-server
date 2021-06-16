@@ -7,14 +7,14 @@ log:
 
 dubbo:                                                                                                                  ##DUBBO配置
   registry:                                                                                                             #注册中心
-    address: zookeeper://172.31.6.101:2181
+    address: zookeeper://10.0.1.19:2181
 
 # xxl-job config
 xxl:
   job:
     admin:
       ### xxl-job admin address list, such as "http://address" or "http://address01,http://address02"
-      addresses: http://172.31.6.101:48090/job/
+      addresses: http://10.0.1.19:48090/job/
     ### xxl-job executor address
     executor:
       appname: ses-two

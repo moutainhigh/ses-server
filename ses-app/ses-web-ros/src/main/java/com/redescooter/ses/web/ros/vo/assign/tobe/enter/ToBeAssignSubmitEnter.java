@@ -26,7 +26,7 @@ public class ToBeAssignSubmitEnter extends GeneralEnter implements Serializable 
 
     private static final long serialVersionUID = -9200614796762459345L;
 
-    @ApiModelProperty(value = "车辆信息 给json字符串 格式:id:主键,rsn:R.SN,colorId:颜色id", required = true)
+    @ApiModelProperty(value = "id:主键,rsn:R.SN,colorId:颜色id,bbi:bbi,controller:控制器,electricMachinery:电机,meter:仪表,imei:IMEI,bluetoothAddress:蓝牙地址,tabletSn:平板序列号,vin:VIN", required = true)
     private String list;
 
     @ApiModelProperty(value = "客户id", required = true)

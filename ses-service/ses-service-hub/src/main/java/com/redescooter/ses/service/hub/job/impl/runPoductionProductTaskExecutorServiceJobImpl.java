@@ -44,31 +44,36 @@ public class runPoductionProductTaskExecutorServiceJobImpl implements RunPoducti
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public JobResult poductionCombinationTask(GeneralEnter enter) {
-        List<OpeProductionCombinBom> opeProductionCombinBomList =
-            opeProductionCombinBomService.list(new LambdaQueryWrapper<OpeProductionCombinBom>()
-                .eq(OpeProductionCombinBom::getBomStatus, ProductionBomStatusEnums.TO_BE_ACTIVE.getValue()));
+
+        // 所有待激活的组装件bom
+        LambdaQueryWrapper<OpeProductionCombinBom> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeProductionCombinBom::getBomStatus, ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
+        List<OpeProductionCombinBom> list = opeProductionCombinBomService.list(qw);
 
         // 无需执行
-        if (CollectionUtils.isEmpty(opeProductionCombinBomList)) {
+        if (CollectionUtils.isEmpty(list)) {
             return JobResult.success();
         }
 
+        // 失效集合
         List<OpeProductionCombinBom> expiredList = new ArrayList<>();
+        // 激活集合
         List<OpeProductionCombinBom> activeList = new ArrayList<>();
 
-        for (OpeProductionCombinBom item : opeProductionCombinBomList) {
-            if(DateUtil.diffDays(item.getEffectiveDate(),new Date())<0){
+        for (OpeProductionCombinBom item : list) {
+            if (DateUtil.diffDays(item.getEffectiveDate(), new Date()) < 0) {
                 continue;
             }
 
-            OpeProductionCombinBom avticeCombinBom =
-                opeProductionCombinBomService.getOne(new LambdaQueryWrapper<OpeProductionCombinBom>()
-                    .eq(OpeProductionCombinBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue()));
-            if (avticeCombinBom != null) {
-                avticeCombinBom.setBomStatus(ProductionBomStatusEnums.EXPIRED.getValue());
-                avticeCombinBom.setUpdatedTime(new Date());
-                expiredList.add(avticeCombinBom);
+            LambdaQueryWrapper<OpeProductionCombinBom> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeProductionCombinBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue());
+            OpeProductionCombinBom activeCombinBom = opeProductionCombinBomService.getOne(lqw);
+            if (null != activeCombinBom) {
+                activeCombinBom.setBomStatus(ProductionBomStatusEnums.EXPIRED.getValue());
+                activeCombinBom.setUpdatedTime(new Date());
+                expiredList.add(activeCombinBom);
             }
+
             item.setBomStatus(ProductionBomStatusEnums.ACTIVE.getValue());
             item.setUpdatedTime(new Date());
             activeList.add(item);
@@ -92,30 +97,36 @@ public class runPoductionProductTaskExecutorServiceJobImpl implements RunPoducti
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public JobResult productionScooterTask(GeneralEnter enter) {
-        List<OpeProductionScooterBom> productionScooterBomList =
-            opeProductionScooterBomService.list(new LambdaQueryWrapper<OpeProductionScooterBom>()
-                .eq(OpeProductionScooterBom::getBomStatus, ProductionBomStatusEnums.TO_BE_ACTIVE.getValue()));
+
+        // 所有待激活的车辆bom
+        LambdaQueryWrapper<OpeProductionScooterBom> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeProductionScooterBom::getBomStatus, ProductionBomStatusEnums.TO_BE_ACTIVE.getValue());
+        List<OpeProductionScooterBom> list = opeProductionScooterBomService.list(qw);
+
         // 无需执行
-        if (CollectionUtils.isEmpty(productionScooterBomList)) {
+        if (CollectionUtils.isEmpty(list)) {
             return JobResult.success();
         }
 
+        // 失效集合
         List<OpeProductionScooterBom> expiredList = new ArrayList<>();
+        // 激活集合
         List<OpeProductionScooterBom> activeList = new ArrayList<>();
 
-        for (OpeProductionScooterBom item : productionScooterBomList) {
-            if(DateUtil.diffDays(item.getEffectiveDate(),new Date())<0){
+        for (OpeProductionScooterBom item : list) {
+            if (DateUtil.diffDays(item.getEffectiveDate(), new Date()) < 0) {
                 continue;
             }
 
-            OpeProductionScooterBom avticeScooterBom =
-                opeProductionScooterBomService.getOne(new LambdaQueryWrapper<OpeProductionScooterBom>()
-                    .eq(OpeProductionScooterBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue()));
-            if (avticeScooterBom != null) {
-                avticeScooterBom.setBomStatus(ProductionBomStatusEnums.EXPIRED.getValue());
-                avticeScooterBom.setUpdatedTime(new Date());
-                expiredList.add(avticeScooterBom);
+            LambdaQueryWrapper<OpeProductionScooterBom> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeProductionScooterBom::getBomStatus, ProductionBomStatusEnums.ACTIVE.getValue());
+            OpeProductionScooterBom activeScooterBom = opeProductionScooterBomService.getOne(lqw);
+            if (null != activeScooterBom) {
+                activeScooterBom.setBomStatus(ProductionBomStatusEnums.EXPIRED.getValue());
+                activeScooterBom.setUpdatedTime(new Date());
+                expiredList.add(activeScooterBom);
             }
+
             item.setBomStatus(ProductionBomStatusEnums.ACTIVE.getValue());
             item.setUpdatedTime(new Date());
             activeList.add(item);
@@ -124,10 +135,9 @@ public class runPoductionProductTaskExecutorServiceJobImpl implements RunPoducti
         if (CollectionUtils.isNotEmpty(expiredList)) {
             opeProductionScooterBomService.updateBatchById(expiredList);
         }
-        if (CollectionUtils.isNotEmpty(expiredList)) {
+        if (CollectionUtils.isNotEmpty(activeList)) {
             opeProductionScooterBomService.updateBatchById(activeList);
-
         }
-        return null;
+        return JobResult.success();
     }
 }

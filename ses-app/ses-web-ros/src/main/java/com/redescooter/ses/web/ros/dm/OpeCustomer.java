@@ -133,10 +133,10 @@ public class OpeCustomer implements Serializable {
     private String picture;
 
     /**
-     * 客户来源渠道 官网/email/电话
+     * 客户来源渠道 1系统添加 2官网
      */
     @TableField(value = "customer_source")
-    @ApiModelProperty(value = "客户来源渠道 官网/email/电话")
+    @ApiModelProperty(value = "客户来源渠道 1系统添加 2官网")
     private String customerSource;
 
     /**

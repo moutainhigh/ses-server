@@ -105,5 +105,8 @@ public class AddUpdateOrderEnter extends GeneralEnter {
     @ApiModelProperty(value = "postcode")
     private String postcode;
 
+    //用户选择
+    @ApiModelProperty(value = "installmentTime")
+    private String installmentTime;
 
 }

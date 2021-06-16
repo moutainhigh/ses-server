@@ -1,6 +1,8 @@
 package com.redescooter.ses.web.ros.service.restproduction.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -13,28 +15,47 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.base.OpePartsMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeSalePartsMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSalePriceMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeSaleScooterMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeSetDepositMapper;
+import com.redescooter.ses.web.ros.dm.OpeParts;
+import com.redescooter.ses.web.ros.dm.OpeSaleParts;
 import com.redescooter.ses.web.ros.dm.OpeSalePrice;
-import com.redescooter.ses.web.ros.dm.OpeSaleScooterBatteryRelation;
+import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
+import com.redescooter.ses.web.ros.dm.OpeSetDeposit;
 import com.redescooter.ses.web.ros.enums.distributor.StatusEnum;
+import com.redescooter.ses.web.ros.enums.salePrice.SalePriceEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpePartsService;
 import com.redescooter.ses.web.ros.service.base.OpeSalePriceService;
 import com.redescooter.ses.web.ros.service.base.OpeSaleScooterBatteryRelationService;
+import com.redescooter.ses.web.ros.service.base.OpeSetDepositService;
 import com.redescooter.ses.web.ros.service.restproduction.SalesPriceService;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePriceListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePriceSaveOrUpdateEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.SetDepositEnter;
+import com.redescooter.ses.web.ros.vo.sales.SalesPriceResult;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
+import org.apache.zookeeper.Op;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
 /**
@@ -44,6 +65,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
+@DubboService
 public class SalesPriceServiceImpl implements SalesPriceService {
 
     @Autowired
@@ -53,10 +75,28 @@ public class SalesPriceServiceImpl implements SalesPriceService {
     private OpeSalePriceMapper opeSalePriceMapper;
 
     @Autowired
+    private OpeSetDepositMapper opeSetDepositMapper;
+
+    @Autowired
+    private OpeSetDepositService opeSetDepositService;
+
+    @Autowired
     private OpeSaleScooterBatteryRelationService opeSaleScooterBatteryRelationService;
 
     @Autowired
+    private OpeSaleScooterMapper opeSaleScooterMapper;
+
+    @Autowired
     private JedisService jedisService;
+
+    @Autowired
+    private OpeSalePartsMapper opeSalePartsMapper;
+
+    @Autowired
+    private OpePartsService opePartsService;
+
+    @Autowired
+    private OpePartsMapper opePartsMapper;
 
     @DubboReference
     private IdAppService idAppService;
@@ -71,12 +111,15 @@ public class SalesPriceServiceImpl implements SalesPriceService {
     public List<String> getScooterBatteryList(GeneralEnter enter) {
         // 获取请求头的语言,英文en,法文fr
         String language = enter.getLanguage();
-        LambdaQueryWrapper<OpeSaleScooterBatteryRelation> qw = new LambdaQueryWrapper<>();
-        qw.eq(OpeSaleScooterBatteryRelation::getDr, Constant.DR_FALSE);
-        qw.eq(OpeSaleScooterBatteryRelation::getLanguage, language);
-        List<OpeSaleScooterBatteryRelation> list = opeSaleScooterBatteryRelationService.list(qw);
-        List<String> result = list.stream().sorted(Comparator.comparing(OpeSaleScooterBatteryRelation::getCreatedTime)).map(o -> o.getContent()).distinct().collect(Collectors.toList());
-        return result;
+        LambdaQueryWrapper<OpeSaleScooter> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeSaleScooter::getDr, Constant.DR_FALSE);
+        List<OpeSaleScooter> list = opeSaleScooterMapper.selectList(qw);
+        List<String> list1 = new ArrayList<>();
+        list.stream().forEach(item -> {
+            String result = item.getProductCode() + "+" + item.getMinBatteryNum() + "Batterie";
+            list1.add(result);
+        });
+        return list1;
     }
 
     /**
@@ -107,7 +150,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         price.setDr(Constant.DR_FALSE);
         price.setType(enter.getType());
         price.setScooterBattery(enter.getScooterBattery());
-        price.setDeposit(enter.getDeposit());
+//        price.setDeposit(enter.getDeposit());
         price.setPeriod(enter.getPeriod());
         price.setShouldPayPeriod(enter.getShouldPayPeriod());
         price.setBalance(enter.getBalance());
@@ -115,7 +158,20 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         price.setStatus(StatusEnum.DISABLE.getCode());
         price.setCreatedBy(enter.getUserId());
         price.setCreatedTime(new Date());
-        opeSalePriceService.save(price);
+        boolean save = opeSalePriceService.save(price);
+        //新增的同时要修改定金
+        if (save) {
+            LambdaQueryWrapper<OpeSetDeposit> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(OpeSetDeposit::getDr,Constant.DR_FALSE);
+            wrapper.last("limit 1");
+            OpeSetDeposit setDeposit = opeSetDepositMapper.selectOne(wrapper);
+            BigDecimal deposit = setDeposit.getDeposit();
+            deposit = deposit == null ? new BigDecimal("0") : deposit;
+            OpeSalePrice opeSalePrice = new OpeSalePrice();
+            opeSalePrice.setDeposit(deposit);
+            opeSalePrice.setId(price.getId());
+            opeSalePriceMapper.updateById(opeSalePrice);
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -146,7 +202,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
             throw new SesWebRosException(ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getCode(), ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getMessage());
         }
         price.setScooterBattery(enter.getScooterBattery());
-        price.setDeposit(enter.getDeposit());
+//        price.setDeposit(enter.getDeposit());
         price.setUpdatedBy(enter.getUserId());
         price.setUpdatedTime(new Date());
         price.setTax(enter.getTax());
@@ -259,6 +315,121 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         result.put("2", fullList.size());
         result.put("3", partList.size());
         return result;
+    }
+
+//    @Override
+//    public List<String> modelPriceList(GeneralEnter enter) {
+//        List<String> lists = new ArrayList<>();
+//        Map<String, Object> map = new HashMap<>();
+//        LambdaQueryWrapper<OpeSalePrice> qw = new LambdaQueryWrapper<>();
+//        qw.eq(OpeSalePrice::getDr, Constant.DR_FALSE);
+//        List<OpeSalePrice> list = opeSalePriceService.list(qw);
+//        Map<String, List<OpeSalePrice>> ospMap = list.stream().collect(Collectors.groupingBy(OpeSalePrice::getScooterBattery));
+//        LambdaQueryWrapper<OpeParts> qw2 = new LambdaQueryWrapper<>();
+//        qw2.eq(OpeParts::getDr, Constant.DR_FALSE);
+//        qw2.eq(OpeParts::getPartsType, 3);
+//        qw2.last("limit 1");
+//        OpeParts opeParts = opePartsMapper.selectOne(qw2);
+//        if (opeParts == null) {
+//            throw new SesWebRosException(ExceptionCodeEnums.NOT_FOUND_BATTERY.getCode(), ExceptionCodeEnums.NOT_FOUND_BATTERY.getMessage());
+//        }
+//        //根据在部件表里面查出来的电池的partId去配件销售表里面查找对应的价格
+//        LambdaQueryWrapper<OpeSaleParts> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.eq(OpeSaleParts::getPartsId, opeParts.getId());
+//        OpeSaleParts opeSaleParts = opeSalePartsMapper.selectOne(queryWrapper);
+//        if (opeSaleParts == null) {
+//            throw new SesWebRosException(ExceptionCodeEnums.NOT_FOUND_PARTS.getCode(), ExceptionCodeEnums.NOT_FOUND_PARTS.getMessage());
+//        }
+//        //拿到单个电池的价格
+//        BigDecimal battery = opeSaleParts.getPrice();
+//        Map<String, List<Integer>> numMap = Maps.newHashMap();
+//        numMap.put(SalePriceEnum.showMsg(1), Lists.newArrayList(1, 2, 3, 4));
+//        numMap.put(SalePriceEnum.showMsg(2), Lists.newArrayList(2, 3, 4));
+//        numMap.put(SalePriceEnum.showMsg(3), Lists.newArrayList(4));
+//        for (String ospKey : ospMap.keySet()) {
+//            List<OpeSalePrice> eFiveList = ospMap.get(ospKey);
+//            Map<Integer, OpeSalePrice> collect = eFiveList.stream().filter(o -> o.getType() != 2).collect(Collectors.toMap(OpeSalePrice::getPeriod, o -> o));
+//            List<Integer> integers = numMap.get(ospKey);
+//            //获取最低配置电池数量值
+//            int minNum = integers.get(0);
+//            for (int period : collect.keySet()) {
+//                BigDecimal batteryPeriod = battery.divide(new BigDecimal(period), 2, BigDecimal.ROUND_DOWN);//电池分期的价格
+//                for (Integer o : integers) {
+//                    Map<String, SalesPriceResult> map1 = new HashMap<>();
+//                    BigDecimal shouldPayPeriod = collect.get(period).getShouldPayPeriod().add(batteryPeriod.multiply(new BigDecimal(o - minNum)));
+//                    SalesPriceResult salesPriceResult = new SalesPriceResult();
+//                    salesPriceResult.setShouldPayPeriod(shouldPayPeriod); //每期应付
+//                    salesPriceResult.setPeriod(period); //期数
+//                    salesPriceResult.setDeposit(collect.get(period).getDeposit()); //定金
+//                    salesPriceResult.setTax(collect.get(period).getTax()); //ttc税金
+//                    map1.put(String.format("%s+%d", ospKey.substring(0, ospKey.indexOf("+")), o), salesPriceResult);
+//                    String jsonObject = JSONObject.toJSONString(map1);  //map转json格式
+//                    lists.add(jsonObject);
+//                }
+//            }
+//        }
+//        return lists;
+//    }
+
+    @Override
+    public GeneralResult setDeposit(SetDepositEnter setDepositEnter) {
+        if (setDepositEnter.getDeposit().compareTo(BigDecimal.ZERO) == 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.DEPOSIT_NOT_ZERO.getCode(), ExceptionCodeEnums.DEPOSIT_NOT_ZERO.getMessage());
+        }
+        LambdaQueryWrapper<OpeSetDeposit> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeSetDeposit::getDr, Constant.DR_FALSE);
+        wrapper.last("limit 1");
+        OpeSetDeposit opeSetDeposit = opeSetDepositMapper.selectOne(wrapper);
+        OpeSetDeposit opeSetDeposit1 = new OpeSetDeposit();
+        opeSetDeposit1.setDeposit(setDepositEnter.getDeposit());
+        opeSetDeposit1.setDr(Constant.DR_FALSE);
+        int i = 0;
+        if (null == opeSetDeposit) {
+            i = opeSetDepositMapper.insert(opeSetDeposit1);
+        } else {
+            opeSetDeposit1.setId(opeSetDeposit.getId());
+            i = opeSetDepositMapper.updateById(opeSetDeposit1);
+        }
+        if (i < 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.UPDATE_FAIL.getCode(), ExceptionCodeEnums.UPDATE_FAIL.getMessage());
+        }
+        LambdaQueryWrapper<OpeSalePrice> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(OpeSalePrice::getDr, Constant.DR_FALSE);
+        List<OpeSalePrice> list = opeSalePriceMapper.selectList(queryWrapper);
+        if (0 < list.size()) {
+            OpeSetDeposit setDeposit = opeSetDepositMapper.selectOne(wrapper);
+            setDepositEnter.setDeposit(setDeposit.getDeposit());
+            opeSalePriceMapper.editDeposit(setDepositEnter);
+            //同步官网
+            synchronizeDeposit(setDepositEnter);
+        }
+
+        return new GeneralResult(setDepositEnter.getRequestId());
+    }
+
+    @Override
+    public BigDecimal TipSettings(GeneralEnter enter) {
+        LambdaQueryWrapper<OpeSetDeposit> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(OpeSetDeposit::getDr, Constant.DR_FALSE);
+        queryWrapper.isNotNull(OpeSetDeposit::getDeposit);
+        queryWrapper.ne(OpeSetDeposit::getDeposit, 0);
+        List<OpeSetDeposit> list = opeSetDepositMapper.selectList(queryWrapper);
+        if (list.size() <= 0) {
+            throw new SesWebRosException(ExceptionCodeEnums.NO_DEPOSIT_SET.getCode(), ExceptionCodeEnums.NO_DEPOSIT_SET.getMessage());
+        }
+        BigDecimal min = list
+                .stream()
+                .map(OpeSetDeposit::getDeposit)
+                .min(Comparator.naturalOrder())
+                .orElse(BigDecimal.ZERO);
+        return min;
+    }
+
+    //同步给官网定金数据
+    public void synchronizeDeposit(SetDepositEnter setDepositEnter) {
+        SyncSalePriceDataEnter syncSalePriceDataEnter = new SyncSalePriceDataEnter();
+        syncSalePriceDataEnter.setDeposit(setDepositEnter.getDeposit());
+        syncPriceService.synchronizeDeposit(syncSalePriceDataEnter);
     }
 
 }

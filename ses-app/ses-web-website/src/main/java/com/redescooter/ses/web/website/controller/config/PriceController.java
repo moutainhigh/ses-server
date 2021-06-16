@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author jerry
@@ -56,5 +57,12 @@ public class PriceController {
     @ApiOperation(value = "移除车型价格", response = GeneralResult.class)
     public Response<GeneralResult> remove(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(productPriceService.removeProductPrice(enter));
+    }
+
+
+    @PostMapping("/modelPriceList")
+    @ApiOperation(value = "根据最低配置计算其他配置相应价格",notes = "根据最低配置计算其他配置相应价格")
+    public Response<Map<String, Integer>> modelPriceList(@ModelAttribute GeneralEnter enter) {
+        return new Response(productPriceService.modelPriceList(enter));
     }
 }

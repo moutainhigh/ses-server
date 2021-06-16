@@ -10,9 +10,12 @@ import com.redescooter.ses.web.ros.dm.OpeSalePrice;
 import com.redescooter.ses.web.ros.service.restproduction.SalesPriceService;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePriceListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePriceSaveOrUpdateEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.SetDepositEnter;
+import io.seata.spring.annotation.GlobalTransactional;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -111,4 +114,33 @@ public class SalesPriceController {
         return new Response<>(salesPriceService.getTabCount(enter));
     }
 
+
+//    @PostMapping("/modelPriceList")
+//    @ApiOperation(value = "根据最低配置计算其他配置相应价格", notes = "根据最低配置计算其他配置相应价格")
+//    public Response<Map<String, Integer>> modelPriceList(@ModelAttribute GeneralEnter enter) {
+//        return new Response(salesPriceService.modelPriceList(enter));
+//    }
+
+
+    /**
+     * 单独统一设置定金
+     *
+     * @param setDepositEnter
+     * @return
+     */
+    @GlobalTransactional
+    @PostMapping("/setDeposit")
+    @ApiOperation(value = "单独设置价格", notes = "单独设置价格")
+    public Response<Map<String, Integer>> setDeposit(@ModelAttribute SetDepositEnter setDepositEnter) {
+        return new Response(salesPriceService.setDeposit(setDepositEnter));
+    }
+
+    /**
+     *提示设置定金
+     */
+    @PostMapping("/tipSettingsDeposit")
+    @ApiOperation(value = "提示设置定金", notes = "提示设置定金")
+    public Response<Map<String, Integer>> TipSettingsDeposit(@ModelAttribute GeneralEnter enter) {
+        return new Response(salesPriceService.TipSettings(enter));
+    }
 }

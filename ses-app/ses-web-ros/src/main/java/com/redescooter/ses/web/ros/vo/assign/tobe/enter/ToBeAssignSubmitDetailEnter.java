@@ -32,7 +32,31 @@ public class ToBeAssignSubmitDetailEnter extends GeneralEnter implements Seriali
     @ApiModelProperty(value = "R.SN", required = true)
     private String rsn;
 
+    @ApiModelProperty(value = "VIN", required = true)
+    private String vin;
+
     @ApiModelProperty(value = "颜色id", required = true)
     private Long colorId;
+
+    @ApiModelProperty(value = "BBI", required = true)
+    private String bbi;
+
+    @ApiModelProperty(value = "控制器", required = true)
+    private String controller;
+
+    @ApiModelProperty(value = "电机", required = true)
+    private String electricMachinery;
+
+    @ApiModelProperty(value = "仪表", required = true)
+    private String meter;
+
+    @ApiModelProperty(value = "IMEI", required = true)
+    private String imei;
+
+    @ApiModelProperty(value = "蓝牙地址", required = true)
+    private String bluetoothAddress;
+
+    @ApiModelProperty(value = "平板序列号", required = true)
+    private String tabletSn;
 
 }

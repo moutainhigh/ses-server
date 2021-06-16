@@ -1,6 +1,14 @@
 package com.redescooter.ses.mobile.rps.config.component;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.collect.Lists;
+import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.constant.JedisConstant;
+import com.redescooter.ses.api.common.enums.assign.FactoryEnum;
+import com.redescooter.ses.api.common.enums.assign.ProductTypeEnum;
+import com.redescooter.ses.api.common.enums.assign.ScooterTypeEnum;
+import com.redescooter.ses.api.common.enums.assign.YearEnum;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.InWhTypeEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
@@ -11,6 +19,7 @@ import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.mobile.rps.config.RpsAssert;
 import com.redescooter.ses.mobile.rps.constant.SequenceName;
+import com.redescooter.ses.mobile.rps.dao.base.OpeCarDistributeMapper;
 import com.redescooter.ses.mobile.rps.dao.base.OpeWmsStockRecordMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionCombinBomMapper;
 import com.redescooter.ses.mobile.rps.dao.production.ProductionPartsMapper;
@@ -19,28 +28,36 @@ import com.redescooter.ses.mobile.rps.dao.wms.WmsCombinStockMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsPartsStockMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsScooterStockMapper;
 import com.redescooter.ses.mobile.rps.dao.wms.WmsStockSerialNumberMapper;
+import com.redescooter.ses.mobile.rps.dm.OpeCodebaseVin;
 import com.redescooter.ses.mobile.rps.dm.OpeInWhouseOrderSerialBind;
 import com.redescooter.ses.mobile.rps.dm.OpeProductionCombinBom;
 import com.redescooter.ses.mobile.rps.dm.OpeProductionParts;
 import com.redescooter.ses.mobile.rps.dm.OpeProductionScooterBom;
+import com.redescooter.ses.mobile.rps.dm.OpeSpecificatType;
 import com.redescooter.ses.mobile.rps.dm.OpeWmsCombinStock;
 import com.redescooter.ses.mobile.rps.dm.OpeWmsPartsStock;
 import com.redescooter.ses.mobile.rps.dm.OpeWmsScooterStock;
 import com.redescooter.ses.mobile.rps.dm.OpeWmsStockRecord;
 import com.redescooter.ses.mobile.rps.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.mobile.rps.exception.ExceptionCodeEnums;
+import com.redescooter.ses.mobile.rps.service.base.OpeCodebaseRelationService;
+import com.redescooter.ses.mobile.rps.service.base.OpeCodebaseVinService;
 import com.redescooter.ses.mobile.rps.service.base.OpeInWhouseOrderSerialBindService;
+import com.redescooter.ses.mobile.rps.service.base.OpeSpecificatTypeService;
 import com.redescooter.ses.mobile.rps.vo.inwhorder.InWhOrderProductDTO;
 import com.redescooter.ses.mobile.rps.vo.outwhorder.OutWarehouseOrderProductDTO;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.spring.annotation.GlobalTransactional;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import redis.clients.jedis.JedisCluster;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +70,7 @@ import java.util.Map;
  * @date 2021/1/25 13:22
  */
 @Component
+@Slf4j
 public class SaveWmsStockDataComponent {
 
     @DubboReference
@@ -78,6 +96,21 @@ public class SaveWmsStockDataComponent {
 
     @Autowired
     private OpeInWhouseOrderSerialBindService opeInWhouseOrderSerialBindService;
+
+    @Autowired
+    private OpeCarDistributeMapper opeCarDistributeMapper;
+
+    @Autowired
+    private OpeCodebaseVinService opeCodebaseVinService;
+
+    @Autowired
+    private OpeCodebaseRelationService opeCodebaseRelationService;
+
+    @Autowired
+    private OpeSpecificatTypeService opeSpecificatTypeService;
+
+    @Autowired
+    private JedisCluster jedisCluster;
 
 
     /**
@@ -174,11 +207,152 @@ public class SaveWmsStockDataComponent {
             }
             scooterService.syncScooterData(scooterDataDTOList);
             opeInWhouseOrderSerialBindService.updateBatchById(serialBindList);
+
             /**
              * 保存库存产品序列号信息
              */
             wmsStockSerialNumberMapper.batchInsertWmsStockSerialNumber(buildOpeWmsStockSerialNumber(inWhouseOrderSerialBinds, stockMap, userId));
 
+            // 产生4条vin,保存到码库 E50一座 E50两座 E100一座 E100两座
+            List<OpeCodebaseVin> vinList = Lists.newArrayList();
+
+            LambdaQueryWrapper<OpeSpecificatType> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeSpecificatType::getDr, Constant.DR_FALSE);
+            qw.eq(OpeSpecificatType::getSpecificatName, ProductTypeEnum.E50.getMsg());
+            qw.last("limit 1");
+            OpeSpecificatType typeE50 = opeSpecificatTypeService.getOne(qw);
+            String vin1 = generateVINCode(typeE50.getId(), typeE50.getSpecificatName(), 1);
+            String vin2 = generateVINCode(typeE50.getId(), typeE50.getSpecificatName(), 2);
+
+            LambdaQueryWrapper<OpeSpecificatType> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeSpecificatType::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeSpecificatType::getSpecificatName, ProductTypeEnum.E100.getMsg());
+            lqw.last("limit 1");
+            OpeSpecificatType typeE100 = opeSpecificatTypeService.getOne(lqw);
+            String vin3 = generateVINCode(typeE100.getId(), typeE100.getSpecificatName(), 1);
+            String vin4 = generateVINCode(typeE100.getId(), typeE100.getSpecificatName(), 2);
+
+            LambdaQueryWrapper<OpeSpecificatType> lqw125 = new LambdaQueryWrapper<>();
+            lqw125.eq(OpeSpecificatType::getDr, Constant.DR_FALSE);
+            lqw125.eq(OpeSpecificatType::getSpecificatName, ProductTypeEnum.E125.getMsg());
+            lqw125.last("limit 1");
+            OpeSpecificatType typeE125 = opeSpecificatTypeService.getOne(lqw125);
+            String vin5 = generateVINCode(typeE125.getId(), typeE125.getSpecificatName(), 1);
+            String vin6 = generateVINCode(typeE125.getId(), typeE125.getSpecificatName(), 2);
+
+            OpeCodebaseVin vin1Model = new OpeCodebaseVin();
+            vin1Model.setId(idAppService.getId(SequenceName.OPE_CODEBASE_VIN));
+            vin1Model.setDr(Constant.DR_FALSE);
+            vin1Model.setVin(vin1);
+            vin1Model.setSpecificatTypeId(typeE50.getId());
+            vin1Model.setSeatNumber(1);
+            vin1Model.setStatus(1);
+            vin1Model.setCreatedBy(userId);
+            vin1Model.setCreatedTime(new Date());
+
+            OpeCodebaseVin vin2Model = new OpeCodebaseVin();
+            vin2Model.setId(idAppService.getId(SequenceName.OPE_CODEBASE_VIN));
+            vin2Model.setDr(Constant.DR_FALSE);
+            vin2Model.setVin(vin2);
+            vin2Model.setSpecificatTypeId(typeE50.getId());
+            vin2Model.setSeatNumber(2);
+            vin2Model.setStatus(1);
+            vin2Model.setCreatedBy(userId);
+            vin2Model.setCreatedTime(new Date());
+
+            OpeCodebaseVin vin3Model = new OpeCodebaseVin();
+            vin3Model.setId(idAppService.getId(SequenceName.OPE_CODEBASE_VIN));
+            vin3Model.setDr(Constant.DR_FALSE);
+            vin3Model.setVin(vin3);
+            vin3Model.setSpecificatTypeId(typeE100.getId());
+            vin3Model.setSeatNumber(1);
+            vin3Model.setStatus(1);
+            vin3Model.setCreatedBy(userId);
+            vin3Model.setCreatedTime(new Date());
+
+            OpeCodebaseVin vin4Model = new OpeCodebaseVin();
+            vin4Model.setId(idAppService.getId(SequenceName.OPE_CODEBASE_VIN));
+            vin4Model.setDr(Constant.DR_FALSE);
+            vin4Model.setVin(vin4);
+            vin4Model.setSpecificatTypeId(typeE100.getId());
+            vin4Model.setSeatNumber(2);
+            vin4Model.setStatus(1);
+            vin4Model.setCreatedBy(userId);
+            vin4Model.setCreatedTime(new Date());
+
+            OpeCodebaseVin vin5Model = new OpeCodebaseVin();
+            vin5Model.setId(idAppService.getId(SequenceName.OPE_CODEBASE_VIN));
+            vin5Model.setDr(Constant.DR_FALSE);
+            vin5Model.setVin(vin5);
+            vin5Model.setSpecificatTypeId(typeE125.getId());
+            vin5Model.setSeatNumber(1);
+            vin5Model.setStatus(1);
+            vin5Model.setCreatedBy(userId);
+            vin5Model.setCreatedTime(new Date());
+
+            OpeCodebaseVin vin6Model = new OpeCodebaseVin();
+            vin6Model.setId(idAppService.getId(SequenceName.OPE_CODEBASE_VIN));
+            vin6Model.setDr(Constant.DR_FALSE);
+            vin6Model.setVin(vin6);
+            vin6Model.setSpecificatTypeId(typeE125.getId());
+            vin6Model.setSeatNumber(2);
+            vin6Model.setStatus(1);
+            vin6Model.setCreatedBy(userId);
+            vin6Model.setCreatedTime(new Date());
+
+            vinList.add(vin1Model);
+            vinList.add(vin2Model);
+            vinList.add(vin3Model);
+            vinList.add(vin4Model);
+            vinList.add(vin5Model);
+            vinList.add(vin6Model);
+            opeCodebaseVinService.saveBatch(vinList);
+
+            /*// 保存到码库关系表
+            List<OpeCodebaseRelation> relationList = Lists.newArrayList();
+            String rsn = scooterDataDTOList.get(0).getScooterNo();
+
+            OpeCodebaseRelation relation1 = new OpeCodebaseRelation();
+            relation1.setId(idAppService.getId(SequenceName.OPE_CODEBASE_RELATION));
+            relation1.setDr(Constant.DR_FALSE);
+            relation1.setRsn(rsn);
+            relation1.setVin(vin1);
+            relation1.setStatus(1);
+            relation1.setCreatedBy(userId);
+            relation1.setCreatedTime(new Date());
+
+            OpeCodebaseRelation relation2 = new OpeCodebaseRelation();
+            relation2.setId(idAppService.getId(SequenceName.OPE_CODEBASE_RELATION));
+            relation2.setDr(Constant.DR_FALSE);
+            relation2.setRsn(rsn);
+            relation2.setVin(vin2);
+            relation2.setStatus(1);
+            relation2.setCreatedBy(userId);
+            relation2.setCreatedTime(new Date());
+
+            OpeCodebaseRelation relation3 = new OpeCodebaseRelation();
+            relation3.setId(idAppService.getId(SequenceName.OPE_CODEBASE_RELATION));
+            relation3.setDr(Constant.DR_FALSE);
+            relation3.setRsn(rsn);
+            relation3.setVin(vin3);
+            relation3.setStatus(1);
+            relation3.setCreatedBy(userId);
+            relation3.setCreatedTime(new Date());
+
+            OpeCodebaseRelation relation4 = new OpeCodebaseRelation();
+            relation4.setId(idAppService.getId(SequenceName.OPE_CODEBASE_RELATION));
+            relation4.setDr(Constant.DR_FALSE);
+            relation4.setRsn(rsn);
+            relation4.setVin(vin4);
+            relation4.setStatus(1);
+            relation4.setCreatedBy(userId);
+            relation4.setCreatedTime(new Date());
+
+            relationList.add(relation1);
+            relationList.add(relation2);
+            relationList.add(relation3);
+            relationList.add(relation4);
+            opeCodebaseRelationService.saveBatch(relationList);*/
         } else {
             for (Map.Entry<Long, List<OutWarehouseOrderProductDTO>> map : outWhOrderProductMap.entrySet()) {
                 // 车辆成品库信息
@@ -598,4 +772,274 @@ public class SaveWmsStockDataComponent {
         return stockId;
     }
 
+    /**
+     * 从指定数组中生成随机数
+     */
+    public String generateRangeRandom() {
+        String[] array = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "X"};
+        int index = (int) (Math.random() * array.length);
+        return array[index];
+    }
+
+    /**
+     * 生成VIN Code
+     * @param specificatId 车辆型号id
+     * @param specificatName 车辆型号名称
+     * @param seatNumber 座位数
+     * @return
+     */
+    public String generateVINCode(Long specificatId, String specificatName, Integer seatNumber) {
+        String msg = "VXS";
+        StringBuffer result = new StringBuffer();
+
+        // 世界工厂代码和车辆类型
+        result.append(msg);
+        result.append(ScooterTypeEnum.R2A.getCode());
+
+        // 车型编号和座位数量
+        String productType = ProductTypeEnum.showCode(specificatName);
+        result.append(productType);
+        result.append(seatNumber);
+
+        // 指定随机数
+        String random = generateRangeRandom();
+        result.append(random);
+
+        // 年份字母和工厂编号
+        Calendar cal = Calendar.getInstance();
+        String year = String.valueOf(cal.get(Calendar.YEAR));
+        String value = YearEnum.showValue(year);
+        result.append(value);
+        result.append(FactoryEnum.AOGE.getCode());
+        // redis 生成自增vin
+        result.append(incrVin(JedisConstant.INCR_VIN));
+
+        /*// 6位数递增序列号
+        List<Integer> codeList = Lists.newArrayList();
+        LambdaQueryWrapper<OpeCarDistribute> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeCarDistribute::getSpecificatTypeId, specificatId);
+        wrapper.eq(OpeCarDistribute::getSeatNumber, seatNumber);
+        List<OpeCarDistribute> list = opeCarDistributeMapper.selectList(wrapper);
+        if (CollectionUtils.isNotEmpty(list)) {
+            // 得到自增编号,从倒数第6位开始截取
+            // 问题点没绑定之前是没有vincode，这样会出现重复数据
+            for (OpeCarDistribute o : list) {
+                String vinCode = o.getVinCode();
+                if (StringUtils.isNotBlank(vinCode)) {
+                    String sub = vinCode.substring(vinCode.length() - 6);
+                    codeList.add(Integer.valueOf(sub));
+                }
+            }
+            if (CollectionUtils.isNotEmpty(codeList)) {
+                // 倒序排列
+                codeList.sort(Comparator.reverseOrder());
+                NumberFormat nf = NumberFormat.getInstance();
+                nf.setGroupingUsed(false);
+                nf.setMaximumIntegerDigits(6);
+                nf.setMinimumIntegerDigits(6);
+                String code = nf.format(new Double(codeList.get(0) + 1));
+                result.append(code);
+            } else {
+                result.append("000001");
+            }
+        } else {
+            result.append("000001");
+        }*/
+        // 根据生成的vin得到正确的第九位数字
+        String nineCode = checkVIN(result.toString());
+        // 用正确的第九位数字替换之前随机生成的第九位数字
+        result.replace(8,9, nineCode);
+        return result.toString();
+    }
+
+    /**
+     * 替换Vin的第九位数字（校验vin）
+     *
+     * @param vin
+     * @return
+     */
+    public static String checkVIN(String vin) {
+        Map vinMapWeighting = null;
+
+        Map vinMapValue = null;
+
+        vinMapWeighting = new HashMap();
+
+        vinMapValue = new HashMap();
+
+        vinMapWeighting.put(1, 8);
+
+        vinMapWeighting.put(2, 7);
+
+        vinMapWeighting.put(3, 6);
+
+        vinMapWeighting.put(4, 5);
+
+        vinMapWeighting.put(5, 4);
+
+        vinMapWeighting.put(6, 3);
+
+        vinMapWeighting.put(7, 2);
+
+        vinMapWeighting.put(8, 10);
+
+        vinMapWeighting.put(9, 0);
+
+        vinMapWeighting.put(10, 9);
+
+        vinMapWeighting.put(11, 8);
+
+        vinMapWeighting.put(12, 7);
+
+        vinMapWeighting.put(13, 6);
+
+        vinMapWeighting.put(14, 5);
+
+        vinMapWeighting.put(15, 4);
+
+        vinMapWeighting.put(16, 3);
+
+        vinMapWeighting.put(17, 2);
+
+        vinMapValue.put('0', 0);
+
+        vinMapValue.put('1', 1);
+
+        vinMapValue.put('2', 2);
+
+        vinMapValue.put('3', 3);
+
+        vinMapValue.put('4', 4);
+
+        vinMapValue.put('5', 5);
+
+        vinMapValue.put('6', 6);
+
+        vinMapValue.put('7', 7);
+
+        vinMapValue.put('8', 8);
+
+        vinMapValue.put('9', 9);
+
+        vinMapValue.put('A', 1);
+
+        vinMapValue.put('B', 2);
+
+        vinMapValue.put('C', 3);
+
+        vinMapValue.put('D', 4);
+
+        vinMapValue.put('E', 5);
+
+        vinMapValue.put('F', 6);
+
+        vinMapValue.put('G', 7);
+
+        vinMapValue.put('H', 8);
+
+        vinMapValue.put('J', 1);
+
+        vinMapValue.put('K', 2);
+
+        vinMapValue.put('M', 4);
+
+        vinMapValue.put('L', 3);
+
+        vinMapValue.put('N', 5);
+
+        vinMapValue.put('P', 7);
+
+        vinMapValue.put('R', 9);
+
+        vinMapValue.put('S', 2);
+
+        vinMapValue.put('T', 3);
+
+        vinMapValue.put('U', 4);
+
+        vinMapValue.put('V', 5);
+
+        vinMapValue.put('W', 6);
+
+        vinMapValue.put('X', 7);
+
+        vinMapValue.put('Y', 8);
+
+        vinMapValue.put('Z', 9);
+
+        boolean reultFlag = false;
+
+        String uppervin = vin.toUpperCase();
+
+//排除字母O、I
+
+        if (vin == null || uppervin.indexOf("O") >= 0 || uppervin.indexOf("I") >= 0) {
+            reultFlag = false;
+
+        } else {
+//1:长度为17
+
+            if (vin.length() == 17) {
+                int amount = 0;
+                char[] vinArr = uppervin.toCharArray();
+                for (int i = 0; i < vinArr.length; i++) {
+
+//VIN码从从第一位开始，码数字的对应值×该位的加权值，计算全部17位的乘积值相加
+                    Object o = vinMapValue.get(vinArr[i]);
+                    Object o2 = vinMapWeighting.get(i + 1);
+                    amount += Integer.parseInt(o == null ? "" : o.toString()) * Integer.parseInt(o2 == null ? "" : o2.toString());
+
+                }
+                if (amount % 11 == 10) {
+                    return "X";
+                } else {
+                    int result = amount % 11;
+                    return String.valueOf(result);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @Title: incrVin
+     * @Description: // vin 自增 后期改动
+     * @Param: [key]
+     * @Return: java.lang.String
+     * @Date: 2021/5/24 9:53 下午
+     * @Author: Charles
+     */
+    public String incrVin(String key) {
+        Boolean flag = jedisCluster.exists(key);
+        if (flag) {
+            log.info("key存在,自增");
+            jedisCluster.incr(key);
+        } else {
+            log.info("key不存在,给1");
+            jedisCluster.incrBy(key, 1);
+        }
+        String redisVin = jedisCluster.get(key);
+        log.info("key的值是:[{}]", redisVin);
+        int redisVinLen = redisVin.length();
+        String num = "";
+        switch (redisVinLen) {
+            case 1:
+                num = "00000" + redisVin;
+                break;
+            case 2:
+                num = "0000" + redisVin;
+                break;
+            case 3:
+                num = "000" + redisVin;
+                break;
+            case 4:
+                num = "00" + redisVin;
+                break;
+            case 5:
+                num = "0" + redisVin;
+                break;
+        }
+        log.info("返回结果是:[{}]", num);
+        return num;
+    }
 }

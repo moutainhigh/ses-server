@@ -38,4 +38,7 @@ public class ToBeAssignDetailScooterInfoSubResult extends GeneralResult implemen
     @ApiModelProperty(value = "待完成分配数")
     private Integer toBeAssignCount;
 
+    @ApiModelProperty(value = "电池数量")
+    private Integer batteryNum;
+
 }

@@ -23,8 +23,10 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import redis.clients.jedis.JedisCluster;
 
 import javax.annotation.Resource;
+import java.time.chrono.JapaneseDate;
 import java.util.Date;
 import java.util.List;
 
@@ -46,6 +48,10 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
     private ScoScooterStatusService scoScooterStatusService;
     @Autowired
     private ScoScooterMapper scoScooterMapper;
+
+    @Autowired
+    private JedisCluster jedisCluster;
+
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public int insertScooterEcuByEmqX(ScooterEcuDTO scooterEcu) {
@@ -86,6 +92,11 @@ public class ScooterEcuServiceImpl implements ScooterEcuService {
                     log.info("ECU>>>>>update>>>>>{}", scooterEcu.toString());
                     scooterEcuMapper.updateScooterEcu(scooterEcu);
                 }
+
+                log.info("仪表上报  存入仪表对应的sim iccid信息  start");
+                jedisCluster.set(scooterEcu.getTabletSn(), scooterEcu.getIccid());
+                log.info("仪表上报  存入仪表对应的sim iccid信息  end");
+
                 // 同时更新scooter表车辆锁状态和车辆行驶总里程
                 updateScooterStatusAndTotalMilesByEcu(scooterEcu.getTabletSn(), scooterEcu.getScooterLock(), scooterEcu.getTotalMiles());
                 // 新增scooter实时信息

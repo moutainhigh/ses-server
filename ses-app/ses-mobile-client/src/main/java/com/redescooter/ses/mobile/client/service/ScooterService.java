@@ -1,10 +1,12 @@
 package com.redescooter.ses.mobile.client.service;
 
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.ScooterLockDTO;
 import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
+import com.redescooter.ses.api.common.vo.scooter.ScooterUpdateRecordCheckEnter;
 
 /**
  * 车辆相关业务接口
@@ -39,5 +41,10 @@ public interface ScooterService {
      * @date: 2020/11/17
      */
     GeneralResult scooterNavigation(ScooterNavigationDTO enter);
+
+    /**
+     * 校验平板升级更新记录
+     */
+    BooleanResult checkScooterUpdateRecord(ScooterUpdateRecordCheckEnter enter);
 
 }

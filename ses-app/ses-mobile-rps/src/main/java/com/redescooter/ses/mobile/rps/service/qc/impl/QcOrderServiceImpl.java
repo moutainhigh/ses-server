@@ -1,7 +1,9 @@
 package com.redescooter.ses.mobile.rps.service.qc.impl;
 
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.production.InOutWhEnums;
 import com.redescooter.ses.api.common.enums.qc.QcStatusEnum;
@@ -149,6 +151,9 @@ public class QcOrderServiceImpl implements QcOrderService {
 
     @Autowired
     private OpeCombinOrderCombinBService opeCombinOrderCombinBService;
+
+    @Autowired
+    private OpeCodebaseRsnService opeCodebaseRsnService;
 
 
 
@@ -834,6 +839,31 @@ public class QcOrderServiceImpl implements QcOrderService {
             opeWmsStockRecord.setUpdatedBy(paramDTO.getUserId());
             opeWmsStockRecord.setUpdatedTime(new Date());
             opeWmsStockRecordMapper.insertOrUpdateSelective(opeWmsStockRecord);
+
+            // rsn保存到码库,状态为已失效
+            LambdaQueryWrapper<OpeCodebaseRsn> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeCodebaseRsn::getRsn, paramDTO.getSerialNum());
+            lqw.eq(OpeCodebaseRsn::getStatus, 1);
+            lqw.last("limit 1");
+            OpeCodebaseRsn rsn = opeCodebaseRsnService.getOne(lqw);
+            if (null == rsn) {
+                log.info("rsn在码库为空,新增一条状态为已失效的rsn");
+                OpeCodebaseRsn rsnModel = new OpeCodebaseRsn();
+                rsnModel.setId(idAppService.getId(SequenceName.OPE_CODEBASE_RSN));
+                rsnModel.setDr(Constant.DR_FALSE);
+                rsnModel.setRsn(paramDTO.getSerialNum());
+                rsnModel.setStatus(3);
+                rsnModel.setCreatedBy(paramDTO.getUserId());
+                rsnModel.setCreatedTime(new Date());
+                opeCodebaseRsnService.save(rsnModel);
+            } else {
+                log.info("rsn在码库不为空,修改此rsn的状态为已失效");
+                rsn.setStatus(3);
+                rsn.setUpdatedBy(paramDTO.getUserId());
+                rsn.setUpdatedTime(new Date());
+                opeCodebaseRsnService.updateById(rsn);
+            }
         }
 
          // 保存产品质检记录
@@ -851,6 +881,7 @@ public class QcOrderServiceImpl implements QcOrderService {
         resultDTO.setBluetoothMacAddress(paramDTO.getBluetoothMacAddress());
         resultDTO.setProductionDate(new Date());
         resultDTO.setQcResultFlag(qcResultFlag);
+        resultDTO.setTabletSn(paramDTO.getTabletSn());
         return resultDTO;
     }
 

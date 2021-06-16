@@ -5,10 +5,12 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.service.app.FrAppService;
 import com.redescooter.ses.web.ros.vo.app.AppLoginEnter;
+import com.redescooter.ses.web.ros.vo.app.BindLicensePlateEnter;
 import com.redescooter.ses.web.ros.vo.app.BindVinEnter;
 import com.redescooter.ses.web.ros.vo.app.InputBatteryEnter;
 import com.redescooter.ses.web.ros.vo.app.InputScooterEnter;
@@ -25,6 +27,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @Description
@@ -71,6 +75,16 @@ public class FrAppController {
     }
 
     /**
+     * 检索数据下拉列表
+     */
+    @PostMapping("/data")
+    @ApiOperation(value = "检索数据下拉列表", notes = "检索数据下拉列表")
+    @IgnoreLoginCheck
+    public Response<List<String>> getDataList(@ModelAttribute StringEnter enter) {
+        return new Response<>(frAppService.getDataList(enter));
+    }
+
+    /**
      * 询价单列表
      */
     @PostMapping("/list")
@@ -88,6 +102,26 @@ public class FrAppController {
     @IgnoreLoginCheck
     public Response<InquiryDetailResult> getDetail(@ModelAttribute InquiryDetailEnter enter) {
         return new Response<>(frAppService.getDetail(enter));
+    }
+
+    /**
+     * 绑定VIN
+     */
+    @PostMapping("/bind")
+    @ApiOperation(value = "绑定VIN", notes = "绑定VIN")
+    @IgnoreLoginCheck
+    public Response<GeneralResult> bindVin(@ModelAttribute BindVinEnter enter) {
+        return new Response<>(frAppService.bindVin(enter));
+    }
+
+    /**
+     * 绑定车牌
+     */
+    @PostMapping("/plate")
+    @ApiOperation(value = "绑定车牌", notes = "绑定车牌")
+    @IgnoreLoginCheck
+    public Response<GeneralResult> bindLicensePlate(@ModelAttribute BindLicensePlateEnter enter) {
+        return new Response<>(frAppService.bindLicensePlate(enter));
     }
 
     /**
@@ -111,16 +145,6 @@ public class FrAppController {
     }
 
     /**
-     * 绑定VIN
-     */
-    @PostMapping("/bind")
-    @ApiOperation(value = "绑定VIN", notes = "绑定VIN")
-    @IgnoreLoginCheck
-    public Response<GeneralResult> bindVin(@ModelAttribute BindVinEnter enter) {
-        return new Response<>(frAppService.bindVin(enter));
-    }
-
-    /**
      * 设置软体
      */
     @PostMapping("/set")
@@ -129,5 +153,15 @@ public class FrAppController {
     public Response<GeneralResult> setScooterModel(@ModelAttribute CustomerIdEnter enter) {
         return new Response<>(frAppService.setScooterModel(enter));
     }
+
+    /**
+     * 校验询价单是否被操作过
+     */
+    /*@ApiOperation(value = "校验询价单是否被操作过", notes = "校验询价单是否被操作过")
+    @PostMapping("/check")
+    @IgnoreLoginCheck
+    public Response<BooleanResult> checkOperation(@ModelAttribute CustomerIdEnter enter) {
+        return new Response<>(frAppService.checkOperation(enter));
+    }*/
 
 }

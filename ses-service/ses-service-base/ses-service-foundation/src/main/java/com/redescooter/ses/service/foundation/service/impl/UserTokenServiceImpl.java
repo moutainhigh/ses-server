@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.google.common.base.Strings;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.enums.account.LoginTypeEnum;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
@@ -116,7 +117,7 @@ public class UserTokenServiceImpl implements UserTokenService {
     private UserProfileService userProfileService;
 
     @Value("${Request.privateKey}")
-    private  String privateKey;
+    private String privateKey;
 
     /**
      * 用户登录
@@ -132,7 +133,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
 
         //用户名解密
-        if (enter.getPassword() != null && enter.getLoginName() != null) {
+        if (null != enter.getPassword() && null != enter.getLoginName()) {
             String decryptPassword = "";
             String loginName = "";
             try {
@@ -151,7 +152,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         } else if (enter.getAppId().equals(AppIDEnums.SAAS_APP.getValue())) {
             // ② APP端登录逻辑
             List<AccountsDto> checkAppUser = checkAppUser(enter);
-            if (checkAppUser.size() == 1) {
+            if (1 == checkAppUser.size()) {
                 return signIn(checkDefaultUser(enter), enter);
             } else {
                 checkAppUser.forEach(appUser -> {
@@ -186,7 +187,7 @@ public class UserTokenServiceImpl implements UserTokenService {
 
         String appUserJson = jedisCluster.get(enter.getConfirmRequestId());
 
-        if (appUserJson == null) {
+        if (null == appUserJson) {
             throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
@@ -253,7 +254,7 @@ public class UserTokenServiceImpl implements UserTokenService {
     private List<PlaUser> getPlaUsers(LoginEnter enter) {
         QueryWrapper<PlaUser> wrapper = new QueryWrapper<>();
         wrapper.eq(PlaUser.COL_LOGIN_NAME, enter.getLoginName());
-        wrapper.eq(PlaUser.COL_DR, 0);
+        wrapper.eq(PlaUser.COL_DR, Constant.DR_FALSE);
         wrapper.eq(PlaUser.COL_APP_ID, enter.getAppId());
         wrapper.eq(PlaUser.COL_SYSTEM_ID, enter.getSystemId());
         wrapper.in(PlaUser.COL_USER_TYPE, AccountTypeEnums.WEB_EXPRESS.getAccountType(), AccountTypeEnums.WEB_RESTAURANT.getAccountType());
@@ -334,7 +335,7 @@ public class UserTokenServiceImpl implements UserTokenService {
     public GeneralResult validateCode(ValidateCodeEnter<AccountsDto> enter) {
 
         Map<String, String> hash = jedisCluster.hgetAll(enter.getT().getRequestId());
-        if (hash == null || hash.isEmpty()) {
+        if (null == hash || hash.isEmpty()) {
             throw new FoundationException(ExceptionCodeEnums.USERTOKEN_SERVICE_CODE_EXPIRED.getCode(),
                     ExceptionCodeEnums.USERTOKEN_SERVICE_CODE_EXPIRED.getMessage());
         }
@@ -365,7 +366,7 @@ public class UserTokenServiceImpl implements UserTokenService {
     public GeneralResult accountDisabled(GeneralEnter enter) {
         // 判断当前账户是否存在
         PlaUser user = userMapper.selectById(enter.getUserId());
-        if (user == null) {
+        if (null == user) {
             throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
@@ -471,7 +472,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         /**
          * 账户非空
          */
-        if (accountsDto == null) {
+        if (null == accountsDto) {
             throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
@@ -481,13 +482,13 @@ public class UserTokenServiceImpl implements UserTokenService {
         if (enter.getLoginType() == LoginTypeEnum.PASSWORD.getCode()) {
             QueryWrapper<PlaUserPassword> wrapper = new QueryWrapper<>();
             wrapper.eq(PlaUserPassword.COL_LOGIN_NAME, enter.getLoginName());
-            wrapper.eq(PlaUserPassword.COL_DR, 0);
+            wrapper.eq(PlaUserPassword.COL_DR, Constant.DR_FALSE);
             PlaUserPassword userPassword = userPasswordMapper.selectOne(wrapper);
-            if (enter.getPassword() == null) {
+            if (null == enter.getPassword()) {
                 throw new FoundationException(ExceptionCodeEnums.PASSWORD_EMPTY.getCode(),
                         ExceptionCodeEnums.PASSWORD_EMPTY.getMessage());
             }
-            if (userPassword == null) {
+            if (null == userPassword) {
                 throw new FoundationException(ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getCode(), ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getMessage());
             }
             if (StringUtils.isBlank(userPassword.getPassword())) {
@@ -534,9 +535,9 @@ public class UserTokenServiceImpl implements UserTokenService {
             /**
              * 合法用户的 1.租户非空判断 2.状态合法判断
              */
-            if (accountsDto.getTenantId() != 0) {
+            if (0 != accountsDto.getTenantId()) {
                 PlaTenant tenant = tenantMapper.selectById(accountsDto.getTenantId());
-                if (tenant == null) {
+                if (null == tenant) {
                     // ①、判断账号是否取消
                     throw new FoundationException(ExceptionCodeEnums.TENANT_NOT_EXIST.getCode(),
                             ExceptionCodeEnums.TENANT_NOT_EXIST.getMessage());
@@ -608,11 +609,11 @@ public class UserTokenServiceImpl implements UserTokenService {
             }
             QueryWrapper<PlaUserPassword> wrapper = new QueryWrapper<>();
             wrapper.eq(PlaUserPassword.COL_LOGIN_NAME, enter.getLoginName());
-            wrapper.eq(PlaUserPassword.COL_DR, 0);
+            wrapper.eq(PlaUserPassword.COL_DR, Constant.DR_FALSE);
             wrapper.orderByDesc(PlaAppVersion.COL_CREATED_TIME);
             wrapper.last("limit 1");
             PlaUserPassword userPassword = userPasswordMapper.selectOne(wrapper);
-            if (userPassword == null) {
+            if (null == userPassword) {
                 throw new FoundationException(ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getCode(), ExceptionCodeEnums.ACCOUNT_NOT_ACTIVATED.getMessage());
             }
             if (StringUtils.isBlank(userPassword.getPassword())) {
@@ -628,11 +629,11 @@ public class UserTokenServiceImpl implements UserTokenService {
         List<AccountsDto> resultMultiple = userTokenMapper.checkAPPUser(enter);
         List<AccountsDto> resultOne = new ArrayList<>();
 
-        if (resultMultiple.size() == 1) {
+        if (1 == resultMultiple.size()) {
             AccountsDto accountsDto = checkDefaultUser(enter);
             resultOne.add(accountsDto);
         }
-        if (resultMultiple.size() > 1) {
+        if (1 < resultMultiple.size()) {
             resultOne.addAll(resultMultiple);
         }
         if (CollectionUtils.isEmpty(resultMultiple)) {
@@ -823,7 +824,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         getUser.setRequestId(enter.getRequestId());
         if (StringUtils.isNotBlank(enter.getToken())) {
             UserToken userToken = getUserToken(enter.getToken());
-            if (userToken.getUserId() == null || userToken.getUserId() == 0) {
+            if (null == userToken.getUserId() || 0 == userToken.getUserId()) {
                 throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
                         ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
             }
@@ -835,7 +836,7 @@ public class UserTokenServiceImpl implements UserTokenService {
              * 系统外部进行设置密码
              */
             Map<String, String> hash = jedisCluster.hgetAll(enter.getRequestId());
-            if (hash == null || hash.isEmpty()) {
+            if (null == hash || hash.isEmpty()) {
                 throw new FoundationException(ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getCode(),
                         ExceptionCodeEnums.TOKEN_MESSAGE_IS_FALSE.getMessage());
             }
@@ -855,14 +856,14 @@ public class UserTokenServiceImpl implements UserTokenService {
 
         log.info("getUserLimitOne的入参是:[{}]", getUser);
         PlaUser emailUser = userTokenMapper.getUserLimitOne(getUser);
-        if (emailUser == null) {
+        if (null == emailUser) {
             throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
 
         QueryWrapper<PlaUserPassword> wrapper = new QueryWrapper<>();
         wrapper.eq(PlaUserPassword.COL_LOGIN_NAME, emailUser.getLoginName());
-        wrapper.eq(PlaUserPassword.COL_DR, 0);
+        wrapper.eq(PlaUserPassword.COL_DR, Constant.DR_FALSE);
         PlaUserPassword updatePassword = userPasswordMapper.selectOne(wrapper);
 
         updatePassword.setPassword(DigestUtils.md5Hex(enter.getConfirmPassword() + updatePassword.getSalt()));
@@ -878,7 +879,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         user.setUpdatedTime(new Date());
 
         UpdateWrapper<PlaUser> userUpdate = new UpdateWrapper<>();
-        userUpdate.eq(PlaUser.COL_DR, 0);
+        userUpdate.eq(PlaUser.COL_DR, Constant.DR_FALSE);
         userUpdate.eq(PlaUser.COL_LOGIN_NAME, emailUser.getLoginName());
         userUpdate.eq(PlaUser.COL_STATUS, UserStatusEnum.INACTIVATED.getValue());
         userMapper.update(user, userUpdate);
@@ -891,10 +892,10 @@ public class UserTokenServiceImpl implements UserTokenService {
         }
         // 更新租户账户的激活时间
         QueryWrapper<PlaTenant> plaTenantQueryWrapper = new QueryWrapper<>();
-        plaTenantQueryWrapper.eq(PlaTenant.COL_DR, 0);
+        plaTenantQueryWrapper.eq(PlaTenant.COL_DR, Constant.DR_FALSE);
         plaTenantQueryWrapper.eq(PlaTenant.COL_EMAIL, emailUser.getLoginName());
         PlaTenant plaTenant = plaTenantMapper.selectOne(plaTenantQueryWrapper);
-        if (plaTenant != null) {
+        if (null != plaTenant) {
             plaTenant.setActivationTime(new Date());
             plaTenant.setUpdatedTime(new Date());
             plaTenantMapper.updateById(plaTenant);
@@ -968,12 +969,12 @@ public class UserTokenServiceImpl implements UserTokenService {
         getUser.setSystemId(enter.getSystemId());
         getUser.setEmail(enter.getEmail());
         PlaUser user = userTokenMapper.getUserLimitOne(getUser);
-        if (user == null) {
+        if (null == user) {
             throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         QueryWrapper<PlaUserPassword> wrapper = new QueryWrapper<>();
         wrapper.eq(PlaUserPassword.COL_LOGIN_NAME, user.getLoginName());
-        wrapper.eq(PlaUserPassword.COL_DR, 0);
+        wrapper.eq(PlaUserPassword.COL_DR, Constant.DR_FALSE);
         PlaUserPassword updatePassword = userPasswordMapper.selectOne(wrapper);
 
         //旧密码验证
@@ -1026,20 +1027,20 @@ public class UserTokenServiceImpl implements UserTokenService {
         getUser.setEmail(enter.getMail());
         PlaUser limitOne = userTokenMapper.getUserLimitOne(getUser);
 
-        if (limitOne == null) {
+        if (null == limitOne) {
             throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
 
         QueryWrapper<PlaUserPassword> wrapper = new QueryWrapper<>();
         wrapper.eq(PlaUserPassword.COL_LOGIN_NAME, enter.getMail());
-        wrapper.eq(PlaUserPassword.COL_DR, 0);
+        wrapper.eq(PlaUserPassword.COL_DR, Constant.DR_FALSE);
         wrapper.isNull(PlaUserPassword.COL_PASSWORD);
         Integer count = userPasswordMapper.selectCount(wrapper);
 
         BaseMailTaskEnter baseMailTaskEnter = new BaseMailTaskEnter();
 
-        if (count == 0) {
+        if (0 == count) {
             baseMailTaskEnter.setEvent(MailTemplateEventEnums.WEB_PASSWORD.getEvent());
         } else {
             baseMailTaskEnter.setEvent(MailTemplateEventEnums.WEB_ACTIVATE.getEvent());
@@ -1076,14 +1077,14 @@ public class UserTokenServiceImpl implements UserTokenService {
         enter.setPassword(SesStringUtils.stringTrim(enter.getPassword()));
 
         PlaUser plaUser = plaUserMapper.selectById(enter.getUserId());
-        if (plaUser == null) {
+        if (null == plaUser) {
             throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         QueryWrapper<PlaUserPassword> plaUserPasswordQueryWrapper = new QueryWrapper<>();
         plaUserPasswordQueryWrapper.eq(PlaUserPassword.COL_LOGIN_NAME, plaUser.getLoginName());
-        plaUserPasswordQueryWrapper.eq(PlaUserPassword.COL_DR, 0);
+        plaUserPasswordQueryWrapper.eq(PlaUserPassword.COL_DR, Constant.DR_FALSE);
         PlaUserPassword plaUserPassword = userPasswordMapper.selectOne(plaUserPasswordQueryWrapper);
-        if (plaUserPassword == null) {
+        if (null == plaUserPassword) {
             throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(plaUserPassword.getPassword(), DigestUtils.md5Hex(enter.getPassword() + plaUserPassword.getSalt()))) {
@@ -1098,7 +1099,7 @@ public class UserTokenServiceImpl implements UserTokenService {
                     ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
         }
         Map<String, String> map = jedisCluster.hgetAll(token);
-        if (map == null) {
+        if (null == map) {
             throw new FoundationException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
         }

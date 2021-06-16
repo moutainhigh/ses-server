@@ -19,8 +19,8 @@ class StripePaymentServiceImplTest extends SesWebsiteApplicationTests {
     void paymentIntent() {
         IdEnter enter = new IdEnter();
         enter.setId(196138743107584l);
-        StringResult stringResult = stripePaymentService.paymentIntent(enter);
-        System.out.println(stringResult);
+        //StringResult stringResult = stripePaymentService.paymentIntent(enter);
+        //System.out.println(stringResult);
     }
 
     @Test

@@ -69,6 +69,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResu
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderListResult;
+import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.RSNResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.SaveConsignEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.ListByBussIdEnter;
@@ -85,6 +86,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -364,11 +366,16 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
          * 签收时,新增库存产品序列号表
          */
         // 根据委托单类型查询子表
+        log.info("签收时,开始新增库存产品序列号表");
         Integer entrustType = opeEntrustOrder.getEntrustType();
         Long id = null;
         String rsn = null;
+        String tabletSn = null;
+        String bluetooth = null;
+        String lot = null;
         Integer relationType = null;
         if (ProductTypeEnums.SCOOTER.getValue().equals(entrustType)) {
+            log.info("进入车辆");
             LambdaQueryWrapper<OpeEntrustScooterB> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(OpeEntrustScooterB::getDr, DelStatusEnum.VALID.getCode());
             wrapper.eq(OpeEntrustScooterB::getEntrustId, opeEntrustOrder.getId());
@@ -377,6 +384,9 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
             if (CollectionUtils.isNotEmpty(list)) {
                 OpeEntrustScooterB model = list.get(0);
                 rsn = model.getDef1();
+                tabletSn = model.getDef2();
+                bluetooth = model.getDef3();
+                lot = model.getDef4();
                 relationType = ProductTypeEnums.SCOOTER.getValue();
 
                 // 获得成品库车辆库存表id
@@ -397,6 +407,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
                 }
             }
         } else if (ProductTypeEnums.COMBINATION.getValue().equals(entrustType)) {
+            log.info("进入组装件");
             LambdaQueryWrapper<OpeEntrustCombinB> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(OpeEntrustCombinB::getDr, DelStatusEnum.VALID.getCode());
             wrapper.eq(OpeEntrustCombinB::getEntrustId, opeEntrustOrder.getId());
@@ -405,6 +416,9 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
             if (CollectionUtils.isNotEmpty(list)) {
                 OpeEntrustCombinB model = list.get(0);
                 rsn = model.getDef1();
+                tabletSn = model.getDef2();
+                bluetooth = model.getDef3();
+                lot = model.getDef4();
                 relationType = ProductTypeEnums.COMBINATION.getValue();
 
                 // 获得成品库组装件库存表id
@@ -423,6 +437,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
                 }
             }
         } else if (ProductTypeEnums.PARTS.getValue().equals(entrustType)) {
+            log.info("进入部件");
             LambdaQueryWrapper<OpeEntrustPartsB> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(OpeEntrustPartsB::getDr, DelStatusEnum.VALID.getCode());
             wrapper.eq(OpeEntrustPartsB::getEntrustId, opeEntrustOrder.getId());
@@ -431,6 +446,9 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
             if (CollectionUtils.isNotEmpty(list)) {
                 OpeEntrustPartsB model = list.get(0);
                 rsn = model.getDef1();
+                tabletSn = model.getDef2();
+                bluetooth = model.getDef3();
+                lot = model.getDef4();
                 relationType = ProductTypeEnums.PARTS.getValue();
 
                 // 获得原料库部件库存表id
@@ -450,26 +468,48 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
             }
         }
 
+        log.info("参数分别为:[{},{},{},{},{},{}]", id, relationType, rsn, tabletSn, bluetooth, lot);
+
         // 新增库存产品序列号表
         if (null != rsn && null != id && null != relationType) {
             List<OpeWmsStockSerialNumber> saveList = Lists.newArrayList();
-            String[] split = rsn.split(",");
-            for (String s : split) {
-                OpeWmsStockSerialNumber param = new OpeWmsStockSerialNumber();
-                param.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_SERIAL_NUMBER));
-                param.setDr(DelStatusEnum.VALID.getCode());
-                param.setTenantId(enter.getTenantId());
-                param.setDeptId(enter.getOpeDeptId());
-                param.setRelationType(relationType);
-                param.setRelationId(id);
-                param.setStockType(1);
-                param.setRsn(s);
-                param.setStockStatus(1);
-                param.setCreatedBy(enter.getUserId());
-                param.setCreatedTime(new Date());
-                saveList.add(param);
+            List<RSNResult> collection = Lists.newArrayList();
+
+            List<String> rsnList = new ArrayList<>(Arrays.asList(rsn.split(",")));
+            List<String> tabletSnList = new ArrayList<>(Arrays.asList(tabletSn.split(",")));
+            List<String> bluetoothList = new ArrayList<>(Arrays.asList(bluetooth.split(",")));
+            List<String> lotList = new ArrayList<>(Arrays.asList(lot.split(",")));
+
+            for (int i = 0; i < rsnList.size(); i++) {
+                RSNResult item = new RSNResult();
+                item.setRsn(rsnList.get(i));
+                item.setTabletSn(tabletSnList.get(i));
+                item.setBluetooth(bluetoothList.get(i));
+                item.setLot(lotList.get(i));
+                collection.add(item);
             }
-            opeWmsStockSerialNumberService.saveBatch(saveList);
+
+            if (CollectionUtils.isNotEmpty(collection)) {
+                for (RSNResult instance : collection) {
+                    OpeWmsStockSerialNumber param = new OpeWmsStockSerialNumber();
+                    param.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_SERIAL_NUMBER));
+                    param.setDr(DelStatusEnum.VALID.getCode());
+                    param.setTenantId(enter.getTenantId());
+                    param.setDeptId(enter.getOpeDeptId());
+                    param.setRelationType(relationType);
+                    param.setRelationId(id);
+                    param.setStockType(2);
+                    param.setRsn(instance.getRsn());
+                    param.setStockStatus(1);
+                    param.setLotNum(instance.getLot());
+                    param.setSn(instance.getTabletSn());
+                    param.setBluetoothMacAddress(instance.getBluetooth());
+                    param.setCreatedBy(enter.getUserId());
+                    param.setCreatedTime(new Date());
+                    saveList.add(param);
+                }
+                opeWmsStockSerialNumberService.saveBatch(saveList);
+            }
         }
         return new GeneralResult(enter.getRequestId());
     }

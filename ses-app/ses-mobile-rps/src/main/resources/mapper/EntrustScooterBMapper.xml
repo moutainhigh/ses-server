@@ -95,6 +95,15 @@
             <if test="def1 != null and def1 != ''">
                 def1 = #{def1},
             </if>
+            <if test="def2 != null and def2 != ''">
+                def2 = #{def2},
+            </if>
+            <if test="def3 != null and def3 != ''">
+                def3 = #{def3},
+            </if>
+            <if test="def4 != null and def4 != ''">
+                def4 = #{def4},
+            </if>
         </set>
         where id = #{id}
     </update>

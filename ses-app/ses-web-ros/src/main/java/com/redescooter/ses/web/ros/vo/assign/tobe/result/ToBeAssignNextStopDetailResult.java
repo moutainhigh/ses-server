@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @Description 待分配点击下一步车辆信息详情出参
@@ -52,5 +53,17 @@ public class ToBeAssignNextStopDetailResult extends GeneralResult implements Ser
 
     @ApiModelProperty(value = "Qty")
     private Integer qty;
+
+    @ApiModelProperty(value = "蓝牙地址")
+    private String bluetoothAddress;
+
+    @ApiModelProperty(value = "平板序列号")
+    private String tabletSn;
+
+    @ApiModelProperty(value = "电池数")
+    private Integer batteryNum;
+
+    @ApiModelProperty(value = "电池码 字符号数组 如果多个时逗号分隔")
+    private List<String> batteryList;
 
 }

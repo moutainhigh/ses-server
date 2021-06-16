@@ -27,4 +27,9 @@ public class ScooterTabletUpdatePublishDTO implements Serializable {
      */
     private String versionCode;
 
+    /**
+     * 表示这次升级推送的唯一性,用uuid
+     */
+    private String updateCode;
+
 }

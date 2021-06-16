@@ -2,6 +2,7 @@ package com.redescooter.ses.service.foundation.service.impl.workorder;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.base.AppIDEnums;
 import com.redescooter.ses.api.common.enums.base.SystemIDEnums;
 import com.redescooter.ses.api.common.enums.proxy.mail.MailTemplateEventEnums;
@@ -75,7 +76,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     @Override
     public PageResult<WorkOrderListResult> workOrderList(WorkOrderListEnter enter) {
         int count = workOrderMapper.workOrderListCount(enter);
-        if (count == 0) {
+        if (0 == count) {
             return PageResult.createZeroRowResult(enter);
         }
         List<WorkOrderListResult> list = workOrderMapper.workOrderList(enter);
@@ -111,10 +112,10 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 
 
     public void checkLength(WorkOrderSaveOrUpdateEnter enter) {
-        if (Strings.isNullOrEmpty(enter.getTitle()) || enter.getTitle().length() > 100) {
+        if (Strings.isNullOrEmpty(enter.getTitle()) || 100 < enter.getTitle().length()) {
             throw new FoundationException(ExceptionCodeEnums.TITLE_LENGTH_ERROR.getCode(), ExceptionCodeEnums.TITLE_LENGTH_ERROR.getMessage());
         }
-        if (!Strings.isNullOrEmpty(enter.getRemark()) && enter.getRemark().length() > 1000) {
+        if (!Strings.isNullOrEmpty(enter.getRemark()) && 1000 < enter.getRemark().length()) {
             throw new FoundationException(ExceptionCodeEnums.CONTENT_LENGTH_ERROR.getCode(), ExceptionCodeEnums.CONTENT_LENGTH_ERROR.getMessage());
         }
     }
@@ -131,11 +132,11 @@ public class WorkOrderServiceImpl implements WorkOrderService {
         String workOrderNo = "";
         // 判断有没有工单  没有的话 直接返回“000001”  有的话 需要进行自动递增
         QueryWrapper<PlaWorkOrder> qw = new QueryWrapper<>();
-        qw.eq(PlaWorkOrder.COL_DR, 0);
+        qw.eq(PlaWorkOrder.COL_DR, Constant.DR_FALSE);
         qw.orderByDesc(PlaWorkOrder.COL_ORDER_NO);
         qw.last("limit 1");
         PlaWorkOrder workOrder = plaWorkOrderService.getOne(qw);
-        if (workOrder == null) {
+        if (null == workOrder) {
             workOrderNo = "000001";
         } else {
             workOrderNo = OrderNoGenerateUtil.createWorkOrderNo(workOrder.getOrderNo());
@@ -182,7 +183,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     public WorkOrderDetailResult workOrderDetail(IdEnter enter) {
         WorkOrderDetailResult result = new WorkOrderDetailResult();
         PlaWorkOrder workOrder = plaWorkOrderService.getById(enter.getId());
-        if (workOrder == null) {
+        if (null == workOrder) {
             throw new FoundationException(ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getMessage());
         }
         result = workOrderMapper.workOrderDetail(enter);
@@ -209,7 +210,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult workOrderStatusFlow(StatusFlowEnter enter) {
         PlaWorkOrder workOrder = plaWorkOrderService.getById(enter.getId());
-        if (workOrder == null) {
+        if (null == workOrder) {
             throw new FoundationException(ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getMessage());
         }
         workOrder.setWorkOrderStatus(enter.getWorkOrderStatus());
@@ -229,10 +230,10 @@ public class WorkOrderServiceImpl implements WorkOrderService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult workOrderReply(workOrderReplyEnter enter) {
         PlaWorkOrder workOrder = plaWorkOrderService.getById(enter.getId());
-        if (workOrder == null) {
+        if (null == workOrder) {
             throw new FoundationException(ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getMessage());
         }
-        if (Strings.isNullOrEmpty(enter.getRemark()) || enter.getRemark().length() > 1000) {
+        if (Strings.isNullOrEmpty(enter.getRemark()) || 1000 < enter.getRemark().length()) {
             throw new FoundationException(ExceptionCodeEnums.CONTENT_LENGTH_ERROR.getCode(), ExceptionCodeEnums.CONTENT_LENGTH_ERROR.getMessage());
         }
         PlaWorkOrderLog workOrderLog = new PlaWorkOrderLog();

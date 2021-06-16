@@ -7,7 +7,10 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dm.OpeSalePrice;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePriceListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePriceSaveOrUpdateEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.SetDepositEnter;
+import com.redescooter.ses.web.ros.vo.sales.SalesPriceResult;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -57,5 +60,12 @@ public interface SalesPriceService {
      * 每个tab的count
      */
     Map<String, Integer> getTabCount(GeneralEnter enter);
+
+
+//    List<String> modelPriceList(GeneralEnter enter);
+
+    GeneralResult setDeposit(SetDepositEnter setDepositEnter);
+
+    BigDecimal TipSettings(GeneralEnter enter);
 
 }

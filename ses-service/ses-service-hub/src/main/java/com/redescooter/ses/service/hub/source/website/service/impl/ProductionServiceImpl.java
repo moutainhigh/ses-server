@@ -4,7 +4,6 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Maps;
-import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.service.website.ProductionService;
 import com.redescooter.ses.api.hub.vo.website.SyncProductionDataEnter;
@@ -73,10 +72,7 @@ public class ProductionServiceImpl implements ProductionService {
     @Override
     @DS("website")
     public void syncByProductionCode(String productionName, Integer saleStatus) {
-
         // 关闭的时候到这里 把之前同步过的数据清除掉就好了
-        // 给个默认值 先默认同步过了
-//        boolean flag = true;
         QueryWrapper<SiteProductModel> qw = new QueryWrapper<>();
         qw.eq(SiteProductModel.COL_PRODUCT_MODEL_NAME, productionName);
         qw.last("limit 1");
@@ -84,14 +80,20 @@ public class ProductionServiceImpl implements ProductionService {
         if (product != null) {
             // 这里表示这里是关闭销售状态 直接把之前的数据删除
             // 删除site_product_model
-            siteProductModelService.removeById(product.getId());
+            //siteProductModelService.removeById(product.getId());
+            product.setStatus(-1);
+            siteProductModelService.updateById(product);
 
             // 删除site_product
             QueryWrapper<SiteProduct> productQueryWrapper = new QueryWrapper<>();
             productQueryWrapper.eq(SiteProduct.COL_PRODUCT_MODEL_ID, product.getId());
             List<SiteProduct> productList = siteProductService.list(productQueryWrapper);
             if (CollectionUtils.isNotEmpty(productList)) {
-                siteProductService.removeByIds(productList.stream().map(SiteProduct::getId).collect(Collectors.toList()));
+                for (SiteProduct item : productList) {
+                    item.setStatus(-1);
+                    siteProductService.updateById(item);
+                }
+                //siteProductService.removeByIds(productList.stream().map(SiteProduct::getId).collect(Collectors.toList()));
             }
 
             // 删除site_product_colour
@@ -107,8 +109,12 @@ public class ProductionServiceImpl implements ProductionService {
             wrapper.eq(SiteProductPrice::getProductModelId, product.getId());
             List<SiteProductPrice> list = siteProductPriceService.list(wrapper);
             if (CollectionUtils.isNotEmpty(list)) {
-                List<Long> ids = list.stream().map(o -> o.getId()).collect(Collectors.toList());
-                siteProductPriceService.removeByIds(ids);
+                for (SiteProductPrice item : list) {
+                    item.setStatus(-1);
+                    siteProductPriceService.updateById(item);
+                }
+                /*List<Long> ids = list.stream().map(o -> o.getId()).collect(Collectors.toList());
+                siteProductPriceService.removeByIds(ids);*/
             }
 
             //salePriceService.deleteSalePrice(product.getProductModelName());
@@ -141,7 +147,6 @@ public class ProductionServiceImpl implements ProductionService {
     @GlobalTransactional(rollbackFor = Exception.class)
     @DS("website")
     public void syncProductionData(SyncProductionDataEnter syncProductionDataEnter) {
-        log.info("准备同步官网的数据了。。。。。。。。。。。。。。。。");
         // 先创建 site_product_class 信息
         // 先要通过大类的code 判断有没有同步过
         SiteProductClass productClass;
@@ -162,9 +167,6 @@ public class ProductionServiceImpl implements ProductionService {
             productClass.setUpdatedBy(0L);
             productClass.setUpdatedTime(new Date());
             siteProductClassService.saveOrUpdate(productClass);
-        } else {
-            productClass.setDr(Constant.DR_FALSE);
-            siteProductClassService.updateById(productClass);
         }
 
         // 然后创建 site_product_model 信息
@@ -188,18 +190,20 @@ public class ProductionServiceImpl implements ProductionService {
             productModel.setUpdatedTime(new Date());
             siteProductModelService.saveOrUpdate(productModel);
         } else {
+            log.info("productModel不存在");
+
             LambdaQueryWrapper<SiteProductPrice> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(SiteProductPrice::getProductModelId, productModel.getId());
-            wrapper.eq(SiteProductPrice::getDr, Constant.DR_TRUE);
+            wrapper.eq(SiteProductPrice::getStatus, -1);
             List<SiteProductPrice> list = siteProductPriceService.list(wrapper);
             if (CollectionUtils.isNotEmpty(list)) {
                 for (SiteProductPrice item : list) {
-                    item.setDr(Constant.DR_FALSE);
+                    item.setStatus(1);
                     siteProductPriceService.updateById(item);
                 }
             }
 
-            productModel.setDr(Constant.DR_FALSE);
+            productModel.setStatus(1);
             siteProductModelService.updateById(productModel);
         }
 
@@ -221,7 +225,8 @@ public class ProductionServiceImpl implements ProductionService {
             product.setProductModelId(productModel.getId());
             siteProductService.saveOrUpdate(product);
         } else {
-            product.setDr(Constant.DR_FALSE);
+            log.info("product不存在");
+            product.setStatus(1);
             siteProductService.updateById(product);
         }
 
@@ -246,9 +251,6 @@ public class ProductionServiceImpl implements ProductionService {
             colour.setUpdatedBy(0L);
             colour.setUpdatedTime(new Date());
             siteColourService.saveOrUpdate(colour);
-        } else {
-            colour.setDr(Constant.DR_FALSE);
-            siteColourService.updateById(colour);
         }
 
         // 最后创建 site_product_colour 信息
@@ -267,15 +269,7 @@ public class ProductionServiceImpl implements ProductionService {
             productColour.setPicture(syncProductionDataEnter.getPicture());
             siteProductColourService.saveOrUpdate(productColour);
         }
-        siteProductService.saveOrUpdate(product);
-
-
-
-
-
-
-
-
+        //siteProductService.saveOrUpdate(product);
 
 
 //        // 先创建 site_product 信息

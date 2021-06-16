@@ -5,9 +5,9 @@ log:
     max-history: 180
 dubbo:
   registry:
-    address: zookeeper://172.31.6.101:2181
+    address: zookeeper://10.0.1.19:2181
   metadata-report:
-    address: zookeeper://172.31.6.101:2181
+    address: zookeeper://10.0.1.19:2181
 spring:
   http:
   servlet:
@@ -16,9 +16,9 @@ spring:
       max-file-size: 20MB
       enabled: true
   datasource:
-    url: jdbc:mysql://172.31.6.136:2116/website_pre?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
-    username: redpre
-    password: pre.1qaz2wsx
+    url: jdbc:mysql://10.0.1.19:3306/website_pre?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    username: sespre
+    password: sespre=[;.-pl,]
     druid:
       initial-size: 8
       min-idle: 1
@@ -32,59 +32,262 @@ spring:
   redis:
     cluster:
       nodes:
-        - 172.31.6.136:7000
-        - 172.31.6.136:7001
-        - 172.31.6.136:7002
-        - 172.31.6.136:7003
-        - 172.31.6.136:7004
-        - 172.31.6.136:7005
-  swagger:
-    enabled: true
+        - 10.0.1.19:7000
+        - 10.0.1.19:7001
+        - 10.0.1.19:7002
+        - 10.0.1.19:7003
+        - 10.0.1.19:7004
+        - 10.0.1.19:7005
+  swagger:                                                                                                              #swagger在线文档配置
+    enabled: true                                                                                                       #是否启用swagger
     group:
-      auth-API:
-        group-name: Auth API
-        title: LogIn/LogOut
-        description: LogIn/LogOut Service
-        base-package: com.redescooter.ses.web.website.controller.AuthentionController
-        path-regex: /token/auth/.*
-        path-mapping: /
-        version: v1.2.1
-        license: RedE Circulation within the company
-        license-url: '#'
-        terms-of-service-url: https://api.redelectric.fr/
-        contact:
-          name: Jerry
-          email: jerry@redescooter.com
+      sign-api:                                                                                                         #用户组api，可以配置多个组
+        group-name: Sign-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: ROS Sign接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: 用户登录注销创建等操作                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses.web.website
+        path-regex: /token/auth/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact:                                                                                                        #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli                                                                             #联系地址
+
+
+      colour-api: #用户组api，可以配置多个组
+        group-name: Colour-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: website                                                                                               #api组的标题，会在swagger-ui的标题处显示
+        description: 用户创建颜色以及销毁颜色                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses.web.website
+        path-regex: /colour/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
           url: https://github.com/mrjerryli
-      Website-API:
-        group-name: Website API
-        title: Website
-        description: Website Service
-        base-package: com.redescooter.ses.web.website.controller.business
-        path-regex: /.*
-        path-mapping: /
-        version: v1.2.1
-        license: RedE Circulation within the company
-        license-url: '#'
-        terms-of-service-url: https://api.redelectric.fr/
-        contact:
-          name: Jerry
-          email: jerry@redescooter.com
+
+      contact-api: #用户组api，可以配置多个组
+        group-name: Contact-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: website 联系我们接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: 用户联系我们                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses.web.website
+        path-regex: /home/page/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
           url: https://github.com/mrjerryli
-      DataManagement-API:
-        group-name: Config API
-        title: Config
-        description: Config Service
-        base-package: com.redescooter.ses.web.website.controller.config
-        path-regex: /.*
-        path-mapping: /
-        version: v1.2.1
-        license: RedE Circulation within the company
-        license-url: '#'
-        terms-of-service-url: https://api.redelectric.fr/
-        contact:
-          name: Jerry
-          email: jerry@redescooter.com
+
+      customer-api: #用户组api，可以配置多个组
+        group-name: Customer-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: ROS Sign接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: 用户登录注销创建操作                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses.web.website
+        path-regex: /customer/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+      dealer-api: #用户组api，可以配置多个组
+        group-name: Dealer-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: website dealer接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: 经销商相关接口                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses.web.website
+        path-regex: /dealer/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+      deliveryType-api: #用户组api，可以配置多个组
+        group-name: deliveryType-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: website dealerType接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: 经销商类型相关接口                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses.web.website
+        path-regex: /delivery/type/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+      order-api: #用户组api，可以配置多个组
+        group-name: order-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: website order接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: order相关接口                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses.web.website
+        path-regex: /order/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+      parts-api: #用户组api，可以配置多个组
+        group-name: parts-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: website parts接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: parts相关接口                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses.web.website
+        path-regex: /parts/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+      paymentMethod-api: #用户组api，可以配置多个组
+        group-name: paymentMethod-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: website paymentMethod接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: paymentMethod相关接口                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses.web.website
+        path-regex: /payment/method/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+      price-api: #用户组api，可以配置多个组
+        group-name: price-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: website price接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: price相关接口                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses.web.website
+        path-regex: /price/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+      product-api: #用户组api，可以配置多个组
+        group-name: product-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: website product接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: product相关接口                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses.web.website
+        path-regex: /product/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+      productClass-api: #用户组api，可以配置多个组
+        group-name: class-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: website class接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: productClass相关接口                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses.web.website
+        path-regex: /class/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+
+      productColour-api: #用户组api，可以配置多个组
+        group-name: productColour-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: website productColour接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: productColour相关接口                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses.web.website
+        path-regex: /productcolour/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+
+      productModel-api: #用户组api，可以配置多个组
+        group-name: productModel-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: website productModel接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: productModel相关接口                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses.web.website
+        path-regex: /product/model/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+
+      scooterPurchase-api: #用户组api，可以配置多个组
+        group-name: scooterPurchase-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: website scooterPurchase接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: scooterPurchase相关接口                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses.web.website
+        path-regex: /scooter/purchase/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
+          url: https://github.com/mrjerryli
+
+      stripe-api: #用户组api，可以配置多个组
+        group-name: stripe-API                                                                                          #api组的名字，会在swagger-ui的api下拉列表中显示；组名前的序号，多个组可以排序；最好不要写中文
+        title: website stripe支付接口                                                                                              #api组的标题，会在swagger-ui的标题处显示
+        description: stripe支付相关接口                                                                                  #api组的描述，会在swagger-ui的描述中显示
+        base-package: com.redescooter.ses.web.website
+        path-regex: /stripe/.*                                                                                      #匹配到本组的api接口，匹配uri，可以用用正则表达式
+        path-mapping: /                                                                                                 #匹配到的url在swagger中测试请求时加的url前缀
+        version: v1.2.1                                                                                                 #Api版本
+        license: RedE 公司内部传阅                                                                                        #授权协议
+        license-url: '#'                                                                                                #授权协议地址
+        terms-of-service-url:                                                                                           #服务条款地址
+        contact: #文档联系人
+          name: 李加廷                                                                                                   #联系人名字
+          email: jerry@redescooter.com                                                                                  #联系人邮箱
           url: https://github.com/mrjerryli
 ## stripe pay
 rede:
@@ -137,13 +340,13 @@ seata:
   registry:
     type: zk
     zk:
-      server-addr: 172.31.6.101:2181
+      server-addr: 10.0.1.19:2181
       cluster: default
       connect-timeout: 2000000
   config:
     type: zk
     zk:
-      server-addr: 172.31.6.101:2181
+      server-addr: 10.0.1.19:2181
       connect-timeout: 2000000
   service:
     disable-global-transaction: false

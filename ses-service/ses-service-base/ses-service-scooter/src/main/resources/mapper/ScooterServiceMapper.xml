@@ -215,4 +215,44 @@
 		where dr = 0 and created_time between concat(CURDATE(),' ', ' 00:00:00') and concat(CURDATE(), ' ','23:59:59')
     </select>
 
+    <!-- 删除车辆 -->
+    <delete id="deleteScooter">
+        delete from sco_scooter where id = #{id}
+    </delete>
+
+    <!-- 删除车辆Bbi -->
+    <delete id="deleteBbi">
+        delete from sco_scooter_bbi where id = #{id}
+    </delete>
+
+    <!-- 删除电池仓位 -->
+    <delete id="deleteBbiBatteryWare">
+        delete from sco_scooter_bbi_battery_ware where id = #{id}
+    </delete>
+
+    <!-- 删除bms -->
+    <delete id="deleteBms">
+        delete from sco_scooter_bms where id = #{id}
+    </delete>
+
+    <!-- 删除ecu -->
+    <delete id="deleteEcu">
+        delete from sco_scooter_ecu where id = #{id}
+    </delete>
+
+    <!-- 删除mcu -->
+    <delete id="deleteMcu">
+        delete from sco_scooter_mcu where id = #{id}
+    </delete>
+
+    <!-- 删除mcu控制器 -->
+    <delete id="deleteMcuController">
+        delete from sco_scooter_mcu_controller_info where id = #{id}
+    </delete>
+
+    <!-- 删除导航 -->
+    <delete id="deleteNavigation">
+        delete from sco_scooter_navigation where id = #{id}
+    </delete>
+
 </mapper>

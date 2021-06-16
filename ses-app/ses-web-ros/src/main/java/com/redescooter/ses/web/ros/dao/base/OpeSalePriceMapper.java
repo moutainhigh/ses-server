@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.dao.base;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.web.ros.dm.OpeSalePrice;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePriceListEnter;
+import com.redescooter.ses.web.ros.vo.restproduct.SetDepositEnter;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -29,4 +30,13 @@ public interface OpeSalePriceMapper extends BaseMapper<OpeSalePrice> {
      */
     int getSalePriceCount(@Param("enter") SalePriceListEnter enter);
 
+    /**
+     * 单独设置定金
+     */
+    int editDeposit(@Param("enter") SetDepositEnter setDepositEnter);
+
+    /**
+     * 拿到数据库里定金
+     */
+    Integer findDeposit();
 }

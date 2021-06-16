@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @Description 查询客户走到哪个节点并带出车辆信息数据子出参
@@ -52,5 +53,20 @@ public class ToBeAssignNodeScooterInfoSubResult extends GeneralResult implements
 
     @ApiModelProperty(value = "R.SN")
     private String rsn;
+
+    @ApiModelProperty(value = "电池数量")
+    private Integer batteryNum;
+
+    @ApiModelProperty(value = "Qty")
+    private Integer qty;
+
+    @ApiModelProperty(value = "蓝牙地址")
+    private String bluetoothAddress;
+
+    @ApiModelProperty(value = "平板序列号")
+    private String tabletSn;
+
+    @ApiModelProperty(value = "电池码 字符号数组 如果多个时逗号分隔")
+    private List<String> batteryList;
 
 }

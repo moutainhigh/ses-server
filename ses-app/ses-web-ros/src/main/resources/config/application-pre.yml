@@ -5,9 +5,9 @@ log:
     max-history: 180
 dubbo:
   registry:
-    address: zookeeper://172.31.6.101:2181
+    address: zookeeper://10.0.1.19:2181
   metadata-report:
-    address: zookeeper://172.31.6.101:2181
+    address: zookeeper://10.0.1.19:2181
 spring:
   http:
   servlet:
@@ -16,9 +16,9 @@ spring:
       max-file-size: 20MB
       enabled: true
   datasource:
-    url: jdbc:mysql://172.31.6.136:2116/operation_pre?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
-    username: redpre
-    password: pre.1qaz2wsx
+    url: jdbc:mysql://10.0.1.19:3306/operation_pre?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+    username: sespre
+    password: sespre=[;.-pl,]
     druid:
       initial-size: 8
       min-idle: 1
@@ -32,12 +32,12 @@ spring:
   redis:
     cluster:
       nodes:
-        - 172.31.6.136:7000
-        - 172.31.6.136:7001
-        - 172.31.6.136:7002
-        - 172.31.6.136:7003
-        - 172.31.6.136:7004
-        - 172.31.6.136:7005
+        - 10.0.1.19:7000
+        - 10.0.1.19:7001
+        - 10.0.1.19:7002
+        - 10.0.1.19:7003
+        - 10.0.1.19:7004
+        - 10.0.1.19:7005
   swagger:
     enabled: true
 stripe:
@@ -88,13 +88,13 @@ seata:
   registry:
     type: zk
     zk:
-      server-addr: 172.31.6.101:2181
+      server-addr: 10.0.1.19:2181
       cluster: default
       connect-timeout: 2000000
   config:
     type: zk
     zk:
-      server-addr: 172.31.6.101:2181
+      server-addr: 10.0.1.19:2181
       connect-timeout: 2000000
   service:
     disable-global-transaction: false

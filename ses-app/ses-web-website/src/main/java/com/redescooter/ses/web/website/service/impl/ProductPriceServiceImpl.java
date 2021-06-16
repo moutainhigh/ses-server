@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.api.hub.service.operation.SalePriceService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dm.SiteProductPrice;
@@ -36,6 +37,9 @@ public class ProductPriceServiceImpl implements ProductPriceService {
 
     @DubboReference
     private IdAppService idAppService;
+
+    @DubboReference
+    private SalePriceService salePriceService;
 
     @Autowired
     private SiteProductPriceService siteProductPriceService;
@@ -127,5 +131,16 @@ public class ProductPriceServiceImpl implements ProductPriceService {
             });
         }
         return resultList;
+    }
+
+    @Override
+    public List<String> modelPriceList(GeneralEnter generalEnter) {
+        return RosModelPriceList(generalEnter);
+    }
+
+
+    //拿ros里面的数据
+    public List<String> RosModelPriceList(GeneralEnter generalEnter){
+        return salePriceService.modelPriceList(generalEnter);
     }
 }

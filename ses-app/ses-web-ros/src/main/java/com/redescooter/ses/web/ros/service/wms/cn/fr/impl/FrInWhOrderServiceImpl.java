@@ -12,6 +12,7 @@ import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.enums.wms.WmsStockTypeEnum;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
@@ -46,9 +47,11 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusF
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsInStockRecordEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderAddEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderAddScooterBEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderCheckEnter;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,6 +130,58 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
+        // 校验信息在ope_in_whouse_order_serial_bind表是否存在
+        /*boolean flag = false;
+        for (FrInWhOrderAddScooterBEnter scooterB : list) {
+            LambdaQueryWrapper<OpeInWhouseOrderSerialBind> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeInWhouseOrderSerialBind::getDr, Constant.DR_FALSE);
+            qw.eq(OpeInWhouseOrderSerialBind::getSerialNum, scooterB.getSn());
+            int count = opeInWhouseOrderSerialBindService.count(qw);
+            if (count > 0) {
+                flag = true;
+                break;
+            }
+
+            LambdaQueryWrapper<OpeInWhouseOrderSerialBind> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeInWhouseOrderSerialBind::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeInWhouseOrderSerialBind::getTabletSn, scooterB.getTabletSn());
+            int tabletSnCount = opeInWhouseOrderSerialBindService.count(lqw);
+            if (tabletSnCount > 0) {
+                flag = true;
+                break;
+            }
+        }
+        if (flag) {
+            throw new SesWebRosException(ExceptionCodeEnums.FR_WH_RSN_IS_EXIST.getCode(), ExceptionCodeEnums.FR_WH_RSN_IS_EXIST.getMessage());
+        }*/
+
+        // 校验信息在ope_wms_stock_serial_number表是否存在
+        boolean flag = false;
+        for (FrInWhOrderAddScooterBEnter scooterB : list) {
+            LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+            qw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
+            qw.eq(OpeWmsStockSerialNumber::getRsn, scooterB.getSn());
+            int count = opeWmsStockSerialNumberService.count(qw);
+            if (count > 0) {
+                flag = true;
+                break;
+            }
+
+            LambdaQueryWrapper<OpeWmsStockSerialNumber> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
+            lqw.eq(OpeWmsStockSerialNumber::getSn, scooterB.getTabletSn()).or().eq(OpeWmsStockSerialNumber::getDef3, scooterB.getTabletSn());
+            int tabletSnCount = opeWmsStockSerialNumberService.count(lqw);
+            if (tabletSnCount > 0) {
+                flag = true;
+                break;
+            }
+        }
+        if (flag) {
+            throw new SesWebRosException(ExceptionCodeEnums.FR_WH_RSN_IS_EXIST.getCode(), ExceptionCodeEnums.FR_WH_RSN_IS_EXIST.getMessage());
+        }
+
         // 新增入库单主表
         OpeInWhouseOrder inWhOrder = new OpeInWhouseOrder();
         inWhOrder.setId(idAppService.getId(SequenceName.OPE_IN_WHOUSE_ORDER));
@@ -189,6 +244,52 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
         // 操作法国仓库车辆库存,待入库数量增加
         wmsMaterialStockService.waitInStock(inWhOrder.getOrderType(), inWhOrder.getId(), inWhOrder.getCountryType(), enter.getUserId());
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 校验rsn在法国库存产品序列号表是否存在
+     */
+    @Override
+    public BooleanResult checkRsn(FrInWhOrderCheckEnter enter) {
+        BooleanResult result = new BooleanResult();
+
+        Integer count = 0, tabletSnCount = 0, macCount = 0;
+        // 整车序列号
+        if (StringUtils.isNotBlank(enter.getRsn())) {
+            LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+            qw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
+            qw.eq(OpeWmsStockSerialNumber::getRsn, enter.getRsn());
+            count = opeWmsStockSerialNumberService.count(qw);
+        }
+
+        // 平板序列号
+        if (StringUtils.isNotBlank(enter.getTabletSn())) {
+            LambdaQueryWrapper<OpeWmsStockSerialNumber> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
+            lqw.eq(OpeWmsStockSerialNumber::getSn, enter.getTabletSn()).or().eq(OpeWmsStockSerialNumber::getDef3, enter.getTabletSn());
+            tabletSnCount = opeWmsStockSerialNumberService.count(lqw);
+        }
+
+        // 蓝牙地址
+        if (StringUtils.isNotBlank(enter.getBluetoothMacAddress())) {
+            LambdaQueryWrapper<OpeWmsStockSerialNumber> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+            wrapper.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
+            wrapper.eq(OpeWmsStockSerialNumber::getBluetoothMacAddress, enter.getBluetoothMacAddress());
+            macCount = opeWmsStockSerialNumberService.count(wrapper);
+        }
+
+        if (count > 0 || tabletSnCount > 0 || macCount > 0) {
+            result.setSuccess(Boolean.FALSE);
+            result.setRequestId(enter.getRequestId());
+            return result;
+        }
+
+        result.setSuccess(Boolean.TRUE);
+        result.setRequestId(enter.getRequestId());
+        return result;
     }
 
     /**
@@ -331,6 +432,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             LambdaQueryWrapper<OpeWmsStockSerialNumber> wmsWrapper = new LambdaQueryWrapper<>();
             wmsWrapper.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
             wmsWrapper.eq(OpeWmsStockSerialNumber::getRsn, rsn);
+            wmsWrapper.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
             wmsWrapper.last("limit 1");
             OpeWmsStockSerialNumber serialNumber = opeWmsStockSerialNumberService.getOne(wmsWrapper);
             if (null == serialNumber) {
@@ -357,7 +459,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
                     number.setLotNum(lot);
                     // 整车序列号
                     number.setRsn(rsn);
-                    number.setSn(item.getDef1());
+                    number.setSn(item.getDef3());
                     // 蓝牙地址
                     number.setBluetoothMacAddress(item.getDef2());
                     // 仪表序列号

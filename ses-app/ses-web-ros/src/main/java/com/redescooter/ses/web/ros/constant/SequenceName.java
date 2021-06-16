@@ -275,5 +275,10 @@ public interface SequenceName {
 
     String OPE_WAREHOUSE_ACCOUNT = "OPE_WAREHOUSE_ACCOUNT";
 
+    String OPE_SET_DEPOSIT = "OPE_SET_DEPOSIT";
+
+    String OPE_CODEBASE_RSN = "OPE_CODEBASE_RSN";
+
+    String OPE_CODEBASE_VIN = "OPE_CODEBASE_VIN";
 
 }

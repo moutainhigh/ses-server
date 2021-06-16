@@ -26,12 +26,14 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, dr, type, scooter_battery, deposit, period, should_pay_period, balance, tax, status, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+        id
+        , dr, type, scooter_battery, deposit, period, should_pay_period, balance, tax, status, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
     </sql>
 
     <!-- 销售价格列表 -->
     <select id="getSalePriceList" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List" />
+        select
+        <include refid="Base_Column_List"/>
         from ope_sale_price
         where dr = 0 and type = #{enter.type}
         <include refid="condition"/>
@@ -58,4 +60,22 @@
         </if>
     </sql>
 
+    <update id="editDeposit" parameterType="com.redescooter.ses.web.ros.dm.OpeSalePrice">
+        update ope_sale_price
+        set deposit = #{enter.deposit}
+        where dr = 0
+    </update>
+
+    <select id="findDeposit" resultType="java.lang.Integer">
+        SELECT
+            deposit  from
+            ope_sale_price
+            USER
+        where dr = 0
+        GROUP BY
+            deposit
+        HAVING
+            count( deposit ) > 1
+        limit 1
+    </select>
 </mapper>

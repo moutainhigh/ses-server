@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.assign.ToBeAssignService;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.CustomerIdEnter;
+import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignInputBatteryEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignLicensePlateNextEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignListEnter;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignSeatNextEnter;
@@ -97,6 +98,15 @@ public class ToBeAssignController {
     }
 
     /**
+     * 录入电池
+     */
+    @ApiOperation(value = "录入电池", notes = "录入电池")
+    @PostMapping("/battery")
+    public Response<GeneralResult> inputBattery(@ModelAttribute ToBeAssignInputBatteryEnter enter) {
+        return new Response<>(toBeAssignService.inputBattery(enter));
+    }
+
+    /**
      * 查询客户走到哪个节点并带出数据
      */
     @ApiOperation(value = "查询客户走到哪个节点并带出数据", notes = "查询客户走到哪个节点并带出数据")
@@ -122,6 +132,15 @@ public class ToBeAssignController {
     public Response<BooleanResult> checkScooterStock(@ModelAttribute CustomerIdEnter enter) {
         return new Response<>(toBeAssignService.checkScooterStock(enter));
     }
+
+    /**
+     * 点击分配按钮校验询价单是否被操作过
+     */
+    /*@ApiOperation(value = "点击分配按钮校验询价单是否被操作过", notes = "点击分配按钮校验询价单是否被操作过")
+    @PostMapping("/checkOp")
+    public Response<BooleanResult> checkOperation(@ModelAttribute CustomerIdEnter enter) {
+        return new Response<>(toBeAssignService.checkOperation(enter));
+    }*/
 
     /**
      * 生成105条SSN

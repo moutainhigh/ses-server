@@ -2,13 +2,16 @@ package com.redescooter.ses.mobile.client.service.impl;
 
 import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
 import com.redescooter.ses.api.common.enums.user.UserServiceTypeEnum;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.ScooterLockDTO;
 import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
+import com.redescooter.ses.api.common.vo.scooter.ScooterUpdateRecordCheckEnter;
 import com.redescooter.ses.api.mobile.b.service.ScooterMobileBService;
 import com.redescooter.ses.api.mobile.c.service.ScooterMobileCService;
+import com.redescooter.ses.api.scooter.service.ScooterRecordService;
 import com.redescooter.ses.mobile.client.config.UserComponent;
 import com.redescooter.ses.mobile.client.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.client.exception.SesMobileClientException;
@@ -33,6 +36,9 @@ public class ScooterServiceImpl implements ScooterService {
 
     @DubboReference
     private ScooterMobileCService scooterMobileCService;
+
+    @DubboReference
+    private ScooterRecordService scooterRecordService;
 
     @Resource
     private UserComponent userComponent;
@@ -81,24 +87,32 @@ public class ScooterServiceImpl implements ScooterService {
     }
 
     @Override
-    public GeneralResult scooterNavigation(ScooterNavigationDTO scooterNavigation) {
+    public GeneralResult scooterNavigation(ScooterNavigationDTO enter) {
         GeneralResult result = null;
 
-        if (!CommonEvent.START.getValue().equals(scooterNavigation.getEvent())
-                && !CommonEvent.END.getValue().equals(scooterNavigation.getEvent())) {
+        if (!CommonEvent.START.getValue().equals(enter.getEvent())
+                && !CommonEvent.END.getValue().equals(enter.getEvent())) {
             throw new SesMobileClientException(ExceptionCodeEnums.EVENT_ERROR.getCode(), ExceptionCodeEnums.EVENT_ERROR.getMessage());
         }
 
         /**
          * 业务分发
          */
-        Integer userServiceType = userComponent.getUserServiceTypeById(scooterNavigation);
+        Integer userServiceType = userComponent.getUserServiceTypeById(enter);
         if (UserServiceTypeEnum.B.getType().equals(userServiceType)) {
-            result = scooterMobileBService.scooterNavigation(scooterNavigation);
+            result = scooterMobileBService.scooterNavigation(enter);
         } else if (UserServiceTypeEnum.C.getType().equals(userServiceType)) {
-            result = scooterMobileCService.scooterNavigation(scooterNavigation);
+            result = scooterMobileCService.scooterNavigation(enter);
         }
         return result;
+    }
+
+    /**
+     * 校验平板升级更新记录
+     */
+    @Override
+    public BooleanResult checkScooterUpdateRecord(ScooterUpdateRecordCheckEnter enter) {
+        return scooterRecordService.checkScooterUpdateRecord(enter);
     }
 
 }

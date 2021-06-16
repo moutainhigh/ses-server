@@ -177,15 +177,15 @@ public class RsaUtils {
 
         System.out.println(stringStringMap.get(PUBLIC_KEY));
 
-        String password = "RedeScooter2019";
+        String password = "4aadedf69dce2c9088d9f1383ae4434e";
 
         //公钥加密
-        String encryptPwd = encrypt(password, stringStringMap.get(PUBLIC_KEY));
-        System.out.println(encryptPwd);
+//        String encryptPwd = encrypt(password, stringStringMap.get(PUBLIC_KEY));
+//        System.out.println(encryptPwd);
 
         //私钥解密
-        String decryptPwd = decrypt(encryptPwd, stringStringMap.get(PRIVATE_KEY));
-        System.out.println(decryptPwd);
+        String decryptPwd = decrypt("4aadedf69dce2c9088d9f1383ae4434e", stringStringMap.get(PRIVATE_KEY));
+        System.out.println(decryptPwd+">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
         //私钥加密
         String encryptByPrivateKeyPwd = encryptByPrivateKey(password, privateKey_sa);

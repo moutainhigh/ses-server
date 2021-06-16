@@ -1,5 +1,9 @@
 package com.redescooter.ses.api.hub.service.operation;
 
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+
+import java.util.List;
+
 /**
  * @Description
  * @Author Chris
@@ -8,4 +12,6 @@ package com.redescooter.ses.api.hub.service.operation;
 public interface SalePriceService {
 
     void deleteSalePrice(String modelName);
+
+    List<String> modelPriceList(GeneralEnter enter);
 }

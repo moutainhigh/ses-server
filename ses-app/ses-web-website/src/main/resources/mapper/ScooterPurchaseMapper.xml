@@ -82,7 +82,7 @@
                sp.en_name,
                sp.price * spp.qty as price
         from site_product_parts spp
-        left join site_parts sp on spp.parts_id = sp.id and sp.dr = 0
+        left join site_parts sp on spp.parts_id = sp.id and sp.dr = 0 and sp.`status` = 1
         where spp.dr = 0 and spp.`status` = 1 and sp.parts_type = 3
         <if test="id != null">
             and spp.product_id = #{id}
@@ -142,4 +142,18 @@
         </collection>
     </resultMap>
 
+   <select id="getPartsDetails" resultType="com.redescooter.ses.web.website.vo.product.PartsBatteryDetailsResult">
+       select id            as partsId,
+              case when (parts_qty is null ) then 1 else parts_qty end
+                            as qty,
+              en_name       as partsName,
+              picture,
+              price,
+              currency_unit as unit
+       from site_parts
+       where parts_type = 3
+         and status = 1
+         and dr = 0
+           limit 1
+   </select>
 </mapper>

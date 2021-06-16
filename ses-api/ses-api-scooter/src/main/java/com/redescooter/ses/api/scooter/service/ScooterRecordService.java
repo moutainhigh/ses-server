@@ -1,14 +1,16 @@
 package com.redescooter.ses.api.scooter.service;
 
-import java.util.List;
-
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
+import com.redescooter.ses.api.common.vo.scooter.ScooterUpdateRecordCheckEnter;
 import com.redescooter.ses.api.scooter.vo.MobileRepairRecordEnter;
 import com.redescooter.ses.api.scooter.vo.MobileRepairRecordResult;
 import com.redescooter.ses.api.scooter.vo.SaveScooterRecordEnter;
 import com.redescooter.ses.api.scooter.vo.ScooterRecordListEnter;
 import com.redescooter.ses.api.scooter.vo.ScooterRecordListResult;
+
+import java.util.List;
 
 /**
  * @ClassName:ScooterRecordService
@@ -39,5 +41,10 @@ public interface ScooterRecordService {
      * @return
      */
     PageResult<MobileRepairRecordResult> mobileRepairRecord(MobileRepairRecordEnter enter);
+
+    /**
+     * 校验平板升级更新记录
+     */
+    BooleanResult checkScooterUpdateRecord(ScooterUpdateRecordCheckEnter enter);
 
 }

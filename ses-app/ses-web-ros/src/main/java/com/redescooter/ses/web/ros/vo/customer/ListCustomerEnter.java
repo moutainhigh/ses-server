@@ -44,7 +44,7 @@ public class ListCustomerEnter extends PageEnter {
     @ApiModelProperty(value = "客户行业类型")
     private String customerIndustry;
 
-    @ApiModelProperty(value = "客户来源类型")
+    @ApiModelProperty(value = "客户来源类型 1系统添加 2官网")
     private String customerSource;
 
     @ApiModelProperty(value = "客户状态")

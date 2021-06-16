@@ -100,7 +100,11 @@ public enum ExceptionCodeEnums {
 
     EMAIL_ERRO(10042,"邮箱格式错误"),
 
-    INVALID_ACCOUNT_STATUS(10043,"账号状态失效")
+    INVALID_ACCOUNT_STATUS(10043,"账号状态失效"),
+
+    NOT_FOUND_BATTERY(10044,"配件中不存在电池"),
+
+    NOT_FOUND_PARTS(10045,"销售配件表中找不到电池配件")
 
     ;
     private int code;

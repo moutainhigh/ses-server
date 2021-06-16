@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.web.website.dao.OrderBMapper">
+    <delete id="deleteOrderB" parameterType="java.lang.Long">
+
+        delete
+        from site_order_b where order_id = #{id}
+
+    </delete>
+</mapper>

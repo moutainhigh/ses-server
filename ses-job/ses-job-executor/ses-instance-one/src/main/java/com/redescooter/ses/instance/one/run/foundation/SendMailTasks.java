@@ -28,7 +28,7 @@ public class SendMailTasks {
     @DubboReference
     private RunSendMailTaskExecutorServiceJob runSendMailTaskExecutorServiceJob;
 
-    @XxlJob("sendMails")
+    @XxlJob("SendMailTaskExecutor")
     public ReturnT<String> sendMails(String param) throws Exception {
 
         //开始时间

@@ -36,9 +36,9 @@ spring:                                                                         
         - 172.28.193.226:7004
         - 172.28.193.226:7005
 saas-login-extreme-experience:
-    web: true
-    app-android: false
-    app-ios: false
+  web: true
+  app-android: false
+  app-ios: false
 
 seata:
   enabled: true

@@ -5,10 +5,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.hub.service.admin.ScooterModelService;
 import com.redescooter.ses.api.hub.vo.admin.AdmScooter;
+import com.redescooter.ses.api.hub.vo.admin.AdmScooterUpdateEnter;
 import com.redescooter.ses.service.hub.source.admin.service.base.AdmScooterService;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
 
 /**
  * @Description
@@ -52,6 +55,23 @@ public class ScooterModelServiceImpl implements ScooterModelService {
     @DS("admin")
     public AdmScooter getScooterById(Long id) {
         return admScooterService.getById(id);
+    }
+
+    /**
+     * 修改adm_scooter
+     */
+    @Override
+    @DS("admin")
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public void updateAdmScooter(AdmScooterUpdateEnter enter) {
+        AdmScooter scooter = new AdmScooter();
+        scooter.setId(enter.getId());
+        scooter.setScooterController(enter.getScooterController());
+        scooter.setGroupId(enter.getGroupId());
+        scooter.setGroupName(enter.getGroupName());
+        scooter.setUpdatedBy(0L);
+        scooter.setUpdatedTime(new Date());
+        admScooterService.updateById(scooter);
     }
 
 }

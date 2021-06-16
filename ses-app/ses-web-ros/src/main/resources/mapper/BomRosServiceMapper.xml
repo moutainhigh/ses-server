@@ -56,11 +56,11 @@
                 and parts.sec =#{sec}
             </if>
             <if test="keyword != null and keyword != ''">
-                and (parts.cn_name like concat("%",#{keyword},"%")
-                or parts.en_name like concat("%",#{keyword},"%")
-                or parts.fr_name like concat("%",#{keyword},"%")
-                or os.supplier_name like concat("%",#{keyword},"%")
-                or parts.parts_number LIKE CONCAT("%",#{keyword},"%")
+                and (parts.cn_name like concat('%',#{keyword},'%')
+                or parts.en_name like concat('%',#{keyword},'%')
+                or parts.fr_name like concat('%',#{keyword},'%')
+                or os.supplier_name like concat('%',#{keyword},'%')
+                or parts.parts_number LIKE CONCAT('%',#{keyword},'%')
                 )
             </if>
         </where>

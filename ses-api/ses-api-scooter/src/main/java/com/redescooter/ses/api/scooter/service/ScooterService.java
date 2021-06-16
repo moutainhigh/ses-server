@@ -169,4 +169,9 @@ public interface ScooterService {
      */
     Boolean getSnIsExist(String sn);
 
+    /**
+     * 删除车辆
+     */
+    String deleteScooter(String tabletSn);
+
 }

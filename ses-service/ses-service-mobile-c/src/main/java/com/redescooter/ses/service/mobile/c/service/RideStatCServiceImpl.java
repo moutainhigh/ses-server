@@ -33,94 +33,103 @@ public class RideStatCServiceImpl implements RideStatCService {
 
     @Resource
     private DriverRideStatMapper driverRideStatMapper;
+
     @Resource
     private DriverRideStatDetailMapper driverRideStatDetailMapper;
+
     @Resource
     private ScooterRideStatMapper scooterRideStatMapper;
+
     @Resource
     private ScooterRideStatDetailMapper scooterRideStatDetailMapper;
+
     @DubboReference
     private IdAppService idAppService;
 
+    /**
+     * 新增/修改 司机骑行数据/车辆骑行数据
+     */
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
-    public int insertDriverAndScooterRideStat(InsertRideStatDataDTO rideStatData) {
-        rideStatData.setDuration(rideStatData.getDuration() == 0 ? 1 : rideStatData.getDuration());
-        rideStatData.setMileage(rideStatData.getMileage().equals(BigDecimal.ZERO) ? BigDecimal.ONE : rideStatData.getMileage());
+    public int insertDriverAndScooterRideStat(InsertRideStatDataDTO enter) {
+        enter.setDuration(enter.getDuration() == 0 ? 1 : enter.getDuration());
+        enter.setMileage(enter.getMileage().equals(BigDecimal.ZERO) ? BigDecimal.ONE : enter.getMileage());
 
         try {
-            ConDriverRideStat driverRideStatNew = new ConDriverRideStat();
-            driverRideStatNew.setUpdateBy(rideStatData.getUserId());
-            driverRideStatNew.setUpdateTime(new Date());
+            ConDriverRideStat model = new ConDriverRideStat();
+            model.setUpdateBy(enter.getUserId());
+            model.setUpdateTime(new Date());
 
-            ConDriverRideStatDetail driverRideStatDetail = new ConDriverRideStatDetail();
+            ConDriverRideStatDetail detail = new ConDriverRideStatDetail();
 
             /**
              * 检查司机骑行统计数据是否存在,存在则更新反之新增
              */
-            ConDriverRideStat driverRideStat = driverRideStatMapper.getDriverRideStatByTenantIdAndDriverId(rideStatData.getTenantId(),
-                    rideStatData.getUserId());
-            if (null != driverRideStat) {
-                driverRideStatNew.setId(driverRideStat.getId());
-                driverRideStatNew.setTotalDuration(rideStatData.getDuration() + driverRideStat.getTotalDuration());
-                driverRideStatNew.setCo2Total(driverRideStat.getCo2Total().add(
-                        new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())))
+            ConDriverRideStat stat = driverRideStatMapper.getDriverRideStatByTenantIdAndDriverId(enter.getTenantId(), enter.getUserId());
+            if (null != stat) {
+                log.info("存在,更新");
+                model.setId(stat.getId());
+                model.setTotalDuration(stat.getTotalDuration() + enter.getDuration());
+                model.setCo2Total(stat.getCo2Total().add(
+                        new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())))
                 );
-                driverRideStatNew.setCo2Increment(driverRideStat.getCo2Increment().add(
-                        new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())))
+                model.setCo2Increment(stat.getCo2Increment().add(
+                        new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())))
                 );
-                driverRideStatNew.setSavedMoney(driverRideStat.getSavedMoney().add(
-                        new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(rideStatData.getMileage().longValue())))
+                model.setSavedMoney(stat.getSavedMoney().add(
+                        new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(enter.getMileage().longValue())))
                 );
-                BigDecimal svg = (driverRideStat.getTotalMileage().add(rideStatData.getMileage())).divide(
-                        new BigDecimal(driverRideStat.getTotalDuration() + rideStatData.getDuration()),BigDecimal.ROUND_HALF_UP);
-                driverRideStatNew.setSvgSpeed(svg);
-                driverRideStatMapper.updateDriverRideStat(driverRideStatNew);
+                // 总公里/总时长
+                BigDecimal svg = (stat.getTotalMileage().add(enter.getMileage())).divide(
+                        new BigDecimal(stat.getTotalDuration() + enter.getDuration()), BigDecimal.ROUND_HALF_UP);
+                model.setSvgSpeed(svg);
+                driverRideStatMapper.updateDriverRideStat(model);
 
                 // set detail Co2HistoryTotal
-                driverRideStatDetail.setCo2HistoryTotal(driverRideStatNew.getCo2Total());
+                detail.setCo2HistoryTotal(model.getCo2Total());
             } else {
-                driverRideStatNew.setId(idAppService.getId(SequenceName.CON_DRIVER_RIDE_STAT));
-                driverRideStatNew.setTenantId(rideStatData.getTenantId());
-                driverRideStatNew.setDriverId(rideStatData.getUserId());
-                driverRideStatNew.setTotalDuration(rideStatData.getDuration());
-                driverRideStatNew.setCo2Total(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())));
-                driverRideStatNew.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())));
-                driverRideStatNew.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(rideStatData.getMileage().longValue())));
-                driverRideStatNew.setSvgSpeed(rideStatData.getMileage().divide(new BigDecimal(rideStatData.getDuration()),BigDecimal.ROUND_HALF_UP));
-                driverRideStatNew.setTotalMileage(rideStatData.getMileage());
-                driverRideStatNew.setFirstRideTime(new Date());
-                driverRideStatNew.setCreateBy(rideStatData.getUserId());
-                driverRideStatNew.setCreateTime(new Date());
-                driverRideStatMapper.insertDriverRideStat(driverRideStatNew);
+                log.info("不存在,新增");
+                model.setId(idAppService.getId(SequenceName.CON_DRIVER_RIDE_STAT));
+                model.setTenantId(enter.getTenantId());
+                model.setDriverId(enter.getUserId());
+                model.setTotalDuration(enter.getDuration());
+                model.setCo2Total(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
+                model.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
+                model.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(enter.getMileage().longValue())));
+                model.setSvgSpeed(enter.getMileage().divide(new BigDecimal(enter.getDuration()), BigDecimal.ROUND_HALF_UP));
+                model.setTotalMileage(enter.getMileage());
+                model.setFirstRideTime(new Date());
+                model.setCreateBy(enter.getUserId());
+                model.setCreateTime(new Date());
+                driverRideStatMapper.insertDriverRideStat(model);
 
                 // set detail Co2HistoryTotal
-                driverRideStatDetail.setCo2HistoryTotal(BigDecimal.ZERO);
+                detail.setCo2HistoryTotal(BigDecimal.ZERO);
             }
 
             /**
              * 新增司机骑行统计数据详情
              */
-            driverRideStatDetail.setId(idAppService.getId(SequenceName.CON_DRIVER_RIDE_STAT_DETAIL));
-            driverRideStatDetail.setTenantId(rideStatData.getTenantId());
-            driverRideStatDetail.setBizId(rideStatData.getBizId());
-            driverRideStatDetail.setBizType(rideStatData.getBizType());
-            driverRideStatDetail.setDriverId(rideStatData.getUserId());
-            driverRideStatDetail.setDuration(rideStatData.getDuration());
-            driverRideStatDetail.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())));
-            driverRideStatDetail.setSvgSpeed(rideStatData.getMileage().divide(new BigDecimal(rideStatData.getDuration()),BigDecimal.ROUND_HALF_UP));
-            driverRideStatDetail.setMileage(rideStatData.getMileage());
-            driverRideStatDetail.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(rideStatData.getMileage().longValue())));
-            driverRideStatDetail.setCreateBy(rideStatData.getUserId());
-            driverRideStatDetail.setCreateTime(new Date());
-            driverRideStatDetail.setUpdateBy(rideStatData.getUserId());
-            driverRideStatDetail.setUpdateTime(new Date());
-            driverRideStatDetailMapper.insertDriverRideStatDetail(driverRideStatDetail);
+            detail.setId(idAppService.getId(SequenceName.CON_DRIVER_RIDE_STAT_DETAIL));
+            detail.setTenantId(enter.getTenantId());
+            detail.setBizId(enter.getBizId());
+            detail.setBizType(enter.getBizType());
+            detail.setDriverId(enter.getUserId());
+            detail.setDuration(enter.getDuration());
+            detail.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
+            detail.setSvgSpeed(enter.getMileage().divide(new BigDecimal(enter.getDuration()), BigDecimal.ROUND_HALF_UP));
+            detail.setMileage(enter.getMileage());
+            detail.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(enter.getMileage().longValue())));
+            detail.setCreateBy(enter.getUserId());
+            detail.setCreateTime(new Date());
+            detail.setUpdateBy(enter.getUserId());
+            detail.setUpdateTime(new Date());
+            driverRideStatDetailMapper.insertDriverRideStatDetail(detail);
 
             /**
              * 保存车辆骑行数据和详情
              */
-            insertScooterRideStatAndDetail(rideStatData);
+            insertScooterRideStatAndDetail(enter);
         } catch (Exception e) {
             log.error("【保存司机/车辆骑行统计数据和详情失败】----{}", ExceptionUtils.getStackTrace(e));
         }
@@ -130,77 +139,77 @@ public class RideStatCServiceImpl implements RideStatCService {
 
     /**
      * 保存车辆骑行数据(本来想直接把司机的骑行数据直接copy过来的,但是怕导致最后数据不一致就不copy了)
-     * @param rideStatData
+     * @param enter
      */
-    private void insertScooterRideStatAndDetail(InsertRideStatDataDTO rideStatData) {
-        ConScooterRideStat scooterRideStatNew = new ConScooterRideStat();
-        scooterRideStatNew.setUpdateBy(rideStatData.getUserId());
-        scooterRideStatNew.setUpdateTime(new Date());
+    private void insertScooterRideStatAndDetail(InsertRideStatDataDTO enter) {
+        ConScooterRideStat model = new ConScooterRideStat();
+        model.setUpdateBy(enter.getUserId());
+        model.setUpdateTime(new Date());
 
-        ConScooterRideStatDetail scooterRideStatDetail = new ConScooterRideStatDetail();
+        ConScooterRideStatDetail detail = new ConScooterRideStatDetail();
 
         /**
          * 检查车辆骑行数据是否存在,存在则更新反之新增
          */
-        ConScooterRideStat scooterRideStat = scooterRideStatMapper.getScooterRideStatByTenantIdAndScooterId(rideStatData.getTenantId(),
-                rideStatData.getBizId());
-        if (null != scooterRideStat) {
-            scooterRideStatNew.setId(scooterRideStat.getId());
-            scooterRideStatNew.setTotalDuration(rideStatData.getDuration() + scooterRideStat.getTotalDuration());
-            scooterRideStatNew.setCo2Total(scooterRideStat.getCo2Total().add(
-                    new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())))
+        ConScooterRideStat stat = scooterRideStatMapper.getScooterRideStatByTenantIdAndScooterId(enter.getTenantId(), enter.getBizId());
+        if (null != stat) {
+            log.info("scooter存在,更新");
+            model.setId(stat.getId());
+            model.setTotalDuration(stat.getTotalDuration() + enter.getDuration());
+            model.setCo2Total(stat.getCo2Total().add(
+                    new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())))
             );
-            scooterRideStatNew.setCo2Increment(scooterRideStat.getCo2Increment().add(
-                    new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())))
+            model.setCo2Increment(stat.getCo2Increment().add(
+                    new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())))
             );
-            scooterRideStatNew.setSavedMoney(scooterRideStat.getSavedMoney().add(
-                    new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(rideStatData.getMileage().longValue())))
+            model.setSavedMoney(stat.getSavedMoney().add(
+                    new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(enter.getMileage().longValue())))
             );
-            BigDecimal svg = (scooterRideStatNew.getTotalMileage().add(rideStatData.getMileage())).divide(
-                    new BigDecimal(scooterRideStat.getTotalDuration() + rideStatData.getDuration()),BigDecimal.ROUND_HALF_UP);
-            scooterRideStatNew.setSvgSpeed(svg);
-            scooterRideStatMapper.updateScooterRideStat(scooterRideStatNew);
+            BigDecimal svg = (stat.getTotalMileage().add(enter.getMileage())).divide(
+                    new BigDecimal(stat.getTotalDuration() + enter.getDuration()), BigDecimal.ROUND_HALF_UP);
+            model.setSvgSpeed(svg);
+            scooterRideStatMapper.updateScooterRideStat(model);
 
             // set detail Co2HistoryTotal
-            scooterRideStatDetail.setCo2HistoryTotal(scooterRideStatNew.getCo2Total());
+            detail.setCo2HistoryTotal(model.getCo2Total());
         } else {
-            scooterRideStatNew.setId(idAppService.getId(SequenceName.CON_SCOOTER_RIDE_STAT));
-            scooterRideStatNew.setTenantId(rideStatData.getTenantId());
-            scooterRideStatNew.setScooterId(rideStatData.getBizId());
-            scooterRideStatNew.setTotalDuration(rideStatData.getDuration());
-            scooterRideStatNew.setCo2Total(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())));
-            scooterRideStatNew.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())));
-            scooterRideStatNew.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(rideStatData.getMileage().longValue())));
-            scooterRideStatNew.setSvgSpeed(rideStatData.getMileage().divide(new BigDecimal(rideStatData.getDuration()),BigDecimal.ROUND_HALF_UP));
-            scooterRideStatNew.setTotalMileage(rideStatData.getMileage());
-            scooterRideStatNew.setFirstRideTime(new Date());
-            scooterRideStatNew.setCreateBy(rideStatData.getUserId());
-            scooterRideStatNew.setCreateTime(new Date());
-            scooterRideStatMapper.insertScooterRideStat(scooterRideStatNew);
+            log.info("scooter不存在,新增");
+            model.setId(idAppService.getId(SequenceName.CON_SCOOTER_RIDE_STAT));
+            model.setTenantId(enter.getTenantId());
+            model.setScooterId(enter.getBizId());
+            model.setTotalDuration(enter.getDuration());
+            model.setCo2Total(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
+            model.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
+            model.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(enter.getMileage().longValue())));
+            model.setSvgSpeed(enter.getMileage().divide(new BigDecimal(enter.getDuration()), BigDecimal.ROUND_HALF_UP));
+            model.setTotalMileage(enter.getMileage());
+            model.setFirstRideTime(new Date());
+            model.setCreateBy(enter.getUserId());
+            model.setCreateTime(new Date());
+            scooterRideStatMapper.insertScooterRideStat(model);
 
             // set detail Co2HistoryTotal
-            scooterRideStatDetail.setCo2HistoryTotal(BigDecimal.ZERO);
+            detail.setCo2HistoryTotal(BigDecimal.ZERO);
         }
 
         /**
          * 新增车辆骑行统计数据详情
          */
-        scooterRideStatDetail.setId(idAppService.getId(SequenceName.CON_SCOOTER_RIDE_STAT_DETAIL));
-        scooterRideStatDetail.setTenantId(rideStatData.getTenantId());
-        scooterRideStatDetail.setBizId(rideStatData.getBizId());
-        scooterRideStatDetail.setBizType(rideStatData.getBizType());
-        scooterRideStatDetail.setScooterId(rideStatData.getBizId());
-        scooterRideStatDetail.setDuration(rideStatData.getDuration());
-        scooterRideStatDetail.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(rideStatData.getMileage().longValue())));
-        scooterRideStatDetail.setSvgSpeed(rideStatData.getMileage().divide(new BigDecimal(rideStatData.getDuration()),BigDecimal.ROUND_HALF_UP));
-        scooterRideStatDetail.setMileage(rideStatData.getMileage());
-        scooterRideStatDetail.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(rideStatData.getMileage().longValue())));
-        scooterRideStatDetail.setCreateBy(rideStatData.getUserId());
-        scooterRideStatDetail.setCreateTime(new Date());
-        scooterRideStatDetail.setUpdateBy(rideStatData.getUserId());
-        scooterRideStatDetail.setUpdateTime(new Date());
-        scooterRideStatDetailMapper.insertScooterRideStatDetail(scooterRideStatDetail);
-
+        detail.setId(idAppService.getId(SequenceName.CON_SCOOTER_RIDE_STAT_DETAIL));
+        detail.setTenantId(enter.getTenantId());
+        detail.setBizId(enter.getBizId());
+        detail.setBizType(enter.getBizType());
+        detail.setScooterId(enter.getBizId());
+        detail.setDuration(enter.getDuration());
+        detail.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
+        detail.setSvgSpeed(enter.getMileage().divide(new BigDecimal(enter.getDuration()), BigDecimal.ROUND_HALF_UP));
+        detail.setMileage(enter.getMileage());
+        detail.setSavedMoney(new BigDecimal(CO2MoneyConversionUtil.savingMoneyConversion(enter.getMileage().longValue())));
+        detail.setCreateBy(enter.getUserId());
+        detail.setCreateTime(new Date());
+        detail.setUpdateBy(enter.getUserId());
+        detail.setUpdateTime(new Date());
+        scooterRideStatDetailMapper.insertScooterRideStatDetail(detail);
     }
 
 }

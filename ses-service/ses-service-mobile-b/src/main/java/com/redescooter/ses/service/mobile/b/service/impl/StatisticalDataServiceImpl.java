@@ -39,7 +39,17 @@ import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @ClassName:StatisticalDataServiceImpl
@@ -89,71 +99,74 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
     @Override
     public void saveDriverRideStat(List<SaveDeliveryStatEnter> enter) {
 
-        List<CorDriverRideStatDetail> saveDriverRideStatDetailList = new ArrayList<>();
-
-        List<CorDriverRideStat> saveDriverRideStatList = new ArrayList<>();
-
-        List<CorDriverRideStat> updateDriverRideStatList = new ArrayList<>();
+        // 详情集合
+        List<CorDriverRideStatDetail> detailList = new ArrayList<>();
+        // 保存集合
+        List<CorDriverRideStat> saveList = new ArrayList<>();
+        // 修改集合
+        List<CorDriverRideStat> updateList = new ArrayList<>();
 
         // 查询司机之前是否存在有统计数据
         if (CollectionUtils.isNotEmpty(enter)) {
             for (SaveDeliveryStatEnter item : enter) {
-                QueryWrapper<CorDriver> queryDriverWrapper = new QueryWrapper<>();
-                queryDriverWrapper.eq(CorDriver.COL_USER_ID, item.getInputUserId());
-                queryDriverWrapper.eq(CorDriver.COL_DR, 0);
-                CorDriver driver = corDriverMapper.selectOne(queryDriverWrapper);
+                QueryWrapper<CorDriver> wrapper = new QueryWrapper<>();
+                wrapper.eq(CorDriver.COL_USER_ID, item.getInputUserId());
+                wrapper.eq(CorDriver.COL_DR, 0);
+                wrapper.last("limit 1");
+                CorDriver driver = corDriverMapper.selectOne(wrapper);
 
-                QueryWrapper<CorDriverRideStat> driverRideStatQueryWrapper = new QueryWrapper<>();
-                driverRideStatQueryWrapper.eq(CorDriverRideStat.COL_DRIVER_ID, driver.getId());
-                driverRideStatQueryWrapper.eq(CorDriverRideStat.COL_DR, 0);
-                CorDriverRideStat driverRideStat = corDriverRideStatMapper.selectOne(driverRideStatQueryWrapper);
+                QueryWrapper<CorDriverRideStat> qw = new QueryWrapper<>();
+                qw.eq(CorDriverRideStat.COL_DRIVER_ID, driver.getId());
+                qw.eq(CorDriverRideStat.COL_DR, 0);
+                qw.last("limit 1");
+                CorDriverRideStat driverRideStat = corDriverRideStatMapper.selectOne(qw);
 
-
-                Boolean checkSaveDriverRideStatList = Boolean.FALSE;
-                if (CollectionUtils.isNotEmpty(saveDriverRideStatList)) {
-                    for (CorDriverRideStat corDriverRideStat : saveDriverRideStatList) {
-                        if (corDriverRideStat.getDriverId().equals(driver.getId())) {
-                            driverRideStat = corDriverRideStat;
-                            checkSaveDriverRideStatList = Boolean.TRUE;
-                            saveDriverRideStatList.remove(corDriverRideStat);
+                Boolean flag = false;
+                if (CollectionUtils.isNotEmpty(saveList)) {
+                    Iterator<CorDriverRideStat> iterator = saveList.iterator();
+                    while (iterator.hasNext()) {
+                        CorDriverRideStat next = iterator.next();
+                        if (next.getDriverId().equals(driver.getId())) {
+                            driverRideStat = next;
+                            flag = true;
+                            iterator.remove();
                             break;
                         }
                     }
                 }
 
                 // 插入详情
-                CorDriverRideStatDetail driverRideStatDetail = buildCorDriverRideStatDetailSingle(item, driverRideStat, driver.getId());
-                saveDriverRideStatDetailList.add(driverRideStatDetail);
+                CorDriverRideStatDetail detail = buildCorDriverRideStatDetailSingle(item, driverRideStat, driver.getId());
+                detailList.add(detail);
 
                 if (driverRideStat == null) {
-                    saveDriverRideStatList.add(buildCorDriverRideStat(item, driver, driverRideStatDetail));
+                    saveList.add(buildCorDriverRideStat(item, driver, detail));
                 } else {
-                    driverRideStat.setCo2Total(driverRideStat.getCo2Total().add(driverRideStatDetail.getCo2Increment()));
-                    driverRideStat.setCo2Increment(driverRideStatDetail.getCo2Increment());
+                    driverRideStat.setCo2Total(driverRideStat.getCo2Total().add(detail.getCo2Increment()));
+                    driverRideStat.setCo2Increment(detail.getCo2Increment());
                     driverRideStat.setTotalDuration(driverRideStat.getTotalDuration() + item.getDuration());
-                    driverRideStat.setSavedMoney(driverRideStat.getSavedMoney().add(driverRideStatDetail.getSavedMoney()));
-                    driverRideStat.setSvgSpeed(driverRideStat.getSvgSpeed().add(driverRideStatDetail.getSvgSpeed()));
-                    driverRideStat.setTotalMileage(driverRideStat.getTotalMileage().add(driverRideStatDetail.getMileage()));
+                    driverRideStat.setSavedMoney(driverRideStat.getSavedMoney().add(detail.getSavedMoney()));
+                    driverRideStat.setSvgSpeed(driverRideStat.getSvgSpeed().add(detail.getSvgSpeed()));
+                    driverRideStat.setTotalMileage(driverRideStat.getTotalMileage().add(detail.getMileage()));
                     driverRideStat.setUpdateBy(item.getInputUserId());
                     driverRideStat.setUpdateTime(new Date());
-                    if (checkSaveDriverRideStatList) {
-                        saveDriverRideStatList.add(driverRideStat);
+                    if (flag) {
+                        saveList.add(driverRideStat);
                     } else {
-                        updateDriverRideStatList.add(driverRideStat);
+                        updateList.add(driverRideStat);
                     }
                 }
             }
         }
-        if (CollectionUtils.isNotEmpty(saveDriverRideStatDetailList)) {
-            corDriverRideStatDetailMapper.batchInsert(saveDriverRideStatDetailList);
+        if (CollectionUtils.isNotEmpty(detailList)) {
+            corDriverRideStatDetailMapper.batchInsert(detailList);
         }
-        if (CollectionUtils.isNotEmpty(saveDriverRideStatList)) {
-            corDriverRideStatMapper.batchInsert(saveDriverRideStatList);
+        if (CollectionUtils.isNotEmpty(saveList)) {
+            corDriverRideStatMapper.batchInsert(saveList);
         }
-        if (CollectionUtils.isNotEmpty(updateDriverRideStatList)) {
-            corDriverRideStatMapper.batchInsert(updateDriverRideStatList);
+        if (CollectionUtils.isNotEmpty(updateList)) {
+            corDriverRideStatMapper.batchInsert(updateList);
         }
-
     }
 
     /**
@@ -165,73 +178,81 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
     public void saveScooterRideStat(List<SaveDeliveryStatEnter> enter) {
-        List<CorScooterRideStatDetail> saveCorScooterRideStatDetailList = new ArrayList<>();
 
-        List<CorScooterRideStat> saveCorScooterRideStatList = new ArrayList<>();
+        // 详情集合
+        List<CorScooterRideStatDetail> detailList = new ArrayList<>();
+        // 保存集合
+        List<CorScooterRideStat> saveList = new ArrayList<>();
+        // 修改集合
+        List<CorScooterRideStat> updateList = new ArrayList<>();
 
-        List<CorScooterRideStat> updateCorScooterRideStatList = new ArrayList<>();
-
+        // 查询司机之前是否存在有统计数据
         if (CollectionUtils.isNotEmpty(enter)) {
-            for (SaveDeliveryStatEnter item : enter) {// 查询司机之前是否存在有统计数据
-                QueryWrapper<CorDriver> corDriverMapperQueryWrapper = new QueryWrapper<>();
-                corDriverMapperQueryWrapper.eq(CorDriver.COL_USER_ID, item.getInputUserId());
-                corDriverMapperQueryWrapper.eq(CorDriver.COL_DR, 0);
-                CorDriver corDriver = corDriverMapper.selectOne(corDriverMapperQueryWrapper);
+            for (SaveDeliveryStatEnter item : enter) {
 
+                QueryWrapper<CorDriver> wrapper = new QueryWrapper<>();
+                wrapper.eq(CorDriver.COL_USER_ID, item.getInputUserId());
+                wrapper.eq(CorDriver.COL_DR, 0);
+                wrapper.last("limit 1");
+                CorDriver corDriver = corDriverMapper.selectOne(wrapper);
 
-                QueryWrapper<CorDriverScooter> driverScooterQueryWrapper = new QueryWrapper<>();
-                driverScooterQueryWrapper.eq(CorDriverScooter.COL_DRIVER_ID, corDriver.getId());
-                driverScooterQueryWrapper.eq(CorDriverScooter.COL_DR, 0);
-                driverScooterQueryWrapper.in(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
-                CorDriverScooter driverScooter = corDriverScooterMapper.selectOne(driverScooterQueryWrapper);
+                QueryWrapper<CorDriverScooter> qw = new QueryWrapper<>();
+                qw.eq(CorDriverScooter.COL_DRIVER_ID, corDriver.getId());
+                qw.eq(CorDriverScooter.COL_DR, 0);
+                qw.in(CorDriverScooter.COL_STATUS, DriverScooterStatusEnums.USED.getValue());
+                qw.last("limit 1");
+                CorDriverScooter driverScooter = corDriverScooterMapper.selectOne(qw);
 
-                QueryWrapper<CorScooterRideStat> scooterRideStatQueryWrapper = new QueryWrapper<>();
-                scooterRideStatQueryWrapper.eq(CorScooterRideStat.COL_DR, 0);
-                scooterRideStatQueryWrapper.eq(CorScooterRideStat.COL_SCOOTER_ID, driverScooter.getScooterId());
-                CorScooterRideStat scooterRideStat = corScooterRideStatMapper.selectOne(scooterRideStatQueryWrapper);
+                QueryWrapper<CorScooterRideStat> lqw = new QueryWrapper<>();
+                lqw.eq(CorScooterRideStat.COL_DR, 0);
+                lqw.eq(CorScooterRideStat.COL_SCOOTER_ID, driverScooter.getScooterId());
+                lqw.last("limit 1");
+                CorScooterRideStat scooterRideStat = corScooterRideStatMapper.selectOne(lqw);
 
-                Boolean checkSaveScooterRideStatList = Boolean.FALSE;
-                if (CollectionUtils.isNotEmpty(saveCorScooterRideStatList)) {
-                    for (CorScooterRideStat corScooterRideStat : saveCorScooterRideStatList) {
-                        if (corScooterRideStat.getScooterId().equals(driverScooter.getScooterId())) {
-                            scooterRideStat = corScooterRideStat;
-                            checkSaveScooterRideStatList = Boolean.TRUE;
-                            saveCorScooterRideStatList.remove(corScooterRideStat);
+                Boolean flag = false;
+                if (CollectionUtils.isNotEmpty(saveList)) {
+                    Iterator<CorScooterRideStat> iterator = saveList.iterator();
+                    while (iterator.hasNext()) {
+                        CorScooterRideStat next = iterator.next();
+                        if (next.getScooterId().equals(driverScooter.getScooterId())) {
+                            scooterRideStat = next;
+                            flag = true;
+                            iterator.remove();
                             break;
                         }
                     }
                 }
 
                 // 插入详情
-                CorScooterRideStatDetail scooterRideStatDetail = buildScooterRideStatDetail(item, driverScooter, scooterRideStat);
-                saveCorScooterRideStatDetailList.add(scooterRideStatDetail);
+                CorScooterRideStatDetail detail = buildScooterRideStatDetail(item, driverScooter, scooterRideStat);
+                detailList.add(detail);
 
                 if (scooterRideStat == null) {
-                    saveCorScooterRideStatList.add(buildScooterRideStat(item, driverScooter, scooterRideStatDetail));
+                    saveList.add(buildScooterRideStat(item, driverScooter, detail));
                 } else {
                     scooterRideStat.setTotalDuration(scooterRideStat.getTotalDuration() + item.getDuration());
-                    scooterRideStat.setCo2Total(scooterRideStat.getCo2Total().add(scooterRideStatDetail.getCo2Increment()));
-                    scooterRideStat.setCo2Increment(scooterRideStatDetail.getCo2Increment());
-                    scooterRideStat.setSavedMoney(scooterRideStat.getSavedMoney().add(scooterRideStatDetail.getSavedMoney()));
-                    scooterRideStat.setSvgSpeed(scooterRideStat.getSvgSpeed().add(scooterRideStatDetail.getSvgSpeed()));
+                    scooterRideStat.setCo2Total(scooterRideStat.getCo2Total().add(detail.getCo2Increment()));
+                    scooterRideStat.setCo2Increment(detail.getCo2Increment());
+                    scooterRideStat.setSavedMoney(scooterRideStat.getSavedMoney().add(detail.getSavedMoney()));
+                    scooterRideStat.setSvgSpeed(scooterRideStat.getSvgSpeed().add(detail.getSvgSpeed()));
                     scooterRideStat.setTotalMileage(scooterRideStat.getTotalMileage().add(new BigDecimal(item.getMileage())));
-                    if (checkSaveScooterRideStatList) {
-                        saveCorScooterRideStatList.add(scooterRideStat);
+                    if (flag) {
+                        saveList.add(scooterRideStat);
                     } else {
-                        updateCorScooterRideStatList.add(scooterRideStat);
+                        updateList.add(scooterRideStat);
                     }
                 }
             }
         }
 
-        if (CollectionUtils.isNotEmpty(saveCorScooterRideStatDetailList)) {
-            corScooterRideStatDetailMapper.batchInsert(saveCorScooterRideStatDetailList);
+        if (CollectionUtils.isNotEmpty(detailList)) {
+            corScooterRideStatDetailMapper.batchInsert(detailList);
         }
-        if (CollectionUtils.isNotEmpty(saveCorScooterRideStatList)) {
-            corScooterRideStatMapper.batchInsert(saveCorScooterRideStatList);
+        if (CollectionUtils.isNotEmpty(saveList)) {
+            corScooterRideStatMapper.batchInsert(saveList);
         }
-        if (CollectionUtils.isNotEmpty(updateCorScooterRideStatList)) {
-            corScooterRideStatMapper.updateBatch(updateCorScooterRideStatList);
+        if (CollectionUtils.isNotEmpty(updateList)) {
+            corScooterRideStatMapper.updateBatch(updateList);
         }
     }
 
@@ -457,26 +478,25 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
      * @param driverRideStatDetail
      * @return
      */
-    private CorDriverRideStat buildCorDriverRideStat(SaveDeliveryStatEnter enter, CorDriver
-            driver, CorDriverRideStatDetail driverRideStatDetail) {
-        CorDriverRideStat insertDriverRideStat = new CorDriverRideStat();
-        insertDriverRideStat.setId(idAppService.getId(SequenceName.COR_DRIVER_RIDE_STAT));
-        insertDriverRideStat.setDr(0);
-        insertDriverRideStat.setTenantId(enter.getInputTenantId());
-        insertDriverRideStat.setDriverId(driver.getId());
-        insertDriverRideStat.setCo2Total(driverRideStatDetail.getCo2Increment());
-        insertDriverRideStat.setTotalDuration(enter.getDuration());
-        insertDriverRideStat.setCo2Increment(driverRideStatDetail.getCo2Increment());
-        insertDriverRideStat.setSavedMoney(driverRideStatDetail.getSavedMoney());
-        insertDriverRideStat.setSvgSpeed(driverRideStatDetail.getSvgSpeed());
-        insertDriverRideStat.setReadTime(enter.getLastUpdateTime());
-        insertDriverRideStat.setTotalMileage(new BigDecimal(enter.getMileage()));
-        insertDriverRideStat.setFirstRideTime(enter.getLastUpdateTime());
-        insertDriverRideStat.setCreateTime(enter.getLastUpdateTime());
-        insertDriverRideStat.setCreateBy(enter.getInputUserId());
-        insertDriverRideStat.setUpdateTime(enter.getLastUpdateTime());
-        insertDriverRideStat.setUpdateBy(enter.getInputUserId());
-        return insertDriverRideStat;
+    private CorDriverRideStat buildCorDriverRideStat(SaveDeliveryStatEnter enter, CorDriver driver, CorDriverRideStatDetail driverRideStatDetail) {
+        CorDriverRideStat result = new CorDriverRideStat();
+        result.setId(idAppService.getId(SequenceName.COR_DRIVER_RIDE_STAT));
+        result.setDr(0);
+        result.setTenantId(enter.getInputTenantId());
+        result.setDriverId(driver.getId());
+        result.setCo2Total(driverRideStatDetail.getCo2Increment());
+        result.setTotalDuration(enter.getDuration());
+        result.setCo2Increment(driverRideStatDetail.getCo2Increment());
+        result.setSavedMoney(driverRideStatDetail.getSavedMoney());
+        result.setSvgSpeed(driverRideStatDetail.getSvgSpeed());
+        result.setReadTime(enter.getLastUpdateTime());
+        result.setTotalMileage(new BigDecimal(enter.getMileage()));
+        result.setFirstRideTime(enter.getLastUpdateTime());
+        result.setCreateTime(enter.getLastUpdateTime());
+        result.setCreateBy(enter.getInputUserId());
+        result.setUpdateTime(enter.getLastUpdateTime());
+        result.setUpdateBy(enter.getInputUserId());
+        return result;
     }
 
     /**
@@ -487,27 +507,26 @@ public class StatisticalDataServiceImpl implements StatisticalDataService {
      * @param driverId
      * @return
      */
-    private CorDriverRideStatDetail buildCorDriverRideStatDetailSingle(SaveDeliveryStatEnter
-                                                                               enter, CorDriverRideStat driverRideStat, Long driverId) {
-        CorDriverRideStatDetail driverRideStatDetail = new CorDriverRideStatDetail();
-        driverRideStatDetail.setId(idAppService.getId(SequenceName.COR_DRIVER_RIDE_STAT_DETAIL));
-        driverRideStatDetail.setDr(0);
-        driverRideStatDetail.setTenantId(enter.getInputTenantId());
-        driverRideStatDetail.setBizId(enter.getBizId());
-        driverRideStatDetail.setBizType(enter.getBizType());
-        driverRideStatDetail.setDriverId(driverId);
-        driverRideStatDetail.setDuration(enter.getDuration());
-        driverRideStatDetail.setCo2HistoryTotal(driverRideStat == null ? new BigDecimal(0) : driverRideStat.getCo2Total());
-        driverRideStatDetail.setCo2Increment(enter.getCo2());
+    private CorDriverRideStatDetail buildCorDriverRideStatDetailSingle(SaveDeliveryStatEnter enter, CorDriverRideStat driverRideStat, Long driverId) {
+        CorDriverRideStatDetail result = new CorDriverRideStatDetail();
+        result.setId(idAppService.getId(SequenceName.COR_DRIVER_RIDE_STAT_DETAIL));
+        result.setDr(0);
+        result.setTenantId(enter.getInputTenantId());
+        result.setBizId(enter.getBizId());
+        result.setBizType(enter.getBizType());
+        result.setDriverId(driverId);
+        result.setDuration(enter.getDuration());
+        result.setCo2HistoryTotal(driverRideStat == null ? new BigDecimal("0") : driverRideStat.getCo2Total());
+        result.setCo2Increment(enter.getCo2());
 
         String avg = Double.toString(enter.getMileage() / (enter.getDuration() > 0 ? enter.getDuration() : 1));
-        driverRideStatDetail.setSvgSpeed(new BigDecimal(avg));
-        driverRideStatDetail.setMileage(new BigDecimal(enter.getMileage()));
-        driverRideStatDetail.setSavedMoney(enter.getCo2());
-        driverRideStatDetail.setCreateTime(enter.getLastUpdateTime());
-        driverRideStatDetail.setCreateBy(enter.getInputUserId());
-        driverRideStatDetail.setUpdateBy(enter.getInputUserId());
-        driverRideStatDetail.setUpdateTime(enter.getLastUpdateTime());
-        return driverRideStatDetail;
+        result.setSvgSpeed(new BigDecimal(avg));
+        result.setMileage(new BigDecimal(enter.getMileage()));
+        result.setSavedMoney(enter.getCo2());
+        result.setCreateTime(enter.getLastUpdateTime());
+        result.setCreateBy(enter.getInputUserId());
+        result.setUpdateBy(enter.getInputUserId());
+        result.setUpdateTime(enter.getLastUpdateTime());
+        return result;
     }
 }

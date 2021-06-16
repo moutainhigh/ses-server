@@ -4,7 +4,15 @@ import com.redescooter.ses.api.common.constant.DateConstant;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * description: DateUtil 时间工具类
@@ -100,12 +108,64 @@ public class DateUtil {
     }
 
     /**
+     * 指定日期加上天数后的日期
+     *
+     * @param num     为增加的天数
+     * @param newDate 创建时间
+     * @return
+     * @throws ParseException
+     */
+    public static String plusDay(int num, String newDate) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date currdate = format.parse(newDate);
+        System.out.println("现在的日期是：" + currdate);
+        Calendar ca = Calendar.getInstance();
+        ca.add(Calendar.DATE, num);// num为增加的天数，可以改变的
+        currdate = ca.getTime();
+        String enddate = format.format(currdate);
+        System.out.println("增加天数以后的日期：" + enddate);
+        return enddate;
+    }
+
+    /****
+     * 传入具体日期 ，返回具体日期增加一个月。
+     * @param date 日期(2017-04-13)
+     * @return 2017-05-13
+     * @throws ParseException
+     */
+    public static Date subMonth(Date date,Integer num) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date dt = date;
+        Calendar rightNow = Calendar.getInstance();
+        rightNow.setTime(dt);
+        rightNow.add(Calendar.MONTH, num);
+        Date dt1 = rightNow.getTime();
+        return dt1;
+
+    }
+    /**
      * 获取指定时间字符串
      *
      * @param date
      * @return
      */
     public static String getTimeStr(Date date, String pattern) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+        return dateFormat.format(date);
+    }
+    /**
+     * @Title: getTimeAddHours
+     * @Description: // 加上固定时间转换指定字符串
+     * @Param: [date, pattern, hour]
+     * @Return: java.lang.String
+     * @Date: 2021/5/26 7:10 下午
+     * @Author: Charles
+     */
+    public static String getTimeAddHours(Date date, String pattern, int hour) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.HOUR, hour);// 24小时制
+        date = cal.getTime();
         SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
         return dateFormat.format(date);
     }
@@ -956,5 +1016,28 @@ public class DateUtil {
         return getSimpleTimeStamp().replaceAll("-","");
     }
 
+    /**
+     * @Title: getTimestamp
+     * @Description: // sim使用时间戳，10位，切记误改
+     * @Param: []
+     * @Return: java.lang.String
+     * @Date: 2021/5/27 11:00 上午
+     * @Author: Charles
+     */
+    public static String getTimestamp() {
+        long l = System.currentTimeMillis() / 1000;
+        return String.format("%010d", l);
+    }
 
+    /**
+     * @Title: getUTCPlusDays
+     * @Description: // sim 更新UTC时间加天数
+     * @Param: [days]
+     * @Return: java.lang.String
+     * @Date: 2021/6/2 4:07 下午
+     * @Author: Charles
+     */
+    public static String getUTCPlusDays(int days) {
+        return LocalDate.now(ZoneOffset.UTC).plusDays(days).toString();
+    }
 }

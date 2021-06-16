@@ -23,7 +23,7 @@ public interface ScooterEmqXService {
      * @author assert
      * @date 2020/11/19
      */
-    GeneralResult lock(ScooterLockDTO scooterLockDTO, Long scooterId);
+    GeneralResult lock(ScooterLockDTO scooterLockDTO, Long scooterId, Integer type);
 
     /**
      * 车辆开关导航 -- 通过EMQ X进行通知到平板端

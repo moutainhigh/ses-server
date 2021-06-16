@@ -155,4 +155,44 @@ public interface ScooterServiceMapper {
      */
     int updateScooterNo(@Param("id") Long id, @Param("licensePlate") String licensePlate);
 
+    /**
+     * 删除车辆
+     */
+    int deleteScooter(@Param("id") Long id);
+
+    /**
+     * 删除车辆bbi
+     */
+    int deleteBbi(@Param("id") Long id);
+
+    /**
+     * 删除电池仓位
+     */
+    int deleteBbiBatteryWare(@Param("id") Long id);
+
+    /**
+     * 删除bms
+     */
+    int deleteBms(@Param("id") Long id);
+
+    /**
+     * 删除ecu
+     */
+    int deleteEcu(@Param("id") Long id);
+
+    /**
+     * 删除mcu
+     */
+    int deleteMcu(@Param("id") Long id);
+
+    /**
+     * 删除mcu控制器
+     */
+    int deleteMcuController(@Param("id") Long id);
+
+    /**
+     * 删除导航
+     */
+    int deleteNavigation(@Param("id") Long id);
+
 }

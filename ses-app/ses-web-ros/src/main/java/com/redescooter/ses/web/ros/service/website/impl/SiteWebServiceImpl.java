@@ -13,6 +13,8 @@ import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryPriceEnter;
 import com.redescooter.ses.api.hub.service.website.ProductionService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper;
+import com.redescooter.ses.web.ros.dao.delete.DeleteMapper;
 import com.redescooter.ses.web.ros.dao.website.WebsiteInquiryServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeColor;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
@@ -56,6 +58,9 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
     private OpeCustomerInquiryService opeCustomerInquiryService;
 
     @Autowired
+    private OpeCustomerInquiryMapper opeCustomerInquiryMapper;
+
+    @Autowired
     private OpeSaleScooterService opeSaleScooterService;
 
     @Autowired
@@ -69,6 +74,9 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
 
     @Autowired
     private MondayService mondayService;
+
+    @Autowired
+    private DeleteMapper deleteMapper;
 
     @Autowired
     private WebsiteInquiryServiceMapper websiteInquiryServiceMapper;
@@ -274,16 +282,17 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
     public void webDeleteOrderAsynRos(String email) {
         QueryWrapper<OpeCustomerInquiry> inquiry = new QueryWrapper<>();
         inquiry.eq(OpeCustomerInquiry.COL_EMAIL,email);
-        List<OpeCustomerInquiry> inquiryList = opeCustomerInquiryService.list(inquiry);
-        if (CollectionUtils.isNotEmpty(inquiryList)){
+        inquiry.eq(OpeCustomerInquiry.COL_DR,Constant.DR_FALSE);
+        OpeCustomerInquiry inquiryList = opeCustomerInquiryMapper.selectOne(inquiry);
+        if (null != inquiryList ){
             // 找到ROS这边的订单  给删除调（讲道理 这个时候应该只有一个订单为了以后扩展 这里当作多个订单处理）
-            opeCustomerInquiryService.removeByIds(inquiryList.stream().map(OpeCustomerInquiry::getId).collect(Collectors.toList()));
+            deleteMapper.deleteOrder(inquiryList.getId());
             // 再删除子订单
             QueryWrapper<OpeCustomerInquiryB> inquiryB = new QueryWrapper<>();
-            inquiryB.in(OpeCustomerInquiryB.COL_INQUIRY_ID,inquiryList.stream().map(OpeCustomerInquiry::getId).collect(Collectors.toList()));
+            inquiryB.eq(OpeCustomerInquiryB.COL_INQUIRY_ID,inquiryList.getId());
             List<OpeCustomerInquiryB> inquiryBS = opeCustomerInquiryBService.list(inquiryB);
             if (CollectionUtils.isNotEmpty(inquiryBS)){
-                opeCustomerInquiryBService.removeByIds(inquiryBS.stream().map(OpeCustomerInquiryB::getId).collect(Collectors.toList()));
+                deleteMapper.deleteOrderB(inquiryList.getId());
             }
         }
     }

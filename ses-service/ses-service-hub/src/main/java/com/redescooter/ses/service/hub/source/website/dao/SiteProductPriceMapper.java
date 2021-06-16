@@ -3,6 +3,7 @@ package com.redescooter.ses.service.hub.source.website.dao;
 import com.redescooter.ses.service.hub.source.website.dm.SiteProductPrice;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -14,5 +15,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface SiteProductPriceMapper extends BaseMapper<SiteProductPrice> {
-
+    //官网统一同步定金
+    int synchronizeDeposit(@Param("enter") SiteProductPrice siteProductPrice);
 }
