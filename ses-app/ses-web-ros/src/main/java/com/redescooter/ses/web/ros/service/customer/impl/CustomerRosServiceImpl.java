@@ -1382,7 +1382,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             }
         }
         if (StringUtils.isNotEmpty(enter.getCustomerLastName())) {
-            if (NumberUtil.ltEightOrGtTwenty(enter.getCustomerLastName().length())) {
+            if (NumberUtil.ltTwoOrGtTwenty(enter.getCustomerLastName().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getMessage());
             }
         }
