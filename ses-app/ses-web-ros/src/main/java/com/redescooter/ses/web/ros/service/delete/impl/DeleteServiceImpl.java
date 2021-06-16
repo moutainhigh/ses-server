@@ -16,7 +16,6 @@ import com.redescooter.ses.web.ros.dao.base.OpeCustomerContactMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryBMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
-import com.redescooter.ses.web.ros.dao.base.OpeSetDepositMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWmsScooterStockMapper;
 import com.redescooter.ses.web.ros.dao.delete.DeleteMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
@@ -234,12 +233,15 @@ public class DeleteServiceImpl implements DeleteService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult deleteScooter(StringEnter enter) {
+        log.info("开始删除车辆,平板序列号是:[{}]", enter.getKeyword());
         String tabletSn = enter.getKeyword();
 
         // 删除scooter库
         String rsn = scooterService.deleteScooter(tabletSn);
+        log.info("返回的rsn是:[{}]", rsn);
 
         Map<String, Long> map = check(rsn);
+        log.info("返回的map是:[{}]", map);
         if (null != map && map.size() > 0) {
             Long groupId = map.get("groupId");
             Long colorId = map.get("colorId");
