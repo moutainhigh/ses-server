@@ -364,7 +364,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         addCustomer.setCustomerFirstName(enter.getCustomerFirstName());
         addCustomer.setCustomerLastName(enter.getCustomerLastName());
         if (StringUtils.isNoneBlank(enter.getCustomerFirstName(), enter.getCustomerLastName())) {
-            addCustomer.setCustomerFullName(new StringBuffer().append(enter.getCustomerFirstName()).append(enter.getCustomerLastName()).toString());
+            addCustomer.setCustomerFullName(new StringBuffer().append(enter.getCustomerFirstName()).append(" ").append(enter.getCustomerLastName()).toString());
         }
         addCustomer.setCityName(enter.getCityName());
         addCustomer.setAreaName(enter.getAreaName());
