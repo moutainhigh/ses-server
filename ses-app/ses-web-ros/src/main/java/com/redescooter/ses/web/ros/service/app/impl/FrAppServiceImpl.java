@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.SpecificDefNameConstant;
+import com.redescooter.ses.api.common.enums.assign.ProductTypeEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerStatusEnum;
 import com.redescooter.ses.api.common.enums.date.DayCodeEnum;
 import com.redescooter.ses.api.common.enums.date.MonthCodeEnum;
@@ -549,7 +550,7 @@ public class FrAppServiceImpl implements FrAppService {
         Integer seatNumber = enter.getSeatNumber();
 
         // 校验此询价单是否已分配给其他仓库账号
-        /*LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
         lqw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
         lqw.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
         lqw.last("limit 1");
@@ -603,7 +604,7 @@ public class FrAppServiceImpl implements FrAppService {
         int count = opeCodebaseVinService.count(existWrapper);
         if (NumberUtil.eqZero(count)) {
             throw new SesWebRosException(ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getMessage());
-        }*/
+        }
 
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();
@@ -764,7 +765,7 @@ public class FrAppServiceImpl implements FrAppService {
         String imei = enter.getImei().trim();
 
         // 校验是否已被操作过
-        /*LambdaQueryWrapper<OpeCarDistribute> scooterWrapper = new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<OpeCarDistribute> scooterWrapper = new LambdaQueryWrapper<>();
         scooterWrapper.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
         scooterWrapper.eq(OpeCarDistribute::getCustomerId, enter.getCustomerId());
         scooterWrapper.last("limit 1");
@@ -804,7 +805,7 @@ public class FrAppServiceImpl implements FrAppService {
         }
 
         // 查看rsn对应的车型(低速/高速)和询价单对应的车型(低速/高速)是否相符,不相符抛出异常
-        check(rsn, customerId);*/
+        check(rsn, customerId);
 
         // 修改主表
         OpeCarDistribute distribute = new OpeCarDistribute();

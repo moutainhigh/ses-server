@@ -253,9 +253,13 @@ public class DeleteServiceImpl implements DeleteService {
             List<OpeWmsScooterStock> stockList = opeWmsScooterStockMapper.selectList(stockWrapper);
             if (CollectionUtils.isNotEmpty(stockList)) {
                 for (OpeWmsScooterStock stock : stockList) {
-                    stock.setAbleStockQty(stock.getAbleStockQty() - 1);
-                    stock.setUsedStockQty(stock.getUsedStockQty() - 1);
-                    opeWmsScooterStockMapper.updateById(stock);
+                    Integer ableStockQty = stock.getAbleStockQty();
+                    Integer usedStockQty = stock.getUsedStockQty();
+                    if (0 < ableStockQty && 0 < usedStockQty) {
+                        stock.setAbleStockQty(stock.getAbleStockQty() - 1);
+                        stock.setUsedStockQty(stock.getUsedStockQty() - 1);
+                        opeWmsScooterStockMapper.updateById(stock);
+                    }
                 }
             }
         }
