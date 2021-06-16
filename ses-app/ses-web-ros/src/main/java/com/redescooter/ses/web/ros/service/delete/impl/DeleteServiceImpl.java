@@ -16,7 +16,6 @@ import com.redescooter.ses.web.ros.dao.base.OpeCustomerContactMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryBMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
-import com.redescooter.ses.web.ros.dao.base.OpeSetDepositMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWmsScooterStockMapper;
 import com.redescooter.ses.web.ros.dao.delete.DeleteMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
@@ -234,12 +233,15 @@ public class DeleteServiceImpl implements DeleteService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult deleteScooter(StringEnter enter) {
+        log.info("开始删除车辆,平板序列号是:[{}]", enter.getKeyword());
         String tabletSn = enter.getKeyword();
 
         // 删除scooter库
         String rsn = scooterService.deleteScooter(tabletSn);
+        log.info("返回的rsn是:[{}]", rsn);
 
         Map<String, Long> map = check(rsn);
+        log.info("返回的map是:[{}]", map);
         if (null != map && map.size() > 0) {
             Long groupId = map.get("groupId");
             Long colorId = map.get("colorId");
@@ -251,9 +253,13 @@ public class DeleteServiceImpl implements DeleteService {
             List<OpeWmsScooterStock> stockList = opeWmsScooterStockMapper.selectList(stockWrapper);
             if (CollectionUtils.isNotEmpty(stockList)) {
                 for (OpeWmsScooterStock stock : stockList) {
-                    stock.setAbleStockQty(stock.getAbleStockQty() - 1);
-                    stock.setUsedStockQty(stock.getUsedStockQty() - 1);
-                    opeWmsScooterStockMapper.updateById(stock);
+                    Integer ableStockQty = stock.getAbleStockQty();
+                    Integer usedStockQty = stock.getUsedStockQty();
+                    if (0 < ableStockQty && 0 < usedStockQty) {
+                        stock.setAbleStockQty(stock.getAbleStockQty() - 1);
+                        stock.setUsedStockQty(stock.getUsedStockQty() - 1);
+                        opeWmsScooterStockMapper.updateById(stock);
+                    }
                 }
             }
         }
@@ -266,6 +272,17 @@ public class DeleteServiceImpl implements DeleteService {
         if (CollectionUtils.isNotEmpty(list)) {
             for (OpeWmsStockSerialNumber item : list) {
                 deleteMapper.deleteWmsStockSerialNumber(item.getId());
+            }
+        }
+
+        // 防止上面删除ope_wms_stock_serial_number没删掉,这里再删一次
+        LambdaQueryWrapper<OpeWmsStockSerialNumber> checkWrapper = new LambdaQueryWrapper<>();
+        checkWrapper.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+        checkWrapper.eq(OpeWmsStockSerialNumber::getDef3, tabletSn);
+        List<OpeWmsStockSerialNumber> numberList = opeWmsStockSerialNumberService.list(checkWrapper);
+        if (CollectionUtils.isNotEmpty(numberList)) {
+            for (OpeWmsStockSerialNumber number : numberList) {
+                deleteMapper.deleteWmsStockSerialNumber(number.getId());
             }
         }
 

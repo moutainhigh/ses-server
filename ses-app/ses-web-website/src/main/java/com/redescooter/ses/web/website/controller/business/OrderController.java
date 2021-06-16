@@ -44,9 +44,6 @@ public class OrderController {
         return new Response<>(orderService.addOrder(enter));
     }
 
-
-
-
     @PostMapping(value = "/addOrderParts")
     @ApiOperation(value = "AddOrderParts", response = GeneralResult.class)
     public Response<GeneralResult> AddOrderParts(@ModelAttribute @ApiParam("请求参数") AddOrderPartsEnter enter) {

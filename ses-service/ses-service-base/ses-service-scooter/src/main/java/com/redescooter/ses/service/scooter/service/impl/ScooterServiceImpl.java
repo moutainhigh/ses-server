@@ -421,7 +421,6 @@ public class ScooterServiceImpl implements ScooterService {
     public String deleteScooter(String tabletSn) {
         String rsn = null;
         LambdaQueryWrapper<ScoScooter> qw = new LambdaQueryWrapper<>();
-        qw.eq(ScoScooter::getDr, Constant.DR_FALSE);
         qw.eq(ScoScooter::getTabletSn, tabletSn);
         qw.last("limit 1");
         ScoScooter scooter = scoScooterService.getOne(qw);
