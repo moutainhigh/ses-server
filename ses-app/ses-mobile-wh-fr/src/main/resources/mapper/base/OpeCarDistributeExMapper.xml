@@ -32,7 +32,7 @@
             ocib.product_qty as batteryNum,
             ocd.battery,
             IFNULL(ocd.seat_number, 2) as seatNumber,
-            IFNULL(oci.full_name, customer.company_name) as customerName,
+            IFNULL(concat_ws(' ', oci.first_name, oci.last_name), customer.company_name) as customerName,
             oci.customer_id,
             oci.email,
             oci.created_time
