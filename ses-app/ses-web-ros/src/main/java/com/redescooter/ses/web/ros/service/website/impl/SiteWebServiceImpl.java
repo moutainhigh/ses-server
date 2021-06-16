@@ -146,14 +146,14 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
         if (null != productId) {
             Map<String, String> map = productionService.getProductInfoByModelId(productId);
             if (null != map) {
-                String colorName = map.get("colorName");
+                String colorCode = map.get("colorCode");
                 String code = map.get("code");
                 String name = map.get("name");
 
                 // 根据colorName获得colorId
                 LambdaQueryWrapper<OpeColor> wrapper = new LambdaQueryWrapper<>();
                 wrapper.eq(OpeColor::getDr, Constant.DR_FALSE);
-                wrapper.eq(OpeColor::getColorName, colorName);
+                wrapper.eq(OpeColor::getColorValue, colorCode);
                 wrapper.last("limit 1");
                 OpeColor color = opeColorService.getOne(wrapper);
                 if (null == color) {
