@@ -48,7 +48,6 @@ spring:
 
 excel:
   folder: ${log.path}@profile-active@/projectExcel
-
 sendinblue:
   listIds: 117
 
