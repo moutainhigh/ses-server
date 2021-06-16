@@ -25,6 +25,9 @@ public class InquiryDetailResult extends GeneralResult {
     @ApiModelProperty(value = "车型id")
     private Long specificatTypeId;
 
+    @ApiModelProperty(value = "询价单单号")
+    private String orderNo;
+
     @ApiModelProperty(value = "客户id")
     private Long customerId;
 

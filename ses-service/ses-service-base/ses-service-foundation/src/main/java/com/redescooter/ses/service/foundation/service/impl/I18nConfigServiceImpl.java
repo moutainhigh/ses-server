@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.I18nConfigService;
 import com.redescooter.ses.api.foundation.vo.message.DeleteI18nConfigEnter;
@@ -68,7 +69,7 @@ public class I18nConfigServiceImpl implements I18nConfigService {
         //查询所有数据的条数
         Integer totalRows = i18nConfigServiceMapper.getI18nConfigTotalRows(enterRows);
 
-        if (totalRows == null) {
+        if (null == totalRows) {
             return PageResult.createZeroRowResult(enter);
         }
         //查询当前页的数据
@@ -107,9 +108,9 @@ public class I18nConfigServiceImpl implements I18nConfigService {
         PlaI18nConfig i18nConfigBase = new PlaI18nConfig();
         BeanUtils.copyProperties(saveI18nConfigEnter, i18nConfigBase);
         //做插入操作
-        if ((saveI18nConfigEnter.getId() == null) || (saveI18nConfigEnter.getId() == 0)) {
+        if ((null == saveI18nConfigEnter.getId()) || (0 == saveI18nConfigEnter.getId())) {
             i18nConfigBase.setId(idSerService.getId(SequenceName.PLA_I18NCONFIG));
-            i18nConfigBase.setDr(0);
+            i18nConfigBase.setDr(Constant.DR_FALSE);
             i18nConfigBase.setCreatedTime(new Date());
             i18nConfigBase.setDeleted(Boolean.FALSE);
             i18nConfigMapper.insert(i18nConfigBase);

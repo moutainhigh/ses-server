@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.foundation.job.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.MaggessConstant;
 import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -50,12 +51,12 @@ public class RunDriverActivationStatusTaskExecutorServiceJobimpl implements RunD
     public JobResult DriverActivationStatusTask(GeneralEnter enter) {
 
         QueryWrapper<PlaUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq(PlaUser.COL_DR, 0);
+        queryWrapper.eq(PlaUser.COL_DR, Constant.DR_FALSE);
         queryWrapper.eq(PlaUser.COL_DEF1, MaggessConstant.ACCOUNT_ACTIVAT_BEFORE);
         queryWrapper.eq(PlaUser.COL_STATUS, UserStatusEnum.NORMAL.getValue());
         List<PlaUser> list = userService.list(queryWrapper);
 
-        if (list.size() > 0) {
+        if (0 < list.size()) {
             List<IdEnter> idEnterList = new ArrayList<>();
             list.forEach(user -> {
                 IdEnter idEnter = new IdEnter();

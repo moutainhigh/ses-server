@@ -74,14 +74,14 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
     public PageResult<ParameterResult> list(ParameterListEnter enter) {
 
         QueryWrapper<PlaSysParamSetting> paramQueryWrapper = new QueryWrapper();
-        if (enter.getGroupId() != null && enter.getGroupId() != 0) {
+        if (null != enter.getGroupId() && 0 != enter.getGroupId()) {
             paramQueryWrapper.eq(PlaSysParamSetting.COL_GROUP_ID, enter.getGroupId());
         }
         if (StringUtils.isNotBlank(enter.getKeyword())) {
             paramQueryWrapper.like(PlaSysParamSetting.COL_PARAMETER_NAME, enter.getKeyword());
         }
         int count = plaSysParamSettingService.count(paramQueryWrapper);
-        if (count == 0) {
+        if (0 == count) {
             PageResult.createZeroRowResult(enter);
         }
         return PageResult.create(enter, count, parameterSettingServiceMapper.paramList(enter));
@@ -108,7 +108,7 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
     @Override
     public GeneralResult delete(IdEnter enter) {
         PlaSysParamSetting plaSysParamSetting = plaSysParamSettingService.getById(enter.getId());
-        if (plaSysParamSetting == null) {
+        if (null == plaSysParamSetting) {
             throw new FoundationException(ExceptionCodeEnums.PARAMETER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PARAMETER_IS_NOT_EXIST.getMessage());
         }
         if (plaSysParamSetting.getEnable()) {
@@ -150,12 +150,12 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
     @Override
     public GeneralResult save(SaveParamentEnter enter) {
         PlaSysGroupSetting plaSysGroupSetting = plaSysGroupSettingService.getById(enter.getGroupId());
-        if (plaSysGroupSetting == null) {
+        if (null == plaSysGroupSetting) {
             throw new FoundationException(ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_IS_NOT_EXIST.getMessage());
         }
 
         PlaSysParamSetting plaSysParamSetting = null;
-        if (enter.getId() == null || enter.getId() == 0) {
+        if (null == enter.getId() || 0 == enter.getId()) {
             //编辑
             plaSysParamSetting = buildParament(enter);
             plaSysParamSetting.setId(idAppService.getId(SequenceName.PLA_SYS_PARAM_SETTING));
@@ -166,7 +166,7 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
             plaSysParamSetting.setId(enter.getId());
         }
 
-        if (plaSysParamSetting != null) {
+        if (null != plaSysParamSetting) {
             plaSysParamSettingService.saveOrUpdate(plaSysParamSetting);
         }
         return new GeneralResult(enter.getRequestId());
@@ -193,7 +193,7 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
     public List<ParameterGroupResultList> groupList(BooleanEnter enter) {
         List<ParameterGroupResultList> result = new ArrayList<>();
         SystemTypeEnums systemTypeEnumsByCode = SystemTypeEnums.getSystemTypeEnumsByCode(enter.getSystemId());
-        if (systemTypeEnumsByCode == null) {
+        if (null == systemTypeEnumsByCode) {
             return result;
         }
 
@@ -238,7 +238,7 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
         saveParameterBatchEnterList.forEach(item -> {
             PlaSysParamSetting sysParamSetting = PlaSysParamSetting.builder()
                     .id(idAppService.getId(SequenceName.PLA_SYS_PARAM_SETTING))
-                    .dr(0)
+                    .dr(Constant.DR_FALSE)
                     .systemType(systemType)
                     .groupId(item.getGroupId())
                     .parameterName(item.getParameterName())
@@ -274,7 +274,7 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
 
         List<ParameterListResult> result = Lists.newArrayList();
         LambdaQueryWrapper<PlaSysParamSetting> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(PlaSysParamSetting::getDr, 0);
+        wrapper.eq(PlaSysParamSetting::getDr, Constant.DR_FALSE);
         wrapper.eq(PlaSysParamSetting::getGroupId, enter.getId());
         wrapper.eq(PlaSysParamSetting::getEnable, Boolean.TRUE);
         List<PlaSysParamSetting> list = plaSysParamSettingService.list(wrapper);
@@ -297,13 +297,13 @@ public class ParameterSettingServiceImpl implements ParameterSettingService {
         Map<String, Map<String, String>> result = Maps.newHashMap();
 
         LambdaQueryWrapper<PlaSysGroupSetting> qw = new LambdaQueryWrapper<>();
-        qw.eq(PlaSysGroupSetting::getDr, 0);
+        qw.eq(PlaSysGroupSetting::getDr, Constant.DR_FALSE);
         qw.eq(PlaSysGroupSetting::getEnable, Boolean.TRUE);
         List<PlaSysGroupSetting> groupList = plaSysGroupSettingService.list(qw);
         if (CollectionUtils.isNotEmpty(groupList)) {
             for (PlaSysGroupSetting group : groupList) {
                 LambdaQueryWrapper<PlaSysParamSetting> wrapper = new LambdaQueryWrapper<>();
-                wrapper.eq(PlaSysParamSetting::getDr, 0);
+                wrapper.eq(PlaSysParamSetting::getDr, Constant.DR_FALSE);
                 wrapper.eq(PlaSysParamSetting::getEnable, Boolean.TRUE);
                 wrapper.eq(PlaSysParamSetting::getGroupId, group.getId());
                 List<PlaSysParamSetting> list = plaSysParamSettingService.list(wrapper);

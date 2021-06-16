@@ -96,4 +96,9 @@
         delete from ope_product_price_history where id = #{id}
     </delete>
 
+
+    <delete id="deleteDeposit" parameterType="java.lang.Long">
+        delete
+        from ope_set_deposit where dr = 0
+    </delete>
 </mapper>

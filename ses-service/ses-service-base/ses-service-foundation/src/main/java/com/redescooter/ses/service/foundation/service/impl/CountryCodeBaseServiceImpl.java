@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.BaseCountryCodeEnter;
 import com.redescooter.ses.api.common.vo.base.BaseCountryCodeResult;
 import com.redescooter.ses.api.foundation.service.base.CountryCodeBaseService;
@@ -35,7 +36,7 @@ public class CountryCodeBaseServiceImpl implements CountryCodeBaseService {
         List<BaseCountryCodeResult> results = new ArrayList<>();
 
         QueryWrapper<PlaCountryCode> query = new QueryWrapper<>();
-        query.eq(PlaCountryCode.COL_DR, 0);
+        query.eq(PlaCountryCode.COL_DR, Constant.DR_FALSE);
         if (StringUtils.isNotBlank(enter.getCountryLanguage())) {
             query.eq(PlaCountryCode.COL_COUNTRY_LANGUAGE, enter.getCountryLanguage());
         }
@@ -45,7 +46,7 @@ public class CountryCodeBaseServiceImpl implements CountryCodeBaseService {
 
         List<PlaCountryCode> list = countryCodeMapper.selectList(query);
 
-        if (list != null || list.isEmpty()) {
+        if (null != list || list.isEmpty()) {
             list.forEach(cy -> {
                 BaseCountryCodeResult baseCountryCodeResult = new BaseCountryCodeResult();
                 BeanUtils.copyProperties(cy, baseCountryCodeResult);

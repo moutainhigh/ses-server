@@ -48,7 +48,7 @@ public class MailConfigManageServiceImpl implements MailConfigManageService {
         PlaMailConfig mailConfig = new PlaMailConfig();
         BeanUtils.copyProperties(enter, mailConfig);
 
-        if (enter.getId() == null || enter.getId() == 0) {
+        if (null == enter.getId() || 0 == enter.getId()) {
             mailConfig.setId(idSerService.getId(SequenceName.PLA_MAIL_CONFIG));
         }
         mailConfig.setStatus(MailConfigStatusEnums.NORMAL.getCode());
@@ -78,7 +78,7 @@ public class MailConfigManageServiceImpl implements MailConfigManageService {
         if (StringUtils.isNotBlank(status)) {
             wrapper.eq(PlaMailConfig.COL_STATUS, status);
         }
-        if (mailTemplateNo != null) {
+        if (null != mailTemplateNo) {
             wrapper.eq(PlaMailConfig.COL_MAIL_TEMPLATE_NO, mailTemplateNo);
 
         }
