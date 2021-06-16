@@ -557,9 +557,8 @@ public class FrAppServiceImpl implements FrAppService {
         OpeCarDistribute instance = opeCarDistributeMapper.selectOne(lqw);
         if (StringManaConstant.entityIsNotNull(instance)) {
             Long warehouseAccountId = instance.getWarehouseAccountId();
-            if (StringManaConstant.entityIsNotNull(warehouseAccountId)) {
             String vin = instance.getVinCode();
-            if (null != warehouseAccountId && !userId.equals(warehouseAccountId)) {
+            if (StringManaConstant.entityIsNotNull(warehouseAccountId) && !userId.equals(warehouseAccountId)) {
                 throw new SesWebRosException(ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getCode(), ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getMessage());
             }
             if (StringUtils.isNotBlank(vin)) {
