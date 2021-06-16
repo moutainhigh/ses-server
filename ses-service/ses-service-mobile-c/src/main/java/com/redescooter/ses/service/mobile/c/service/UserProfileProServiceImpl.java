@@ -15,6 +15,7 @@ import com.redescooter.ses.service.mobile.c.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.mobile.c.service.base.ConUserProfileService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.spring.annotation.GlobalTransactional;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -31,6 +32,7 @@ import java.util.List;
  * @Version：1.3
  * @create: 2019/12/23 16:57
  */
+@Slf4j
 @DubboService
 public class UserProfileProServiceImpl implements UserProfileProService {
 
@@ -60,6 +62,7 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             BeanUtils.copyProperties(enter, userProfile);
             userProfile.setId(idAppService.getId(SequenceName.CON_USER_PROFILE));
             userProfile.setDr(0);
+            userProfile.setAddress(enter.getAddress());
             userProfile.setTenantId(enter.getTenantId());
             userProfile.setJoinDate(new Date());
             userProfile.setCreatedBy(enter.getUserId());
@@ -75,9 +78,13 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             customerService.updateCustomerInfoByEmail(baseCustomerEnter);
         }
 
+        log.info("========1========");
         if (userProfile != null) {
+            log.info("========2========{}",userProfile.toString());
             conUserProfileMapper.insertOrUpdate(userProfile);
+            log.info("========3========");
         }
+        log.info("========4========");
         return new GeneralResult(enter.getRequestId());
     }
 

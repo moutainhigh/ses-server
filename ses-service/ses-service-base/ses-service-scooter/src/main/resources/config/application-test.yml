@@ -35,8 +35,6 @@ mqtt:
   keepalive: 60
   url: ssl://iclient.redescooter.net
 
-
-
 seata:
   enabled: true
   enable-auto-data-source-proxy: true

@@ -1,3 +1,4 @@
+#日志路径
 log:
   file:
     path: ${log.path}@profile-active@
@@ -8,14 +9,8 @@ dubbo:
     address: zookeeper://10.1.1.142:2181
   metadata-report:
     address: zookeeper://10.1.1.142:2181
-jasypt:
-  encryptor:
-    property:
-      prefix: RedE(
-      suffix: )
-    ivGeneratorClassname: org.jasypt.salt.RandomIVGenerator
 spring:
-  datasource:                                                                                                           #数据库连接
+  datasource:
     url: jdbc:mysql://10.1.2.238:2021/scooter_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
     username: rede
     password: rede1qaz2wsx
@@ -24,6 +19,7 @@ spring:
       min-idle: 1
       max-active: 20
       max-wait: 60000
+  #REDIS集群配置
   redis:
     cluster:
       nodes:
@@ -33,6 +29,7 @@ spring:
         - 10.1.2.238:7003
         - 10.1.2.238:7004
         - 10.1.2.238:7005
+# MQTT配置信息(本地启动使用本地证书)
 mqtt:
   ca: /root/certs/my_root_ca.pem
   clientCrt: /root/certs/client.pem
@@ -59,8 +56,7 @@ seata:
   service:
     disable-global-transaction: false
     vgroup-mapping:
-      ses-admin-dev-group: default
+      ses-service-scooter-group: default
   client:
     rm:
       report-success-enable: false
-

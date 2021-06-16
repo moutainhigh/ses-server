@@ -1,3 +1,4 @@
+#日志路径
 log:
   file:
     path: ${log.path}@profile-active@
@@ -8,12 +9,6 @@ dubbo:
     address: zookeeper://10.1.1.142:2181
   metadata-report:
     address: zookeeper://10.1.1.142:2181
-jasypt:
-  encryptor:
-    property:
-      prefix: RedE(
-      suffix: )
-    ivGeneratorClassname: org.jasypt.salt.RandomIVGenerator
 spring:
   datasource:
     dynamic:
@@ -22,19 +17,30 @@ spring:
       datasource:
         corporate:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://10.1.2.238:2021/corporate_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+          url: jdbc:mysql://10.1.2.238:2021/corporate_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
           username: rede
           password: rede1qaz2wsx
         operation:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://10.1.2.238:2021/operation_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+          url: jdbc:mysql://10.1.2.238:2021/operation_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
           username: rede
           password: rede1qaz2wsx
         consumer:
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://10.1.2.238:2021/consumer_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false&allowPublicKeyRetrieval=true
+          url: jdbc:mysql://10.1.2.238:2021/consumer_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
           username: rede
           password: rede1qaz2wsx
+        website:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://10.1.2.238:2021/website_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          username: rede
+          password: rede1qaz2wsx
+        admin:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://10.1.2.238:2021/admin_dev_prod?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useLegacyDatetimeCode=false&useSSL=false
+          username: rede
+          password: rede1qaz2wsx
+  #REDIS集群配置
   redis:
     cluster:
       nodes:
@@ -44,9 +50,10 @@ spring:
         - 10.1.2.238:7003
         - 10.1.2.238:7004
         - 10.1.2.238:7005
+
 seata:
   enabled: true
-  enable-auto-data-source-proxy: true
+  enable-auto-data-source-proxy: false
   tx-service-group: ses-service-hub-group
   registry:
     type: zk
@@ -62,7 +69,7 @@ seata:
   service:
     disable-global-transaction: false
     vgroup-mapping:
-      ses-admin-dev-group: default
+      ses-service-hub-group: default
   client:
     rm:
       report-success-enable: false

@@ -1,4 +1,4 @@
-package com.redescooter.ses.admin.dev.constant;
+package com.redescooter.ses.api.common.constant;
 
 /**
  * 规格自定义项名称常量类

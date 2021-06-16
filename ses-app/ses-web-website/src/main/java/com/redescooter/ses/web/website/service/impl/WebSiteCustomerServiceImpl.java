@@ -122,6 +122,8 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
                     ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
 
+        checkParamLength(enter);
+
         checkEmail(enter.getEmail());
         Long customerID = saveCustomer(enter);
 
@@ -147,6 +149,18 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         signUp.setPassword(enter.getCfmPassword().trim());
         signUp.setCustomerId(customerID);
         return tokenWebsiteService.signUp(signUp);
+    }
+
+    public void checkParamLength(AddCustomerEnter enter) {
+        if (StringUtils.isNotBlank(enter.getEmail()) && enter.getEmail().length() > 64) {
+            throw new SesWebsiteException(ExceptionCodeEnums.EMAIL_TOO_LONG.getCode(), ExceptionCodeEnums.EMAIL_TOO_LONG.getMessage());
+        }
+        if (StringUtils.isNotBlank(enter.getTelephone()) && enter.getTelephone().length() > 32) {
+            throw new SesWebsiteException(ExceptionCodeEnums.PHONE_LENGTH_OUT.getCode(), ExceptionCodeEnums.PHONE_LENGTH_OUT.getMessage());
+        }
+        if (StringUtils.isNotBlank(enter.getAddress()) && enter.getAddress().length() > 256) {
+            throw new SesWebsiteException(ExceptionCodeEnums.ADDRESS_LENGTH_OUT.getCode(), ExceptionCodeEnums.ADDRESS_LENGTH_OUT.getMessage());
+        }
     }
 
     @Async
@@ -252,6 +266,8 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
             enter.setEmail(decryptEamil);
         }
 
+        checkEditEmail(enter.getEmail());
+
         SiteCustomer edit = new SiteCustomer();
         BeanUtils.copyProperties(enter, edit);
         siteCustomerService.updateById(edit);
@@ -261,6 +277,17 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         syncEditData(edit);
 
         return new GeneralResult(enter.getRequestId());
+    }
+
+    public void checkEditEmail(String email) {
+        if (StringUtils.isNotBlank(email)) {
+            int firstIndex = email.indexOf("@");
+            int secondIndex = email.lastIndexOf(".");
+            // 1.必须包含@ 2.必须包含. 3.@必须在.之前 4..后至少要有一位
+            if (firstIndex == -1 || secondIndex == -1 || firstIndex > secondIndex || email.endsWith(".")) {
+                throw new SesWebsiteException(ExceptionCodeEnums.EMAIL_ERROR.getCode(), ExceptionCodeEnums.EMAIL_ERROR.getMessage());
+            }
+        }
     }
 
     @Async
@@ -301,6 +328,14 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
             throw new SesWebsiteException(ExceptionCodeEnums.EMAIL_EMPTY.getCode(),
                     ExceptionCodeEnums.EMAIL_EMPTY.getMessage());
         }
+
+        int firstIndex = email.indexOf("@");
+        int secondIndex = email.lastIndexOf(".");
+        // 1.必须包含@ 2.必须包含. 3.@必须在.之前 4..后至少要有一位
+        if (firstIndex == -1 || secondIndex == -1 || firstIndex > secondIndex || email.endsWith(".")) {
+            throw new SesWebsiteException(ExceptionCodeEnums.EMAIL_ERROR.getCode(), ExceptionCodeEnums.EMAIL_ERROR.getMessage());
+        }
+
         SiteCustomer addCustomer = siteCustomerService.getOne(new QueryWrapper<SiteCustomer>()
                 .eq(SiteCustomer.COL_DR, Constant.DR_FALSE)
                 .eq(SiteCustomer.COL_EMAIL, email.trim()));

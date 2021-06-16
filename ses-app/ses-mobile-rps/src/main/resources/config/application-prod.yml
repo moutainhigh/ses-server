@@ -1,3 +1,4 @@
+#日志路径
 log:
   file:
     path: ${log.path}@profile-active@
@@ -8,13 +9,8 @@ dubbo:
     address: zookeeper://10.1.1.142:2181
   metadata-report:
     address: zookeeper://10.1.1.142:2181
-jasypt:
-  encryptor:
-    property:
-      prefix: RedE(
-      suffix: )
-    ivGeneratorClassname: org.jasypt.salt.RandomIVGenerator
 spring:
+  #上传配置
   http:
   servlet:
     multipart:
@@ -30,11 +26,13 @@ spring:
       min-idle: 1
       max-active: 20
       max-wait: 60000
+      # 监控页面的用户名和密码 以及页面地址
       stat-view-servlet:
         login-username: rede
         login-password: admin
         enabled: true
         url-pattern: /druid/*
+  #REDIS集群配置
   redis:
     cluster:
       nodes:
@@ -48,6 +46,7 @@ spring:
     enabled: false
 oss:                                                                                                                    #阿里oss上传
   protocol: HTTPS
+
 seata:
   enabled: true
   enable-auto-data-source-proxy: true
@@ -66,7 +65,7 @@ seata:
   service:
     disable-global-transaction: false
     vgroup-mapping:
-      ses-admin-dev-group: default
+      ses-mobile-rps-group: default
   client:
     rm:
       report-success-enable: false

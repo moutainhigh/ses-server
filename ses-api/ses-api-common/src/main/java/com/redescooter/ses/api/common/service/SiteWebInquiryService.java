@@ -2,6 +2,7 @@ package com.redescooter.ses.api.common.service;
 
 import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryEnter;
 import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryPayEnter;
+import com.redescooter.ses.api.common.vo.inquiry.SiteWebInquiryPriceEnter;
 
 /**
  * @description: 官网的预订单数据同步到ROS中的服务层
@@ -16,6 +17,10 @@ public interface SiteWebInquiryService {
      */
     void siteWebOrderToRosInquiry(SiteWebInquiryEnter enter, String email);
 
+    /**
+     * 修改ROS预订单的金额
+     */
+    void updateRosInquiryPrice(SiteWebInquiryPriceEnter enter, String email);
 
     /**
      * 官网下的订单支付之后调用 不管支付成功还是失败都要调用

@@ -155,11 +155,11 @@
 
     <!--批量新增车辆信息-->
     <insert id="batchInsertScooter" parameterType="com.redescooter.ses.service.scooter.dm.base.ScoScooter">
-        insert into sco_scooter(id, scooter_no, tablet_sn, `status`, total_mileage, available_status,
+        insert into sco_scooter(id, scooter_no, tablet_sn, bluetooth_mac_address, `status`, total_mileage, available_status,
         box_status, model, created_by, created_time, updated_by, updated_time)
         values
         <foreach collection="scooterList" item="item" separator=",">
-            (#{item.id}, #{item.scooterNo},#{item.tabletSn} , #{item.status}, #{item.totalMileage}, #{item.availableStatus},
+            (#{item.id}, #{item.scooterNo}, #{item.tabletSn}, #{item.bluetoothMacAddress}, #{item.status}, #{item.totalMileage}, #{item.availableStatus},
             #{item.boxStatus}, #{item.model}, #{item.createdBy}, #{item.createdTime}, #{item.updatedBy}, #{item.updatedTime})
         </foreach>
     </insert>

@@ -476,6 +476,16 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                 throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
             }
         }
+        if (StringUtils.isNotBlank(enter.getEmail())) {
+            String email = enter.getEmail();
+            int firstIndex = email.indexOf("@");
+            int secondIndex = email.lastIndexOf(".");
+
+            // 1.必须包含@ 2.必须包含. 3.@必须在.之前 4..后至少要有一位
+            if (firstIndex == -1 || secondIndex == -1 || firstIndex > secondIndex || email.endsWith(".")) {
+                throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
+            }
+        }
     }
 
 
@@ -1356,6 +1366,16 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (Strings.isNotBlank(enter.getTelephone())) {
             if (enter.getTelephone().length() < 8 || enter.getTelephone().length() > 20) {
                 throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
+            }
+        }
+        if (StringUtils.isNotBlank(enter.getEmail())) {
+            String email = enter.getEmail();
+            int firstIndex = email.indexOf("@");
+            int secondIndex = email.lastIndexOf(".");
+
+            // 1.必须包含@ 2.必须包含. 3.@必须在.之前 4..后至少要有一位
+            if (firstIndex == -1 || secondIndex == -1 || firstIndex > secondIndex || email.endsWith(".")) {
+                throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
             }
         }
     }

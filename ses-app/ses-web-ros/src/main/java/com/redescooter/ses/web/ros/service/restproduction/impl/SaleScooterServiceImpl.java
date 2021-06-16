@@ -155,18 +155,15 @@ public class SaleScooterServiceImpl implements SaleScooterService {
     }
 
     /**
-     * 新增ope_sale_scooter_battery_relation表,并生成中英法文
+     * 新增ope_sale_scooter_battery_relation表,并生成英法文
      */
     public void insertSaleScooterBatteryRelation(OpeSaleScooter saleScooter, SaleScooterSaveOrUpdateEnter enter) {
-        for (int j = 0; j < 3; j++) {
+        for (int j = 0; j < 2; j++) {
             String language;
             String msg;
             if (j == 0) {
-                language = "cn";
-                msg = "块电池";
-            } else if (j == 1) {
                 language = "en";
-                msg = "Batteries";
+                msg = "Batterie";
             } else {
                 language = "fr";
                 msg = "Batterie";
@@ -281,10 +278,8 @@ public class SaleScooterServiceImpl implements SaleScooterService {
             if (0 == saleScooter.getSaleStutas()){
                 // 关闭的时候调
                 productionService.syncByProductionCode(saleScooter.getProductName(), saleScooter.getSaleStutas());
-            }else {
+            } else {
                 // 开启的时候调
-//            log.info("flag的结果是:[{}]", flag);
-//            if(!flag){
                 // 进入到这里  说明是第一次同步这条数据  需要同步5张表
                 log.info("是第一次同步数据");
                 SyncProductionDataEnter syncProductionDataEnter = new SyncProductionDataEnter();

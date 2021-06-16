@@ -1,6 +1,11 @@
 package com.redescooter.ses.web.ros.dao.assign;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.ros.vo.app.InquiryDetailEnter;
+import com.redescooter.ses.web.ros.vo.app.InquiryDetailResult;
+import com.redescooter.ses.web.ros.vo.app.InquiryListAppEnter;
+import com.redescooter.ses.web.ros.vo.app.InquiryListResult;
+import com.redescooter.ses.web.ros.vo.assign.doing.result.AssigningListResult;
 import com.redescooter.ses.web.ros.vo.assign.done.enter.AssignedListEnter;
 import com.redescooter.ses.web.ros.vo.assign.done.result.AssignedListResult;
 import com.redescooter.ses.web.ros.vo.assign.tobe.enter.ToBeAssignListEnter;
@@ -48,5 +53,30 @@ public interface OpeCarDistributeExMapper {
      * 根据客户id查询客户信息
      */
     ToBeAssignDetailCustomerInfoResult getCustomerInfo(@Param("customerId") Long customerId);
+
+    /**
+     * 处理中列表条数
+     */
+    int getDoingListCount(@Param("param") ToBeAssignListEnter enter);
+
+    /**
+     * 处理中列表
+     */
+    List<AssigningListResult> getDoingList(@Param("param") ToBeAssignListEnter enter);
+
+    /**
+     * app询价单列表count
+     */
+    int getInquiryListCount(@Param("param") InquiryListAppEnter enter, @Param("warehouseAccountId") Long warehouseAccountId);
+
+    /**
+     * app询价单列表
+     */
+    List<InquiryListResult> getInquiryList(@Param("param") InquiryListAppEnter enter, @Param("warehouseAccountId") Long warehouseAccountId);
+
+    /**
+     * app询价单详情
+     */
+    InquiryDetailResult getInquiryDetail(@Param("param") InquiryDetailEnter enter);
 
 }

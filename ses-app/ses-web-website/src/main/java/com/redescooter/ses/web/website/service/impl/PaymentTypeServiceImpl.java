@@ -9,10 +9,12 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.code.MainCode;
 import com.redescooter.ses.web.website.constant.SequenceName;
 import com.redescooter.ses.web.website.dm.SitePaymentType;
+import com.redescooter.ses.web.website.dm.SiteProductModel;
 import com.redescooter.ses.web.website.dm.SiteProductPrice;
 import com.redescooter.ses.web.website.enums.CommonStatusEnums;
 import com.redescooter.ses.web.website.service.PaymentTypeService;
 import com.redescooter.ses.web.website.service.base.SitePaymentTypeService;
+import com.redescooter.ses.web.website.service.base.SiteProductModelService;
 import com.redescooter.ses.web.website.service.base.SiteProductPriceService;
 import com.redescooter.ses.web.website.vo.payment.AddPaymentTypeEnter;
 import com.redescooter.ses.web.website.vo.payment.FullPayResult;
@@ -48,6 +50,9 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
 
     @Autowired
     private SiteProductPriceService siteProductPriceService;
+
+    @Autowired
+    private SiteProductModelService siteProductModelService;
 
     @DubboReference
     private IdAppService idAppService;
@@ -107,6 +112,23 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
     @Override
     public PaymentTypeResult getPaymentTypeList(PaymentTypeEnter enter) {
         PaymentTypeResult result = new PaymentTypeResult();
+
+        Long modelId = enter.getModelId();
+        SiteProductModel productModel = siteProductModelService.getById(modelId);
+        // 如果此型号已被删除
+        if (null != productModel && productModel.getDr() == Constant.DR_TRUE) {
+            String modelName = productModel.getProductModelName();
+            LambdaQueryWrapper<SiteProductModel> qw = new LambdaQueryWrapper<>();
+            qw.eq(SiteProductModel::getDr, Constant.DR_FALSE);
+            qw.eq(SiteProductModel::getStatus, 1);
+            qw.eq(SiteProductModel::getProductModelName, modelName);
+            qw.orderByDesc(SiteProductModel::getCreatedTime);
+            qw.last("limit 1");
+            SiteProductModel model = siteProductModelService.getOne(qw);
+            if (null != model) {
+                enter.setModelId(model.getId());
+            }
+        }
 
         // 租赁的集合
         List<LeaseResult> leaseList = Lists.newArrayList();

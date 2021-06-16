@@ -41,6 +41,9 @@ public class OpeCarDistribute implements Serializable {
     @TableLogic
     private Integer dr;
 
+    @ApiModelProperty(value = "仓库账号id")
+    private Long warehouseAccountId;
+
     @ApiModelProperty(value = "租户id")
     private Long tenantId;
 
@@ -67,6 +70,15 @@ public class OpeCarDistribute implements Serializable {
 
     @ApiModelProperty(value = "R.SN")
     private String rsn;
+
+    @ApiModelProperty(value = "蓝牙地址")
+    private String bluetoothAddress;
+
+    @ApiModelProperty(value = "平板序列号")
+    private String tabletSn;
+
+    @ApiModelProperty(value = "电池码 多个时通过逗号分隔")
+    private String battery;
 
     @ApiModelProperty(value = "颜色id")
     private Long colorId;

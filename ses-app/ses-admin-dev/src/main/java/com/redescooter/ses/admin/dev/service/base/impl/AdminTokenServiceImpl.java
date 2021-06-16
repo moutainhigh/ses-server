@@ -89,6 +89,7 @@ public class AdminTokenServiceImpl implements AdminTokenService {
         enter.setLoginName(SesStringUtils.stringTrim(enter.getLoginName()));
 
         QueryWrapper<AdmSysUser> wrapper = new QueryWrapper<>();
+        wrapper.eq(AdmSysUser.COL_DR,0);
         wrapper.eq(AdmSysUser.COL_LOGIN_NAME, enter.getLoginName());
         wrapper.eq(AdmSysUser.COL_APP_ID, enter.getAppId());
         wrapper.eq(AdmSysUser.COL_SYSTEM_ID, enter.getSystemId());
@@ -98,6 +99,16 @@ public class AdminTokenServiceImpl implements AdminTokenService {
         //用户名验证，及根据用户名未查到改用户，则该用户不存在
         if (sysUser == null) {
             throw new SesAdminDevException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        QueryWrapper<AdmSysUser> wrapper1 = new QueryWrapper<>();
+        wrapper1.eq(AdmSysUser.COL_STATUS,1);
+        wrapper1.eq(AdmSysUser.COL_LOGIN_NAME, enter.getLoginName());
+        wrapper1.eq(AdmSysUser.COL_APP_ID, enter.getAppId());
+        wrapper1.eq(AdmSysUser.COL_SYSTEM_ID, enter.getSystemId());
+        wrapper1.eq(AdmSysUser.COL_DEF1, SysUserSourceEnum.SYSTEM.getValue());
+        AdmSysUser statusResult = admSysUserService.getOne(wrapper1);
+        if (statusResult == null){
+            throw new SesAdminDevException(ExceptionCodeEnums.INVALID_ACCOUNT_STATUS.getCode(), ExceptionCodeEnums.INVALID_ACCOUNT_STATUS.getMessage());
         }
         // 把密码的校验放到这里来  2020 7 17
         //密码解密

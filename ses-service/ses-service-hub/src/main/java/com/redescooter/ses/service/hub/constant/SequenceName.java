@@ -41,4 +41,6 @@ public interface SequenceName {
 
     String SITE_PAYMENT_TYPE = "SITE_PAYMENT_TYPE";
 
+    String ADM_SYS_USER ="ADM_SYS_USER";
+
 }

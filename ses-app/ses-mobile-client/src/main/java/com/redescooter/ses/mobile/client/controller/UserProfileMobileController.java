@@ -80,6 +80,7 @@ public class UserProfileMobileController {
     @ApiOperation(value = "个人信息修改")
     @RequestMapping(value = "/updateUserProfile")
     public Response<GeneralResult> updateUserProfile(@ModelAttribute SaveUserProfileEnter enter) {
+        log.info("first >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",enter);
         if (StringUtils.isNotBlank(enter.getTelNumber1())) {
             // 电话号只能输入数字
             boolean flag = ValidatorUtil.isNumber(enter.getTelNumber1());
@@ -99,6 +100,7 @@ public class UserProfileMobileController {
             SaveUserProfileHubEnter saveUserProfileHubEnter = new SaveUserProfileHubEnter();
             BeanUtils.copyProperties(enter, saveUserProfileHubEnter);
             saveUserProfileHubEnter.setId(enter.getId());
+            saveUserProfileHubEnter.setAddress(enter.getAddress());
             userProfileService.saveUserProfile2C(saveUserProfileHubEnter);
             // 回传ros 数据
         }
