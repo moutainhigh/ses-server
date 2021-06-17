@@ -80,7 +80,6 @@ public class UserProfileMobileController {
     @ApiOperation(value = "个人信息修改")
     @RequestMapping(value = "/updateUserProfile")
     public Response<GeneralResult> updateUserProfile(@ModelAttribute SaveUserProfileEnter enter) {
-        log.info("first >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",enter);
         if (StringUtils.isNotBlank(enter.getTelNumber1())) {
             // 电话号只能输入数字
             boolean flag = ValidatorUtil.isNumber(enter.getTelNumber1());
@@ -89,19 +88,19 @@ public class UserProfileMobileController {
             }
         }
 
-        Integer userServiceType = userComponent.getUserServiceTypeById(enter);
-        if (UserServiceTypeEnum.B.getType().equals(userServiceType)) {
+        Integer type = userComponent.getUserServiceTypeById(enter);
+        if (UserServiceTypeEnum.B.getType().equals(type)) {
             log.info("用户类型为ToB");
             // 如果是ToB  还是走之前的逻辑
             userProfileMobileService.saveUserProfile(enter);
-        } else if (UserServiceTypeEnum.C.getType().equals(userServiceType)) {
+        } else if (UserServiceTypeEnum.C.getType().equals(type)) {
             // 更新2C用户信息
             log.info("用户类型为ToC");
-            SaveUserProfileHubEnter saveUserProfileHubEnter = new SaveUserProfileHubEnter();
-            BeanUtils.copyProperties(enter, saveUserProfileHubEnter);
-            saveUserProfileHubEnter.setId(enter.getId());
-            saveUserProfileHubEnter.setAddress(enter.getAddress());
-            userProfileService.saveUserProfile2C(saveUserProfileHubEnter);
+            SaveUserProfileHubEnter param = new SaveUserProfileHubEnter();
+            BeanUtils.copyProperties(enter, param);
+            param.setId(enter.getId());
+            param.setAddress(enter.getAddress());
+            userProfileService.saveUserProfile2C(param);
             // 回传ros 数据
         }
         return new Response<>(new GeneralResult(enter.getRequestId()));

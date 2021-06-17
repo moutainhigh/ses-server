@@ -19,7 +19,7 @@ public interface UserProfileProService {
      * @param enter
      * @return
      */
-    GeneralResult saveUserPofile(SaveUserProfileEnter enter);
+    GeneralResult saveUserProfile(SaveUserProfileEnter enter);
 
     /**
      * 删除用户信息

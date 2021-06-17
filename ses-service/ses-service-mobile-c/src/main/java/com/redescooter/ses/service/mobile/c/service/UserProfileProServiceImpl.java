@@ -2,6 +2,7 @@ package com.redescooter.ses.service.mobile.c.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.BaseCustomerEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.hub.service.operation.CustomerService;
@@ -55,9 +56,9 @@ public class UserProfileProServiceImpl implements UserProfileProService {
     @Autowired
     private ConUserScooterMapper conUserScooterMapper;
 
-
     @DubboReference
     private CustomerService customerService;
+
     @DubboReference
     private IdAppService idAppService;
 
@@ -69,13 +70,14 @@ public class UserProfileProServiceImpl implements UserProfileProService {
      */
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
-    public GeneralResult saveUserPofile(SaveUserProfileEnter enter) {
+    public GeneralResult saveUserProfile(SaveUserProfileEnter enter) {
         ConUserProfile userProfile = null;
         if (enter.getId() == null || enter.getId() == 0) {
+            // 新增con_user_profile
             userProfile = new ConUserProfile();
             BeanUtils.copyProperties(enter, userProfile);
             userProfile.setId(idAppService.getId(SequenceName.CON_USER_PROFILE));
-            userProfile.setDr(0);
+            userProfile.setDr(Constant.DR_FALSE);
             userProfile.setAddress(enter.getAddress());
             userProfile.setTenantId(enter.getTenantId());
             userProfile.setJoinDate(new Date());
@@ -83,18 +85,57 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             userProfile.setCreatedTime(new Date());
             userProfile.setUpdatedBy(enter.getUserId());
             userProfile.setUpdatedTime(new Date());
+            userProfileService.save(userProfile);
         } else {
-            //更新客户信息
-            BaseCustomerEnter baseCustomerEnter = new BaseCustomerEnter();
+            // 更新客户信息
+            BaseCustomerEnter customerEnter = new BaseCustomerEnter();
             // 修改 个人信息
-            userProfile = checkUserProfile(enter, baseCustomerEnter);
-            //更新客户个人信息
-            customerService.updateCustomerInfoByEmail(baseCustomerEnter);
+            userProfile = checkUserProfile(enter, customerEnter);
+
+            // 修改con_user_profile
+            ConUserProfile model = new ConUserProfile();
+            model.setId(enter.getId());
+            if (StringUtils.isNotBlank(enter.getFirstName())) {
+                model.setFirstName(enter.getFirstName());
+            }
+            if (StringUtils.isNotBlank(enter.getLastName())) {
+                model.setLastName(enter.getLastName());
+            }
+            if (StringUtils.isNotBlank(enter.getFullName())) {
+                model.setFullName(enter.getFullName());
+            }
+            if (StringUtils.isNotBlank(enter.getPicture())) {
+                model.setPicture(enter.getPicture());
+            }
+            if (StringUtils.isNotBlank(enter.getEmail1())) {
+                model.setEmail1(enter.getEmail1());
+            }
+            if (StringUtils.isNotBlank(enter.getTelNumber1())) {
+                model.setTelNumber1(enter.getTelNumber1());
+            }
+            if (StringUtils.isNotBlank(enter.getCertificateType())) {
+                model.setCertificateType(enter.getCertificateType());
+            }
+            if (StringUtils.isNotBlank(enter.getCertificateNegativeAnnex())) {
+                model.setCertificateNegativeAnnex(enter.getCertificateNegativeAnnex());
+            }
+            if (StringUtils.isNotBlank(enter.getCertificatePositiveAnnex())) {
+                model.setCertificatePositiveAnnex(enter.getCertificatePositiveAnnex());
+            }
+            if (StringUtils.isNotBlank(enter.getAddress())) {
+                model.setAddress(enter.getAddress());
+            }
+            model.setUpdatedBy(enter.getUserId());
+            model.setUpdatedTime(new Date());
+            userProfileService.updateById(model);
+
+            // 更新ope_customer
+            customerService.updateCustomerInfoByEmail(customerEnter);
         }
 
-        if (userProfile != null) {
+        /*if (userProfile != null) {
             conUserProfileMapper.insertOrUpdate(userProfile);
-        }
+        }*/
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -176,43 +217,43 @@ public class UserProfileProServiceImpl implements UserProfileProService {
      *
      * @param enter
      */
-    private ConUserProfile checkUserProfile(SaveUserProfileEnter enter, BaseCustomerEnter baseCustomerEnter) {
+    private ConUserProfile checkUserProfile(SaveUserProfileEnter enter, BaseCustomerEnter customerEnter) {
         // 查询个人信息
-        ConUserProfile conUserProfile = userProfileService.getById(enter.getId());
-        if (conUserProfile == null) {
+        ConUserProfile profile = userProfileService.getById(enter.getId());
+        if (profile == null) {
             throw new MobileCException(ExceptionCodeEnums.USERPROFILE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.USERPROFILE_IS_NOT_EXIST.getMessage());
         }
 
         if (StringUtils.isNotBlank(enter.getPicture())) {
-            conUserProfile.setPicture(enter.getPicture());
+            profile.setPicture(enter.getPicture());
         }
         if (StringUtils.isNotBlank(enter.getFirstName())) {
-            conUserProfile.setFirstName(enter.getFirstName());
-            baseCustomerEnter.setCustomerFirstName(enter.getFirstName());
-            conUserProfile.setFullName((new StringBuilder().append(conUserProfile.getFirstName() + " " + enter.getLastName()).toString()));
+            profile.setFirstName(enter.getFirstName());
+            customerEnter.setCustomerFirstName(enter.getFirstName());
+            profile.setFullName((new StringBuilder().append(profile.getFirstName() + " " + enter.getLastName()).toString()));
         }
         if (StringUtils.isNotBlank(enter.getLastName())) {
-            conUserProfile.setLastName(enter.getLastName());
-            baseCustomerEnter.setCustomerLastName(enter.getLastName());
-            conUserProfile.setFullName((new StringBuilder().append(conUserProfile.getFirstName() + " " + enter.getLastName()).toString()));
+            profile.setLastName(enter.getLastName());
+            customerEnter.setCustomerLastName(enter.getLastName());
+            profile.setFullName((new StringBuilder().append(profile.getFirstName() + " " + enter.getLastName()).toString()));
         }
         if (!StringUtils.isAllBlank(enter.getCountryCode1(), enter.getTelNumber1())) {
-            conUserProfile.setTelNumber1(enter.getTelNumber1());
-            conUserProfile.setCountryCode1(enter.getCountryCode1());
-            baseCustomerEnter.setTelephone(enter.getTelNumber1());
+            profile.setTelNumber1(enter.getTelNumber1());
+            profile.setCountryCode1(enter.getCountryCode1());
+            customerEnter.setTelephone(enter.getTelNumber1());
         }
         if (StringUtils.isNotEmpty(enter.getPicture())) {
-            conUserProfile.setPicture(enter.getPicture());
+            profile.setPicture(enter.getPicture());
         }
         if (!StringUtils.isAllBlank(enter.getCertificateType(), enter.getCertificateNegativeAnnex(), enter.getCertificatePositiveAnnex())) {
-            conUserProfile.setCertificateType(enter.getCertificateType());
-            conUserProfile.setCertificateNegativeAnnex(enter.getCertificateNegativeAnnex());
-            conUserProfile.setCertificatePositiveAnnex(enter.getCertificatePositiveAnnex());
+            profile.setCertificateType(enter.getCertificateType());
+            profile.setCertificateNegativeAnnex(enter.getCertificateNegativeAnnex());
+            profile.setCertificatePositiveAnnex(enter.getCertificatePositiveAnnex());
         }
-        conUserProfile.setAddress(enter.getAddress());
-        baseCustomerEnter.setEmail(conUserProfile.getEmail1());
-        conUserProfile.setUpdatedBy(enter.getUserId());
-        conUserProfile.setUpdatedTime(new Date());
-        return conUserProfile;
+        profile.setAddress(enter.getAddress());
+        customerEnter.setEmail(profile.getEmail1());
+        profile.setUpdatedBy(enter.getUserId());
+        profile.setUpdatedTime(new Date());
+        return profile;
     }
 }

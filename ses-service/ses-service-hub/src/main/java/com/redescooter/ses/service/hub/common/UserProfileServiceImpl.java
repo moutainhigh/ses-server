@@ -26,6 +26,7 @@ import com.redescooter.ses.service.hub.source.corporate.dao.CorUserProfileMapper
 import com.redescooter.ses.service.hub.source.corporate.dm.CorUserProfile;
 import com.redescooter.ses.service.hub.source.corporate.service.base.CorUserProfileService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -74,11 +75,12 @@ public class UserProfileServiceImpl implements UserProfileService {
      * @param enter
      */
     @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void saveUserProfile2C(SaveUserProfileHubEnter enter) {
         //TOC 修改个人信息
-        SaveUserProfileEnter saveUserProfileEnter = new SaveUserProfileEnter();
-        BeanUtils.copyProperties(enter, saveUserProfileEnter);
-        userProfileProService.saveUserPofile(saveUserProfileEnter);
+        SaveUserProfileEnter param = new SaveUserProfileEnter();
+        BeanUtils.copyProperties(enter, param);
+        userProfileProService.saveUserProfile(param);
     }
 
     /**
