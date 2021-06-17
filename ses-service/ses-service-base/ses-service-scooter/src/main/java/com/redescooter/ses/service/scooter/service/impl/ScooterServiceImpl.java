@@ -420,10 +420,7 @@ public class ScooterServiceImpl implements ScooterService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public String deleteScooter(String tabletSn) {
         String rsn = null;
-        LambdaQueryWrapper<ScoScooter> qw = new LambdaQueryWrapper<>();
-        qw.eq(ScoScooter::getTabletSn, tabletSn);
-        qw.last("limit 1");
-        ScoScooter scooter = scoScooterService.getOne(qw);
+        ScoScooter scooter = scooterServiceMapper.getScooterInfo(tabletSn);
         if (null != scooter) {
             log.info("删除的车辆不为空");
             Long scooterId = scooter.getId();

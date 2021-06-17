@@ -176,23 +176,6 @@ public class DeleteServiceImpl implements DeleteService {
             }
         }
 
-        // 删除ope_car_distribute，ope_car_distribute_node
-        LambdaQueryWrapper<OpeCarDistribute> distributeWrapper = new LambdaQueryWrapper<>();
-        distributeWrapper.eq(OpeCarDistribute::getCustomerId, idEnter.getId());
-        distributeWrapper.last("limit 1");
-        OpeCarDistribute distribute = opeCarDistributeMapper.selectOne(distributeWrapper);
-        if (distribute != null) {
-            deleteMapper.deleteCarDistribute(idEnter.getId());
-        }
-
-        LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
-        nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, idEnter.getId());
-        nodeWrapper.last("limit 1");
-        OpeCarDistributeNode node = opeCarDistributeNodeMapper.selectOne(nodeWrapper);
-        if (node != null) {
-            deleteMapper.deleteCarDistributeNode(idEnter.getId());
-        }
-
         //删除platform库里面的pla_user，pla_user_node，pla_user_password，pla_user_permission
         deletePlaUser(opeCustomer.getEmail());
         return new GeneralResult(idEnter.getRequestId());
@@ -278,12 +261,25 @@ public class DeleteServiceImpl implements DeleteService {
         // 防止上面删除ope_wms_stock_serial_number没删掉,这里再删一次
         LambdaQueryWrapper<OpeWmsStockSerialNumber> checkWrapper = new LambdaQueryWrapper<>();
         checkWrapper.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
-        checkWrapper.eq(OpeWmsStockSerialNumber::getDef3, tabletSn);
+        checkWrapper.eq(OpeWmsStockSerialNumber::getDef3, tabletSn).or().eq(OpeWmsStockSerialNumber::getSn, tabletSn);
         List<OpeWmsStockSerialNumber> numberList = opeWmsStockSerialNumberService.list(checkWrapper);
         if (CollectionUtils.isNotEmpty(numberList)) {
             for (OpeWmsStockSerialNumber number : numberList) {
                 deleteMapper.deleteWmsStockSerialNumber(number.getId());
             }
+        }
+
+        // 修改ope_codebase_rsn
+        LambdaQueryWrapper<OpeCodebaseRsn> rsnWrapper = new LambdaQueryWrapper<>();
+        rsnWrapper.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
+        rsnWrapper.eq(OpeCodebaseRsn::getRsn, rsn);
+        rsnWrapper.eq(OpeCodebaseRsn::getStatus, 2);
+        rsnWrapper.last("limit 1");
+        OpeCodebaseRsn rsnModel = opeCodebaseRsnService.getOne(rsnWrapper);
+        if (null != rsnModel) {
+            rsnModel.setStatus(1);
+            opeCodebaseRsnService.updateById(rsnModel);
+            log.info("修改了码库的rsn为待分配");
         }
 
         LambdaQueryWrapper<OpeCarDistribute> lqw = new LambdaQueryWrapper<>();
@@ -296,18 +292,6 @@ public class DeleteServiceImpl implements DeleteService {
             String vinCode = distribute.getVinCode();
             if (StringUtils.isNotBlank(vinCode)) {
 
-                // 修改ope_codebase_rsn
-                LambdaQueryWrapper<OpeCodebaseRsn> rsnWrapper = new LambdaQueryWrapper<>();
-                rsnWrapper.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
-                rsnWrapper.eq(OpeCodebaseRsn::getRsn, rsn);
-                rsnWrapper.eq(OpeCodebaseRsn::getStatus, 2);
-                rsnWrapper.last("limit 1");
-                OpeCodebaseRsn rsnModel = opeCodebaseRsnService.getOne(rsnWrapper);
-                if (null != rsnModel) {
-                    rsnModel.setStatus(1);
-                    opeCodebaseRsnService.updateById(rsnModel);
-                }
-
                 // 修改ope_codebase_vin
                 LambdaQueryWrapper<OpeCodebaseVin> vinWrapper = new LambdaQueryWrapper<>();
                 vinWrapper.eq(OpeCodebaseVin::getDr, Constant.DR_FALSE);
@@ -318,6 +302,7 @@ public class DeleteServiceImpl implements DeleteService {
                 if (null != vinModel) {
                     vinModel.setStatus(1);
                     opeCodebaseVinService.updateById(vinModel);
+                    log.info("修改了码库的vin为待分配");
                 }
 
                 // 删除ope_codebase_relation
@@ -329,6 +314,25 @@ public class DeleteServiceImpl implements DeleteService {
                 if (null != relation) {
                     deleteMapper.deleteCodebaseRelation(relation.getId());
                 }
+            }
+        }
+
+        // 删除ope_car_distribute
+        LambdaQueryWrapper<OpeCarDistribute> distributeWrapper = new LambdaQueryWrapper<>();
+        distributeWrapper.eq(OpeCarDistribute::getTabletSn, tabletSn);
+        distributeWrapper.last("limit 1");
+        OpeCarDistribute model = opeCarDistributeMapper.selectOne(distributeWrapper);
+        if (model != null) {
+            Long customerId = model.getCustomerId();
+            deleteMapper.deleteCarDistribute(model.getId());
+
+            // 删除ope_car_distribute_node
+            LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
+            nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, customerId);
+            nodeWrapper.last("limit 1");
+            OpeCarDistributeNode node = opeCarDistributeNodeMapper.selectOne(nodeWrapper);
+            if (node != null) {
+                deleteMapper.deleteCarDistributeNode(node.getId());
             }
         }
         return new GeneralResult(enter.getRequestId());

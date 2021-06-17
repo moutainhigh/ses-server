@@ -150,6 +150,8 @@ public interface ScooterServiceMapper {
      */
     List<String> getToDayScooterNos();
 
+    ScoScooter getScooterInfo(@Param("tabletSn") String tabletSn);
+
     /**
      * 修改sco_scooter的牌照
      */

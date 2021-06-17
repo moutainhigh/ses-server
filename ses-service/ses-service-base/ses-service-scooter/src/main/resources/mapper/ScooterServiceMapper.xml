@@ -215,6 +215,10 @@
 		where dr = 0 and created_time between concat(CURDATE(),' ', ' 00:00:00') and concat(CURDATE(), ' ','23:59:59')
     </select>
 
+    <select id="getScooterInfo" resultType="com.redescooter.ses.service.scooter.dm.base.ScoScooter">
+        select * from sco_scooter where tablet_sn = #{tabletSn} limit 1
+    </select>
+
     <!-- 删除车辆 -->
     <delete id="deleteScooter">
         delete from sco_scooter where id = #{id}

@@ -31,13 +31,13 @@
     <delete id="deleteCarDistribute" parameterType="java.lang.Long">
         delete
         from ope_car_distribute
-        where customer_id = #{id}
+        where id = #{id}
     </delete>
 
     <delete id="deleteCarDistributeNode" parameterType="java.lang.Long">
         delete
         from ope_car_distribute_node
-        where customer_id = #{id}
+        where id = #{id}
     </delete>
 
 
