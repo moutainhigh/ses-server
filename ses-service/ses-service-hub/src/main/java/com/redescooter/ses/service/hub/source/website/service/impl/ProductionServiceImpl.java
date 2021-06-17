@@ -438,7 +438,7 @@ public class ProductionServiceImpl implements ProductionService {
         if (null == colour) {
             throw new SeSHubException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
         }
-        String colorName = colour.getColourName();
+        String colorCode = colour.getColourCode();
 
         // 获得名字和型号
         SiteProductModel model = siteProductModelService.getById(id);
@@ -447,7 +447,7 @@ public class ProductionServiceImpl implements ProductionService {
         }
         String code = model.getProductModelCode();
         String name = model.getProductModelName();
-        result.put("colorName", colorName);
+        result.put("colorCode", colorCode);
         result.put("code", code);
         result.put("name", name);
         return result;

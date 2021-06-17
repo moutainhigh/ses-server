@@ -59,22 +59,22 @@ public class UserProfileMobileController {
     @ApiOperation(value = "个人信息")
     @RequestMapping(value = "/detail")
     public Response<UserProfileResult> userProfile(@ModelAttribute GeneralEnter enter) {
-        Integer userServiceType = userComponent.getUserServiceTypeById(enter);
-        UserProfileResult profileResult = new UserProfileResult();
-        if (UserServiceTypeEnum.B.getType().equals(userServiceType)) {
+        Integer type = userComponent.getUserServiceTypeById(enter);
+        UserProfileResult result = new UserProfileResult();
+        if (UserServiceTypeEnum.B.getType().equals(type)) {
             log.info("用户类型为ToB");
-            profileResult = userProfileMobileService.userProfile(enter);
-        } else if (UserServiceTypeEnum.C.getType().equals(userServiceType)) {
+            result = userProfileMobileService.userProfile(enter);
+        } else if (UserServiceTypeEnum.C.getType().equals(type)) {
             log.info("用户类型为ToC");
             IdEnter idEnter = new IdEnter();
             BeanUtils.copyProperties(enter, idEnter);
             idEnter.setId(enter.getUserId());
             QueryUserProfileResult toCProfile = consumerUserProfileService.queryUserProfile(idEnter);
             if (toCProfile != null) {
-                BeanUtils.copyProperties(toCProfile, profileResult);
+                BeanUtils.copyProperties(toCProfile, result);
             }
         }
-        return new Response<>(profileResult);
+        return new Response<>(result);
     }
 
     @ApiOperation(value = "个人信息修改")

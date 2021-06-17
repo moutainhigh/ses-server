@@ -50,6 +50,9 @@ public class QueryUserProfileResult extends GeneralResult {
     @ApiModelProperty(value = "国家编码如+86")
     private String countryCode1;
 
+    @ApiModelProperty(value = "国家编码 一定是86 33这种类型的")
+    private String countryCodeNumber;
+
     @ApiModelProperty(value = "电话号")
     private String telNumber1;
 
