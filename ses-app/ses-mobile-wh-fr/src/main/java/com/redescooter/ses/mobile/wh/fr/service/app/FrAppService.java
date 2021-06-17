@@ -82,9 +82,4 @@ public interface FrAppService {
      */
     GeneralResult bindLicensePlate(BindLicensePlateEnter enter);
 
-    /**
-     * 校验询价单是否被操作过
-     */
-    //BooleanResult checkOperation(CustomerIdEnter enter);
-
 }

@@ -694,30 +694,6 @@ public class FrAppServiceImpl implements FrAppService {
     }
 
     /**
-     * 校验询价单是否被操作过
-     */
-    /*@Override
-    public BooleanResult checkOperation(CustomerIdEnter enter) {
-        checkToken(enter);
-        BooleanResult result = new BooleanResult();
-        result.setSuccess(true);
-
-        LambdaQueryWrapper<OpeCarDistributeNode> qw = new LambdaQueryWrapper<>();
-        qw.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
-        qw.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
-        qw.last("limit 1");
-        OpeCarDistributeNode node = opeCarDistributeNodeMapper.selectOne(qw);
-        if (null != node) {
-            Integer flag = node.getFlag();
-            if (flag == 1 || flag == 2) {
-                result.setSuccess(false);
-            }
-        }
-        result.setRequestId(enter.getRequestId());
-        return result;
-    }*/
-
-    /**
      * 录入车辆
      */
     @Override

@@ -144,13 +144,4 @@ public class FrAppController {
         return new Response<>(frAppService.setScooterModel(enter));
     }
 
-    /**
-     * 校验询价单是否被操作过
-     */
-    /*@ApiOperation(value = "校验询价单是否被操作过", notes = "校验询价单是否被操作过")
-    @PostMapping("/check")
-    public Response<BooleanResult> checkOperation(@ModelAttribute CustomerIdEnter enter) {
-        return new Response<>(frAppService.checkOperation(enter));
-    }*/
-
 }
