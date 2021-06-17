@@ -1,15 +1,14 @@
 package com.redescooter.ses.api.mobile.b.vo;
 
-import java.util.Date;
-
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 /**
  * @ClassName:UserProfileResult
@@ -54,6 +53,9 @@ public class UserProfileResult extends GeneralResult {
 
     @ApiModelProperty(value = "国家编码如+86")
     private String countryCode1;
+
+    @ApiModelProperty(value = "国家编码 一定是86 33这种类型的")
+    private String countryCodeNumber;
 
     @ApiModelProperty(value = "性别")
     private String gender;

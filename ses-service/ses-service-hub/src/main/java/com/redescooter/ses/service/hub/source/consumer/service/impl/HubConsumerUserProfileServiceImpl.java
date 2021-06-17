@@ -2,6 +2,8 @@ package com.redescooter.ses.service.hub.source.consumer.service.impl;
 
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.enums.country.CountryCodeEnum;
 import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
@@ -13,6 +15,7 @@ import com.redescooter.ses.service.hub.source.consumer.dao.HubConUserProfileMapp
 import com.redescooter.ses.service.hub.source.consumer.dm.HubConUserProfile;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
 import com.redescooter.ses.service.hub.source.operation.service.base.OpeCustomerService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
@@ -47,30 +50,59 @@ public class HubConsumerUserProfileServiceImpl implements ConsumerUserProfileSer
     @Override
     public QueryUserProfileResult queryUserProfile(IdEnter enter) {
 
-        QueryWrapper<HubConUserProfile> conUserProfileQueryWrapper = new QueryWrapper<>();
-        conUserProfileQueryWrapper.eq(HubConUserProfile.COL_USER_ID, enter.getId());
-        conUserProfileQueryWrapper.eq(HubConUserProfile.COL_DR, 0);
-        conUserProfileQueryWrapper.last("limit 1");
-        HubConUserProfile hubConUserProfile = hubConUserProfileMapper.selectOne(conUserProfileQueryWrapper);
-        if (hubConUserProfile == null) {
+        // 查询con_user_profile表
+        QueryWrapper<HubConUserProfile> qw = new QueryWrapper<>();
+        qw.eq(HubConUserProfile.COL_DR, Constant.DR_FALSE);
+        qw.eq(HubConUserProfile.COL_USER_ID, enter.getId());
+        qw.last("limit 1");
+        HubConUserProfile profile = hubConUserProfileMapper.selectOne(qw);
+        if (profile == null) {
             throw new SeSHubException(ExceptionCodeEnums.USER_PROFILE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_PROFILE_IS_NOT_EXIST.getMessage());
         }
-        QueryUserProfileResult queryUserProfileResult = new QueryUserProfileResult();
-        BeanUtils.copyProperties(hubConUserProfile, queryUserProfileResult);
+
+        QueryUserProfileResult result = new QueryUserProfileResult();
+        BeanUtils.copyProperties(profile, result);
+
+        // 给countryCodeNumber字段赋值
+        if (StringUtils.isNotBlank(result.getCountryCode1())) {
+            boolean flag = isNumeric(result.getCountryCode1());
+            if (flag) {
+                result.setCountryCodeNumber(result.getCountryCode1());
+            } else {
+                String number = CountryCodeEnum.getValue(result.getCountryCode1());
+                result.setCountryCodeNumber(number);
+            }
+        }
 
         // 查询客户信息
-        QueryWrapper<OpeCustomer> opeCustomerQueryWrapper = new QueryWrapper();
-        opeCustomerQueryWrapper.eq(OpeCustomer.COL_DR, 0);
-        opeCustomerQueryWrapper.eq(OpeCustomer.COL_EMAIL, hubConUserProfile.getEmail1());
-        opeCustomerQueryWrapper.eq(OpeCustomer.COL_CUSTOMER_TYPE, CustomerTypeEnum.PERSONAL.getValue());
-        opeCustomerQueryWrapper.eq(OpeCustomer.COL_TENANT_ID, 0);
-        OpeCustomer opeCustomer = opeCustomerService.getOne(opeCustomerQueryWrapper);
-        if (opeCustomer == null) {
+        QueryWrapper<OpeCustomer> lqw = new QueryWrapper();
+        lqw.eq(OpeCustomer.COL_DR, Constant.DR_FALSE);
+        lqw.eq(OpeCustomer.COL_EMAIL, profile.getEmail1());
+        lqw.eq(OpeCustomer.COL_CUSTOMER_TYPE, CustomerTypeEnum.PERSONAL.getValue());
+        lqw.eq(OpeCustomer.COL_TENANT_ID, 0);
+        lqw.last("limit 1");
+        OpeCustomer customer = opeCustomerService.getOne(lqw);
+        if (customer == null) {
             throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
         }
-        queryUserProfileResult.setInvoiceNum(opeCustomer.getInvoiceNum());
-        queryUserProfileResult.setInvoiceAnnex(opeCustomer.getInvoiceAnnex());
-        queryUserProfileResult.setContractAnnex(opeCustomer.getContractAnnex());
-        return queryUserProfileResult;
+
+        result.setInvoiceNum(customer.getInvoiceNum());
+        result.setInvoiceAnnex(customer.getInvoiceAnnex());
+        result.setContractAnnex(customer.getContractAnnex());
+        return result;
     }
+
+    /**
+     * 判断字符串是否全部为数字
+     * 全部为数字 返回true
+     */
+    public static boolean isNumeric(String str) {
+        for (int i = str.length(); --i >= 0; ) {
+            if (!Character.isDigit(str.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
