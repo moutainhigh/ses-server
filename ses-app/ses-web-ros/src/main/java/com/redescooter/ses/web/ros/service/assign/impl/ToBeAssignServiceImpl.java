@@ -1237,6 +1237,22 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 sub.setBatteryNum(inquiryB.getProductQty());
             }
 
+            // 根据customerId查找node,如果node或者appNode小于3(录入车辆),颜色给空,如果大于等于3,给颜色
+            LambdaQueryWrapper<OpeCarDistributeNode> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
+            qw.eq(OpeCarDistributeNode::getCustomerId, enter.getCustomerId());
+            qw.last("limit 1");
+            OpeCarDistributeNode nodeModel = opeCarDistributeNodeMapper.selectOne(qw);
+            if (null != nodeModel) {
+                if (nodeModel.getNode() >= 3 || nodeModel.getAppNode() >= 3) {
+                    if (null != model.getColorId()) {
+                        Map<String, String> map = getColorNameAndValueById(model.getColorId());
+                        sub.setColorId(model.getColorId());
+                        sub.setColorName(map.get("colorName"));
+                        sub.setColorValue(map.get("colorValue"));
+                    }
+                }
+            }
             /*if (null != model.getColorId()) {
                 Map<String, String> map = getColorNameAndValueById(model.getColorId());
                 sub.setColorId(model.getColorId());
