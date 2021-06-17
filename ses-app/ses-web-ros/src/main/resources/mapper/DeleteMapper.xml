@@ -42,28 +42,28 @@
 
 
     <!-- 删除车辆bom -->
-    <delete id="deleteScooterBom">
+    <delete id="deleteScooterBom" parameterType="java.lang.Long">
         delete
         from ope_production_scooter_bom
         where id = #{id}
     </delete>
 
     <!-- 删除组装件bom -->
-    <delete id="deleteCombinBom">
+    <delete id="deleteCombinBom" parameterType="java.lang.Long">
         delete
         from ope_production_combin_bom
         where id = #{id}
     </delete>
 
     <!-- 删除码库relation -->
-    <delete id="deleteCodebaseRelation">
+    <delete id="deleteCodebaseRelation" parameterType="java.lang.Long">
         delete
         from ope_codebase_relation
         where id = #{id}
     </delete>
 
     <!-- 删除库存产品序列号 -->
-    <delete id="deleteWmsStockSerialNumber">
+    <delete id="deleteWmsStockSerialNumber" parameterType="java.lang.Long">
         delete from ope_wms_stock_serial_number where id = #{id}
     </delete>
 
@@ -82,22 +82,22 @@
     </delete>
 
     <!-- 删除部件 -->
-    <delete id="deletePart">
+    <delete id="deletePart" parameterType="java.lang.Long">
         delete from ope_production_parts where id = #{id}
     </delete>
 
     <!-- 删除ope_product_price -->
-    <delete id="deletePrice">
+    <delete id="deletePrice" parameterType="java.lang.Long">
         delete from ope_product_price where id = #{id}
     </delete>
 
     <!-- 删除ope_product_price_history -->
-    <delete id="deletePriceHistory">
+    <delete id="deletePriceHistory" parameterType="java.lang.Long">
         delete from ope_product_price_history where id = #{id}
     </delete>
 
 
-    <delete id="deleteDeposit" parameterType="java.lang.Long">
+    <delete id="deleteDeposit">
         delete
         from ope_set_deposit where dr = 0
     </delete>

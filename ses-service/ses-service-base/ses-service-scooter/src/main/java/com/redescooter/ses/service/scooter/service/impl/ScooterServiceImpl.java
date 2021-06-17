@@ -421,7 +421,9 @@ public class ScooterServiceImpl implements ScooterService {
     public String deleteScooter(String tabletSn) {
         String rsn = null;
         ScoScooter scooter = scooterServiceMapper.getScooterInfo(tabletSn);
-        if (null != scooter) {
+        if (null == scooter) {
+            log.info("删除的车辆为空,请关注这里的代码");
+        } else {
             log.info("删除的车辆不为空");
             Long scooterId = scooter.getId();
             rsn = scooter.getScooterNo();
@@ -465,7 +467,6 @@ public class ScooterServiceImpl implements ScooterService {
             // 删除sco_scooter_ecu表
             LambdaQueryWrapper<ScoScooterEcu> ecuWrapper = new LambdaQueryWrapper<>();
             ecuWrapper.eq(ScoScooterEcu::getDr, Constant.DR_FALSE);
-            ecuWrapper.eq(ScoScooterEcu::getScooterNo, rsn);
             ecuWrapper.eq(ScoScooterEcu::getSn, tabletSn);
             List<ScoScooterEcu> ecuList = scoScooterEcuService.list(ecuWrapper);
             if (CollectionUtils.isNotEmpty(ecuList)) {

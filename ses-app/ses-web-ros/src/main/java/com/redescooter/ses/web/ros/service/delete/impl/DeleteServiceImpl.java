@@ -189,7 +189,9 @@ public class DeleteServiceImpl implements DeleteService {
         qw.eq(OpeWmsStockSerialNumber::getRsn, rsn);
         qw.last("limit 1");
         OpeWmsStockSerialNumber serialNumber = opeWmsStockSerialNumberService.getOne(qw);
-        if (null != serialNumber) {
+        if (null == serialNumber) {
+            log.info("rsn在库存产品序列号表不存在,rsn为:[{}]", rsn);
+        } else {
             Long relationId = serialNumber.getRelationId();
             OpeWmsScooterStock stock = opeWmsScooterStockMapper.selectById(relationId);
             if (null != stock) {
@@ -222,6 +224,9 @@ public class DeleteServiceImpl implements DeleteService {
         // 删除scooter库
         String rsn = scooterService.deleteScooter(tabletSn);
         log.info("返回的rsn是:[{}]", rsn);
+        if (StringUtils.isBlank(rsn)) {
+            log.info("返回的rsn为空,请关注这里的代码");
+        }
 
         Map<String, Long> map = check(rsn);
         log.info("返回的map是:[{}]", map);
@@ -229,7 +234,7 @@ public class DeleteServiceImpl implements DeleteService {
             Long groupId = map.get("groupId");
             Long colorId = map.get("colorId");
 
-            LambdaQueryWrapper<OpeWmsScooterStock> stockWrapper = new LambdaQueryWrapper<>();
+            /*LambdaQueryWrapper<OpeWmsScooterStock> stockWrapper = new LambdaQueryWrapper<>();
             stockWrapper.eq(OpeWmsScooterStock::getDr, Constant.DR_FALSE);
             stockWrapper.eq(OpeWmsScooterStock::getGroupId, groupId);
             stockWrapper.eq(OpeWmsScooterStock::getColorId, colorId);
@@ -244,7 +249,7 @@ public class DeleteServiceImpl implements DeleteService {
                         opeWmsScooterStockMapper.updateById(stock);
                     }
                 }
-            }
+            }*/
         }
 
         // 删除ope_wms_stock_serial_number
@@ -291,6 +296,7 @@ public class DeleteServiceImpl implements DeleteService {
         if (null != distribute) {
             String vinCode = distribute.getVinCode();
             if (StringUtils.isNotBlank(vinCode)) {
+                log.info("vin不为空,为:[{}]", vinCode);
 
                 // 修改ope_codebase_vin
                 LambdaQueryWrapper<OpeCodebaseVin> vinWrapper = new LambdaQueryWrapper<>();
