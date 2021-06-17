@@ -1239,12 +1239,12 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
                 sub.setBatteryNum(inquiryB.getProductQty());
             }
 
-            if (StringManaConstant.entityIsNotNull(model.getColorId())) {
+            /*if (StringManaConstant.entityIsNotNull(model.getColorId())) {
                 Map<String, String> map = getColorNameAndValueById(model.getColorId());
                 sub.setColorId(model.getColorId());
                 sub.setColorName(map.get("colorName"));
                 sub.setColorValue(map.get("colorValue"));
-            }
+            }*/
 
             sub.setQty(model.getQty());
             sub.setBluetoothAddress(model.getBluetoothAddress());
