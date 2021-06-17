@@ -215,7 +215,7 @@ public class ToBeAssignServiceImpl implements ToBeAssignService {
     @Autowired
     private JedisCluster jedisCluster;
 
-    @Autowired
+    @DubboReference
     private ScooterModelService scooterModelService;
 
     /**
