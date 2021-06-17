@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.google.common.base.Strings;
@@ -31,6 +32,9 @@ import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
+import com.redescooter.ses.api.foundation.vo.login.PinResult;
+import com.redescooter.ses.api.foundation.vo.message.PinEnter;
+import com.redescooter.ses.api.foundation.vo.message.VerifyPin;
 import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.api.hub.common.UserProfileService;
@@ -152,6 +156,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         } else if (enter.getAppId().equals(AppIDEnums.SAAS_APP.getValue())) {
             // ② APP端登录逻辑
             List<AccountsDto> checkAppUser = checkAppUser(enter);
+            log.info(checkAppUser.size() + ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             if (1 == checkAppUser.size()) {
                 return signIn(checkDefaultUser(enter), enter);
             } else {
@@ -729,6 +734,79 @@ public class UserTokenServiceImpl implements UserTokenService {
         result.setToken(token);
         result.setRefreshToken(refreshToken);
         return result;
+    }
+
+    @Override
+    public GeneralResult setPin(PinEnter pinEnter) {
+        pinEnter.setLoginName(SesStringUtils.stringTrim(pinEnter.getLoginName()));
+        pinEnter.setPassword(SesStringUtils.stringTrim(pinEnter.getPassword()));
+        String decryptPassword = "";
+        String loginName = "";
+        //用户名解密
+        if (null != pinEnter.getPassword() && null != pinEnter.getLoginName()) {
+            try {
+                loginName = RsaUtils.decrypt(pinEnter.getLoginName(), privateKey);
+            } catch (Exception e) {
+                throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+            }
+            pinEnter.setLoginName(loginName);
+        }
+        LambdaQueryWrapper<PlaUserPassword> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(PlaUserPassword::getLoginName, pinEnter.getLoginName());
+        wrapper.eq(PlaUserPassword::getDr, Constant.DR_FALSE);
+        wrapper.last("limit 1");
+        PlaUserPassword plaUserPassword = userPasswordMapper.selectOne(wrapper);
+        if (null == plaUserPassword) {
+            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        }
+        if (!pinEnter.getFirstPin().equals(pinEnter.getConfirmPin())) {
+            throw new FoundationException(ExceptionCodeEnums.PIN_TWO_INCONSISTENCIES.getCode(), ExceptionCodeEnums.PIN_TWO_INCONSISTENCIES.getMessage());
+        }
+        if (6 != pinEnter.getFirstPin().length()) {
+            throw new FoundationException(ExceptionCodeEnums.LENGTH_ERROR.getCode(), ExceptionCodeEnums.LENGTH_ERROR.getMessage());
+        }
+        if (null != plaUserPassword.getDef1()) {
+            decryptPassword = RsaUtils.decrypt(pinEnter.getPassword(), privateKey);
+            String password = DigestUtils.md5Hex(decryptPassword + plaUserPassword.getSalt());
+            if (!plaUserPassword.getPassword().equals(password)) {
+                throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+            }
+        }
+        plaUserPassword.setDef1(pinEnter.getFirstPin());
+        userPasswordMapper.updateById(plaUserPassword);
+        return new GeneralResult(pinEnter.getRequestId());
+    }
+
+    @Override
+    public PinResult verifyPin(VerifyPin enter) {
+        enter.setLoginName(SesStringUtils.stringTrim(enter.getLoginName()));
+        String loginName = "";
+        //用户名解密
+        if (null != enter.getLoginName()) {
+            try {
+                loginName = RsaUtils.decrypt(enter.getLoginName(), privateKey);
+            } catch (Exception e) {
+                throw new FoundationException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
+            }
+            enter.setLoginName(loginName);
+        }
+        PinResult pinResult = new PinResult();
+        //判断一下用户有无设置PIN
+        LambdaQueryWrapper<PlaUserPassword> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(PlaUserPassword::getLoginName, enter.getLoginName());
+        wrapper.eq(PlaUserPassword::getDr, Constant.DR_FALSE);
+        wrapper.last("limit 1");
+        PlaUserPassword plaUserPassword = userPasswordMapper.selectOne(wrapper);
+        if (null == plaUserPassword) {
+            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        }
+        if (null == plaUserPassword.getDef1()) {
+            pinResult.setPinResult(false);
+        } else {
+            pinResult.setPinResult(true);
+        }
+        pinResult.setRequestId(enter.getRequestId());
+        return pinResult;
     }
 
     /**

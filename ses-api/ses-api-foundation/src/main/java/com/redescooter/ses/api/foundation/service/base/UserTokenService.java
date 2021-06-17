@@ -7,6 +7,9 @@ import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
+import com.redescooter.ses.api.foundation.vo.login.PinResult;
+import com.redescooter.ses.api.foundation.vo.message.PinEnter;
+import com.redescooter.ses.api.foundation.vo.message.VerifyPin;
 import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 
@@ -204,5 +207,19 @@ public interface UserTokenService {
      * @return
      */
     TokenResult refreshToken(RefreshTokenEnter enter);
+
+    /**
+     * 设置VIN
+     * @param pinEnter
+     * @return
+     */
+    GeneralResult setPin(PinEnter pinEnter);
+
+    /**
+     * 验证PIN
+     * @param enter
+     * @return
+     */
+    PinResult verifyPin(VerifyPin enter);
 
 }

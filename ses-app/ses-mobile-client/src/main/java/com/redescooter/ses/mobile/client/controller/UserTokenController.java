@@ -15,6 +15,8 @@ import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
 import com.redescooter.ses.api.foundation.vo.message.LoginPushEnter;
+import com.redescooter.ses.api.foundation.vo.message.PinEnter;
+import com.redescooter.ses.api.foundation.vo.message.VerifyPin;
 import com.redescooter.ses.api.hub.common.UserProfileService;
 import com.redescooter.ses.mobile.client.service.TokenService;
 import io.swagger.annotations.Api;
@@ -121,6 +123,20 @@ public class UserTokenController {
         return new Response<>(userTokenService.refreshToken(enter));
     }
 
+
+    //验证是否有PIN
+    @ApiOperation(value = "设置PIN", notes = "设置PIN")
+    @RequestMapping(value = "/setPin")
+    public Response<GeneralResult> verifyPin(@ModelAttribute PinEnter pinEnter){
+        return new Response<>(userTokenService.setPin(pinEnter));
+    }
+
+    //验证PIN
+    @ApiOperation(value = "验证PIN", notes = "验证PIN")
+    @RequestMapping(value = "/verifyPin")
+    public Response<GeneralResult> setPin(@ModelAttribute VerifyPin pinEnter){
+        return new Response<>(userTokenService.verifyPin(pinEnter));
+    }
 }
 
 
