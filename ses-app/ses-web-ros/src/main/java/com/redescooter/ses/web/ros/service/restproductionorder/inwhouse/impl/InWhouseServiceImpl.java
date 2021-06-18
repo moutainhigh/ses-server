@@ -235,7 +235,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         } catch (Exception e) {
 
         }
-        return new GeneralResult(enter.getRequestId());
+        return new GeneralResult(String.valueOf(inWhouseOrder.getId()));
     }
 
 
@@ -421,7 +421,7 @@ public class InWhouseServiceImpl implements InWhouseService {
         } catch (Exception e) {
 
         }
-        return new GeneralResult(enter.getRequestId());
+        return new GeneralResult(String.valueOf(inWhouseOrder.getId()));
     }
 
 

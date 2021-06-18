@@ -761,7 +761,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         OrderStatusFlowEnter orderStatusFlowEnter = new OrderStatusFlowEnter(null, orderOrder.getOutWhStatus(), OrderTypeEnums.OUTBOUND.getValue(), orderOrder.getId(), orderOrder.getRemark());
         orderStatusFlowEnter.setUserId(enter.getUserId());
         orderStatusFlowService.save(orderStatusFlowEnter);
-        return new GeneralResult(enter.getRequestId());
+        return new GeneralResult(String.valueOf(orderOrder.getId()));
     }
 
 
@@ -794,7 +794,7 @@ public class OutboundOrderServiceImpl implements OutboundOrderService {
         SaveOpTraceEnter opTraceEnter = new SaveOpTraceEnter(null, outWhouseOrder.getId(), OrderTypeEnums.OUTBOUND.getValue(), OrderOperationTypeEnums.EDIT.getValue(), outWhouseOrder.getRemark());
         opTraceEnter.setUserId(enter.getUserId());
         productionOrderTraceService.save(opTraceEnter);
-        return new GeneralResult(enter.getRequestId());
+        return new GeneralResult(String.valueOf(outWhouseOrder.getId()));
     }
 
     @Override
