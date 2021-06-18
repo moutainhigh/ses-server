@@ -36,11 +36,14 @@ import com.redescooter.ses.service.scooter.dao.ScooterEcuMapper;
 import com.redescooter.ses.service.scooter.dao.ScooterNavigationMapper;
 import com.redescooter.ses.service.scooter.dao.ScooterServiceMapper;
 import com.redescooter.ses.service.scooter.dao.base.ScoScooterActionTraceMapper;
+import com.redescooter.ses.service.scooter.dm.base.ScoScooter;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooterActionTrace;
+import com.redescooter.ses.service.scooter.dm.base.ScoScooterEcu;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooterNavigation;
-import com.redescooter.ses.service.scooter.dm.base.ScoScooterStatus;
 import com.redescooter.ses.service.scooter.dm.base.ScoScooterUpdateRecord;
 import com.redescooter.ses.service.scooter.exception.ExceptionCodeEnums;
+import com.redescooter.ses.service.scooter.service.base.ScoScooterEcuService;
+import com.redescooter.ses.service.scooter.service.base.ScoScooterService;
 import com.redescooter.ses.service.scooter.service.base.ScoScooterStatusService;
 import com.redescooter.ses.service.scooter.service.base.ScoScooterUpdateRecordService;
 import com.redescooter.ses.starter.common.service.IdAppService;
@@ -94,6 +97,12 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
     @Resource
     private ScooterEcuMapper scooterEcuMapper;
 
+    @Autowired
+    private ScoScooterService scoScooterService;
+
+    @Autowired
+    private ScoScooterEcuService scoScooterEcuService;
+
     @Resource
     private MqttClientUtil mqttClientUtil;
 
@@ -134,13 +143,24 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
                     publishDTO.setType(Integer.valueOf(ScooterLockStatusEnums.LOCK.getValue()));
 
                     // 锁住的时候保存骑行数据(司机骑行数据、车辆骑行数据)
-                    LambdaQueryWrapper<ScoScooterStatus> qw = new LambdaQueryWrapper<>();
+                    /*LambdaQueryWrapper<ScoScooterStatus> qw = new LambdaQueryWrapper<>();
                     qw.eq(ScoScooterStatus::getDr, Constant.DR_FALSE);
                     qw.eq(ScoScooterStatus::getScooterId, scooterId);
                     qw.eq(ScoScooterStatus::getLockStatus, "1");
                     qw.orderByAsc(ScoScooterStatus::getCreatedTime);
                     qw.last("limit 1");
-                    ScoScooterStatus scooterStatus = scoScooterStatusService.getOne(qw);
+                    ScoScooterStatus scooterStatus = scoScooterStatusService.getOne(qw);*/
+
+                    ScoScooter scooter = scoScooterService.getById(scooterId);
+                    log.info("scooter的信息为:[{}]", scooter);
+
+                    LambdaQueryWrapper<ScoScooterEcu> qw = new LambdaQueryWrapper<>();
+                    qw.eq(ScoScooterEcu::getDr, Constant.DR_FALSE);
+                    qw.eq(ScoScooterEcu::getScooterNo, scooter.getScooterNo());
+                    qw.last("limit 1");
+                    ScoScooterEcu scooterStatus = scoScooterEcuService.getOne(qw);
+                    log.info("scooterStatus的信息为:[{}]", scooterStatus);
+
                     if (null != scooterStatus) {
                         log.info("关锁时,车辆状态不为空,进入预想逻辑,车辆id为:[{}]", scooterId);
 
