@@ -256,7 +256,8 @@
 	    where id = #{id}
     </update>
 
-    <update id="deleteScooterById">
-        update adm_scooter set dr = 1 where id = #{id}
-    </update>
+    <delete id="deleteScooterById" parameterType="java.lang.Long">
+        delete from adm_scooter where id = #{id}
+    </delete>
+
 </mapper>

@@ -228,13 +228,13 @@ public class DeleteServiceImpl implements DeleteService {
             log.info("返回的rsn为空,请关注这里的代码");
         }
 
-        Map<String, Long> map = check(rsn);
+        /*Map<String, Long> map = check(rsn);
         log.info("返回的map是:[{}]", map);
         if (null != map && map.size() > 0) {
             Long groupId = map.get("groupId");
             Long colorId = map.get("colorId");
 
-            /*LambdaQueryWrapper<OpeWmsScooterStock> stockWrapper = new LambdaQueryWrapper<>();
+            LambdaQueryWrapper<OpeWmsScooterStock> stockWrapper = new LambdaQueryWrapper<>();
             stockWrapper.eq(OpeWmsScooterStock::getDr, Constant.DR_FALSE);
             stockWrapper.eq(OpeWmsScooterStock::getGroupId, groupId);
             stockWrapper.eq(OpeWmsScooterStock::getColorId, colorId);
@@ -249,8 +249,8 @@ public class DeleteServiceImpl implements DeleteService {
                         opeWmsScooterStockMapper.updateById(stock);
                     }
                 }
-            }*/
-        }
+            }
+        }*/
 
         // 删除ope_wms_stock_serial_number
         LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();

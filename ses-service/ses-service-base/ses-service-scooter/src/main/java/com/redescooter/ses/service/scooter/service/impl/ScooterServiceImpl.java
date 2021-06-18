@@ -331,18 +331,18 @@ public class ScooterServiceImpl implements ScooterService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public void deleteScooterData(String sn) {
-        // 先删除车辆、
+        // 先删除车辆
         QueryWrapper<ScoScooter> sc = new QueryWrapper<>();
         sc.eq(ScoScooter.COL_TABLET_SN, sn);
         sc.last("limit 1");
         ScoScooter scooter = scoScooterService.getOne(sc);
         if (scooter != null) {
-            scoScooterService.removeById(scooter.getId());
+            scooterServiceMapper.deleteScooter(scooter.getId());
         }
-        // 再删除车辆的ECU
+        // 删除车辆的ECU
         ScooterEcuDTO ecu = scooterEcuMapper.getScooterEcuBySerialNumber(sn);
         if (ecu != null) {
-            scooterEcuMapper.deleteScooterEcuById(ecu.getId());
+            scooterServiceMapper.deleteEcu(ecu.getId());
         }
     }
 
