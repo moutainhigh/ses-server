@@ -187,6 +187,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         model.setTelephone(enter.getTelephone());
         model.setEmail(enter.getEmail());
         model.setScooterQuantity(1);
+        model.setIndustryType("1");
         model.setAssignationScooterQty(0);
         model.setAccountFlag(String.valueOf(AccountFlagEnums.INACTIVATED.getValue()));
         model.setCreatedBy(0L);
@@ -315,6 +316,7 @@ public class WebSiteCustomerServiceImpl implements WebSiteCustomerService {
         model.setEmail(enter.getEmail());
         model.setScooterQuantity(1);
         model.setAssignationScooterQty(0);
+        model.setIndustryType("1");
         model.setAccountFlag(String.valueOf(AccountFlagEnums.INACTIVATED.getValue()));
         model.setUpdatedBy(0L);
         model.setUpdatedTime(new Date());
