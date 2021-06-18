@@ -1,15 +1,21 @@
 package com.redescooter.ses.api.foundation.service.base;
 
-import com.redescooter.ses.api.common.vo.base.*;
+import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.RefreshTokenEnter;
+import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
+import com.redescooter.ses.api.common.vo.base.TokenResult;
+import com.redescooter.ses.api.common.vo.base.ValidateCodeEnter;
 import com.redescooter.ses.api.foundation.vo.account.ChanagePasswordEnter;
 import com.redescooter.ses.api.foundation.vo.account.VerifyAccountEnter;
 import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
-import com.redescooter.ses.api.foundation.vo.login.PinResult;
 import com.redescooter.ses.api.foundation.vo.message.PinEnter;
-import com.redescooter.ses.api.foundation.vo.message.VerifyPin;
 import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 
@@ -210,16 +216,21 @@ public interface UserTokenService {
 
     /**
      * 设置VIN
-     * @param pinEnter
      * @return
      */
-    GeneralResult setPin(PinEnter pinEnter);
+    GeneralResult setPin(PinEnter enter);
 
     /**
      * 验证PIN
      * @param enter
      * @return
      */
-    PinResult verifyPin(VerifyPin enter);
+    BooleanResult verifyPin(GeneralEnter enter);
+
+    /**
+     * 修改PIN时校验登录密码
+     */
+    BooleanResult checkPwd(StringEnter enter);
+
 
 }

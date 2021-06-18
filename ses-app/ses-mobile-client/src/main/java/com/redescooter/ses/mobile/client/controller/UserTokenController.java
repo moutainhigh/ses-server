@@ -2,11 +2,13 @@ package com.redescooter.ses.mobile.client.controller;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.RefreshTokenEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.foundation.service.LoginJPushProService;
 import com.redescooter.ses.api.foundation.service.base.UserTokenService;
@@ -16,7 +18,6 @@ import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
 import com.redescooter.ses.api.foundation.vo.message.LoginPushEnter;
 import com.redescooter.ses.api.foundation.vo.message.PinEnter;
-import com.redescooter.ses.api.foundation.vo.message.VerifyPin;
 import com.redescooter.ses.api.hub.common.UserProfileService;
 import com.redescooter.ses.mobile.client.service.TokenService;
 import io.swagger.annotations.Api;
@@ -123,20 +124,24 @@ public class UserTokenController {
         return new Response<>(userTokenService.refreshToken(enter));
     }
 
+    @ApiOperation(value = "登录后验证是否有设置过PIN", notes = "登录后验证是否有设置过PIN")
+    @PostMapping(value = "/verifyPin")
+    public Response<BooleanResult> verifyPin(@ModelAttribute GeneralEnter enter){
+        return new Response<>(userTokenService.verifyPin(enter));
+    }
 
-    //验证是否有PIN
     @ApiOperation(value = "设置PIN", notes = "设置PIN")
-    @RequestMapping(value = "/setPin")
-    public Response<GeneralResult> verifyPin(@ModelAttribute PinEnter pinEnter){
-        return new Response<>(userTokenService.setPin(pinEnter));
+    @PostMapping(value = "/setPin")
+    public Response<GeneralResult> setPin(@ModelAttribute PinEnter enter){
+        return new Response<>(userTokenService.setPin(enter));
     }
 
-    //验证PIN
-    @ApiOperation(value = "验证PIN", notes = "验证PIN")
-    @RequestMapping(value = "/verifyPin")
-    public Response<GeneralResult> setPin(@ModelAttribute VerifyPin pinEnter){
-        return new Response<>(userTokenService.verifyPin(pinEnter));
+    @ApiOperation(value = "修改PIN时校验登录密码", notes = "修改PIN时校验登录密码")
+    @PostMapping(value = "/checkPwd")
+    public Response<BooleanResult> checkPwd(@ModelAttribute StringEnter enter) {
+        return new Response<>(userTokenService.checkPwd(enter));
     }
+
 }
 
 
