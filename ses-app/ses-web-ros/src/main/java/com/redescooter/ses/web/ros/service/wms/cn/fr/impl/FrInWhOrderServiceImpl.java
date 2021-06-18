@@ -243,7 +243,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
 
         // 操作法国仓库车辆库存,待入库数量增加
         wmsMaterialStockService.waitInStock(inWhOrder.getOrderType(), inWhOrder.getId(), inWhOrder.getCountryType(), enter.getUserId());
-        return new GeneralResult(enter.getRequestId());
+        return new GeneralResult(String.valueOf(inWhOrder.getId()));
     }
 
     /**
