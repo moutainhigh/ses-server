@@ -113,6 +113,9 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             if (StringUtils.isNotBlank(enter.getTelNumber1())) {
                 model.setTelNumber1(enter.getTelNumber1());
             }
+            if (StringUtils.isNotBlank(enter.getCountryCode1())) {
+                model.setCountryCode1(enter.getCountryCode1());
+            }
             if (StringUtils.isNotBlank(enter.getCertificateType())) {
                 model.setCertificateType(enter.getCertificateType());
             }
