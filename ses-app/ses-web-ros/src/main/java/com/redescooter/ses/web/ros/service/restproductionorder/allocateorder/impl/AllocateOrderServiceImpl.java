@@ -18,6 +18,7 @@ import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.restproductionorder.AllocateOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.InWhouseOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.PurchaseOrderServiceMapper;
@@ -64,6 +65,7 @@ import com.redescooter.ses.web.ros.service.base.OpePurchaseScooterBService;
 import com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.AllocateOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateEntrustResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateOrderCombinDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateOrderCombinEnter;
@@ -187,7 +189,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     public PageResult<AllocateOrderListResult> allocateList(AllocateOrderListEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         int totalNum = allocateOrderServiceMapper.allocateTotal(enter);
-        if (totalNum == 0) {
+        if (NumberUtil.eqZero(totalNum)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<AllocateOrderListResult> list = allocateOrderServiceMapper.allocateList(enter);
@@ -234,7 +236,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         queryWrapper.orderByDesc(OpeAllocateOrder.COL_ALLOCATE_NO);
         queryWrapper.last("limit 1");
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getOne(queryWrapper);
-        if (allocateOrder != null) {
+        if (StringManaConstant.entityIsNotNull(allocateOrder)) {
             // 说明今天已经有过单据了  只需要流水号递增
             code = OrderNoGenerateUtil.orderNoGenerate(allocateOrder.getAllocateNo(), orderNoEnum);
         } else {
@@ -353,7 +355,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     public GeneralResult allocateEdit(AllocateOrderOrUpdateSaveEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(enter.getId());
-        if (allocateOrder == null) {
+        if (StringManaConstant.entityIsNull(allocateOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         BeanUtils.copyProperties(enter, allocateOrder);
@@ -408,7 +410,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     @Override
     public AllocateOrderDetailResult allocateDetail(IdEnter enter) {
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(enter.getId());
-        if (allocateOrder == null) {
+        if (StringManaConstant.entityIsNull(allocateOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         // 先找调拨单自己的详情信息
@@ -445,7 +447,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult allocateConfirmOrder(IdEnter enter) {
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(enter.getId());
-        if (allocateOrder == null) {
+        if (StringManaConstant.entityIsNull(allocateOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.WAIT_HANDLE.getValue());
@@ -463,12 +465,12 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult allocateCancelOrder(CancelOrderEnter enter) {
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(enter.getId());
-        if (allocateOrder == null) {
+        if (StringManaConstant.entityIsNull(allocateOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         // 校验该调拨单下是否有“质检中”和“已出库”状态的出库单  有的话 不能取消  没有的话 需要把与该调拨单关联的所有采购单、发货单、出库单的状态都更新为【已取消】
         Integer num = allocateOrderServiceMapper.allocateOutWh(allocateOrder.getId());
-        if (num > 0) {
+        if (0 < num) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_NOT_CANCEL.getCode(), ExceptionCodeEnums.STOCK_NOT_CANCEL.getMessage());
         }
         allocateOrder.setAllocateStatus(AllocateOrderStatusEnum.CANCEL.getValue());
@@ -565,7 +567,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     @Override
     public GeneralResult allocateDelete(IdEnter enter) {
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(enter.getId());
-        if (allocateOrder == null) {
+        if (StringManaConstant.entityIsNull(allocateOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (!allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.DRAFT.getValue())) {
@@ -658,7 +660,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public void allocatePurchaseing(Long allocateId, Long userId) {
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);
-        if (allocateOrder == null) {
+        if (StringManaConstant.entityIsNull(allocateOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         // 因为调拨单和采购单是1对多的关系  第一次会变状态  第二次不变  需要加一个判断
@@ -677,7 +679,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     public void allocateWaitDeliver(Long allocateId, Long userId) {
         // 待发货
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);
-        if (allocateOrder == null) {
+        if (StringManaConstant.entityIsNull(allocateOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         // 因为调拨单和采购单是1对多的关系  第一次会变状态  第二次不变  需要加一个判断
@@ -697,7 +699,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     public void allocateSign(Long allocateId, Long purchaseId, Long userId) {
         // 已签收
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);
-        if (allocateOrder == null) {
+        if (StringManaConstant.entityIsNull(allocateOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         // 校验  调拨单下面的所有采购单都签收 调拨单才能变签收状态
@@ -706,7 +708,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         purchaseOrderQueryWrapper.ne(OpePurchaseOrder.COL_ID, purchaseId);
         purchaseOrderQueryWrapper.lt(OpePurchaseOrder.COL_PURCHASE_STATUS, PurchaseOrderStatusEnum.SIGNED.getValue());
         int count = opePurchaseOrderService.count(purchaseOrderQueryWrapper);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             if (allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.SIGNED.getValue())) {
                 return;
             }
@@ -856,7 +858,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     public void allocateWaitSign(Long allocateId, Long userId) {
         // 调拨单状态变为待签收
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);
-        if (allocateOrder == null) {
+        if (StringManaConstant.entityIsNull(allocateOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ALLOCATE_ORDER_IS_NOT_EXIST.getMessage());
         }
         // 因为调拨单和采购单是1对多的关系  第一次会变状态  第二次不变  需要加一个判断
@@ -878,7 +880,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     public void allocateFinish(Long allocateId, Long purchaseId, Long userId) {
         // 已完成
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);
-        if (allocateOrder == null) {
+        if (StringManaConstant.entityIsNull(allocateOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         // 校验  调拨单下面的所有采购单都已完成 调拨单才能变完成状态
@@ -887,7 +889,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         purchaseOrderQueryWrapper.ne(OpePurchaseOrder.COL_ID, purchaseId);
         purchaseOrderQueryWrapper.lt(OpePurchaseOrder.COL_PURCHASE_STATUS, PurchaseOrderStatusEnum.FINISHED.getValue());
         int count = opePurchaseOrderService.count(purchaseOrderQueryWrapper);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             // 说明调拨单下面的采购单都完成了
             if (!allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.SIGNED.getValue()) || allocateOrder.getAllocateStatus().equals(AllocateOrderStatusEnum.FINISHED.getValue())) {
                 return;
@@ -903,7 +905,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     public AllocateProductListResult allocateProductData(IdEnter enter) {
         AllocateProductListResult allocateProductListResult = new AllocateProductListResult();
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(enter.getId());
-        if (allocateOrder == null) {
+        if (StringManaConstant.entityIsNull(allocateOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         allocateProductListResult.setAllocateId(allocateOrder.getId());
@@ -936,7 +938,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                     // 追加 上限数量为0的过滤掉
                     List<AllocateOrderCombinDetailResult> combinList = new ArrayList<>();
                     for (AllocateOrderCombinDetailResult combin : combins) {
-                        if (combin.getAbleQty() > 0) {
+                        if (0 < combin.getAbleQty()) {
                             combinList.add(combin);
                         }
                     }
@@ -953,7 +955,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                     // 追加 上限数量为0的过滤掉
                     List<AllocateOrderPartsDetailResult> partsList = new ArrayList<>();
                     for (AllocateOrderPartsDetailResult part : parts) {
-                        if (part.getAbleQty() > 0) {
+                        if (0 < part.getAbleQty()) {
                             partsList.add(part);
                         }
                     }
@@ -984,7 +986,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
         // 关联的是调拨单（法国仓库）  先找到调拨单
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(enter.getId());
-        if (allocateOrder != null) {
+        if (StringManaConstant.entityIsNotNull(allocateOrder)) {
             // 找到调拨单产生的中国的出库单（就是法国要入库的）
             List<OpeOutWhouseOrder> outWhouseOrders = inWhouseOrderServiceMapper.outOrderByAllocateId(allocateOrder.getId());
             if (CollectionUtils.isNotEmpty(outWhouseOrders)) {
@@ -1054,7 +1056,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         for (AllocateOrderPartsDetailResult partsResult : partsResults) {
             // 定义已经入库的数量
             Integer alreadyNum = 0;
-            if (outMap != null && outMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(outMap) && 0 < outMap.size()) {
                 // 中国仓库 已经出库的出库单
                 for (Long key : outMap.keySet()) {
                     if (partsResult.getPartsId().equals(key)) {
@@ -1062,7 +1064,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                     }
                 }
             }
-            if (unOutMap != null && unOutMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(unOutMap) && 0 < unOutMap.size()) {
                 // 中国仓库 还没有出库的出库单
                 for (Long key : unOutMap.keySet()) {
                     if (partsResult.getPartsId().equals(key)) {
@@ -1070,7 +1072,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                     }
                 }
             }
-            if (frInMap != null && frInMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(frInMap) && 0 < frInMap.size()) {
                 // 法国仓库  已经入库的车辆信息
                 for (Long key : frInMap.keySet()) {
                     if (partsResult.getPartsId().equals(key)) {
@@ -1078,7 +1080,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                     }
                 }
             }
-            if (frUnInMap != null && frUnInMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(frUnInMap) && 0 < frUnInMap.size()) {
                 // 法国仓库  已经入库的车辆信息
                 for (Long key : frUnInMap.keySet()) {
                     if (partsResult.getPartsId().equals(key)) {
@@ -1086,7 +1088,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                     }
                 }
             }
-            if (purMap != null && purMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(purMap) && 0 < purMap.size()) {
                 // 追加 去除采购单的
                 for (Long key : purMap.keySet()) {
                     if (partsResult.getPartsId().equals(key)) {
@@ -1116,7 +1118,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
         // 关联的是调拨单（法国仓库）  先找到调拨单
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(enter.getId());
-        if (allocateOrder != null) {
+        if (StringManaConstant.entityIsNotNull(allocateOrder)) {
             // 找到调拨单产生的中国的出库单（就是法国要入库的）
             List<OpeOutWhouseOrder> outWhouseOrders = inWhouseOrderServiceMapper.outOrderByAllocateId(allocateOrder.getId());
             if (CollectionUtils.isNotEmpty(outWhouseOrders)) {
@@ -1186,7 +1188,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         for (AllocateOrderCombinDetailResult combinResult : combinResults) {
             // 定义已经入库的数量
             Integer alreadyNum = 0;
-            if (outMap != null && outMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(outMap) && 0 < outMap.size()) {
                 // 中国仓库 已经出库的出库单
                 for (Long key : outMap.keySet()) {
                     if (combinResult.getProductionCombinBomId().equals(key)) {
@@ -1194,7 +1196,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                     }
                 }
             }
-            if (unOutMap != null && unOutMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(unOutMap) && 0 < unOutMap.size()) {
                 // 中国仓库 还没有出库的出库单
                 for (Long key : unOutMap.keySet()) {
                     if (combinResult.getProductionCombinBomId().equals(key)) {
@@ -1202,7 +1204,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                     }
                 }
             }
-            if (frInMap != null && frInMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(frInMap) && 0 < frInMap.size()) {
                 // 法国仓库  已经入库的车辆信息
                 for (Long key : frInMap.keySet()) {
                     if (combinResult.getProductionCombinBomId().equals(key)) {
@@ -1210,7 +1212,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                     }
                 }
             }
-            if (frUnInMap != null && frUnInMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(frUnInMap) && 0 < frUnInMap.size()) {
                 // 法国仓库  已经入库的车辆信息
                 for (Long key : frUnInMap.keySet()) {
                     if (combinResult.getProductionCombinBomId().equals(key)) {
@@ -1218,7 +1220,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                     }
                 }
             }
-            if (purMap != null && purMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(purMap) && 0 < purMap.size()) {
                 // 追加 去除采购单的
                 for (Long key : purMap.keySet()) {
                     if (combinResult.getProductionCombinBomId().equals(key)) {
@@ -1248,7 +1250,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
 
         // 关联的是调拨单（法国仓库）  先找到调拨单
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(enter.getId());
-        if (allocateOrder != null) {
+        if (StringManaConstant.entityIsNotNull(allocateOrder)) {
             // 找到调拨单产生的中国的出库单（就是法国要入库的）
             List<OpeOutWhouseOrder> outWhouseOrders = inWhouseOrderServiceMapper.outOrderByAllocateId(allocateOrder.getId());
             if (CollectionUtils.isNotEmpty(outWhouseOrders)) {
@@ -1317,7 +1319,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
         for (AllocateOrderScooterDetailResult scooterResult : scooters) {
             // 定义已经入库的数量
             Integer alreadyNum = 0;
-            if (outMap != null && outMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(outMap) && 0 < outMap.size()) {
                 // 中国仓库 已经出库的出库单
                 for (String key : outMap.keySet()) {
                     if ((scooterResult.getGroupId() + "" + scooterResult.getColorId()).equals(key)) {
@@ -1325,7 +1327,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                     }
                 }
             }
-            if (unOutMap != null && unOutMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(unOutMap) && 0 < unOutMap.size()) {
                 // 中国仓库 还没有出库的出库单
                 for (String key : unOutMap.keySet()) {
                     if ((scooterResult.getGroupId() + "" + scooterResult.getColorId()).equals(key)) {
@@ -1333,7 +1335,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                     }
                 }
             }
-            if (frInMap != null && frInMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(frInMap) && 0 < frInMap.size()) {
                 // 法国仓库  已经入库的车辆信息
                 for (String key : frInMap.keySet()) {
                     if ((scooterResult.getGroupId() + "" + scooterResult.getColorId()).equals(key)) {
@@ -1341,7 +1343,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                     }
                 }
             }
-            if (frUnInMap != null && frUnInMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(frUnInMap) && 0 < frUnInMap.size()) {
                 // 法国仓库  已经入库的车辆信息
                 for (String key : frUnInMap.keySet()) {
                     if ((scooterResult.getGroupId() + "" + scooterResult.getColorId()).equals(key)) {
@@ -1349,7 +1351,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
                     }
                 }
             }
-            if (purMap != null && purMap.size() > 0) {
+            if (StringManaConstant.entityIsNotNull(purMap) && 0 < purMap.size()) {
                 // 追加 去除采购单的
                 for (String key : purMap.keySet()) {
                     if ((scooterResult.getGroupId() + "" + scooterResult.getColorId()).equals(key)) {
@@ -1387,7 +1389,7 @@ public class AllocateOrderServiceImpl implements AllocateOrderService {
     public void allocateFinishOrSignByPurchaseCalcal(Long allocateId, Long purchaseId, Long userId) {
         AllocateProductListResult allocateProductListResult = new AllocateProductListResult();
         OpeAllocateOrder allocateOrder = opeAllocateOrderService.getById(allocateId);
-        if (allocateOrder == null) {
+        if (StringManaConstant.entityIsNull(allocateOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         // 总体来说 判断是签收还是完成

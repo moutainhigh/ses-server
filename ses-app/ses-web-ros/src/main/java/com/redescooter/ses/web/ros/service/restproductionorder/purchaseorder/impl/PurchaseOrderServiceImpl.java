@@ -15,6 +15,7 @@ import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.restproduction.RosProductionProductServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.AllocateOrderServiceMapper;
 import com.redescooter.ses.web.ros.dao.restproductionorder.InvoiceOrderServiceMapper;
@@ -40,6 +41,7 @@ import com.redescooter.ses.web.ros.service.restproductionorder.allocateorder.All
 import com.redescooter.ses.web.ros.service.restproductionorder.invoice.InvoiceOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchaseorder.PurchaseOrderService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.ProductEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.SaveInvoiceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.AllocateNoDataResult;
@@ -135,7 +137,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         enter = SesStringUtils.objStringTrim(enter);
         OpePurchaseOrder purchaseOrder = new OpePurchaseOrder();
         BeanUtils.copyProperties(enter,purchaseOrder);
-        if (enter.getPlannedPaymentTime() != null && enter.getPlannedPaymentTime() != null && enter.getPaymentDay() != null){
+        if (StringManaConstant.entityIsNotNull(enter.getPlannedPaymentTime()) && StringManaConstant.entityIsNotNull(enter.getPaymentDay())){
             purchaseOrder.setPaymentTime(DateUtil.addDays(enter.getPlannedPaymentTime(),enter.getPaymentDay()));
         }
         purchaseOrder.setPurchaseType(enter.getClassType());
@@ -220,7 +222,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                     OpePurchasePartsB partsB = new OpePurchasePartsB();
                     BeanUtils.copyProperties(partsEnter,partsB);
                     partsB.setPurchaseId(purchaseOrder.getId());
-                    if (partsB.getPartsId() == null){
+                    if (StringManaConstant.entityIsNull(partsB.getPartsId())){
                         partsB.setPartsId(partsEnter.getId());
                     }
                     partsB.setCreatedBy(enter.getUserId());
@@ -245,7 +247,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         queryWrapper.orderByDesc(OpePurchaseOrder.COL_PURCHASE_NO);
         queryWrapper.last("limit 1");
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getOne(queryWrapper);
-        if(purchaseOrder != null){
+        if(StringManaConstant.entityIsNotNull(purchaseOrder)){
             // 说明今天已经有过单据了  只需要流水号递增
             code = OrderNoGenerateUtil.orderNoGenerate(purchaseOrder.getPurchaseNo(),orderNoEnum);
         }else {
@@ -317,11 +319,11 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     public GeneralResult purchaseEdit(PurchaseSaveOrUpdateEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
-        if (purchaseOrder == null){
+        if (StringManaConstant.entityIsNull(purchaseOrder)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         BeanUtils.copyProperties(enter,purchaseOrder);
-        if (enter.getPlannedPaymentTime() != null && enter.getPaymentDay() != null){
+        if (StringManaConstant.entityIsNotNull(enter.getPlannedPaymentTime()) && StringManaConstant.entityIsNotNull(enter.getPaymentDay())){
             purchaseOrder.setPaymentTime(DateUtil.addDays(enter.getPlannedPaymentTime(),enter.getPaymentDay()));
         }
         purchaseOrder.setUpdatedBy(enter.getUserId());
@@ -377,7 +379,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     public PageResult<PuraseListResult> purchaseList(PuraseListEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         int totalNum = purchaseOrderServiceMapper.purchaseListTotal(enter);
-        if (totalNum == 0){
+        if (NumberUtil.eqZero(totalNum)){
             return PageResult.createZeroRowResult(enter);
         }
         List<PuraseListResult> list = purchaseOrderServiceMapper.purchaseList(enter);
@@ -388,7 +390,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Override
     public PurchaseDetailResult purchaseDetail(IdEnter enter) {
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
-        if (purchaseOrder == null){
+        if (StringManaConstant.entityIsNull(purchaseOrder)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         PurchaseDetailResult result = new PurchaseDetailResult();
@@ -458,7 +460,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult confirmOrder(IdEnter enter) {
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
-        if (purchaseOrder == null){
+        if (StringManaConstant.entityIsNull(purchaseOrder)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         purchaseOrder.setPurchaseStatus(PurchaseOrderStatusEnum.WAIT_STOCK.getValue());
@@ -563,12 +565,12 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult cancelOrder(CancelOrderEnter enter) {
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
-        if (purchaseOrder == null){
+        if (StringManaConstant.entityIsNull(purchaseOrder)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         // 校验，与该采购单相关联的出库单状态是否是“质检中”或“已出库” ，取消后，与该采购单关联的发货单、出库单都将被取消
         int whNum = purchaseOrderServiceMapper.whNum(purchaseOrder.getId());
-        if (whNum > 0){
+        if (0 < whNum){
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_NOT_CANCEL.getCode(), ExceptionCodeEnums.STOCK_NOT_CANCEL.getMessage());
         }
         // 取消发货单
@@ -597,7 +599,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult closeOrder(IdEnter enter) {
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
-        if (purchaseOrder == null){
+        if (StringManaConstant.entityIsNull(purchaseOrder)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if(!purchaseOrder.getPurchaseStatus().equals(PurchaseOrderStatusEnum.SIGNED.getValue())){
@@ -620,7 +622,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Override
     public GeneralResult deleteOrder(IdEnter enter) {
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(enter.getId());
-        if (purchaseOrder == null){
+        if (StringManaConstant.entityIsNull(purchaseOrder)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if(!purchaseOrder.getPurchaseStatus().equals(PurchaseOrderStatusEnum.DRAFT.getValue())){
@@ -712,7 +714,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     public void purchaseStocking(Long purchaseId, Long userId) {
         // 备货中
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(purchaseId);
-        if (purchaseOrder == null){
+        if (StringManaConstant.entityIsNull(purchaseOrder)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if(!purchaseOrder.getPurchaseStatus().equals(PurchaseOrderStatusEnum.WAIT_STOCK.getValue())){
@@ -732,7 +734,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     public void purchaseWaitDeliver(Long purchaseId,Long userId) {
        // 待发货
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(purchaseId);
-        if (purchaseOrder == null){
+        if (StringManaConstant.entityIsNull(purchaseOrder)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if(!purchaseOrder.getPurchaseStatus().equals(PurchaseOrderStatusEnum.STOCKING.getValue())){
@@ -745,7 +747,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         // 状态流转表
         createStatusFlow(purchaseOrder.getId(),userId,purchaseOrder.getPurchaseStatus(),OrderTypeEnums.SHIPPING.getValue(),"");
         // 调拨单状态变为待发货
-        if (purchaseOrder.getPurchaseOriginType() == 1){
+        if (1 == purchaseOrder.getPurchaseOriginType()){
             // 调拨采购才会有调拨单id
             allocateOrderService.allocateWaitDeliver(purchaseOrder.getAllocateId(),userId);
         }
@@ -757,7 +759,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     public void purchaseSign(Long purchaseId,Long userId) {
         // 签收
         OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getById(purchaseId);
-        if (purchaseOrder == null){
+        if (StringManaConstant.entityIsNull(purchaseOrder)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if(!purchaseOrder.getPurchaseStatus().equals(PurchaseOrderStatusEnum.WAIT_SIGN.getValue())){
@@ -770,7 +772,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         // 状态流转表
         createStatusFlow(purchaseOrder.getId(),purchaseId,purchaseOrder.getPurchaseStatus(),OrderTypeEnums.SHIPPING.getValue(),"");
         // 调拨单状态变为已签收
-        if (purchaseOrder.getPurchaseOriginType() == 1){
+        if (1 == purchaseOrder.getPurchaseOriginType()){
             // 调拨采购才会有调拨单id
             allocateOrderService.allocateSign(purchaseOrder.getAllocateId(),purchaseOrder.getId(),userId);
         }
@@ -792,7 +794,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     public void purchaseWaitSign(Long purchaseId, Long userId) {
         // 采购单变为待签收状态
         OpePurchaseOrder opePurchaseOrder  = opePurchaseOrderService.getById(purchaseId);
-        if (opePurchaseOrder == null){
+        if (StringManaConstant.entityIsNull(opePurchaseOrder)){
             throw new SesWebRosException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
         if(!opePurchaseOrder.getPurchaseStatus().equals(PurchaseOrderStatusEnum.WAIT_DELIVER.getValue())){
@@ -807,7 +809,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         opeOrderStatusFlow.setUserId(userId);
         orderStatusFlowService.save(opeOrderStatusFlow);
         // 把采购单对应的调拨单变为待签收状态
-        if (opePurchaseOrder.getPurchaseOriginType() == 1){
+        if (1 == opePurchaseOrder.getPurchaseOriginType()){
             // 调拨采购才会有调拨单id
             allocateOrderService.allocateWaitSign(opePurchaseOrder.getAllocateId(),userId);
         }

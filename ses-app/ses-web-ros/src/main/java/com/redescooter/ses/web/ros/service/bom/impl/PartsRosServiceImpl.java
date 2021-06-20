@@ -24,6 +24,7 @@ import com.redescooter.ses.api.foundation.service.base.GenerateService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.parts.ESCUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper;
 import com.redescooter.ses.web.ros.dao.bom.PartsServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeExcleImport;
@@ -56,6 +57,7 @@ import com.redescooter.ses.web.ros.service.base.OpeProductQcTemplateBService;
 import com.redescooter.ses.web.ros.service.base.OpeProductQcTemplateService;
 import com.redescooter.ses.web.ros.service.bom.PartsRosService;
 import com.redescooter.ses.web.ros.service.excel.ExcelService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListEnter;
 import com.redescooter.ses.web.ros.vo.bom.QueryPartListResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.AddPartsEnter;
@@ -168,18 +170,18 @@ public class PartsRosServiceImpl implements PartsRosService {
     @Override
     public MapResult commonCountStatus(GeneralEnter enter) {
         QueryWrapper<OpePartsDraft> partsQueryWrapper = new QueryWrapper<>();
-        partsQueryWrapper.eq(OpePartsDraft.COL_DR, 0);
+        partsQueryWrapper.eq(OpePartsDraft.COL_DR, Constant.DR_FALSE);
         partsQueryWrapper.eq(OpePartsDraft.COL_USER_ID, enter.getUserId());
         int partsCount = getOpePartsDraftService.count(partsQueryWrapper);
 
         QueryWrapper<OpePartsProduct> scooter = new QueryWrapper<>();
-        scooter.eq(OpePartsProduct.COL_DR, 0);
+        scooter.eq(OpePartsProduct.COL_DR, Constant.DR_FALSE);
         scooter.eq(OpePartsProduct.COL_USER_ID, enter.getUserId());
         scooter.eq(OpePartsProduct.COL_PRODUCT_TYPE, BomCommonTypeEnums.SCOOTER.getValue());
         int scooterConut = partsProductService.count(scooter);
 
         QueryWrapper<OpePartsProduct> combination = new QueryWrapper<>();
-        combination.eq(OpePartsProduct.COL_DR, 0);
+        combination.eq(OpePartsProduct.COL_DR, Constant.DR_FALSE);
         combination.eq(OpePartsProduct.COL_USER_ID, enter.getUserId());
         combination.eq(OpePartsProduct.COL_PRODUCT_TYPE, BomCommonTypeEnums.COMBINATION.getValue());
         int combinationConut = partsProductService.count(combination);
@@ -196,7 +198,7 @@ public class PartsRosServiceImpl implements PartsRosService {
     public List<PartsTypeResult> typeCount(GeneralEnter enter) {
         List<PartsTypeResult> resultList = new ArrayList<>();
         List<OpePartsType> list = partsTypeService.list();
-        if (list.size() > 0) {
+        if (0 < list.size()) {
             list.forEach(type -> {
                 PartsTypeResult result = new PartsTypeResult();
                 result.setId(type.getId());
@@ -279,7 +281,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         List<OpePartsDraft> insters = new ArrayList<>();
         List<OpePartsDraftHistoryRecord> instersHistory = new ArrayList<>();
 
-        if (enters.size() > 0) {
+        if (0 < enters.size()) {
             String lot = generateService.getOrderNo();
             enters.forEach(pat -> {
                 checkParts(pat);
@@ -310,13 +312,13 @@ public class PartsRosServiceImpl implements PartsRosService {
             });
         }
 
-        if (insters.size() > 0) {
+        if (0 < insters.size()) {
             opePartsDraftService.saveBatch(insters);
         }
-        if (updates.size() > 0) {
+        if (0 < updates.size()) {
             opePartsDraftService.updateBatchById(updates);
         }
-        if (instersHistory.size() > 0) {
+        if (0 < instersHistory.size()) {
             partsDraftHistoryRecordService.saveBatch(instersHistory);
         }
         return new GeneralResult(enter.getRequestId());
@@ -339,7 +341,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         }
 
         //判断是否进行部品号的迭代
-        if (partsDraft.size() > 0) {
+        if (0 < partsDraft.size()) {
             partsDraft.forEach(p -> {
                 OpePartsDraft originalPartsDraft = opePartsDraftService.getById(p.getId());
                 Optional.ofNullable(originalPartsDraft).ifPresent(original -> {
@@ -381,7 +383,7 @@ public class PartsRosServiceImpl implements PartsRosService {
                 });
             });
         }
-        if (updatePartsDrafts.size() > 0 && savePartsDraftHistory.size() > 0) {
+        if (0 < updatePartsDrafts.size() && 0 < savePartsDraftHistory.size()) {
             opePartsDraftService.updateBatchById(updatePartsDrafts);
             partsDraftHistoryRecordService.saveBatch(savePartsDraftHistory);
         }
@@ -412,7 +414,7 @@ public class PartsRosServiceImpl implements PartsRosService {
             throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
 
-        if (enters.size() > 0) {
+        if (0 < enters.size()) {
             for (OpePartsDraft item : opePartDraftList) {
                 enters.forEach(dl -> {
                     if (!org.springframework.util.StringUtils.isEmpty(dl.getId())) {
@@ -452,7 +454,7 @@ public class PartsRosServiceImpl implements PartsRosService {
 //            opePriceSheetHistoryQueryWrapper.in(OpePriceSheetHistory.COL_PARTS_ID, opePartsList.stream().map(OpeParts::getId).collect(Collectors.toList()));
 //            opePriceSheetHistoryService.remove(opePriceSheetHistoryQueryWrapper);
         }
-        if (deletes.size() > 0) {
+        if (0 < deletes.size()) {
             opePartsDraftService.removeByIds(deletes);
             partsDraftHistoryRecordService.saveBatch(insters);
         }
@@ -498,7 +500,7 @@ public class PartsRosServiceImpl implements PartsRosService {
     @Override
     public GeneralResult partUnbind(PartUnbindEnter enter) {
         OpePartsDraft partsDraft = opePartsDraftService.getById(enter.getId());
-        if (partsDraft == null) {
+        if (StringManaConstant.entityIsNull(partsDraft)) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
 
@@ -542,12 +544,12 @@ public class PartsRosServiceImpl implements PartsRosService {
 
         QueryWrapper<OpePartsDraftHistoryRecord> wrapper = new QueryWrapper<>();
         wrapper.eq(OpePartsDraftHistoryRecord.COL_PARTS_DRAFT_ID, enter.getId());
-        wrapper.eq(OpePartsDraftHistoryRecord.COL_DR, 0);
+        wrapper.eq(OpePartsDraftHistoryRecord.COL_DR, Constant.DR_FALSE);
         wrapper.eq(OpePartsDraftHistoryRecord.COL_EVENT, PartsEventEnums.ADD.getValue());
         List<OpePartsDraftHistoryRecord> historyLists = partsDraftHistoryRecordService.list(wrapper);
         List<HistoryPartsDto> list = new ArrayList<>();
 
-        if (historyLists.size() > 0) {
+        if (0 < historyLists.size()) {
             historyLists.forEach(ht -> {
                 HistoryPartsDto dto = new HistoryPartsDto();
                 dto.setId(ht.getId());
@@ -563,12 +565,12 @@ public class PartsRosServiceImpl implements PartsRosService {
 
     @Override
     public PageResult<DetailsPartsResult> list(PartListEnter enter) {
-        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+        if (NumberUtil.notNullAndGtFifty(enter.getKeyword())) {
             return PageResult.createZeroRowResult(enter);
         }
         int count = partsServiceMapper.listCount(enter);
 
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
 
@@ -589,14 +591,14 @@ public class PartsRosServiceImpl implements PartsRosService {
 
         QueryWrapper<OpePartsDraftHistoryRecord> wrapper = new QueryWrapper<>();
         wrapper.eq(OpePartsDraftHistoryRecord.COL_PARTS_DRAFT_ID, enter.getId());
-        wrapper.eq(OpePartsDraftHistoryRecord.COL_DR, 0);
+        wrapper.eq(OpePartsDraftHistoryRecord.COL_DR, Constant.DR_FALSE);
         wrapper.eq(OpePartsDraftHistoryRecord.COL_EVENT, PartsEventEnums.ADD.getValue());
         List<OpePartsDraftHistoryRecord> historyLists = partsDraftHistoryRecordService.list(wrapper);
         HistoryPartsResult historyPartsResult = new HistoryPartsResult();
 
         List<HistoryPartsDto> list = new ArrayList<>();
 
-        if (historyLists.size() > 0) {
+        if (0 < historyLists.size()) {
             historyLists.forEach(ht -> {
                 HistoryPartsDto dto = new HistoryPartsDto();
                 dto.setId(ht.getId());
@@ -682,7 +684,7 @@ public class PartsRosServiceImpl implements PartsRosService {
                 OpePartsProduct oneProduct = partsProductService.getOne(new LambdaQueryWrapper<OpePartsProduct>().eq(OpePartsProduct::getDr, 0).eq(OpePartsProduct::getDef1, p.getDef1()).last("limit" +
                         " 1"));
 
-                if (oneProduct == null) {
+                if (StringManaConstant.entityIsNull(oneProduct)) {
                     p.setId(idAppService.getId(SequenceName.OPE_PARTS_PRODUCT));
                     productInsert.add(p);
                 } else {
@@ -706,7 +708,7 @@ public class PartsRosServiceImpl implements PartsRosService {
                 opePartsProductBQueryWrapper.last("limit 1");
                 OpePartsProductB partsProductB = opePartsProductBService.getOne(opePartsProductBQueryWrapper);
                 //保存子表数据
-                if (partsProductB == null) {
+                if (StringManaConstant.entityIsNull(partsProductB)) {
                     savePartsProductBList.add(buildPartProductB(enter, product.getId(), Long.valueOf(product.getDef1()), idAppService.getId(SequenceName.OPE_PARTS_PRODUCT_B)));
                 } else {
                     savePartsProductBList.add(buildPartProductB(enter, partsProductB.getPartsProductId(), Long.valueOf(product.getDef1()), partsProductB.getId()));
@@ -756,7 +758,7 @@ public class PartsRosServiceImpl implements PartsRosService {
             partsSave.forEach(p -> {
 
                 OpeParts oneParts = partsService.getOne(new LambdaQueryWrapper<OpeParts>().eq(OpeParts::getPartsDraftId, p.getPartsDraftId()).last("limit 1"));
-                if (oneParts == null) {
+                if (StringManaConstant.entityIsNull(oneParts)) {
                     p.setId(idAppService.getId(SequenceName.OPE_PARTS));
                     partsInsert.add(p);
                 } else {
@@ -786,7 +788,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         product.setUserId(p.getUserId());
         product.setStatus(PartsProductEnums.DOWN.getValue());
         product.setSnClass(p.getSnClass());
-        if (p.getPartsType() != null) {
+        if (StringManaConstant.entityIsNotNull(p.getPartsType())) {
             product.setProductType(Integer.parseInt(BomCommonTypeEnums.getValueByCode(p.getPartsType())));
         }
         product.setProductCode(p.getEnName());
@@ -960,7 +962,7 @@ public class PartsRosServiceImpl implements PartsRosService {
     @Override
     public PageResult<QueryPartListResult> partList(QueryPartListEnter enter) {
         int count = partsServiceMapper.partListCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         return PageResult.create(enter, count, partsServiceMapper.partList(enter));
@@ -973,7 +975,7 @@ public class PartsRosServiceImpl implements PartsRosService {
     @Override
     public PageResult<DetailsPartsResult> saveProductPartList(QueryPartListEnter enter) {
         int count = partsServiceMapper.saveProductPartListCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
 
@@ -1061,7 +1063,7 @@ public class PartsRosServiceImpl implements PartsRosService {
         } else {
             partsDraft.setId(enter.getId());
         }
-        if (enter.getPartsType() != null) {
+        if (StringManaConstant.entityIsNotNull(enter.getPartsType())) {
             partsDraft.setPartsType(BomCommonTypeEnums.checkCode(enter.getPartsType()));
         }
         partsDraft.setSnClass(enter.getSnClassFlag());
@@ -1083,7 +1085,7 @@ public class PartsRosServiceImpl implements PartsRosService {
             partsDraft.setPerfectFlag(Boolean.FALSE);
         }
 
-        if (enter.getIdClass() == null) {
+        if (StringManaConstant.entityIsNull(enter.getIdClass())) {
             partsDraft.setIdClass(Boolean.FALSE);
         } else {
             partsDraft.setIdClass(enter.getIdClass());

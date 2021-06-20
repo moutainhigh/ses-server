@@ -142,7 +142,11 @@ public enum ExceptionCodeEnums {
 
     GROUP_NOT_ENABLE(10065, "此分组未启用"),
 
-    REFRESH_TOKEN_NOT_EXIST(10066, "刷新token不存在")
+    REFRESH_TOKEN_NOT_EXIST(10066, "刷新token不存在"),
+
+    PIN_TWO_INCONSISTENCIES(10067,"两次PIN不一致"),
+
+    LENGTH_ERROR(10068, "长度错误"),
 
 
     ;

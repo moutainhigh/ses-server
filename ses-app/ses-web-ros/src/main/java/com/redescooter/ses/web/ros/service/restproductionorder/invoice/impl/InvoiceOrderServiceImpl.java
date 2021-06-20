@@ -16,6 +16,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.base.OpeOutWhCombinBMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeOutWhPartsBMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeOutWhScooterBMapper;
@@ -63,6 +64,7 @@ import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderSt
 import com.redescooter.ses.web.ros.service.restproductionorder.outbound.OutboundOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchaseorder.PurchaseOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.Invoiceorder.InvoiceOrderListEnter;
@@ -237,7 +239,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     @Override
     public PageResult<InvoiceOrderListResult> list(InvoiceOrderListEnter enter) {
         int count = invoiceOrderServiceMapper.listCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         return PageResult.create(enter, count, invoiceOrderServiceMapper.list(enter));
@@ -255,7 +257,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     @Override
     public InvoiceOrderDetailResult detail(IdEnter enter) {
         InvoiceOrderDetailResult detail = invoiceOrderServiceMapper.detail(enter);
-        if (detail == null) {
+        if (StringManaConstant.entityIsNull(detail)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         //查询操作日志
@@ -284,15 +286,15 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     public List<AssociatedOrderResult> associatedOrderList(IdEnter enter) {
         List<AssociatedOrderResult> resultList = new ArrayList<>();
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(enter.getId());
-        if (opeInvoiceOrder == null) {
+        if (StringManaConstant.entityIsNull(opeInvoiceOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         OpePurchaseOrder opePurchaseOrder = opePurchaseOrderService.getById(opeInvoiceOrder.getPurchaseId());
-        if (opePurchaseOrder != null) {
+        if (StringManaConstant.entityIsNotNull(opePurchaseOrder)) {
             resultList.add(new AssociatedOrderResult(opePurchaseOrder.getId(), opePurchaseOrder.getPurchaseNo(), OrderTypeEnums.SHIPPING.getValue(), opePurchaseOrder.getCreatedTime(),""));
         }
         OpeEntrustOrder opeEntrustOrder = opeEntrustOrderService.getOne(new LambdaQueryWrapper<OpeEntrustOrder>().eq(OpeEntrustOrder::getInvoiceId,opeInvoiceOrder.getId()));
-        if (opeEntrustOrder != null) {
+        if (StringManaConstant.entityIsNotNull(opeEntrustOrder)) {
             resultList.add(new AssociatedOrderResult(opeEntrustOrder.getId(), opeEntrustOrder.getEntrustNo(), OrderTypeEnums.ORDER.getValue(), opeEntrustOrder.getCreatedTime(),""));
         }
         return resultList;
@@ -310,7 +312,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     @Override
     public List<OrderProductDetailResult> productListById(IdEnter enter) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(enter.getId());
-        if (opeInvoiceOrder == null) {
+        if (StringManaConstant.entityIsNull(opeInvoiceOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         //查询产品列表
@@ -377,14 +379,14 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     @Override
     public GeneralResult stockUp(IdEnter enter) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(enter.getId());
-        if (opeInvoiceOrder == null) {
+        if (StringManaConstant.entityIsNull(opeInvoiceOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (!opeInvoiceOrder.getInvoiceStatus().equals(InvoiceOrderStatusEnums.MATERIALS_PRE.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(), ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
         }
         // 追加  如果是整车的话 判断是否有符合颜色和车型的产品，没有的话抛异常、
-        if (opeInvoiceOrder.getInvoiceType() == 1){
+        if (1 == opeInvoiceOrder.getInvoiceType()){
             checkProtion(opeInvoiceOrder);
         }
         // 追加 校验中国仓库的库存是否充足
@@ -432,7 +434,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                         scooterStockQueryWrapper.eq(OpeWmsScooterStock.COL_STOCK_TYPE, 1);
                         scooterStockQueryWrapper.last("limit 1");
                         OpeWmsScooterStock scooterStock = opeWmsScooterStockService.getOne(scooterStockQueryWrapper);
-                        if (scooterStock == null) {
+                        if (StringManaConstant.entityIsNull(scooterStock)) {
                             throw new SesWebRosException(ExceptionCodeEnums.STOCK_IS_SHORTAGE.getCode(), ExceptionCodeEnums.STOCK_IS_SHORTAGE.getMessage());
                         }
                         if (scooterStock.getAbleStockQty() < scooterB.getQty()) {
@@ -446,14 +448,14 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                         outWrapper.eq(OpeOutWhouseOrder::getRelationId, scooterB.getInvoiceId());
                         outWrapper.last("limit 1");
                         OpeOutWhouseOrder outOrder = opeOutWhouseOrderMapper.selectOne(outWrapper);
-                        if (null != outOrder) {
+                        if (StringManaConstant.entityIsNotNull(outOrder)) {
                             LambdaQueryWrapper<OpeOutWhScooterB> qw = new LambdaQueryWrapper<>();
                             qw.eq(OpeOutWhScooterB::getDr, DelStatusEnum.VALID.getCode());
                             qw.eq(OpeOutWhScooterB::getOutWhId, outOrder.getId());
                             qw.eq(OpeOutWhScooterB::getAlreadyOutWhQty, 0);
                             qw.last("limit 1");
                             OpeOutWhScooterB outScooterB = opeOutWhScooterBMapper.selectOne(qw);
-                            if (null != outScooterB) {
+                            if (StringManaConstant.entityIsNotNull(outScooterB)) {
                                 Integer outQty = outScooterB.getQty();
                                 Integer invoiceQty = scooterB.getQty();
                                 int total = invoiceQty + outQty;
@@ -496,14 +498,14 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                             outWrapper.eq(OpeOutWhouseOrder::getRelationId, combinB.getInvoiceId());
                             outWrapper.last("limit 1");
                             OpeOutWhouseOrder outOrder = opeOutWhouseOrderMapper.selectOne(outWrapper);
-                            if (null != outOrder) {
+                            if (StringManaConstant.entityIsNotNull(outOrder)) {
                                 LambdaQueryWrapper<OpeOutWhCombinB> qw = new LambdaQueryWrapper<>();
                                 qw.eq(OpeOutWhCombinB::getDr, DelStatusEnum.VALID.getCode());
                                 qw.eq(OpeOutWhCombinB::getOutWhId, outOrder.getId());
                                 qw.eq(OpeOutWhCombinB::getAlreadyOutWhQty, 0);
                                 qw.last("limit 1");
                                 OpeOutWhCombinB outCombinB = opeOutWhCombinBMapper.selectOne(qw);
-                                if (null != outCombinB) {
+                                if (StringManaConstant.entityIsNotNull(outCombinB)) {
                                     Integer outQty = outCombinB.getQty();
                                     Integer invoiceQty = combinB.getQty();
                                     int total = invoiceQty + outQty;
@@ -546,14 +548,14 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                             outWrapper.eq(OpeOutWhouseOrder::getRelationId, partsB.getInvoiceId());
                             outWrapper.last("limit 1");
                             OpeOutWhouseOrder outOrder = opeOutWhouseOrderMapper.selectOne(outWrapper);
-                            if (null != outOrder) {
+                            if (StringManaConstant.entityIsNotNull(outOrder)) {
                                 LambdaQueryWrapper<OpeOutWhPartsB> qw = new LambdaQueryWrapper<>();
                                 qw.eq(OpeOutWhPartsB::getDr, DelStatusEnum.VALID.getCode());
                                 qw.eq(OpeOutWhPartsB::getOutWhId, outOrder.getId());
                                 qw.eq(OpeOutWhPartsB::getAlreadyOutWhQty, 0);
                                 qw.last("limit 1");
                                 OpeOutWhPartsB outPartsB = opeOutWhPartsBMapper.selectOne(qw);
-                                if (null != outPartsB) {
+                                if (StringManaConstant.entityIsNotNull(outPartsB)) {
                                     Integer outQty = outPartsB.getQty();
                                     Integer invoiceQty = partsB.getQty();
                                     int total = invoiceQty + outQty;
@@ -633,7 +635,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         OpeInvoiceOrder opeInvoiceOrder = new OpeInvoiceOrder();
         //关联单据校验
         OpePurchaseOrder opePurchaseOrder = opePurchaseOrderService.getById(enter.getPurchaseId());
-        if (opePurchaseOrder == null) {
+        if (StringManaConstant.entityIsNull(opePurchaseOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
 
@@ -648,7 +650,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         }
         BeanUtils.copyProperties(enter, opeInvoiceOrder);
         SaveOpTraceEnter saveOpTraceEnter = null;
-        if (enter.getId() == null || enter.getId() == 0) {
+        if (StringManaConstant.entityIsNull(enter.getId()) || 0 == enter.getId()) {
             opeInvoiceOrder.setId(idAppService.getId(SequenceName.OPE_INVOICE_ORDER));
             opeInvoiceOrder.setDr(0);
             opeInvoiceOrder.setInvoiceNo(orderNumberService.orderNumber(new OrderNumberEnter(OrderTypeEnums.INVOICE.getValue())).getValue());
@@ -726,7 +728,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     @Override
     public GeneralResult loading(IdEnter enter) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(enter.getId());
-        if (opeInvoiceOrder == null) {
+        if (StringManaConstant.entityIsNull(opeInvoiceOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (!opeInvoiceOrder.getInvoiceStatus().equals(InvoiceOrderStatusEnums.BE_LOADED.getValue())) {
@@ -770,7 +772,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     @Override
     public GeneralResult signFor(IdEnter enter) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(enter.getId());
-        if (opeInvoiceOrder == null) {
+        if (StringManaConstant.entityIsNull(opeInvoiceOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (!opeInvoiceOrder.getInvoiceStatus().equals(InvoiceOrderStatusEnums.BE_SIGNED.getValue())) {
@@ -871,7 +873,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                         opeProductionCombinBomService.listByIds(enter.getProductEnterList().stream().map(ProductEnter::getProductId).collect(Collectors.toSet()));
                 opeProductionCombinBomList.forEach(item -> {
                     ProductEnter productEnter = enter.getProductEnterList().stream().filter(product -> item.getId().equals(product.getProductId())).findFirst().orElse(null);
-                    if (productEnter == null) {
+                    if (StringManaConstant.entityIsNull(productEnter)) {
                         throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
                     }
                     OpeInvoiceCombinB opeInvoiceCombinB = new OpeInvoiceCombinB();
@@ -898,7 +900,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
                 List<OpeProductionParts> opeProductionPartList = opeProductionPartsService.listByIds(enter.getProductEnterList().stream().map(ProductEnter::getProductId).collect(Collectors.toSet()));
                 opeProductionPartList.forEach(item -> {
                     ProductEnter productEnter = enter.getProductEnterList().stream().filter(product -> item.getId().equals(product.getProductId())).findFirst().orElse(null);
-                    if (productEnter == null) {
+                    if (StringManaConstant.entityIsNull(productEnter)) {
                         throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
                     }
 
@@ -975,7 +977,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
         QueryWrapper<OpeInvoiceOrder> qw = new QueryWrapper<>();
         qw.eq(OpeInvoiceOrder.COL_PURCHASE_ID,purchaseId);
         OpeInvoiceOrder invoiceOrder = opeInvoiceOrderService.getOne(qw);
-        if(invoiceOrder == null){
+        if(StringManaConstant.entityIsNull(invoiceOrder)){
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         invoiceOrder.setInvoiceStatus(InvoiceOrderStatusEnums.CANCEL.getValue());
@@ -996,7 +998,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public void invoiceWaitLoading(Long invoiceId) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(invoiceId);
-        if (opeInvoiceOrder == null) {
+        if (StringManaConstant.entityIsNull(opeInvoiceOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (opeInvoiceOrder.getInvoiceStatus() < InvoiceOrderStatusEnums.BE_LOADED.getValue()) {
@@ -1014,7 +1016,7 @@ public class InvoiceOrderServiceImpl implements InvoiceOrderService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public void invoiceWaitSign(Long invoiceId,Long userId) {
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(invoiceId);
-        if (opeInvoiceOrder == null) {
+        if (StringManaConstant.entityIsNull(opeInvoiceOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (!opeInvoiceOrder.getInvoiceStatus().equals(InvoiceOrderStatusEnums.BE_DELIVERED.getValue())) {

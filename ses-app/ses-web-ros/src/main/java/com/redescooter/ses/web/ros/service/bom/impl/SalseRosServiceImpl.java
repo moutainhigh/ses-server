@@ -14,12 +14,14 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.bom.SalseRosServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheet;
 import com.redescooter.ses.web.ros.dm.OpeRegionalPriceSheetHistory;
 import com.redescooter.ses.web.ros.service.base.OpeRegionalPriceSheetHistoryService;
 import com.redescooter.ses.web.ros.service.base.OpeRegionalPriceSheetService;
 import com.redescooter.ses.web.ros.service.bom.SalseRosService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.bom.ProductPriceHistroyListEnter;
 import com.redescooter.ses.web.ros.vo.bom.sales.ProductGetTypeResult;
 import com.redescooter.ses.web.ros.vo.bom.sales.ProductListEnter;
@@ -122,11 +124,11 @@ public class SalseRosServiceImpl implements SalseRosService {
      */
     @Override
     public PageResult<ProductListResult> productList(ProductListEnter enter) {
-      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
+      if (NumberUtil.notNullAndGtFifty(enter.getKeyword())){
         return PageResult.createZeroRowResult(enter);
       }
         int count = salseRosServiceMapper.productListCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<ProductListResult> results = salseRosServiceMapper.productList(enter);
@@ -151,7 +153,8 @@ public class SalseRosServiceImpl implements SalseRosService {
                         result.setProductFrUnit(item.getCurrencyUnit());
                     }
                     // 将价格的最新修改时间进行处理返回
-                    if (result.getId().equals(item.getPartsProductId()) && result.getRefuseTime() != null && DateUtil.timeComolete(result.getRefuseTime(), item.getUpdatedTime()) > 0) {
+                    if (result.getId().equals(item.getPartsProductId()) && StringManaConstant.entityIsNotNull(result.getRefuseTime()) && DateUtil.timeComolete(result.getRefuseTime(),
+                            item.getUpdatedTime()) > 0) {
                         result.setRefuseTime(item.getUpdatedTime());
                     }
                 });
@@ -198,7 +201,7 @@ public class SalseRosServiceImpl implements SalseRosService {
     @Override
     public PageResult<ProductListResult> afterSaleList(ProductListEnter enter) {
         int count = salseRosServiceMapper.afterSaleListCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
 
@@ -226,7 +229,8 @@ public class SalseRosServiceImpl implements SalseRosService {
                         result.setProductFrUnit(item.getCurrencyUnit());
                     }
                     // 将价格的最新修改时间进行处理返回
-                    if (result.getId().equals(item.getPartsProductId()) && result.getRefuseTime() != null && DateUtil.timeComolete(result.getRefuseTime(), item.getUpdatedTime()) > 0) {
+                    if (result.getId().equals(item.getPartsProductId()) && StringManaConstant.entityIsNotNull(result.getRefuseTime()) && DateUtil.timeComolete(result.getRefuseTime(),
+                        item.getUpdatedTime()) > 0) {
                         result.setRefuseTime(item.getUpdatedTime());
                     }
                 });
@@ -263,7 +267,7 @@ public class SalseRosServiceImpl implements SalseRosService {
         BeanUtils.copyProperties(enter, idEnter);
         idEnter.setId(1L);
         SccPriceResult sccPriceResult = priceDetail(idEnter);
-        if (sccPriceResult != null) {
+        if (StringManaConstant.entityIsNotNull(sccPriceResult)) {
             serviceResult.setProductFrPrice(sccPriceResult.getProductFrPrice());
             serviceResult.setProductFrUnit(CurrencyUnitEnums.FR.getValue());
             serviceResult.setProductEnPrice(sccPriceResult.getProductEnPrice());
@@ -515,7 +519,7 @@ public class SalseRosServiceImpl implements SalseRosService {
                     result.setProductFrUnit(item.getCurrencyUnit());
                 }
                 // 将价格的最新修改时间进行处理返回
-                if (result.getId().equals(item.getPartsProductId()) && result.getRefuseTime() != null && DateUtil.timeComolete(result.getRefuseTime(), item.getUpdatedTime()) > 0) {
+                if (result.getId().equals(item.getPartsProductId()) && StringManaConstant.entityIsNotNull(result.getRefuseTime()) && DateUtil.timeComolete(result.getRefuseTime(), item.getUpdatedTime()) > 0) {
                     result.setRefuseTime(item.getUpdatedTime());
                 }
             });
@@ -532,16 +536,16 @@ public class SalseRosServiceImpl implements SalseRosService {
     @Override
     public PageResult<SccPriceResult> priceList(ProductPriceHistroyListEnter enter) {
         int count = salseRosServiceMapper.sccPriceHistroyCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<SccPriceResult> results = salseRosServiceMapper.sccPriceHistroyList(enter);
 
         results.forEach(item -> {
-            if (item.getProductEnPrice() != null) {
+            if (StringManaConstant.entityIsNotNull(item.getProductEnPrice())) {
                 item.setProductEnUnit(CurrencyUnitEnums.EN.getValue());
             }
-            if (item.getProductFrPrice() != null) {
+            if (StringManaConstant.entityIsNotNull(item.getProductFrPrice())) {
                 item.setProductFrUnit(CurrencyUnitEnums.FR.getValue());
             }
         });
@@ -584,7 +588,7 @@ public class SalseRosServiceImpl implements SalseRosService {
     }
 
     private OpeRegionalPriceSheet buildOpeRegionalPriceSheetSingle(OpeRegionalPriceSheet opeRegionalPrice, SccPriceEnter enter, String unit) {
-        if (opeRegionalPrice == null) {
+        if (StringManaConstant.entityIsNull(opeRegionalPrice)) {
             opeRegionalPrice = new OpeRegionalPriceSheet();
         }
         opeRegionalPrice.setDr(0);

@@ -14,6 +14,7 @@ import com.redescooter.ses.api.common.enums.employee.EmployeeStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.foundation.service.base.CityBaseService;
 import com.redescooter.ses.starter.common.service.IdAppService;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.admin.AdminServiceStarterMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
@@ -131,7 +132,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         log.info("---------------------管理员账号不存在，开始创建--------------------------");
         //查询顶级部门
         OpeSysDept dept = adminServiceStarterMapper.topDept(Constant.DEPT_TREE_ROOT_ID);
-        if (dept == null) {
+        if (StringManaConstant.entityIsNull(dept)) {
             //保存部门根节点
             dept = buildOpeSysDept();
             log.info("---------------------ROOT部门不存在保存ROOT 部门--------------------------");
@@ -150,7 +151,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         OpeSysUserProfile opeSysUserProfile = buildSysUserProfile(opeSysUser);
         //查询是否有admin Role 没有的话
         OpeSysRole sysRole = opeSysRoleService.getOne(new LambdaQueryWrapper<OpeSysRole>().eq(OpeSysRole::getRoleName, Constant.ADMIN_USER_NAME).last("limit 1"));
-        if (sysRole == null) {
+        if (StringManaConstant.entityIsNull(sysRole)) {
             //创建角色
             sysRole = saveRole(position.getId());
         }
@@ -215,7 +216,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
     public GeneralResult checkAdminDate() {
         //查询顶级部门
         OpeSysDept dept = adminServiceStarterMapper.topDept(Constant.DEPT_TREE_ROOT_ID);
-        if (dept == null) {
+        if (StringManaConstant.entityIsNull(dept)) {
             //保存部门根节点
             dept = buildOpeSysDept();
             log.info("---------------------ROOT部门不存在保存ROOT 部门--------------------------");
@@ -223,25 +224,25 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
 
         OpeSysUser sysUserServiceOne = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, Constant.ADMIN_USER_NAME).eq(OpeSysUser::getDef1,
                 SysUserSourceEnum.SYSTEM.getValue()).last("limit 1"));
-        if (sysUserServiceOne == null) {
+        if (StringManaConstant.entityIsNull(sysUserServiceOne)) {
             //账号信息创建
             saveAdmin();
             return new GeneralResult();
         }
         log.info("---------------------开始验证admin管理员完整性--------------------------");
         OpeSysPosition position = opeSysPositionService.getOne(new LambdaQueryWrapper<OpeSysPosition>().eq(OpeSysPosition::getDeptId, dept.getId()).last("limit 1"));
-        if (position == null) {
+        if (StringManaConstant.entityIsNull(position)) {
             position = createOpeSysPosition(dept, sysUserServiceOne);
         }
         //查询是否有admin Role 没有的话
         OpeSysRole sysRole = opeSysRoleService.getOne(new LambdaQueryWrapper<OpeSysRole>().eq(OpeSysRole::getRoleName, Constant.ADMIN_USER_NAME).last("limit 1"));
-        if (sysRole == null) {
+        if (StringManaConstant.entityIsNull(sysRole)) {
             //创建角色
             sysRole = saveRole(position.getId());
         }
         //查询员工 是否
         OpeSysStaff opeSysStaff = opeSysStaffService.getOne(new LambdaQueryWrapper<OpeSysStaff>().eq(OpeSysStaff::getSysUserId, sysUserServiceOne.getId()).last("limit 1"));
-        if (opeSysStaff == null) {
+        if (StringManaConstant.entityIsNull(opeSysStaff)) {
             OpeSysStaff saveOpeSysStaff = buildOpeSysStaff(sysUserServiceOne.getId());
             opeSysStaffService.save(saveOpeSysStaff);
         }
@@ -250,7 +251,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         List<OpeSysMenu> opeSysMenus = opeSysMenuService.list();
         //校验 admin 是否 和Root部门 存在绑定关系
         OpeSysRoleDept sysRoleDept = opeSysRoleDeptService.getOne(new LambdaQueryWrapper<OpeSysRoleDept>().eq(OpeSysRoleDept::getDeptId, dept.getId()).eq(OpeSysRoleDept::getRoleId, sysRole.getId()).last("limit 1"));
-        if (sysRoleDept == null) {
+        if (StringManaConstant.entityIsNull(sysRoleDept)) {
             opeSysRoleDeptService.save(OpeSysRoleDept.builder().deptId(dept.getId()).roleId(sysRole.getId()).build());
         }
 //        //校验role 是否具有 所有页面权限
@@ -271,7 +272,7 @@ public class AdminServiceImplStarter implements AdminServiceStarter {
         //校验 员工和角色是否具有绑定关系
         OpeSysUserRole sysUserRole = opeSysUserRoleService.getOne(new LambdaQueryWrapper<OpeSysUserRole>().eq(OpeSysUserRole::getRoleId, sysRole.getId()).eq(OpeSysUserRole::getUserId,
                 sysUserServiceOne.getId()).last("limit 1"));
-        if (sysUserRole == null) {
+        if (StringManaConstant.entityIsNull(sysUserRole)) {
             opeSysUserRoleService.save(OpeSysUserRole.builder().roleId(sysRole.getId()).userId(sysUserServiceOne.getId()).build());
         }
         log.info("---------------------结束验证admin管理员完整性--------------------------");

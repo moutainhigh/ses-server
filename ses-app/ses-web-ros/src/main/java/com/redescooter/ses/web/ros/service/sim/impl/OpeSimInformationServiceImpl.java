@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.tool.utils.date.DateUtil;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.sim.OpeSimInformationMapper;
 import com.redescooter.ses.web.ros.dm.OpeSimInformation;
 import com.redescooter.ses.web.ros.service.sim.OpeSimInformationService;
@@ -81,8 +82,8 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
             return null;
         }
         JSONObject jsonObject = JSONObject.parseObject(body);
-        String data = jsonObject.getString("data");
-        int total = jsonObject.getInteger("total");
+        String data = jsonObject.getString(StringManaConstant.RESPONSE_DATA);
+        int total = jsonObject.getInteger(StringManaConstant.RESPONSE_TOTAL);
         List<SimTransactionRecordsResult> list = JSONArray.parseArray(data, SimTransactionRecordsResult.class);
         return new SimDataResult(list, total);
     }
@@ -103,8 +104,8 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
             return null;
         }
         JSONObject jsonObject = JSONObject.parseObject(body);
-        String data = jsonObject.getString("data");
-        int total = jsonObject.getInteger("total");
+        String data = jsonObject.getString(StringManaConstant.RESPONSE_DATA);
+        int total = jsonObject.getInteger(StringManaConstant.RESPONSE_TOTAL);
         List<SimCardListResult> list = null;
         // 单一
         if (StringUtils.isNotBlank(simEnter.getIccid())) {
@@ -190,7 +191,7 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
     @Override
     public boolean activationSim(SimEnter simEnter) {
         SimEssentialInformation simEssentialInformation = getSimInformation();
-        if (null == simEssentialInformation) {
+        if (StringManaConstant.entityIsNull(simEssentialInformation)) {
             return false;
         }
         // 余额不足要加提示
@@ -203,8 +204,8 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
             return false;
         }
         JSONObject jsonObject = JSONObject.parseObject(body);
-        String ack = jsonObject.getString("ack");
-        if ("success".equals(ack)) {
+        String ack = jsonObject.getString(StringManaConstant.RESPONSE_ACK);
+        if (StringManaConstant.RESPONSE_STATUS_SUCESS.equals(ack)) {
             return true;
         }
         return false;
@@ -225,8 +226,8 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
             return false;
         }
         JSONObject jsonObject = JSONObject.parseObject(body);
-        String ack = jsonObject.getString("ack");
-        if ("success".equals(ack)) {
+        String ack = jsonObject.getString(StringManaConstant.RESPONSE_ACK);
+        if (StringManaConstant.RESPONSE_STATUS_SUCESS.equals(ack)) {
             return true;
         }
         return false;
@@ -264,7 +265,7 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
     @Override
     public SimResult getSimEssentialInformation() {
         SimEssentialInformation simInformation = getSimInformation();
-        if (null == simInformation) {
+        if (StringManaConstant.entityIsNull(simInformation)) {
             return null;
         }
         // 已激活:1-Activated, 激活就绪:4-Activation Ready, 停用:2-Deactivated, 暂停:3-Suspended
@@ -299,7 +300,7 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
             return 0;
         }
         JSONObject jsonObject = JSONObject.parseObject(body);
-        int total = jsonObject.getInteger("total");
+        int total = jsonObject.getInteger(StringManaConstant.RESPONSE_TOTAL);
         return total;
     }
 
@@ -318,7 +319,7 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
             return null;
         }
         JSONObject jsonObject = JSONObject.parseObject(body);
-        String data = jsonObject.getString("data");
+        String data = jsonObject.getString(StringManaConstant.RESPONSE_DATA);
         List<SimBaseCodeResult> simBaseCodeResults = JSONArray.parseArray(data, SimBaseCodeResult.class);
         SimBaseCodeResult simBaseCodeResult = 0 == simBaseCodeResults.size() ? new SimBaseCodeResult() : simBaseCodeResults.get(0);
         String status = null == simBaseCodeResult ? "" : simBaseCodeResult.getStatus();
@@ -361,8 +362,8 @@ public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationM
             return null;
         }
         JSONObject jsonObject = JSONObject.parseObject(body);
-        String data = jsonObject.getString("data");
-        int total = jsonObject.getInteger("total");
+        String data = jsonObject.getString(StringManaConstant.RESPONSE_DATA);
+        int total = jsonObject.getInteger(StringManaConstant.RESPONSE_TOTAL);
         List<SimCardSessionsResult> list = JSONArray.parseArray(data, SimCardSessionsResult.class);
         return new SimDataResult(list, total);
     }

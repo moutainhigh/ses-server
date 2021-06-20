@@ -23,6 +23,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.codebase.VINService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.codebase.*;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
@@ -117,7 +118,7 @@ public class VINServiceImpl implements VINService {
     @Override
     public PageResult<VINListResult> getList(VINListEnter enter) {
         int count = opeCodebaseVinMapper.getVinListCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<VINListResult> list = opeCodebaseVinMapper.getVinList(enter);
@@ -139,7 +140,7 @@ public class VINServiceImpl implements VINService {
         qw.eq(OpeCodebaseVin::getVin, vin);
         qw.last("limit 1");
         OpeCodebaseVin codebaseVin = opeCodebaseVinService.getOne(qw);
-        if (null != codebaseVin) {
+        if (StringManaConstant.entityIsNotNull(codebaseVin)) {
             result.setVin(codebaseVin.getVin());
             result.setGenerateDate(codebaseVin.getCreatedTime());
             result.setFinishDate(codebaseVin.getUpdatedTime());
@@ -151,7 +152,7 @@ public class VINServiceImpl implements VINService {
         lqw.eq(OpeCarDistribute::getVinCode, vin);
         lqw.last("limit 1");
         OpeCarDistribute distribute = opeCarDistributeMapper.selectOne(lqw);
-        if (null != distribute) {
+        if (StringManaConstant.entityIsNotNull(distribute)) {
             customerId = distribute.getCustomerId();
             result.setBbi(distribute.getBbi());
             result.setController(distribute.getController());
@@ -171,14 +172,14 @@ public class VINServiceImpl implements VINService {
             }
         }
 
-        if (null != customerId) {
+        if (StringManaConstant.entityIsNotNull(customerId)) {
             // 询价单信息
             LambdaQueryWrapper<OpeCustomerInquiry> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(OpeCustomerInquiry::getDr, Constant.DR_FALSE);
             wrapper.eq(OpeCustomerInquiry::getCustomerId, customerId);
             wrapper.last("limit 1");
             OpeCustomerInquiry inquiry = opeCustomerInquiryService.getOne(wrapper);
-            if (null != inquiry) {
+            if (StringManaConstant.entityIsNotNull(inquiry)) {
                 LambdaQueryWrapper<OpeCustomerInquiryB> inquiryBWrapper = new LambdaQueryWrapper<>();
                 inquiryBWrapper.eq(OpeCustomerInquiryB::getDr, Constant.DR_FALSE);
                 inquiryBWrapper.eq(OpeCustomerInquiryB::getInquiryId, inquiry.getId());
@@ -190,7 +191,7 @@ public class VINServiceImpl implements VINService {
                 queryWrapper.eq(OpeCarDistribute::getCustomerId, customerId);
                 queryWrapper.last("limit 1");
                 OpeCarDistribute inquiryDistribute = opeCarDistributeMapper.selectOne(queryWrapper);
-                if (null != inquiryDistribute) {
+                if (StringManaConstant.entityIsNotNull(inquiryDistribute)) {
                     result.setInquiryId(inquiry.getId());
                     result.setOrderNo(inquiry.getOrderNo());
                     result.setSpecificatTypeName(getSpecificatNameById(inquiryDistribute.getSpecificatTypeId()));
@@ -324,11 +325,11 @@ public class VINServiceImpl implements VINService {
      * 根据型号id获取型号名称
      */
     public String getSpecificatNameById(Long specificatId) {
-        if (null == specificatId) {
+        if (StringManaConstant.entityIsNull(specificatId)) {
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_ID_NOT_EMPTY.getCode(), ExceptionCodeEnums.SPECIFICAT_ID_NOT_EMPTY.getMessage());
         }
         OpeSpecificatType specificatType = opeSpecificatTypeService.getById(specificatId);
-        if (null != specificatType) {
+        if (StringManaConstant.entityIsNotNull(specificatType)) {
             String name = specificatType.getSpecificatName();
             if (StringUtils.isNotBlank(name)) {
                 return name;
@@ -341,11 +342,11 @@ public class VINServiceImpl implements VINService {
      * 根据颜色id获取颜色名称
      */
     public String getColorNameById(Long colorId) {
-        if (null == colorId) {
+        if (StringManaConstant.entityIsNull(colorId)) {
             throw new SesWebRosException(ExceptionCodeEnums.COLOR_ID_NOT_EMPTY.getCode(), ExceptionCodeEnums.COLOR_ID_NOT_EMPTY.getMessage());
         }
         OpeColor color = opeColorService.getById(colorId);
-        if (null != color) {
+        if (StringManaConstant.entityIsNotNull(color)) {
             String colorName = color.getColorName();
             if (StringUtils.isNotBlank(colorName)) {
                 return colorName;

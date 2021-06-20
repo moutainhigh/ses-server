@@ -14,6 +14,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.bom.SupplierChaimRosServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeProductPrice;
 import com.redescooter.ses.web.ros.dm.OpeProductPriceHistory;
@@ -28,6 +29,7 @@ import com.redescooter.ses.web.ros.service.base.OpeProductionPartsService;
 import com.redescooter.ses.web.ros.service.base.OpeRegionalPriceSheetHistoryService;
 import com.redescooter.ses.web.ros.service.base.OpeRegionalPriceSheetService;
 import com.redescooter.ses.web.ros.service.bom.SupplierChaimRosService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.bom.ProductPriceHistroyListEnter;
 import com.redescooter.ses.web.ros.vo.bom.sales.PriceUnitResult;
 import com.redescooter.ses.web.ros.vo.bom.sales.SccPriceResult;
@@ -123,11 +125,11 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
      */
     @Override
     public PageResult<SupplierChaimListResult> supplierChaimList(SupplierChaimListEnter enter) {
-      if (enter.getKeyword()!=null && enter.getKeyword().length()>50){
+      if (NumberUtil.notNullAndGtFifty(enter.getKeyword())){
         return PageResult.createZeroRowResult(enter);
       }
         int count = supplierChaimRosServiceMapper.supplierChaimListCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<SupplierChaimListResult> supplierChaimListResultList = supplierChaimRosServiceMapper.supplierChaimList(enter);
@@ -153,7 +155,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
     @Override
     public GeneralResult editProductPrice(EditProductPriceEnter enter) {
         OpeProductionParts opeProductionParts = opeProductionPartsService.getById(enter.getId());
-        if (opeProductionParts == null) {
+        if (StringManaConstant.entityIsNull(opeProductionParts)) {
             throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(),
                 ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
         }
@@ -168,7 +170,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
             SaleProductPriceTypeEnums.PURCHASE_PRICE.getValue());
         opePriceSheetQueryWrapper.last("limit 1");
         OpeProductPrice queryOpePriceSheet = opeProductPriceService.getOne(opePriceSheetQueryWrapper);
-        if (queryOpePriceSheet == null) {
+        if (StringManaConstant.entityIsNull(queryOpePriceSheet)) {
             // 第一次修改直接保存
             if (SesStringUtils.isBlank(enter.getProductFrUnit())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CURRENCY_UNIT_IS_EMPTY.getCode(), ExceptionCodeEnums.CURRENCY_UNIT_IS_EMPTY.getMessage());
@@ -185,7 +187,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
             opeProductPrice.setUpdatedBy(enter.getUserId());
             opeProductPrice.setUpdatedTime(new Date());
         }
-        if (queryOpePriceSheet != null) {
+        if (StringManaConstant.entityIsNotNull(queryOpePriceSheet)) {
             if (queryOpePriceSheet.getPrice().equals(new BigDecimal(enter.getProductFrPrice()))) {
                 return new GeneralResult(enter.getRequestId());
             }
@@ -215,7 +217,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
         opePriceSheetQueryWrapper.eq(OpeProductPrice.COL_CREATED_BY, enter.getUserId());
         opePriceSheetQueryWrapper.last("limit 1");
         OpeProductPrice queryOpePriceSheet = opeProductPriceService.getOne(opePriceSheetQueryWrapper);
-        if (queryOpePriceSheet == null) {
+        if (StringManaConstant.entityIsNull(queryOpePriceSheet)) {
             return new SccPriceResult();
         }
         return SccPriceResult.builder()
@@ -265,7 +267,7 @@ public class SupplierChaimRosServiceImpl implements SupplierChaimRosService {
     public PageResult<SccPriceResult> productPriceHistroyList(ProductPriceHistroyListEnter enter) {
         // 供应链模块
         int count = supplierChaimRosServiceMapper.scPriceHistroyCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         return PageResult.create(enter, count, supplierChaimRosServiceMapper.scPriceHistroyList(enter));

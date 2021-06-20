@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.enums.restproductionorder.OrderNumberTypeE
 import com.redescooter.ses.api.common.vo.base.StringResult;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dm.*;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumberService;
@@ -97,7 +98,7 @@ public class OrderNumberServiceImpl implements OrderNumberService {
                 queryWrapper.orderByDesc(OpeAllocateOrder.COL_ALLOCATE_NO);
                 queryWrapper.last("limit 1");
                 OpeAllocateOrder allocateOrder = opeAllocateOrderService.getOne(queryWrapper);
-                if (allocateOrder == null) {
+                if (StringManaConstant.entityIsNull(allocateOrder)) {
                     // 今天还没有产生过单据 直接就是初始的单据号
                     orderNo = OrderNumberTypeEnums.ALLOCAT.getValue() + DateUtil.getSimpleDateStamp() + "001";
                 } else {
@@ -112,7 +113,7 @@ public class OrderNumberServiceImpl implements OrderNumberService {
                 purchaseOrderqueryWrapper.orderByDesc(OpePurchaseOrder.COL_PURCHASE_NO);
                 purchaseOrderqueryWrapper.last("limit 1");
                 OpePurchaseOrder purchaseOrder = opePurchaseOrderService.getOne(purchaseOrderqueryWrapper);
-                if (purchaseOrder == null) {
+                if (StringManaConstant.entityIsNull(purchaseOrder)) {
                     // 今天还没有产生过单据 直接就是初始的单据号
                     orderNo = OrderNumberTypeEnums.PURHCAS.getValue() + DateUtil.getSimpleDateStamp() + "001";
                 } else {
@@ -126,7 +127,7 @@ public class OrderNumberServiceImpl implements OrderNumberService {
                 invoiceOrderQueryWrapper.orderByDesc(OpeInvoiceOrder.COL_INVOICE_NO);
                 invoiceOrderQueryWrapper.last("limit 1");
                 OpeInvoiceOrder invoiceOrder = opeInvoiceOrderService.getOne(invoiceOrderQueryWrapper);
-                if (invoiceOrder == null) {
+                if (StringManaConstant.entityIsNull(invoiceOrder)) {
                     // 今天还没有产生过单据 直接就是初始的单据号
                     orderNo = OrderNumberTypeEnums.INVOICE.getValue() + DateUtil.getSimpleDateStamp() + "001";
                 } else {
@@ -140,7 +141,7 @@ public class OrderNumberServiceImpl implements OrderNumberService {
                 outWhouseOrderQueryWrapper.orderByDesc(OpeOutWhouseOrder.COL_OUT_WH_NO);
                 outWhouseOrderQueryWrapper.last("limit 1");
                 OpeOutWhouseOrder outWhouseOrder = opeOutWhouseOrderService.getOne(outWhouseOrderQueryWrapper);
-                if (outWhouseOrder == null) {
+                if (StringManaConstant.entityIsNull(outWhouseOrder)) {
                     // 今天还没有产生过单据 直接就是初始的单据号
                     orderNo = OrderNumberTypeEnums.STOCK.getValue() + DateUtil.getSimpleDateStamp() + "001";
                 } else {
@@ -154,7 +155,7 @@ public class OrderNumberServiceImpl implements OrderNumberService {
                 entrustOrderQueryWrapper.orderByDesc(OpeEntrustOrder.COL_ENTRUST_NO);
                 entrustOrderQueryWrapper.last("limit 1");
                 OpeEntrustOrder entrustOrder = opeEntrustOrderService.getOne(entrustOrderQueryWrapper);
-                if (entrustOrder == null) {
+                if (StringManaConstant.entityIsNull(entrustOrder)) {
                     // 今天还没有产生过单据 直接就是初始的单据号
                     orderNo = OrderNumberTypeEnums.CONSIGN.getValue() + DateUtil.getSimpleDateStamp() + "001";
                 } else {
@@ -172,7 +173,7 @@ public class OrderNumberServiceImpl implements OrderNumberService {
                 productionPurchaseOrderQueryWrapper.orderByDesc(OpeProductionPurchaseOrder.COL_PURCHASE_NO);
                 productionPurchaseOrderQueryWrapper.last("limit 1");
                 OpeProductionPurchaseOrder productionPurchaseOrder = opeProductionPurchaseOrderService.getOne(productionPurchaseOrderQueryWrapper);
-                if (productionPurchaseOrder == null) {
+                if (StringManaConstant.entityIsNull(productionPurchaseOrder)) {
                     // 今天还没有产生过单据 直接就是初始的单据号
                     orderNo = OrderNumberTypeEnums.PRODUCTION_PURCHASE.getValue() + DateUtil.getSimpleDateStamp() + "001";
                 } else {
@@ -186,7 +187,7 @@ public class OrderNumberServiceImpl implements OrderNumberService {
                 inWhouseOrderQueryWrapper.orderByDesc(OpeInWhouseOrder.COL_IN_WH_NO);
                 inWhouseOrderQueryWrapper.last("limit 1");
                 OpeInWhouseOrder inWhouseOrder = opeInWhouseOrderService.getOne(inWhouseOrderQueryWrapper);
-                if (inWhouseOrder == null) {
+                if (StringManaConstant.entityIsNull(inWhouseOrder)) {
                     // 今天还没有产生过单据 直接就是初始的单据号
                     orderNo = OrderNumberTypeEnums.IN_WHOUSE.getValue() + DateUtil.getSimpleDateStamp() + "001";
                 } else {
@@ -200,7 +201,7 @@ public class OrderNumberServiceImpl implements OrderNumberService {
                 combinOrderQueryWrapper.orderByDesc(OpeCombinOrder.COL_COMBIN_NO);
                 combinOrderQueryWrapper.last("limit 1");
                 OpeCombinOrder combinOrder = opeCombinOrderService.getOne(combinOrderQueryWrapper);
-                if (combinOrder == null) {
+                if (StringManaConstant.entityIsNull(combinOrder)) {
                     // 今天还没有产生过单据 直接就是初始的单据号
                     orderNo = OrderNumberTypeEnums.COMBIN.getValue() + DateUtil.getSimpleDateStamp() + "001";
                 } else {
@@ -226,9 +227,9 @@ public class OrderNumberServiceImpl implements OrderNumberService {
         if (!StringUtils.isBlank(orderNumber)) {
             if (StringUtils.equals(String.valueOf(orderNumber.substring(3, 11)), dateStamp)) {
                 Integer serialNumber = Integer.valueOf(orderNumber.substring(orderNumber.length() - 3, orderNumber.length())) + 1;
-                if (serialNumber < 100 && serialNumber >= 10) {
+                if (100 > serialNumber && 10 <= serialNumber) {
                     return result.append(orderNumber.substring(0, 11)).append("0").append(String.valueOf(serialNumber)).toString();
-                } else if (serialNumber < 10) {
+                } else if (10 > serialNumber) {
                     return result.append(orderNumber.substring(0, 11)).append("00").append(String.valueOf(serialNumber)).toString();
                 } else {
                     return result.append(orderNumber.substring(0, 11)).append(String.valueOf(serialNumber)).toString();

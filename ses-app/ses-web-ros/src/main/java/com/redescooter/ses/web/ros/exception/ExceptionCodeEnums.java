@@ -610,7 +610,9 @@ public enum ExceptionCodeEnums {
 
     EXCEL_NO_DATA(10296, "EXCEL读取无数据"),
 
-    EXCEL_IMPORT_DATA_IS_EMPTY(10297, "导入数据为空");
+    EXCEL_IMPORT_DATA_IS_EMPTY(10297, "导入数据为空"),
+
+    INSERT_SCAN_CODE_RECORD_WRONG(10298, "该部件已被使用,请更换扫码");
 
     private int code;
 

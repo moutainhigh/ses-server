@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dm.OpeWithdrawalSite;
 import com.redescooter.ses.web.ros.service.base.OpeWithdrawalSiteService;
 import com.redescooter.ses.web.ros.service.wthdrawalsite.WthdrawalSiteServer;
@@ -136,7 +137,7 @@ public class WthdrawalSiteServerImpl implements WthdrawalSiteServer {
                 .eq(OpeWithdrawalSite::getId, enter.getId())
                 .last("limit 1"));
 
-        if (withdrawalSite != null) {
+        if (StringManaConstant.entityIsNotNull(withdrawalSite)) {
             BeanUtils.copyProperties(withdrawalSite, result);
         }
 

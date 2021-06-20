@@ -17,6 +17,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.restproduction.SaleScooterMapper;
 import com.redescooter.ses.web.ros.dm.OpeColor;
 import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
@@ -33,6 +34,7 @@ import com.redescooter.ses.web.ros.service.base.OpeSaleScooterService;
 import com.redescooter.ses.web.ros.service.base.OpeSpecificatGroupService;
 import com.redescooter.ses.web.ros.service.base.OpeSpecificatTypeService;
 import com.redescooter.ses.web.ros.service.restproduction.SaleScooterService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleProductionParaEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SaleScooterListResult;
@@ -132,7 +134,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         // 新增的校验
         check(enter);
         OpeSaleScooter saleScooter = opeSaleScooterService.getById(enter.getId());
-        if (saleScooter == null) {
+        if (StringManaConstant.entityIsNull(saleScooter)) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         saleScooter.setProductName(enter.getProductName());
@@ -207,11 +209,11 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         }
         QueryWrapper<OpeSaleScooter> qw = new QueryWrapper<>();
         qw.eq(OpeSaleScooter.COL_PRODUCT_CODE, enter.getProductCode());
-        if (enter.getId() != null) {
+        if (StringManaConstant.entityIsNotNull(enter.getId())) {
             qw.ne(OpeSaleScooter.COL_ID, enter.getId());
         }
         int count = opeSaleScooterService.count(qw);
-        if (count > 0) {
+        if (0 < count) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCTN_IS_EXIST.getCode(), ExceptionCodeEnums.PRODUCTN_IS_EXIST.getMessage());
         }
     }
@@ -220,7 +222,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
     // 通过过个类型的id  找到规格分组的id
     public Long findGroupId(Long specificatId) {
         OpeSpecificatType specificatType = specificatTypeService.getById(specificatId);
-        if (specificatType == null) {
+        if (StringManaConstant.entityIsNull(specificatType)) {
             throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
         }
         return specificatType.getGroupId();
@@ -231,7 +233,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult deleteSaleScooter(IdEnter enter) {
         OpeSaleScooter saleScooter = opeSaleScooterService.getById(enter.getId());
-        if (saleScooter == null) {
+        if (StringManaConstant.entityIsNull(saleScooter)) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         opeSaleScooterService.removeById(enter.getId());
@@ -260,7 +262,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
         }
         jedisService.delKey(key);
         OpeSaleScooter saleScooter = opeSaleScooterService.getById(enter.getId());
-        if (saleScooter == null) {
+        if (StringManaConstant.entityIsNull(saleScooter)) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
         Integer saleStutas = saleScooter.getSaleStutas();
@@ -322,7 +324,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
 
                 // 然后是颜色数据
                 OpeColor color = opeColorService.getById(saleScooter.getColorId());
-                if (color == null) {
+                if (StringManaConstant.entityIsNull(color)) {
                     throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
                 }
                 syncProductionDataEnter.setColourCode(color.getColorValue());
@@ -330,11 +332,11 @@ public class SaleScooterServiceImpl implements SaleScooterService {
 
                 // 接着是分组（高速、低速）数据
                 OpeSpecificatType specificatType = opeSpecificatTypeService.getById(saleScooter.getSpecificatId());
-                if (specificatType == null) {
+                if (StringManaConstant.entityIsNull(specificatType)) {
                     throw new SesWebRosException(ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getCode(), ExceptionCodeEnums.SPECIFICAT_TYPE_NOT_EXIST.getMessage());
                 }
                 OpeSpecificatGroup specificatGroup = opeSpecificatGroupService.getById(specificatType.getGroupId());
-                if (specificatGroup == null) {
+                if (StringManaConstant.entityIsNull(specificatGroup)) {
                     throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
                 }
                 syncProductionDataEnter.setProductClassName(specificatGroup.getGroupName());
@@ -363,7 +365,7 @@ public class SaleScooterServiceImpl implements SaleScooterService {
     @Override
     public PageResult<SaleScooterListResult> saleScooterList(SaleScooterListEnter enter) {
         int totalNum = saleScooterMapper.saleScooterTotal(enter);
-        if (totalNum == 0) {
+        if (NumberUtil.eqZero(totalNum)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<SaleScooterListResult> resultList = saleScooterMapper.saleScooterList(enter);

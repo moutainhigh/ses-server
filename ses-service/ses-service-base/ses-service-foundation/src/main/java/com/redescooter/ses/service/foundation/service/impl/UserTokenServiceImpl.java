@@ -1,6 +1,7 @@
 package com.redescooter.ses.service.foundation.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.google.common.base.Strings;
@@ -16,10 +17,12 @@ import com.redescooter.ses.api.common.enums.tenant.TenantStatusEnum;
 import com.redescooter.ses.api.common.enums.user.UserStatusEnum;
 import com.redescooter.ses.api.common.vo.base.BaseMailTaskEnter;
 import com.redescooter.ses.api.common.vo.base.BaseSendMailEnter;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.RefreshTokenEnter;
 import com.redescooter.ses.api.common.vo.base.SetPasswordEnter;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
 import com.redescooter.ses.api.common.vo.base.ValidateCodeEnter;
 import com.redescooter.ses.api.foundation.exception.FoundationException;
@@ -31,6 +34,7 @@ import com.redescooter.ses.api.foundation.vo.login.AccountsDto;
 import com.redescooter.ses.api.foundation.vo.login.LoginConfirmEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginEnter;
 import com.redescooter.ses.api.foundation.vo.login.LoginResult;
+import com.redescooter.ses.api.foundation.vo.message.PinEnter;
 import com.redescooter.ses.api.foundation.vo.user.GetUserEnter;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.api.hub.common.UserProfileService;
@@ -47,6 +51,7 @@ import com.redescooter.ses.service.foundation.dm.base.PlaUser;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserPassword;
 import com.redescooter.ses.service.foundation.dm.base.PlaUserPermission;
 import com.redescooter.ses.service.foundation.exception.ExceptionCodeEnums;
+import com.redescooter.ses.service.foundation.service.base.PlaUserPasswordService;
 import com.redescooter.ses.service.foundation.service.base.PlaUserService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.crypt.RsaUtils;
@@ -91,6 +96,9 @@ public class UserTokenServiceImpl implements UserTokenService {
 
     @Autowired
     private PlaUserPasswordMapper userPasswordMapper;
+
+    @Autowired
+    private PlaUserPasswordService plaUserPasswordService;
 
     @Autowired
     private PlaTenantMapper tenantMapper;
@@ -152,6 +160,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         } else if (enter.getAppId().equals(AppIDEnums.SAAS_APP.getValue())) {
             // ② APP端登录逻辑
             List<AccountsDto> checkAppUser = checkAppUser(enter);
+            log.info(checkAppUser.size() + ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             if (1 == checkAppUser.size()) {
                 return signIn(checkDefaultUser(enter), enter);
             } else {
@@ -729,6 +738,132 @@ public class UserTokenServiceImpl implements UserTokenService {
         result.setToken(token);
         result.setRefreshToken(refreshToken);
         return result;
+    }
+
+    /**
+     * 设置PIN
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult setPin(PinEnter enter) {
+        Boolean flag = jedisCluster.exists(enter.getToken());
+        if (!flag) {
+            throw new FoundationException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+        }
+        Map<String, String> map = jedisCluster.hgetAll(enter.getToken());
+        if (map == null) {
+            throw new FoundationException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+        }
+        UserToken userToken = new UserToken();
+        try {
+            org.apache.commons.beanutils.BeanUtils.populate(userToken, map);
+        } catch (Exception e) {
+            log.error("checkToken Exception sessionMap:" + map, e);
+        }
+
+        PlaUser plaUser = plaUserService.getById(userToken.getUserId());
+        if (null == plaUser) {
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+
+        LambdaQueryWrapper<PlaUserPassword> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(PlaUserPassword::getDr, Constant.DR_FALSE);
+        wrapper.eq(PlaUserPassword::getLoginName, plaUser.getLoginName());
+        wrapper.last("limit 1");
+        PlaUserPassword password = plaUserPasswordService.getOne(wrapper);
+        if (null == password) {
+            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        }
+
+        if (6 != enter.getFirstPin().length()) {
+            throw new FoundationException(ExceptionCodeEnums.LENGTH_ERROR.getCode(), ExceptionCodeEnums.LENGTH_ERROR.getMessage());
+        }
+        if (!enter.getFirstPin().equals(enter.getConfirmPin())) {
+            throw new FoundationException(ExceptionCodeEnums.PIN_TWO_INCONSISTENCIES.getCode(), ExceptionCodeEnums.PIN_TWO_INCONSISTENCIES.getMessage());
+        }
+        password.setDef1(enter.getFirstPin());
+        plaUserPasswordService.updateById(password);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 修改PIN时校验登录密码
+     */
+    @Override
+    public BooleanResult checkPwd(StringEnter enter) {
+        Boolean flag = jedisCluster.exists(enter.getToken());
+        if (!flag) {
+            throw new FoundationException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+        }
+        Map<String, String> map = jedisCluster.hgetAll(enter.getToken());
+        if (map == null) {
+            throw new FoundationException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+        }
+        UserToken userToken = new UserToken();
+        try {
+            org.apache.commons.beanutils.BeanUtils.populate(userToken, map);
+        } catch (Exception e) {
+            log.error("checkToken Exception sessionMap:" + map, e);
+        }
+
+        PlaUser plaUser = plaUserService.getById(userToken.getUserId());
+        if (null == plaUser) {
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+
+        LambdaQueryWrapper<PlaUserPassword> qw = new LambdaQueryWrapper<>();
+        qw.eq(PlaUserPassword::getDr, Constant.DR_FALSE);
+        qw.eq(PlaUserPassword::getLoginName, plaUser.getLoginName());
+        qw.last("limit 1");
+        PlaUserPassword password = plaUserPasswordService.getOne(qw);
+        if (null == password) {
+            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        }
+
+        String pwd = DigestUtils.md5Hex(enter.getKeyword() + password.getSalt());
+        if (StringUtils.equals(pwd, password.getPassword())) {
+            return new BooleanResult(Boolean.TRUE);
+        }
+        return new BooleanResult(Boolean.FALSE);
+    }
+
+    /**
+     * 登录后验证是否有设置过PIN
+     */
+    @Override
+    public BooleanResult verifyPin(GeneralEnter enter) {
+        Boolean flag = jedisCluster.exists(enter.getToken());
+        if (!flag) {
+            throw new FoundationException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+        }
+        Map<String, String> map = jedisCluster.hgetAll(enter.getToken());
+        if (map == null) {
+            throw new FoundationException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+        }
+        UserToken userToken = new UserToken();
+        try {
+            org.apache.commons.beanutils.BeanUtils.populate(userToken, map);
+        } catch (Exception e) {
+            log.error("checkToken Exception sessionMap:" + map, e);
+        }
+
+        PlaUser plaUser = plaUserService.getById(userToken.getUserId());
+        if (null == plaUser) {
+            throw new FoundationException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+
+        LambdaQueryWrapper<PlaUserPassword> qw = new LambdaQueryWrapper<>();
+        qw.eq(PlaUserPassword::getDr, Constant.DR_FALSE);
+        qw.eq(PlaUserPassword::getLoginName, plaUser.getLoginName());
+        qw.last("limit 1");
+        PlaUserPassword password = plaUserPasswordService.getOne(qw);
+        if (null == password) {
+            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
+        }
+        if (null == password.getDef1()) {
+            return new BooleanResult(Boolean.FALSE);
+        }
+        return new BooleanResult(Boolean.TRUE);
     }
 
     /**

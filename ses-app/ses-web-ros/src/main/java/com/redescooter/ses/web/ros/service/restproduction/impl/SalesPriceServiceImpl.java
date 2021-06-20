@@ -15,6 +15,8 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.service.JedisService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.base.OpePartsMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSalePartsMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSalePriceMapper;
@@ -34,6 +36,8 @@ import com.redescooter.ses.web.ros.service.base.OpeSalePriceService;
 import com.redescooter.ses.web.ros.service.base.OpeSaleScooterBatteryRelationService;
 import com.redescooter.ses.web.ros.service.base.OpeSetDepositService;
 import com.redescooter.ses.web.ros.service.restproduction.SalesPriceService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePriceListEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SalePriceSaveOrUpdateEnter;
 import com.redescooter.ses.web.ros.vo.restproduct.SetDepositEnter;
@@ -128,7 +132,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
     @Override
     public PageResult<OpeSalePrice> getSalePriceList(SalePriceListEnter enter) {
         int count = opeSalePriceMapper.getSalePriceCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<OpeSalePrice> list = opeSalePriceMapper.getSalePriceList(enter);
@@ -181,7 +185,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
     @Override
     public OpeSalePrice getSalePriceDetail(IdEnter enter) {
         OpeSalePrice price = opeSalePriceService.getById(enter.getId());
-        if (null == price) {
+        if (StringManaConstant.entityIsNull(price)) {
             throw new SesWebRosException(ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getCode(), ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getMessage());
         }
         return price;
@@ -198,7 +202,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         check(enter);
 
         OpeSalePrice price = opeSalePriceService.getById(enter.getId());
-        if (null == price) {
+        if (StringManaConstant.entityIsNull(price)) {
             throw new SesWebRosException(ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getCode(), ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getMessage());
         }
         price.setScooterBattery(enter.getScooterBattery());
@@ -206,13 +210,13 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         price.setUpdatedBy(enter.getUserId());
         price.setUpdatedTime(new Date());
         price.setTax(enter.getTax());
-        if (null != enter.getPeriod()) {
+        if (StringManaConstant.entityIsNotNull(enter.getPeriod())) {
             price.setPeriod(enter.getPeriod());
         }
-        if (null != enter.getShouldPayPeriod()) {
+        if (StringManaConstant.entityIsNotNull(enter.getShouldPayPeriod())) {
             price.setShouldPayPeriod(enter.getShouldPayPeriod());
         }
-        if (null != enter.getBalance()) {
+        if (StringManaConstant.entityIsNotNull(enter.getBalance())) {
             price.setBalance(enter.getBalance());
         }
         opeSalePriceService.updateById(price);
@@ -227,14 +231,14 @@ public class SalesPriceServiceImpl implements SalesPriceService {
         qw.eq(OpeSalePrice::getDr, Constant.DR_FALSE);
         qw.eq(OpeSalePrice::getType, enter.getType());
         qw.eq(OpeSalePrice::getScooterBattery, enter.getScooterBattery());
-        if (enter.getType() == 1 || enter.getType() == 3) {
+        if (1 == enter.getType() || 3 == enter.getType()) {
             qw.eq(OpeSalePrice::getPeriod, enter.getPeriod());
         }
-        if (null != enter.getId()) {
+        if (StringManaConstant.entityIsNotNull(enter.getId())) {
             qw.ne(OpeSalePrice::getId, enter.getId());
         }
         int count = opeSalePriceService.count(qw);
-        if (count > 0) {
+        if (0 < count) {
             throw new SesWebRosException(ExceptionCodeEnums.RULE_ALREADY_EXIST.getCode(), ExceptionCodeEnums.RULE_ALREADY_EXIST.getMessage());
         }
     }
@@ -246,7 +250,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult editSalePriceStatus(IdEnter enter) {
         OpeSalePrice price = opeSalePriceService.getById(enter.getId());
-        if (null == price) {
+        if (StringManaConstant.entityIsNull(price)) {
             throw new SesWebRosException(ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getCode(), ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getMessage());
         }
         Integer status = price.getStatus();
@@ -259,7 +263,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
     }
 
     public void syncSalePrice(OpeSalePrice price) {
-        if (price.getStatus() == 2) {
+        if (2 == price.getStatus()) {
             // 关闭的时候调
             syncPriceService.syncDeleteSalePrice(price.getScooterBattery(), price.getType(), price.getPeriod());
         } else {
@@ -285,7 +289,7 @@ public class SalesPriceServiceImpl implements SalesPriceService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult deleteSalePrice(IdEnter enter) {
         OpeSalePrice price = opeSalePriceService.getById(enter.getId());
-        if (null == price) {
+        if (StringManaConstant.entityIsNull(price)) {
             throw new SesWebRosException(ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getCode(), ExceptionCodeEnums.SALE_PRICE_IS_EMPTY.getMessage());
         }
         opeSalePriceService.removeById(enter.getId());

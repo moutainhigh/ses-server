@@ -54,6 +54,7 @@ import com.redescooter.ses.tool.utils.accountType.AccountTypeUtils;
 import com.redescooter.ses.tool.utils.chart.StatisticalUtil;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.CustomerServiceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSalePriceMapper;
@@ -70,6 +71,7 @@ import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.web.ros.service.base.OpeSalePriceService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.account.AccountDeatilResult;
 import com.redescooter.ses.web.ros.vo.account.AccountNodeResult;
 import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
@@ -172,7 +174,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     public BooleanResult checkMail(String mail) {
         QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeCustomer.COL_EMAIL, mail);
-        wrapper.eq(OpeCustomer.COL_DR, 0);
+        wrapper.eq(OpeCustomer.COL_DR, Constant.DR_FALSE);
         Boolean mailBoolean = opeCustomerMapper.selectCount(wrapper) == 1 ? Boolean.TRUE : Boolean.FALSE;
         return new BooleanResult(mailBoolean);
     }
@@ -189,7 +191,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         enter.setKeyword(SesStringUtils.stringTrim(enter.getKeyword()));
         QueryWrapper<OpeCustomer> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeCustomer.COL_EMAIL, enter.getKeyword());
-        wrapper.eq(OpeCustomer.COL_DR, 0);
+        wrapper.eq(OpeCustomer.COL_DR, Constant.DR_FALSE);
         wrapper.ne(OpeCustomer.COL_STATUS, CustomerStatusEnum.TRASH_CUSTOMER.getValue());
         Integer count = opeCustomerMapper.selectCount(wrapper);
         return new IntResult(count);
@@ -214,7 +216,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         queryWrapper.eq(OpeCustomer.COL_EMAIL, enter.getEmail());
         Integer count = opeCustomerMapper.selectCount(queryWrapper);
 
-        if (count > 0) {
+        if (0 < count) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
 
@@ -294,7 +296,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         // 找到E50的产品ID
         Long productId = customerServiceMapper.getProductId();
-        if (null == productId) {
+        if (StringManaConstant.entityIsNull(productId)) {
             throw new SesWebRosException(ExceptionCodeEnums.PLEASE_MAINTAIN.getCode(), ExceptionCodeEnums.PLEASE_MAINTAIN.getMessage());
         }
         inquiry.setProductId(productId);
@@ -344,7 +346,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         queryWrapper.orderByDesc(OpeCustomerInquiry.COL_ORDER_NO);
         queryWrapper.last("limit 1");
         OpeCustomerInquiry inquiry = opeCustomerInquiryService.getOne(queryWrapper);
-        if (inquiry != null) {
+        if (StringManaConstant.entityIsNotNull(inquiry)) {
             // 说明今天已经有过单据了  只需要流水号递增
             code = OrderNoGenerateUtil.orderNoGenerate(inquiry.getOrderNo(), orderNoEnum);
         } else {
@@ -377,19 +379,19 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         queryWrapper.ne(OpeCustomer.COL_ID, enter.getId());
         Integer count = opeCustomerMapper.selectCount(queryWrapper);
 
-        if (count > 0) {
+        if (0 < count) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
 
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
-        if (customer == null) {
+        if (StringManaConstant.entityIsNull(customer)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         Long tenantId = customer.getTenantId();
-        if (customer.getStatus().equals(CustomerStatusEnum.TRASH_CUSTOMER.getValue())) {
+        if (CustomerStatusEnum.TRASH_CUSTOMER.getValue().equals(customer.getStatus())) {
             throw new SesWebRosException(ExceptionCodeEnums.TRASH_CAN_NOT_BE_EDITED.getCode(), ExceptionCodeEnums.TRASH_CAN_NOT_BE_EDITED.getMessage());
         }
-        if (customer.getStatus().equals(CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue())) {
+        if (CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue().equals(customer.getStatus())) {
             //客户验证
             checkCustomer(enter);
             // 客户行业 类型不可修改
@@ -408,7 +410,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             editUserProfileEnter.setTelNumber1(enter.getTelephone());
             List<Integer> userTypeList = new ArrayList<>();
             // 已创建的是web 账户
-            if (customer.getTenantId() != 0) {
+            if (0 != customer.getTenantId()) {
                 // corporate的用户文件表会存在邮箱重复的可能，所以这里需要取到platform的userId，带进去作为条件查询
                 userTypeList.add(AccountTypeEnums.WEB_RESTAURANT.getAccountType().intValue());
                 userTypeList.add(AccountTypeEnums.WEB_EXPRESS.getAccountType().intValue());
@@ -416,7 +418,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
                 // saas 更新个人信息
                 userProfileService.editUserProfile2B(editUserProfileEnter);
             }
-            if (customer.getTenantId() == 0 && StringUtils.equals(CustomerTypeEnum.PERSONAL.getValue(), customer.getCustomerType())) {
+            if (0 == customer.getTenantId() && StringUtils.equals(CustomerTypeEnum.PERSONAL.getValue(), customer.getCustomerType())) {
                 // TOc 更新个人信息
                 userTypeList.add(AccountTypeEnums.APP_PERSONAL.getAccountType().intValue());
                 editUserProfileEnter.setUserId(userBaseService.getUserId(customer.getEmail(), userTypeList));
@@ -425,7 +427,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
         if (!enter.getEmail().equals(customer.getEmail())) {
             //潜在客户允许编辑邮箱，但不允许重复
-            if (checkMailCount(new StringEnter(enter.getEmail())).getValue() > 0) {
+            if (0 < checkMailCount(new StringEnter(enter.getEmail())).getValue()) {
                 throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
             }
         }
@@ -463,55 +465,55 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     private void checkEditCustomerFiledSingle(EditCustomerEnter enter) {
         //字段校验
         if (StringUtils.isNotEmpty(enter.getContactFirstName())) {
-            if (enter.getContactFirstName().length() < 2 || enter.getContactFirstName().length() > 20) {
+            if (NumberUtil.ltTwoOrGtTwenty(enter.getContactFirstName().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
             }
         }
         if (StringUtils.isNotEmpty(enter.getContactLastName())) {
-            if (enter.getContactLastName().length() < 2 || enter.getContactLastName().length() > 20) {
+            if (NumberUtil.ltTwoOrGtTwenty(enter.getContactLastName().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
             }
         }
         if (StringUtils.isNotEmpty(enter.getCompanyName())) {
-            if (enter.getCompanyName().length() < 2 || enter.getCompanyName().length() > 30) {
+            if (NumberUtil.ltTwoOrGtThirty(enter.getCompanyName().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.COMPANY_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.COMPANY_NAME_IS_NOT_ILLEGAL.getMessage());
             }
         }
         //名称校验
         if (StringUtils.isNotEmpty(enter.getCustomerFirstName())) {
-            if (enter.getCustomerFirstName().length() < 2 || enter.getCustomerFirstName().length() > 20) {
+            if (NumberUtil.ltTwoOrGtTwenty(enter.getCustomerFirstName().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getMessage());
             }
         }
         if (StringUtils.isNotEmpty(enter.getCustomerLastName())) {
-            if (enter.getCustomerLastName().length() < 2 || enter.getCustomerLastName().length() > 20) {
+            if (NumberUtil.ltTwoOrGtTwenty(enter.getCustomerLastName().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getMessage());
             }
         }
         if (StringUtils.isNotEmpty(enter.getRemark())) {
-            if (enter.getRemark().length() < 2 || enter.getRemark().length() > 200) {
+            if (NumberUtil.ltTwoOrGtTwoHundred(enter.getRemark().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getMessage());
             }
         }
         if (StringUtils.isNotEmpty(enter.getInvoiceNum())) {
             //发票号
-            if (enter.getInvoiceNum().length() < 2 || enter.getInvoiceNum().length() > 30) {
+            if (NumberUtil.ltTwoOrGtThirty(enter.getInvoiceNum().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.INVOICE_NUM_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.INVOICE_NUM_IS_NOT_ILLEGAL.getMessage());
             }
         }
         if (StringUtils.isNotEmpty(enter.getBusinessLicenseNum())) {
             //营业执照编号 校验
-            if (enter.getBusinessLicenseNum().length() < 2 || enter.getBusinessLicenseNum().length() > 30) {
+            if (NumberUtil.ltTwoOrGtThirty(enter.getBusinessLicenseNum().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.BUSSINESS_NUM_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.BUSSINESS_NUM_IS_NOT_ILLEGAL.getMessage());
             }
         }
-        if (enter.getScooterQuantity() != null) {
-            if (String.valueOf(enter.getScooterQuantity()).length() < 1 || String.valueOf(enter.getScooterQuantity()).length() > 6) {
+        if (StringManaConstant.entityIsNotNull(enter.getScooterQuantity())) {
+            if (NumberUtil.ltOneOrGtSix(String.valueOf(enter.getScooterQuantity()).length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_QTY_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.SCOOTER_QTY_IS_NOT_ILLEGAL.getMessage());
             }
         }
         if (Strings.isNotBlank(enter.getTelephone())) {
-            if (enter.getTelephone().length() < 8 || enter.getTelephone().length() > 20) {
+            if (NumberUtil.ltEightOrGtTwenty(enter.getTelephone().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
             }
         }
@@ -521,7 +523,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             int secondIndex = email.lastIndexOf(".");
 
             // 1.必须包含@ 2.必须包含. 3.@必须在.之前 4..后至少要有一位
-            if (firstIndex == -1 || secondIndex == -1 || firstIndex > secondIndex || email.endsWith(".")) {
+            if (-1 == firstIndex || -1 == secondIndex || firstIndex > secondIndex || email.endsWith(".")) {
                 throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
             }
         }
@@ -537,7 +539,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public DetailsCustomerResult details(IdEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
-        if (opeCustomer == null) {
+        if (StringManaConstant.entityIsNull(opeCustomer)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         DetailsCustomerResult result = new DetailsCustomerResult();
@@ -596,7 +598,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     private OpeSysUserProfile getOpeSysUserProfile(Long userId) {
         QueryWrapper<OpeSysUserProfile> updated = new QueryWrapper<>();
         updated.eq(OpeSysUserProfile.COL_SYS_USER_ID, userId);
-        updated.eq(OpeSysUserProfile.COL_DR, 0);
+        updated.eq(OpeSysUserProfile.COL_DR, Constant.DR_FALSE);
         updated.last("limit 1");
         OpeSysUserProfile profile = sysUserProfileMapper.selectOne(updated);
         return profile;
@@ -636,11 +638,11 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public PageResult<DetailsCustomerResult> list(ListCustomerEnter page) {
-        if (page.getKeyword() != null && page.getKeyword().length() > 50) {
+        if (NumberUtil.notNullAndGtFifty(page.getKeyword())) {
             return PageResult.createZeroRowResult(page);
         }
         int totalRows = customerServiceMapper.customerListCount(page);
-        if (totalRows == 0) {
+        if (NumberUtil.eqZero(totalRows)) {
             return PageResult.createZeroRowResult(page);
         }
 
@@ -690,17 +692,17 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         //验证客户是否开通SaaS账户等信息
         OpeCustomer customer = opeCustomerMapper.selectById(enter.getId());
-        if (customer == null) {
+        if (StringManaConstant.entityIsNull(customer)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         // 校验该客户是否已激活
         if (userBaseService.checkActivat(customer.getEmail())) {
             throw new SesWebRosException(ExceptionCodeEnums.ACTIVATION_CUSTOMER_NOT_DELETE.getCode(), ExceptionCodeEnums.ACTIVATION_CUSTOMER_NOT_DELETE.getMessage());
         }
-        if (customer.getAccountFlag().equals(CustomerAccountFlagEnum.ACTIVATION.getValue())) {
+        if (CustomerAccountFlagEnum.ACTIVATION.getValue().equals(customer.getAccountFlag())) {
             throw new SesWebRosException(ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getCode(), ExceptionCodeEnums.INSUFFICIENT_PERMISSIONS.getMessage());
         }
-        if (customer.getAccountFlag().equals(CustomerAccountFlagEnum.INACTIVATED.getValue())) {
+        if (CustomerAccountFlagEnum.INACTIVATED.getValue().equals(customer.getAccountFlag())) {
             accountBaseService.deleteUser(DeleteUserEnter.builder().email(customer.getEmail()).build());
         }
         OpeCustomer update = new OpeCustomer();
@@ -729,7 +731,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         checkCustomer.setCityName(customer.getDef2());
         checkCustomer(checkCustomer);
 
-        if (customer == null) {
+        if (StringManaConstant.entityIsNull(customer)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         if (!customer.getStatus().equals(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue())) {
@@ -742,7 +744,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             query.eq(OpeCustomerInquiry.COL_CUSTOMER_ID, customer.getId());
             query.eq(OpeCustomerInquiry.COL_PAY_STATUS, InquiryPayStatusEnums.PAY_LAST_PARAGRAPH.getValue());
             int count = opeCustomerInquiryService.count(query);
-            if (count == 0) {
+            if (NumberUtil.eqZero(count)) {
                 // 说明当前客户没有支付完的订单
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_ORDER_NOT_PAY.getCode(), ExceptionCodeEnums.CUSTOMER_ORDER_NOT_PAY.getMessage());
             }
@@ -790,7 +792,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public GeneralResult openAccount(OpenAccountEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
-        if (opeCustomer == null) {
+        if (StringManaConstant.entityIsNull(opeCustomer)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         // todo 存在漏洞 先创建 Driver 账户 ---》 web或者TOC 账户是能够通过校验的
@@ -836,11 +838,11 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public PageResult<AccountListResult> accountList(AccountListEnter enter) {
-        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+        if (NumberUtil.notNullAndGtFifty(enter.getKeyword())) {
             return PageResult.createZeroRowResult(enter);
         }
         int countCustomer = customerServiceMapper.customerAccountCount(enter);
-        if (countCustomer == 0) {
+        if (NumberUtil.eqZero(countCustomer)) {
             return PageResult.createZeroRowResult(enter);
         }
         // 查询内容
@@ -854,7 +856,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         BeanUtils.copyProperties(enter, queryAccountListEnter);
         queryAccountListEnter.setEmailList(emailList);
         Integer customerAccountCount = accountBaseService.customerAccountCount(queryAccountListEnter);
-        if (customerAccountCount == 0) {
+        if (NumberUtil.eqZero(customerAccountCount)) {
             return PageResult.createZeroRowResult(enter);
         }
 
@@ -906,7 +908,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     public List<AccountNodeResult> accountNode(IdEnter enter) {
         List<AccountNodeResult> resultList = new ArrayList<>();
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
-        if (opeCustomer == null) {
+        if (StringManaConstant.entityIsNull(opeCustomer)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
 
@@ -918,7 +920,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             });
             QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
             opeSysUserProfileQueryWrapper.in(OpeSysUserProfile.COL_SYS_USER_ID, new ArrayList<>(sysUseIds));
-            opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
+            opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, Constant.DR_FALSE);
             List<OpeSysUserProfile> sysUserProfileList = sysUserProfileMapper.selectList(opeSysUserProfileQueryWrapper);
             queryAccountNodeDetailResultList.forEach(node -> {
                 sysUserProfileList.forEach(sysUser -> {
@@ -948,7 +950,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public AccountDeatilResult accountDeatil(IdEnter enter) {
         OpeCustomer customerInfo = opeCustomerMapper.selectById(enter.getId());
-        if (customerInfo == null) {
+        if (StringManaConstant.entityIsNull(customerInfo)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
 
@@ -968,7 +970,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         // 获取账户信息
         QueryAccountResult queryAccountResult = accountBaseService.customerAccountDeatil(customerInfo.getEmail());
-        if (queryAccountResult != null && StringUtils.equals(queryAccountResult.getEmail(), customerInfo.getEmail())) {
+        if (StringManaConstant.entityIsNotNull(queryAccountResult) && StringUtils.equals(queryAccountResult.getEmail(), customerInfo.getEmail())) {
             accountReslut.setStatus(queryAccountResult.getStatus());
             accountReslut.setActivationTime(queryAccountResult.getActivationTime());
             accountReslut.setExpireTime(queryAccountResult.getExpirationTime());
@@ -988,7 +990,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public GeneralResult freezeAccount(IdEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
-        if (opeCustomer == null) {
+        if (StringManaConstant.entityIsNull(opeCustomer)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
 
@@ -1012,7 +1014,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public GeneralResult unFreezeAccount(IdEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
-        if (opeCustomer == null) {
+        if (StringManaConstant.entityIsNull(opeCustomer)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         BaseCustomerResult baseCustomer = new BaseCustomerResult();
@@ -1035,7 +1037,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @Override
     public GeneralResult renewAccont(RenewAccountEnter enter) {
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
-        if (opeCustomer == null) {
+        if (StringManaConstant.entityIsNull(opeCustomer)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         BaseCustomerResult baseCustomer = new BaseCustomerResult();
@@ -1101,7 +1103,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
 
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
-        if (opeCustomer == null) {
+        if (StringManaConstant.entityIsNull(opeCustomer)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
 
@@ -1129,7 +1131,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         List<BaseUserResult> userList = userBaseService.queryEmailInfo(new StringEnter(customer.getEmail()));
 
-        if (userList == null || userList.size() == 0) {
+        if (CollectionUtils.isEmpty(userList)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         //获取账户类型
@@ -1185,10 +1187,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      */
     public void checkCustomer(EditCustomerEnter enter) {
-        if (enter.getId() == null) {
+        if (StringManaConstant.entityIsNull(enter.getId())) {
             throw new SesWebRosException(ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.PRIMARY_KEY_CANNOT_EMPTY.getMessage());
         }
-        if (enter.getCityName() == null) {
+        if (StringManaConstant.entityIsNull(enter.getCityName())) {
             throw new SesWebRosException(ExceptionCodeEnums.CITY_CANNOT_EMPTY.getCode(), ExceptionCodeEnums.CITY_CANNOT_EMPTY.getMessage());
         }
         if (enter.getCustomerType().equals(CustomerTypeEnum.PERSONAL.getValue())) {
@@ -1315,7 +1317,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         if (StringUtils.isNotEmpty(customer.getContractAnnex())) {
             count++;
         }
-        if (customer.getScooterQuantity() != null && customer.getScooterQuantity() != 0) {
+        if (StringManaConstant.entityIsNotNull(customer.getScooterQuantity()) && 0 != customer.getScooterQuantity()) {
             count++;
         }
 
@@ -1359,55 +1361,55 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     private void checkSaveCustomerFiledSingle(CreateCustomerEnter enter) {
         if (StringUtils.isNotEmpty(enter.getContactFirstName())) {
-            if (enter.getContactFirstName().length() < 2 || enter.getContactFirstName().length() > 20) {
+            if (NumberUtil.ltTwoOrGtTwenty(enter.getContactFirstName().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
             }
         }
         if (StringUtils.isNotEmpty(enter.getContactLastName())) {
-            if (enter.getContactLastName().length() < 2 || enter.getContactLastName().length() > 20) {
+            if (NumberUtil.ltTwoOrGtTwenty(enter.getContactLastName().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
             }
         }
         if (StringUtils.isNotEmpty(enter.getCompanyName())) {
-            if (enter.getCompanyName().length() < 2 || enter.getCompanyName().length() > 30) {
+            if (NumberUtil.ltTwoOrGtThirty(enter.getCompanyName().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.COMPANY_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.COMPANY_NAME_IS_NOT_ILLEGAL.getMessage());
             }
         }
         //名称校验
         if (StringUtils.isNotEmpty(enter.getCustomerFirstName())) {
-            if (enter.getCustomerFirstName().length() < 2 || enter.getCustomerFirstName().length() > 20) {
+            if (NumberUtil.ltTwoOrGtTwenty(enter.getCustomerFirstName().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getMessage());
             }
         }
         if (StringUtils.isNotEmpty(enter.getCustomerLastName())) {
-            if (enter.getCustomerLastName().length() < 2 || enter.getCustomerLastName().length() > 20) {
+            if (NumberUtil.ltTwoOrGtTwenty(enter.getCustomerLastName().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getMessage());
             }
         }
         if (StringUtils.isNotEmpty(enter.getRemark())) {
-            if (enter.getRemark().length() < 2 || enter.getRemark().length() > 200) {
+            if (NumberUtil.ltTwoOrGtTwoHundred(enter.getRemark().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getMessage());
             }
         }
         if (StringUtils.isNotEmpty(enter.getInvoiceNum())) {
             //发票号
-            if (enter.getInvoiceNum().length() < 2 || enter.getInvoiceNum().length() > 30) {
+            if (NumberUtil.ltTwoOrGtThirty(enter.getInvoiceNum().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.INVOICE_NUM_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.INVOICE_NUM_IS_NOT_ILLEGAL.getMessage());
             }
         }
         if (StringUtils.isNotEmpty(enter.getBusinessLicenseNum())) {
             //营业执照编号 校验
-            if (enter.getBusinessLicenseNum().length() < 2 || enter.getBusinessLicenseNum().length() > 30) {
+            if (NumberUtil.ltTwoOrGtThirty(enter.getBusinessLicenseNum().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.BUSSINESS_NUM_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.BUSSINESS_NUM_IS_NOT_ILLEGAL.getMessage());
             }
         }
-        if (enter.getScooterQuantity() != null) {
-            if (String.valueOf(enter.getScooterQuantity()).length() < 1 || String.valueOf(enter.getScooterQuantity()).length() > 6) {
+        if (StringManaConstant.entityIsNotNull(enter.getScooterQuantity())) {
+            if (NumberUtil.ltOneOrGtSix(String.valueOf(enter.getScooterQuantity()).length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_QTY_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.SCOOTER_QTY_IS_NOT_ILLEGAL.getMessage());
             }
         }
         if (Strings.isNotBlank(enter.getTelephone())) {
-            if (enter.getTelephone().length() < 8 || enter.getTelephone().length() > 20) {
+            if (NumberUtil.ltEightOrGtTwenty(enter.getTelephone().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
             }
         }
@@ -1417,7 +1419,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             int secondIndex = email.lastIndexOf(".");
 
             // 1.必须包含@ 2.必须包含. 3.@必须在.之前 4..后至少要有一位
-            if (firstIndex == -1 || secondIndex == -1 || firstIndex > secondIndex || email.endsWith(".")) {
+            if (-1 == firstIndex || -1 == secondIndex || firstIndex > secondIndex || email.endsWith(".")) {
                 throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
             }
         }

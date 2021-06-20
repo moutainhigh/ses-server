@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.factory.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.account.SysUserStatusEnum;
 import com.redescooter.ses.api.common.enums.factory.FactoryEventEnum;
 import com.redescooter.ses.api.common.enums.factory.FactoryStatusEnum;
@@ -24,6 +25,7 @@ import com.redescooter.ses.web.ros.service.base.OpeFactoryService;
 import com.redescooter.ses.web.ros.service.base.OpeFactoryTraceService;
 import com.redescooter.ses.web.ros.service.base.OpeSysRpsUserService;
 import com.redescooter.ses.web.ros.service.factory.FactoryRosService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.factory.FactoryEditEnter;
 import com.redescooter.ses.web.ros.vo.factory.FactoryPage;
 import com.redescooter.ses.web.ros.vo.factory.FactoryResult;
@@ -155,7 +157,7 @@ public class FactoryRosServiceImpl implements FactoryRosService {
     public Boolean checkMail(String mail, String idStr) {
         QueryWrapper<OpeFactory> wrapper = new QueryWrapper<>();
         wrapper.eq(OpeFactory.COL_CONTACT_EMAIL, mail);
-        wrapper.eq(OpeFactory.COL_DR, 0);
+        wrapper.eq(OpeFactory.COL_DR, Constant.DR_FALSE);
         if (!Strings.isNullOrEmpty(idStr)) {
             // 修改的时候,排除当前的这条数据
             wrapper.ne(OpeFactory.COL_ID, Long.parseLong(idStr));
@@ -212,11 +214,11 @@ public class FactoryRosServiceImpl implements FactoryRosService {
 
     @Override
     public PageResult<FactoryResult> list(FactoryPage page) {
-        if (page.getKeyword() != null && page.getKeyword().length() > 50) {
+        if (NumberUtil.notNullAndGtFifty(page.getKeyword())) {
             return PageResult.createZeroRowResult(page);
         }
         int count = factoryServiceMapper.listCount(page);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(page);
         }
 
@@ -229,7 +231,7 @@ public class FactoryRosServiceImpl implements FactoryRosService {
     public GeneralResult saveFactoryTrace(String event, OpeFactory factory) {
         OpeFactoryTrace trace = new OpeFactoryTrace();
         trace.setId(idAppService.getId(SequenceName.OPE_FACTORY_TRACE));
-        trace.setDr(0);
+        trace.setDr(Constant.DR_FALSE);
         trace.setFactoryId(factory.getId());
         trace.setTenantId(factory.getTenantId());
         trace.setUserId(factory.getUserId());
@@ -246,25 +248,25 @@ public class FactoryRosServiceImpl implements FactoryRosService {
     }
 
     private void checkSaveFactoryParameter(FactorySaveEnter enter) {
-        if (enter.getFactoryName().length() < 2 || enter.getFactoryName().length() > 40) {
+        if (NumberUtil.ltTwoOrGtForty(enter.getFactoryName().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.FACTORY_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.FACTORY_NAME_IS_NOT_ILLEGAL.getMessage());
         }
-        if (enter.getFactoryAddress().length() < 2 || enter.getFactoryAddress().length() > 40) {
+        if (NumberUtil.ltTwoOrGtForty(enter.getFactoryAddress().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.FACTORY_ADDRESS_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.FACTORY_ADDRESS_IS_NOT_ILLEGAL.getMessage());
         }
-        if (enter.getContactFullName().length() < 2 || enter.getContactFullName().length() > 20) {
+        if (NumberUtil.ltTwoOrGtTwenty(enter.getContactFullName().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
         }
-        if (enter.getContactEmail().length() < 2 || enter.getContactEmail().length() > 50 || !enter.getContactEmail().contains("@")) {
+        if (NumberUtil.ltTwoOrGtFifty(enter.getContactEmail().length()) || !enter.getContactEmail().contains("@")) {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
         }
-        if (enter.getContactPhone().length() < 2 || enter.getContactPhone().length() > 20) {
+        if (NumberUtil.ltTwoOrGtTwenty(enter.getContactPhone().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
         }
-        if (enter.getFactoryTag().length() < 2 || enter.getFactoryTag().length() > 20) {
+        if (NumberUtil.ltTwoOrGtTwenty(enter.getFactoryTag().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.FACTORY_TAG_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.FACTORY_TAG_IS_NOT_ILLEGAL.getMessage());
         }
-        if (enter.getBusinessNumber().length() < 2 || enter.getBusinessNumber().length() > 20) {
+        if (NumberUtil.ltTwoOrGtTwenty(enter.getBusinessNumber().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.ILLEGAL_BUSINESS_LICENSE_NUMBER.getCode(), ExceptionCodeEnums.ILLEGAL_BUSINESS_LICENSE_NUMBER.getMessage());
         }
     }

@@ -9,6 +9,7 @@ import com.redescooter.ses.api.foundation.service.setting.ParameterSettingServic
 import com.redescooter.ses.api.foundation.vo.setting.ParameterGroupResultList;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
 import com.redescooter.ses.app.common.service.excel.ImportExcelService;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpePartsDraft;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -79,7 +80,7 @@ public class ExcelServiceImpl implements ExcelService {
 
         ExcelImportResult<ExpressPartsExcleData> excelImportResult = importExcelService.setiExcelVerifyHandler(new PartsExcelVerifyHandlerImpl()).importOssExcel(enter.getUrl(),
                 ExpressPartsExcleData.class, new ImportParams());
-        if (excelImportResult == null) {
+        if (StringManaConstant.entityIsNull(excelImportResult)) {
             throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
         }
 
@@ -87,7 +88,7 @@ public class ExcelServiceImpl implements ExcelService {
         List<ExpressPartsExcleData> failList = excelImportResult.getFailList();
 
         //验证是否有不合法的Eecel数据
-        if (failList.size() > 0) {
+        if (0 < failList.size()) {
             Map<String, String> map = null;
             List<Map<String, String>> errorMsgList = new ArrayList<>();
             result.setSuccess(Boolean.FALSE);
@@ -176,7 +177,7 @@ public class ExcelServiceImpl implements ExcelService {
 
         ExcelImportResult<ImportParameterExcleData> excelImportResult = importExcelService.setiExcelVerifyHandler(new ParameterExcelVerifyHandlerImpl()).importOssExcel(enter.getUrl(),
                 ImportParameterExcleData.class, new ImportParams());
-        if (excelImportResult == null) {
+        if (StringManaConstant.entityIsNull(excelImportResult)) {
             throw new SesWebRosException(ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getCode(), ExceptionCodeEnums.FILE_TEMPLATE_IS_INVALID.getMessage());
         }
 

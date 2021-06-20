@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.enums.wms.WhOutStatusEnums;
 import com.redescooter.ses.api.common.enums.wms.WmsStockClassTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.wms.cn.WmsServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeWhse;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -15,6 +16,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeOutwhOrderService;
 import com.redescooter.ses.web.ros.service.base.OpeWhseService;
 import com.redescooter.ses.web.ros.service.wms.cn.WmsStockService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.wms.cn.WmsStockAvailableResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.WmsStockEnter;
 import lombok.extern.slf4j.Slf4j;
@@ -91,7 +93,7 @@ public class WmsStockServiceImpl implements WmsStockService {
      */
     @Override
     public PageResult<WmsStockAvailableResult> list(WmsStockEnter enter) {
-        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+        if (NumberUtil.notNullAndGtFifty(enter.getKeyword())) {
             return PageResult.createZeroRowResult(enter);
         }
 
@@ -107,7 +109,7 @@ public class WmsStockServiceImpl implements WmsStockService {
         OpeWhse assemblyWh = whselist.stream().filter(item -> StringUtils.equals(item.getType(), WhseTypeEnums.ASSEMBLY.getValue())).findFirst().orElse(null);
         OpeWhse purchasWh = whselist.stream().filter(item -> StringUtils.equals(item.getType(), WhseTypeEnums.PURCHAS.getValue())).findFirst().orElse(null);
 
-        if (allocateWh == null || assemblyWh == null) {
+        if (StringManaConstant.entityIsNull(allocateWh) || StringManaConstant.entityIsNull(assemblyWh)) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
         }
 
@@ -134,12 +136,12 @@ public class WmsStockServiceImpl implements WmsStockService {
             stockResult = wmsServiceMapper.wmsOutWhStockList(enter, CurrencyUnitEnums.FR.getValue());
         }
 
-        if (totalRows == 0) {
+        if (NumberUtil.eqZero(totalRows)) {
             return PageResult.createZeroRowResult(enter);
         }
         stockResult.forEach(item ->
         {
-            if (item.getPrice() != null && item.getIntTotal() != null) {
+            if (StringManaConstant.entityIsNotNull(item.getPrice()) && StringManaConstant.entityIsNotNull(item.getIntTotal())) {
                 item.setPrice(item.getIntTotal() * item.getPrice());
             }
         });

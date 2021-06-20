@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.IntResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.date.DateUtil;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.OpeWmsStockSerialNumberMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsFinishStockMapper;
 import com.redescooter.ses.web.ros.dao.wms.cn.china.WmsMaterialStockMapper;
@@ -26,6 +27,7 @@ import com.redescooter.ses.web.ros.service.base.OpeWmsPartsStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsQualifiedScooterStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsScooterStockService;
 import com.redescooter.ses.web.ros.service.wms.cn.fr.FrWhService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.WmsDetailResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.MaterialStockPartsListEnter;
@@ -153,7 +155,7 @@ public class FrWhServiceImpl implements FrWhService {
     public PageResult<WmsFinishScooterListResult> frScooterList(WmsFinishScooterListEnter enter) {
         SesStringUtils.objStringTrim(enter);
         int totalRows = wmsFinishStockMapper.frScooterTotalRows(enter);
-        if (totalRows == 0) {
+        if (NumberUtil.eqZero(totalRows)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<WmsFinishScooterListResult> list = wmsFinishStockMapper.frScooterList(enter);
@@ -170,7 +172,7 @@ public class FrWhServiceImpl implements FrWhService {
     @Override
     public WmsfinishScooterDetailResult frScooterDetail(IdEnter enter) {
         OpeWmsScooterStock scooterStock = opeWmsScooterStockService.getById(enter.getId());
-        if (scooterStock == null) {
+        if (StringManaConstant.entityIsNull(scooterStock)) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
         WmsfinishScooterDetailResult result = wmsFinishStockMapper.finishScooterDetail(enter.getId());
@@ -190,7 +192,7 @@ public class FrWhServiceImpl implements FrWhService {
     public PageResult<WmsFinishCombinListResult> frCombinList(CombinationListEnter enter) {
         SesStringUtils.objStringTrim(enter);
         int totalRows = wmsFinishStockMapper.combinCotalRows(enter);
-        if (totalRows == 0) {
+        if (NumberUtil.eqZero(totalRows)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<WmsFinishCombinListResult> list = wmsFinishStockMapper.finishCombinList(enter);
@@ -207,7 +209,7 @@ public class FrWhServiceImpl implements FrWhService {
     @Override
     public WmsfinishCombinDetailResult frCombinDetail(IdEnter enter) {
         OpeWmsCombinStock combinStock = opeWmsCombinStockService.getById(enter.getId());
-        if (combinStock == null) {
+        if (StringManaConstant.entityIsNull(combinStock)) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
         WmsfinishCombinDetailResult result = wmsFinishStockMapper.finishCombinDetail(enter.getId());
@@ -228,16 +230,16 @@ public class FrWhServiceImpl implements FrWhService {
     public PageResult<MaterialStockPartsListResult> frPartsList(MaterialStockPartsListEnter enter) {
         SesStringUtils.objStringTrim(enter);
         int totalRows = wmsMaterialStockMapper.frPartsCotalRows(enter);
-        if (totalRows == 0) {
+        if (NumberUtil.eqZero(totalRows)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<MaterialStockPartsListResult> list = wmsMaterialStockMapper.frPartsList(enter);
         if (CollectionUtils.isNotEmpty(list)) {
             for (MaterialStockPartsListResult model : list) {
                 Long partsId = model.getPartsId();
-                if (null != partsId) {
+                if (StringManaConstant.entityIsNotNull(partsId)) {
                     OpeProductionParts parts = opeProductionPartsService.getById(partsId);
-                    if (null != parts) {
+                    if (StringManaConstant.entityIsNotNull(parts)) {
                         Integer idClass = parts.getIdCalss();
                         model.setIdClass(idClass);
                     }
@@ -257,7 +259,7 @@ public class FrWhServiceImpl implements FrWhService {
     @Override
     public MaterialpartsStockDetailResult frPartsDetail(IdEnter enter) {
         OpeWmsPartsStock partsStock = opeWmsPartsStockService.getById(enter.getId());
-        if (partsStock == null) {
+        if (StringManaConstant.entityIsNull(partsStock)) {
             throw new SesWebRosException(ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getCode(), ExceptionCodeEnums.STOCK_BILL_NOT_IS_EXIST.getMessage());
         }
         MaterialpartsStockDetailResult result = wmsMaterialStockMapper.materialStockPartsDetail(enter.getId());
@@ -295,7 +297,7 @@ public class FrWhServiceImpl implements FrWhService {
     @Override
     public IntResult scooterNum(WmsFinishScooterListEnter enter, Integer whtype) {
         int num = 0;
-        if (enter.getGroupId() != null && enter.getColorId() != null) {
+        if (StringManaConstant.entityIsNotNull(enter.getGroupId()) && StringManaConstant.entityIsNotNull(enter.getColorId())) {
             switch (enter.getSource()) {
                 case 0:
                     QueryWrapper<OpeWmsScooterStock> qw = new QueryWrapper<>();
@@ -315,7 +317,7 @@ public class FrWhServiceImpl implements FrWhService {
                     qualifiedScooterStockQueryWrapper.eq(OpeWmsQualifiedScooterStock.COL_GROUP_ID, enter.getGroupId());
                     qualifiedScooterStockQueryWrapper.last("limit 1");
                     OpeWmsQualifiedScooterStock qualifiedScooterStock = opeWmsQualifiedScooterStockService.getOne(qualifiedScooterStockQueryWrapper);
-                    if (qualifiedScooterStock != null) {
+                    if (StringManaConstant.entityIsNotNull(qualifiedScooterStock)) {
                         num = qualifiedScooterStock.getQty();
                     }
                     break;
@@ -352,7 +354,7 @@ public class FrWhServiceImpl implements FrWhService {
     public PageResult<WmsDetailResult> getDetail(WmsDetailEnter enter) {
         SesStringUtils.objStringTrim(enter);
         int count = wmsFinishStockMapper.getDetailCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<WmsDetailResult> list = wmsFinishStockMapper.getDetail(enter);

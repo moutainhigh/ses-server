@@ -19,6 +19,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.foundation.service.MailMultiTaskService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.base.OpeEntrustCombinBMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeEntrustPartsBMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeEntrustScooterBMapper;
@@ -64,6 +65,7 @@ import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderSt
 import com.redescooter.ses.web.ros.service.restproductionorder.purchaseorder.PurchaseOrderService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
 import com.redescooter.ses.web.ros.service.wms.cn.china.WmsMaterialStockService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.OrderProductDetailResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.consignorder.ConsignOrderDetailResult;
@@ -241,7 +243,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
     @Override
     public PageResult<ConsignOrderListResult> list(ConsignOrderListEnter enter) {
         int count = consignOrderServiceMapper.listCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         return PageResult.create(enter, count, consignOrderServiceMapper.list(enter));
@@ -284,18 +286,18 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
     public List<AssociatedOrderResult> associatedOrderList(IdEnter enter) {
         List<AssociatedOrderResult> result = new ArrayList<>();
         OpeEntrustOrder opeEntrustOrder = opeEntrustOrderService.getById(enter.getId());
-        if (opeEntrustOrder == null) {
+        if (StringManaConstant.entityIsNull(opeEntrustOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(opeEntrustOrder.getInvoiceId());
-        if (opeInvoiceOrder != null) {
+        if (StringManaConstant.entityIsNotNull(opeInvoiceOrder)) {
             result.add(new AssociatedOrderResult(opeInvoiceOrder.getId(), opeInvoiceOrder.getInvoiceNo(), OrderTypeEnums.INVOICE.getValue(), opeInvoiceOrder.getCreatedTime(), ""));
         }
         QueryWrapper<OpeLogisticsOrder> qw = new QueryWrapper<>();
         qw.eq(OpeLogisticsOrder.COL_ENTRUST_ID, opeEntrustOrder.getId());
         qw.last("limit 1");
         OpeLogisticsOrder opeLogisticsOrder = opeLogisticsOrderService.getOne(qw);
-        if (opeLogisticsOrder != null) {
+        if (StringManaConstant.entityIsNotNull(opeLogisticsOrder)) {
             result.add(new AssociatedOrderResult(opeLogisticsOrder.getId(), opeLogisticsOrder.getLogisticsNo(), OrderTypeEnums.LOGISTICS.getValue(), opeLogisticsOrder.getCreatedTime(), opeLogisticsOrder.getLogisticsCompany()));
         }
         return result;
@@ -314,17 +316,17 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
     @Override
     public GeneralResult signFor(IdEnter enter) {
         OpeEntrustOrder opeEntrustOrder = opeEntrustOrderService.getById(enter.getId());
-        if (opeEntrustOrder == null) {
+        if (StringManaConstant.entityIsNull(opeEntrustOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
 
         // 根据委托单校验发货单和采购单是否存在
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(opeEntrustOrder.getInvoiceId());
-        if (opeInvoiceOrder == null) {
+        if (StringManaConstant.entityIsNull(opeInvoiceOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         OpePurchaseOrder opePurchaseOrder = opePurchaseOrderService.getById(opeInvoiceOrder.getPurchaseId());
-        if (opePurchaseOrder == null) {
+        if (StringManaConstant.entityIsNull(opePurchaseOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         // 只有委托单状态是待签收才可以走此接口
@@ -401,7 +403,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
                 List<OpeWmsScooterStock> stockList = opeWmsScooterStockMapper.selectList(qw);
                 if (CollectionUtils.isNotEmpty(stockList)) {
                     OpeWmsScooterStock stock = stockList.get(0);
-                    if (null != stock) {
+                    if (StringManaConstant.entityIsNotNull(stock)) {
                         id = stock.getId();
                     }
                 }
@@ -431,7 +433,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
                 List<OpeWmsCombinStock> stockList = opeWmsCombinStockMapper.selectList(qw);
                 if (CollectionUtils.isNotEmpty(stockList)) {
                     OpeWmsCombinStock stock = stockList.get(0);
-                    if (null != stock) {
+                    if (StringManaConstant.entityIsNotNull(stock)) {
                         id = stock.getId();
                     }
                 }
@@ -461,7 +463,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
                 List<OpeWmsPartsStock> stockList = opeWmsPartsStockMapper.selectList(qw);
                 if (CollectionUtils.isNotEmpty(stockList)) {
                     OpeWmsPartsStock stock = stockList.get(0);
-                    if (null != stock) {
+                    if (StringManaConstant.entityIsNotNull(stock)) {
                         id = stock.getId();
                     }
                 }
@@ -471,7 +473,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
         log.info("参数分别为:[{},{},{},{},{},{}]", id, relationType, rsn, tabletSn, bluetooth, lot);
 
         // 新增库存产品序列号表
-        if (null != rsn && null != id && null != relationType) {
+        if (StringManaConstant.entityIsNotNull(rsn) && StringManaConstant.entityIsNotNull(id) && StringManaConstant.entityIsNotNull(relationType)) {
             List<OpeWmsStockSerialNumber> saveList = Lists.newArrayList();
             List<RSNResult> collection = Lists.newArrayList();
 
@@ -521,7 +523,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
         // 给发货人发
         // 找到发货人
         OpeSysStaff consignorUser = opeSysStaffService.getById(entrustOrder.getConsignorUser());
-        if (consignorUser != null) {
+        if (StringManaConstant.entityIsNotNull(consignorUser)) {
             BaseMailTaskEnter consignorEnter = new BaseMailTaskEnter();
             consignorEnter.setName(consignorUser.getFullName());
             consignorEnter.setEvent(MailTemplateEventEnums.ENTRUST_SIGN_TO_CONSIGNOR.getEvent());
@@ -537,7 +539,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
         // 再给收货人发
         // 找到收货人
         OpeSysStaff consigneeUser = opeSysStaffService.getById(entrustOrder.getConsignorUser());
-        if (consigneeUser != null) {
+        if (StringManaConstant.entityIsNotNull(consigneeUser)) {
             BaseMailTaskEnter consigneeEnter = new BaseMailTaskEnter();
             consigneeEnter.setName(consigneeUser.getFullName());
             consigneeEnter.setEvent(MailTemplateEventEnums.ENTRUST_SIGN_TO_CONSIGNEE.getEvent());
@@ -565,12 +567,12 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
     public GeneralResult save(SaveConsignEnter enter) {
         OpeEntrustOrder opeEntrustOrder = new OpeEntrustOrder();
         OpeInvoiceOrder opeInvoiceOrder = opeInvoiceOrderService.getById(enter.getInvoiceId());
-        if (opeInvoiceOrder == null) {
+        if (StringManaConstant.entityIsNull(opeInvoiceOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         BeanUtils.copyProperties(enter, opeEntrustOrder);
         SaveOpTraceEnter saveOpTraceEnter = null;
-        if (enter.getInvoiceId() == null || null == enter.getId() || 0 == enter.getId()) {
+        if (StringManaConstant.entityIsNull(enter.getInvoiceId()) || StringManaConstant.entityIsNull(enter.getId()) || 0 == enter.getId()) {
             opeEntrustOrder.setId(idAppService.getId(SequenceName.OPE_ENTRUST_ORDER));
             opeEntrustOrder.setDr(0);
             opeEntrustOrder.setEntrustNo(orderNumberService.orderNumber(new OrderNumberEnter(OrderTypeEnums.ORDER.getValue())).getValue());
@@ -679,7 +681,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
     @Override
     public GeneralResult waitSign(IdEnter enter) {
         OpeEntrustOrder opeEntrustOrder = opeEntrustOrderService.getById(enter.getId());
-        if (opeEntrustOrder == null) {
+        if (StringManaConstant.entityIsNull(opeEntrustOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (!opeEntrustOrder.getEntrustStatus().equals(ConsignOrderStatusEnums.BE_DELIVERED.getValue())) {
@@ -723,7 +725,7 @@ public class ConsignOrderServiceImpl implements ConsignOrderService {
     public void entrustDeliveryToEmail(OpeEntrustOrder entrustOrder, String requestId) {
         // 找到收货人
         OpeSysStaff consigneeUser = opeSysStaffService.getById(entrustOrder.getConsignorUser());
-        if (consigneeUser != null) {
+        if (StringManaConstant.entityIsNotNull(consigneeUser)) {
             BaseMailTaskEnter consigneeEnter = new BaseMailTaskEnter();
             consigneeEnter.setName(consigneeUser.getFullName());
             consigneeEnter.setEvent(MailTemplateEventEnums.ENTRUST_DELIVERY_TO_CONSIGNEE.getEvent());

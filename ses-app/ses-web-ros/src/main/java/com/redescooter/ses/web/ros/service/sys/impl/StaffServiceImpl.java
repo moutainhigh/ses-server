@@ -17,6 +17,7 @@ import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.base.OpeSysDeptMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysPositionMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSysUserRoleMapper;
@@ -28,6 +29,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.*;
 import com.redescooter.ses.web.ros.service.sys.EmployeeService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.utils.TreeUtil;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.UserDataEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.allocateorder.UserDataResult;
@@ -139,7 +141,7 @@ public class StaffServiceImpl implements StaffService {
         staff.setId(idAppService.getId(SequenceName.OPE_SYS_STAFF));
         staff.setCode(createCode());
         staff.setSysUserId(staff.getId());
-        if (enter.getIfSafeCode() != null && enter.getIfSafeCode() == 1) {
+        if (StringManaConstant.entityIsNotNull(enter.getIfSafeCode()) && 1 == enter.getIfSafeCode()) {
             // 产生8位数的随机字符串
             String code = null;
             try {
@@ -197,7 +199,7 @@ public class StaffServiceImpl implements StaffService {
         QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
         qw.eq(OpeSysStaff.COL_CODE, staffCode);
         int count = opeSysStaffService.count(qw);
-        if (count > 0) {
+        if (0 < count) {
             createCode();
         }
         return staffCode;
@@ -207,13 +209,13 @@ public class StaffServiceImpl implements StaffService {
     void checkEmail(String email, Long id) {
         QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
         qw.eq(OpeSysStaff.COL_EMAIL, email);
-        qw.eq(OpeSysStaff.COL_DR, 0);
-        if (id != null) {
+        qw.eq(OpeSysStaff.COL_DR, Constant.DR_FALSE);
+        if (StringManaConstant.entityIsNotNull(id)) {
             // 员工修改
             qw.ne(OpeSysStaff.COL_ID, id);
         }
         int count = opeSysStaffService.count(qw);
-        if (count > 0) {
+        if (0 < count) {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
         }
     }
@@ -223,7 +225,7 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public GeneralResult staffEdit(StaffSaveOrEditEnter enter) {
         OpeSysStaff staff = opeSysStaffService.getById(enter.getId());
-        if (staff == null) {
+        if (StringManaConstant.entityIsNull(staff)) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
         // 校验部门 选择的部门只能是当前操作人的部门及其子部门
@@ -245,7 +247,7 @@ public class StaffServiceImpl implements StaffService {
             staff.setEntryDate(DateUtil.stringToDate(enter.getEntryDate()));
         }
         // 编辑的时候  如果是第一次开启验证码  则需要随机生成
-        if (Strings.isNullOrEmpty(staff.getSafeCode()) && enter.getIfSafeCode() == 1) {
+        if (Strings.isNullOrEmpty(staff.getSafeCode()) && 1 == enter.getIfSafeCode()) {
             String code = null;
             try {
                 code = RsaUtils.encrypt(getRundom(), publicKey);
@@ -263,7 +265,7 @@ public class StaffServiceImpl implements StaffService {
 
     void changeUserStatus(Integer newStatus, Integer oldStatus, Long id) {
         OpeSysUser user = opeSysUserService.getById(id);
-        if (user != null) {
+        if (StringManaConstant.entityIsNotNull(user)) {
             if (newStatus.equals(DeptStatusEnums.COMPANY.getValue()) && oldStatus.equals(DeptStatusEnums.DEPARTMENT.getValue())) {
                 // 员工状态从禁用变为正常 user也要正常
                 user.setStatus(UserStatusEnum.NORMAL.getCode());
@@ -280,7 +282,7 @@ public class StaffServiceImpl implements StaffService {
     public void checkDept(StaffSaveOrEditEnter enter) {
         // 先找到当前操作人的部门
         OpeSysStaff opUser = opeSysStaffService.getById(enter.getUserId());
-        if (opUser == null) {
+        if (StringManaConstant.entityIsNull(opUser)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         // 递归找操作人部门及其子部门
@@ -290,13 +292,13 @@ public class StaffServiceImpl implements StaffService {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_ERROR.getCode(), ExceptionCodeEnums.DEPT_IS_ERROR.getMessage());
         }
         // 校验地址和国籍的长度
-        if (!Strings.isNullOrEmpty(enter.getAddress1()) && enter.getAddress1().length() > 500){
+        if (!Strings.isNullOrEmpty(enter.getAddress1()) && 500 < enter.getAddress1().length()){
             throw new SesWebRosException(ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getMessage());
         }
-        if (!Strings.isNullOrEmpty(enter.getAddress2()) && enter.getAddress2().length() > 500){
+        if (!Strings.isNullOrEmpty(enter.getAddress2()) && 500 < enter.getAddress2().length()){
             throw new SesWebRosException(ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getMessage());
         }
-        if (!Strings.isNullOrEmpty(enter.getCountryName()) && enter.getCountryName().length() > 30){
+        if (!Strings.isNullOrEmpty(enter.getCountryName()) && 30 < enter.getCountryName().length()){
             throw new SesWebRosException(ExceptionCodeEnums.COUNTRY_NAME_TOO_LONG.getCode(), ExceptionCodeEnums.COUNTRY_NAME_TOO_LONG.getMessage());
         }
     }
@@ -304,14 +306,14 @@ public class StaffServiceImpl implements StaffService {
 
     void checkDeptPos(Long deptId, Long positionId) {
         OpeSysDept dept = opeSysDeptMapper.selectById(deptId);
-        if (dept == null) {
+        if (StringManaConstant.entityIsNull(dept)) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.DEPT_IS_NOT_EXIST.getMessage());
         }
         if (dept.getDeptStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
             throw new SesWebRosException(ExceptionCodeEnums.DEPT_DISABLE.getCode(), ExceptionCodeEnums.DEPT_DISABLE.getMessage());
         }
         OpeSysPosition position = opeSysPositionMapper.selectById(positionId);
-        if (position == null) {
+        if (StringManaConstant.entityIsNull(position)) {
             throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
         }
         if (position.getPositionStatus().equals(DeptStatusEnums.DEPARTMENT.getValue())) {
@@ -336,13 +338,13 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public StaffResult staffDetail(StaffOpEnter enter) {
         OpeSysStaff staff = opeSysStaffService.getById(enter.getId());
-        if (staff == null) {
+        if (StringManaConstant.entityIsNull(staff)) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
         StaffResult staffDetail = staffServiceMapper.staffDetail(staff.getId());
         // 查找员工的角色信息
         StaffRoleResult staffRoleResult = staffServiceMapper.staffRoleMsg(staff.getId());
-        if (staffRoleResult != null) {
+        if (StringManaConstant.entityIsNotNull(staffRoleResult)) {
             staffDetail.setRoleId(staffRoleResult.getRoleId());
             staffDetail.setRoleName(staffRoleResult.getRoleName());
             staffDetail.setRoleStatus(staffRoleResult.getRoleStatus());
@@ -374,13 +376,13 @@ public class StaffServiceImpl implements StaffService {
             }
         }
         int totalRows = staffServiceMapper.totalRows(enter, userIds, flag ? null : deptIds, Constant.SYSTEM_ROOT);
-        if (totalRows == 0) {
+        if (NumberUtil.eqZero(totalRows)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<StaffListResult> list = staffServiceMapper.staffList(enter, userIds, flag ? null : deptIds, Constant.SYSTEM_ROOT);
         for (StaffListResult result : list) {
             StaffRoleResult staffRoleResult = staffServiceMapper.staffRoleMsg(result.getId());
-            if (staffRoleResult != null) {
+            if (StringManaConstant.entityIsNotNull(staffRoleResult)) {
                 result.setRoleNames(staffRoleResult.getRoleName());
             }
         }
@@ -397,11 +399,11 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public Integer deptStaffCount(Long id, Integer type) {
-        if (id == null) {
+        if (StringManaConstant.entityIsNull(id)) {
             return 0;
         }
         QueryWrapper<OpeSysStaff> qw = new QueryWrapper<>();
-        if (type == 1) {
+        if (1 == type) {
             qw.eq(OpeSysStaff.COL_DEPT_ID, id);
         } else if (type == 2) {
             qw.eq(OpeSysStaff.COL_POSITION_ID, id);
@@ -413,7 +415,7 @@ public class StaffServiceImpl implements StaffService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult openAccount(StaffOpEnter enter) {
         OpeSysStaff staff = opeSysStaffService.getById(enter.getId());
-        if (staff == null) {
+        if (StringManaConstant.entityIsNull(staff)) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
         if (!Strings.isNullOrEmpty(staff.getOpenAccount()) && staff.getOpenAccount().equals("1")) {
@@ -474,7 +476,7 @@ public class StaffServiceImpl implements StaffService {
     public Boolean checkLoginPsd(UserPsdEnter enter) {
         boolean flag = true;
         OpeSysUser user = opeSysUserService.getById(enter.getUserId());
-        if (user == null) {
+        if (StringManaConstant.entityIsNull(user)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         String psd = "";
@@ -502,11 +504,11 @@ public class StaffServiceImpl implements StaffService {
         } catch (Exception e) {
             throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
         }
-        if (safeCode.length() < 8 || safeCode.length() > 20) {
+        if (NumberUtil.ltEightOrGtTwenty(safeCode.length())) {
             throw new SesWebRosException(ExceptionCodeEnums.PSD_LENGTH_ERROR.getCode(), ExceptionCodeEnums.PSD_LENGTH_ERROR.getMessage());
         }
         OpeSysStaff staff = opeSysStaffService.getById(enter.getUserId());
-        if (staff == null) {
+        if (StringManaConstant.entityIsNull(staff)) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
         staff.setSafeCode(enter.getPassword());
@@ -533,7 +535,7 @@ public class StaffServiceImpl implements StaffService {
         if (StringUtils.equals(newPassword, oldPsd)) {
             throw new SesWebRosException(ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getCode(), ExceptionCodeEnums.NEW_AND_OLD_PASSWORDS_ARE_THE_SAME.getMessage());
         }
-        if (newPassword.length() > 20 || newPassword.length() < 8) {
+        if (NumberUtil.ltEightOrGtTwenty(newPassword.length())) {
             throw new SesWebRosException(ExceptionCodeEnums.PSD_LENGTH_ERROR.getCode(), ExceptionCodeEnums.PSD_LENGTH_ERROR.getMessage());
         }
         // 校验两次的的新密码是否一致
@@ -541,7 +543,7 @@ public class StaffServiceImpl implements StaffService {
             throw new SesWebRosException(ExceptionCodeEnums.INCONSISTENT_PASSWORD.getCode(), ExceptionCodeEnums.INCONSISTENT_PASSWORD.getMessage());
         }
         OpeSysUser user = opeSysUserService.getById(enter.getUserId());
-        if (user == null) {
+        if (StringManaConstant.entityIsNull(user)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         // 验证旧密码是否正确
@@ -574,7 +576,7 @@ public class StaffServiceImpl implements StaffService {
             throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
         }
         OpeSysUser user = opeSysUserService.getById(enter.getUserId());
-        if (user == null) {
+        if (StringManaConstant.entityIsNull(user)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         user.setPassword(DigestUtils.md5Hex(psd + user.getSalt()));
@@ -586,29 +588,29 @@ public class StaffServiceImpl implements StaffService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult userMsgEdit(UserMsgEditEnter enter) {
         OpeSysStaff staff = opeSysStaffService.getById(enter.getUserId());
-        if (staff == null) {
+        if (StringManaConstant.entityIsNull(staff)) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
 
         // 校验员工名字的长度
         if (StringUtils.isNotEmpty(enter.getFirstName())) {
-            if (enter.getFirstName().length() < 2 || enter.getFirstName().length() > 20) {
+            if (NumberUtil.ltTwoOrGtTwenty(enter.getFirstName().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
             }
         }
         if (StringUtils.isNotEmpty(enter.getLastName())) {
-            if (enter.getLastName().length() < 2 || enter.getLastName().length() > 20) {
+            if (NumberUtil.ltTwoOrGtTwenty(enter.getLastName().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
             }
         }
         // 校验地址和国籍的长度
-        if (!Strings.isNullOrEmpty(enter.getAddress1()) && enter.getAddress1().length() > 500){
+        if (!Strings.isNullOrEmpty(enter.getAddress1()) && 500 < enter.getAddress1().length()){
             throw new SesWebRosException(ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getMessage());
         }
-        if (!Strings.isNullOrEmpty(enter.getAddress2()) && enter.getAddress2().length() > 500){
+        if (!Strings.isNullOrEmpty(enter.getAddress2()) && 500 < enter.getAddress2().length()){
             throw new SesWebRosException(ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.ADDRESS_IS_NOT_ILLEGAL.getMessage());
         }
-        if (!Strings.isNullOrEmpty(enter.getCountryName()) && enter.getCountryName().length() > 30){
+        if (!Strings.isNullOrEmpty(enter.getCountryName()) && 30 < enter.getCountryName().length()){
             throw new SesWebRosException(ExceptionCodeEnums.COUNTRY_NAME_TOO_LONG.getCode(), ExceptionCodeEnums.COUNTRY_NAME_TOO_LONG.getMessage());
         }
         checkDeptPos(enter.getDeptId(), enter.getPositionId());
@@ -634,10 +636,10 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public SafeCodeResult getSafeCode(GeneralEnter enter) {
         OpeSysStaff staff = opeSysStaffService.getById(enter.getUserId());
-        if (staff == null) {
+        if (StringManaConstant.entityIsNull(staff)) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
-        if (staff.getIfSafeCode() == null || staff.getIfSafeCode() == 0) {
+        if (StringManaConstant.entityIsNull(staff.getIfSafeCode()) || 0 == staff.getIfSafeCode()) {
             throw new SesWebRosException(ExceptionCodeEnums.SAFE_CODE_NOT_OPEN.getCode(), ExceptionCodeEnums.SAFE_CODE_NOT_OPEN.getMessage());
         }
         SafeCodeResult result = new SafeCodeResult();
@@ -648,13 +650,13 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public StaffResult userMsgDetail(GeneralEnter enter) {
         OpeSysStaff staff = opeSysStaffService.getById(enter.getUserId());
-        if (staff == null) {
+        if (StringManaConstant.entityIsNull(staff)) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
         StaffResult staffDetail = staffServiceMapper.staffDetail(staff.getId());
         // 查找员工的角色信息
         StaffRoleResult staffRoleResult = staffServiceMapper.staffRoleMsg(staff.getId());
-        if (staffRoleResult != null) {
+        if (StringManaConstant.entityIsNotNull(staffRoleResult)) {
             staffDetail.setRoleId(staffRoleResult.getRoleId());
             staffDetail.setRoleName(staffRoleResult.getRoleName());
         }
@@ -774,7 +776,7 @@ public class StaffServiceImpl implements StaffService {
             jedisCluster.del(key);
         }
         OpeSysStaff staff = opeSysStaffService.getById(id);
-        if (staff == null) {
+        if (StringManaConstant.entityIsNull(staff)) {
             return;
         }
         if (staff.getEmail().equals(Constant.ADMIN_USER_NAME)) {
@@ -806,10 +808,10 @@ public class StaffServiceImpl implements StaffService {
             Map<Long, List<OpeSysRoleData>> map = dataList.stream().collect(Collectors.groupingBy(OpeSysRoleData::getRoleId));
             // 找到每个角色的对应的部门id
             for (Long roleId : map.keySet()) {
-                if (map.get(roleId).size() > 1) {
+                if (1 < map.get(roleId).size()) {
                     // 这种情况必然是自定义的 且勾选了多条，直接拿部门id就行
                     ids.addAll((map.get(roleId).stream().map(OpeSysRoleData::getDeptId).collect(Collectors.toSet())));
-                } else if (map.get(roleId).size() == 1) {
+                } else if (1 == map.get(roleId).size()) {
                     // 这种情况 就是勾选了上面的4种情况，需要分别找到对应的部门
                     Integer type = map.get(roleId).get(0).getDataType();
                     switch (type) {

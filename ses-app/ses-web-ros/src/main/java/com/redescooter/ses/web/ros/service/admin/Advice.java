@@ -5,6 +5,7 @@ import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.annotation.LogAnnotation;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.sys.StaffServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysLog;
 import com.redescooter.ses.web.ros.service.base.OpeSysLogService;
@@ -76,10 +77,10 @@ public class Advice {
         String token = request.getParameter("token");
         if(!Strings.isNullOrEmpty(token)){
             Map<String, String> map = jedisCluster.hgetAll(token);
-            if(map != null && map.size() > 0){
+            if(StringManaConstant.entityIsNotNull(map) && 0 < map.size()){
                 Long userId = Long.parseLong(map.get("userId"));
                 StaffResult userMsg = staffServiceMapper.staffDetail(userId);
-                if(userMsg != null){
+                if(StringManaConstant.entityIsNotNull(userMsg)){
                     sysLog.setOpUserName(userMsg.getFullName());
                     sysLog.setOpUserCode(userMsg.getCode());
                     sysLog.setOpUserDeptName(userMsg.getDeptName());
@@ -102,7 +103,7 @@ public class Advice {
         String module = logAnnotation.module();
         if (StringUtils.isEmpty(module)) {
             ApiOperation apiOperation = methodSignature.getMethod().getDeclaredAnnotation(ApiOperation.class);
-            if (apiOperation != null) {
+            if (StringManaConstant.entityIsNotNull(apiOperation)) {
                 module = apiOperation.value();
                 sysLog.setOpModul(module);
                 code = apiOperation.code();
@@ -112,7 +113,7 @@ public class Advice {
             throw new RuntimeException("没有指定日志module");
         }
         try {
-            if (code != null && !code.equals(200)) {
+            if (StringManaConstant.entityIsNotNull(code) && !code.equals(200)) {
                 String id = null;
                 Object object = joinPoint.getArgs()[0];
 
@@ -125,16 +126,16 @@ public class Advice {
 
             }
             Object object = joinPoint.proceed();
-            if(sysLog.getLogType() == 1){
+            if(1 == sysLog.getLogType()){
                 // 如果是登陆，成功之后补全操作人的信息
                 Map<String,String> map = (Map<String, String>) JSON.toJSON(object);
                 Map<String,String> result = (Map<String, String>) JSON.toJSON(map.get("result"));
                 String resToken = result.get("token");
                 Map<String, String> resMap = jedisCluster.hgetAll(resToken);
-                if(resMap != null && resMap.size() > 0){
+                if(StringManaConstant.entityIsNotNull(resMap) && 0 < resMap.size()){
                     Long userId = Long.parseLong(resMap.get("userId"));
                     StaffResult userMsg = staffServiceMapper.staffDetail(userId);
-                    if(userMsg != null){
+                    if(StringManaConstant.entityIsNotNull(userMsg)){
                         sysLog.setOpUserName(userMsg.getFullName());
                         sysLog.setOpUserCode(userMsg.getCode());
                         sysLog.setOpUserDeptName(userMsg.getDeptName());
@@ -163,7 +164,7 @@ public class Advice {
                 sysLog.setCreatedTime(new Date());
                 sysLog.setUpdatedTime(new Date());
                 sysLog.setId(idAppService.getId(SequenceName.OPE_SYS_LOG));
-                if(sysLog.getIfSuccess() == null){
+                if(StringManaConstant.entityIsNull(sysLog.getIfSuccess())){
                     sysLog.setIfSuccess(0);
                 }
                 opeSysLogService.save(sysLog);

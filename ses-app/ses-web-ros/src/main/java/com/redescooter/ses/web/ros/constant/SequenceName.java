@@ -281,4 +281,7 @@ public interface SequenceName {
 
     String OPE_CODEBASE_VIN = "OPE_CODEBASE_VIN";
 
+    String OPE_SCAN_CODE_RECORD = "OPE_SCAN_CODE_RECORD";
+
+
 }

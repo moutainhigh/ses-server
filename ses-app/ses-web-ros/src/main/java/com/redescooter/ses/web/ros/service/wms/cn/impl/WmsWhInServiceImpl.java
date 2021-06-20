@@ -9,6 +9,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dao.wms.cn.WmsServiceMapper;
 import com.redescooter.ses.web.ros.service.wms.cn.WmsWhInService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.wms.cn.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -60,7 +61,7 @@ public class WmsWhInServiceImpl implements WmsWhInService {
      */
     @Override
     public PageResult<WmsInWhResult> list(WmsWhInEnter enter) {
-        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+        if (NumberUtil.notNullAndGtFifty(enter.getKeyword())) {
             return PageResult.createZeroRowResult(enter);
         }
         int totalRows = 0;
@@ -77,7 +78,7 @@ public class WmsWhInServiceImpl implements WmsWhInService {
             totalRows = wmsServiceMapper.stockPendingCount(enter, AllocateOrderStatusEnums.ALLOCATE.getValue(), AssemblyStatusEnums.QC_PASSED.getValue());
             wmsInWhResult = wmsServiceMapper.stockPendingList(enter, AllocateOrderStatusEnums.ALLOCATE.getValue(), AssemblyStatusEnums.QC_PASSED.getValue());
         }
-        if (totalRows == 0) {
+        if (NumberUtil.eqZero(totalRows)) {
             return PageResult.createZeroRowResult(enter);
         }
         return PageResult.create(enter, totalRows, wmsInWhResult);

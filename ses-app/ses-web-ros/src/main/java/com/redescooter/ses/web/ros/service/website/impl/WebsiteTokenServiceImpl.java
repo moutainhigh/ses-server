@@ -29,6 +29,7 @@ import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
@@ -111,7 +112,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
     public TokenResult login(LoginEnter enter) {
         //入参对象去空格
         SesStringUtils.objStringTrim(enter);
-        if (enter.getPassword() != null) {
+        if (StringManaConstant.entityIsNotNull(enter.getPassword())) {
             String decryptPassword = "";
             String email = "";
             try {
@@ -130,7 +131,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
                         .eq(OpeSysUser::getDef1, SysUserSourceEnum.WEBSITE.getValue())
                         .eq(OpeSysUser::getAppId, AppIDEnums.SES_WEBSITE.getValue())
                         .last("limit 1"));
-        if (opeSysUser == null) {
+        if (StringManaConstant.entityIsNull(opeSysUser)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
 
@@ -203,7 +204,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         //用户校验
         OpeSysUser sysUser = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getLoginName, decryptEamil)
                 .eq(OpeSysUser::getDef1, SysUserSourceEnum.WEBSITE.getValue()));
-        if (sysUser != null) {
+        if (StringManaConstant.entityIsNotNull(sysUser)) {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.EMAIL_ALREADY_EXISTS.getMessage());
         }
         //校验客户邮箱
@@ -311,7 +312,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         QueryWrapper<OpeSysUser> qw = new QueryWrapper<>();
         OpeSysUser opeSysUser = opeSysUserService.getOne(new LambdaQueryWrapper<OpeSysUser>().eq(OpeSysUser::getDef1, SysUserSourceEnum.WEBSITE.getValue()).eq(OpeSysUser::getLoginName,
                 baseSendMailEnter.getMail()).last("limit 1"));
-        if (null == opeSysUser) {
+        if (StringManaConstant.entityIsNull(opeSysUser)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         BaseMailTaskEnter enter = new BaseMailTaskEnter();
@@ -371,7 +372,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
         }
         Map<String, String> map = jedisCluster.hgetAll(token);
-        if (map == null) {
+        if (StringManaConstant.entityIsNull(map)) {
             throw new SesWebRosException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
         }
         UserToken userToken = new UserToken();
@@ -416,12 +417,12 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
             throw new SesWebRosException(ExceptionCodeEnums.TOKEN_IS_EXPIRED.getCode(), ExceptionCodeEnums.TOKEN_IS_EXPIRED.getMessage());
         }
         Map<String, String> map = jedisCluster.hgetAll(enter.getRequestId());
-        if (map == null) {
+        if (StringManaConstant.entityIsNull(map)) {
             throw new SesWebRosException(ExceptionCodeEnums.TOKEN_IS_EXPIRED.getCode(), ExceptionCodeEnums.TOKEN_IS_EXPIRED.getMessage());
         }
 
         OpeSysUser opeSysUser = opeSysUserService.getById(map.get("userId"));
-        if (opeSysUser == null) {
+        if (StringManaConstant.entityIsNull(opeSysUser)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
 
@@ -477,7 +478,7 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
         Map<String, String> stringStringMap = jedisCluster.hgetAll(enter.getToken());
 
         OpeSysUser opeSysUser = opeSysUserService.getById(stringStringMap.get("userId"));
-        if (opeSysUser == null) {
+        if (StringManaConstant.entityIsNull(opeSysUser)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         if (Strings.isNullOrEmpty(enter.getOldPassword())) {
@@ -498,17 +499,17 @@ public class WebsiteTokenServiceImpl implements WebSiteTokenService {
 
     @Override
     public GeneralResult editCustomer(WebEditCustomerEnter enter) {
-        if (enter == null) {
+        if (StringManaConstant.entityIsNull(enter)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         // 登录的时候  是把这些东西放在缓存里  直接获取
         OpeSysUser opeSysUser = opeSysUserService.getById(enter.getUserId());
-        if (opeSysUser == null) {
+        if (StringManaConstant.entityIsNull(opeSysUser)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         OpeCustomer customer = opeCustomerService.getOne(new LambdaQueryWrapper<OpeCustomer>().eq(OpeCustomer::getEmail, opeSysUser.getLoginName()).eq(OpeCustomer::getCustomerSource,
                 CustomerSourceEnum.WEBSITE.getValue()));
-        if (customer == null) {
+        if (StringManaConstant.entityIsNull(customer)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         if (StringUtils.isNotEmpty(enter.getAddress())) {

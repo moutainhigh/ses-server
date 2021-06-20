@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.enums.bom.QcSourceTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.qctemplete.ProductionQcTempleteServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeProductionCombinBom;
 import com.redescooter.ses.web.ros.dm.OpeProductionParts;
@@ -22,6 +23,7 @@ import com.redescooter.ses.web.ros.service.base.OpeProductionQualityTempateBServ
 import com.redescooter.ses.web.ros.service.base.OpeProductionQualityTempateService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
 import com.redescooter.ses.web.ros.service.qctemplete.ProductionQcTmepleteService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.bom.QcItemTemplateEnter;
 import com.redescooter.ses.web.ros.vo.bom.QcResultEnter;
 import com.redescooter.ses.web.ros.vo.bom.QcResultResult;
@@ -120,15 +122,15 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
                 if (StringUtils.isBlank(item.getResult())) {
                     throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULT_IS_EMPTY.getCode(), ExceptionCodeEnums.TEMPLATE_QC_RESULT_IS_EMPTY.getMessage());
                 }
-                if (item.getUploadPictureFalg() == null || item.getUploadPictureFalg().equals("")) {
+                if (StringManaConstant.entityIsNull(item.getUploadPictureFalg()) || "".equals(item.getUploadPictureFalg())) {
                     throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_UPLOAD_PICTURE_FLAG_IS_EMPTY.getCode(), ExceptionCodeEnums.TEMPLATE_QC_UPLOAD_PICTURE_FLAG_IS_EMPTY.getMessage());
                 }
-                if (item.getResultSequence() == 0 || item.getResultSequence() == null) {
+                if (0 == item.getResultSequence() || StringManaConstant.entityIsNull(item.getResultSequence())) {
                     throw new SesWebRosException(ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getCode(), ExceptionCodeEnums.TEMPLATE_QC_RESULTSEQUENCE_IS_EMPTY.getMessage());
                 }
 
                 // 结果集 排序校验
-                if (sequence == 0) {
+                if (NumberUtil.eqZero(sequence)) {
                     sequence = item.getResultSequence();
                 } else {
                     sequence += 1;
@@ -252,7 +254,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
         // 质检项 结果集数量校验
         for (QcItemTemplateEnter qcItemTemplateEnter : qcResultEnterMap.keySet()) {
             int passResult = (int) qcResultEnterMap.get(qcItemTemplateEnter).stream().filter(QcResultEnter::getPassFlag).count();
-            if (passResult != 1) {
+            if (1 != passResult) {
                 throw new SesWebRosException(ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getCode(), ExceptionCodeEnums.QC_PASS_RESULT_ONLY_ONE.getMessage());
             }
         }
@@ -261,7 +263,7 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
             Long templateId = idAppService.getId(SequenceName.OPE_PRODUCTION_QUALITY_TEMPLETE);
             if (CollectionUtils.isNotEmpty(opeProductionQcTemplateList)) {
                 OpeProductionQualityTempate opeProductionQualityTempate = opeProductionQcTemplateList.stream().filter(item -> item.getId().equals(key.getId())).findFirst().orElse(null);
-                if (opeProductionQualityTempate != null) {
+                if (StringManaConstant.entityIsNotNull(opeProductionQualityTempate)) {
                     saveProductionQualityTempateList.add(buildProductionQcTemplate(enter, templateId,
                             key.getQcItemName(), opeProductionQualityTempate.getImportExcelBatchNo(), opeProductionQualityTempate.getSourceType()));
                     value.forEach(item -> {
@@ -412,21 +414,21 @@ public class ProductionQcTmepleteServiceImpl implements ProductionQcTmepleteServ
         // 部件校验
         if (StringUtils.equalsAny(String.valueOf(productionProductType), BomCommonTypeEnums.PARTS.getValue(), BomCommonTypeEnums.ACCESSORY.getValue(), BomCommonTypeEnums.BATTERY.getValue())) {
             OpeProductionParts opeProductionPart = opeProductionPartsService.getById(id);
-            if (opeProductionPart == null) {
+            if (StringManaConstant.entityIsNull(opeProductionPart)) {
                 throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
             }
         }
         // 车辆校验
         if (productionProductType.equals(Integer.valueOf(BomCommonTypeEnums.SCOOTER.getValue()))) {
             OpeProductionScooterBom productionScooterBom = opeProductionScooterBomService.getById(id);
-            if (productionScooterBom == null) {
+            if (StringManaConstant.entityIsNull(productionScooterBom)) {
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
             }
         }
         // 组合校验
         if (productionProductType.equals(Integer.valueOf(BomCommonTypeEnums.COMBINATION.getValue()))) {
             OpeProductionCombinBom productionCombinBom = opeProductionCombinBomService.getById(id);
-            if (productionCombinBom == null) {
+            if (StringManaConstant.entityIsNull(productionCombinBom)) {
                 throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
             }
         }

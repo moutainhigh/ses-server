@@ -20,6 +20,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.base.OpeCombinOrderCombinBMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCombinOrderMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCombinOrderScooterBMapper;
@@ -67,6 +68,7 @@ import com.redescooter.ses.web.ros.service.restproductionorder.number.OrderNumbe
 import com.redescooter.ses.web.ros.service.restproductionorder.orderflow.OrderStatusFlowService;
 import com.redescooter.ses.web.ros.service.restproductionorder.purchas.ProductionPurchasService;
 import com.redescooter.ses.web.ros.service.restproductionorder.trace.ProductionOrderTraceService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.restproductionorder.AssociatedOrderResult;
 import com.redescooter.ses.web.ros.vo.restproductionorder.SupplierListResult;
@@ -200,7 +202,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
     @Override
     public PageResult<ProductionPurchasListResult> list(ProductionPurchasListEnter enter) {
         int count = productionPurchasServiceMapper.listCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         return PageResult.create(enter, count, productionPurchasServiceMapper.list(enter));
@@ -317,7 +319,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         SaveOpTraceEnter saveOpTraceEnter;
         // 构建生产采购单
         OpeProductionPurchaseOrder opeProductionPurchaseOrder = buildOpeProductionPurchaseOrder(enter, productList, paymentEnter, totalPrice);
-        if (enter.getId() == null || enter.getId() == 0) {
+        if (StringManaConstant.entityIsNull(enter.getId()) || 0 == enter.getId()) {
             opeProductionPurchaseOrder.setId(purchasId);
             opeProductionPurchaseOrder.setCreatedBy(enter.getUserId());
             opeProductionPurchaseOrder.setCreatedTime(new Date());
@@ -377,23 +379,23 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
      * 构建生产采购单
      */
     private OpeProductionPurchaseOrder buildOpeProductionPurchaseOrder(SaveProductionPurchasEnter enter, List<SavePurchasProductEnter> productList, SavePurchasPaymentEnter paymentEnter, BigDecimal totalPrice) {
-        if (StringUtils.isEmpty(enter.getFactoryPrincipalName()) && enter.getFactoryId() != null && enter.getFactoryId() != 0) {
+        if (StringUtils.isEmpty(enter.getFactoryPrincipalName()) && StringManaConstant.entityIsNotNull(enter.getFactoryId()) && enter.getFactoryId() != 0) {
             OpeSupplier opeSupplier = opeSupplierService.getById(enter.getFactoryId());
             if (Objects.isNull(opeSupplier)) {
                 throw new SesWebRosException(ExceptionCodeEnums.FACTORY_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.FACTORY_IS_NOT_EXIST.getMessage());
             }
             enter.setFactoryPrincipalName(opeSupplier.getContactFullName());
         }
-        if (StringUtils.isEmpty(enter.getDockingUserName()) && enter.getDockingUser() != null && enter.getDockingUser() != 0) {
+        if (StringUtils.isEmpty(enter.getDockingUserName()) && StringManaConstant.entityIsNotNull(enter.getDockingUser()) && enter.getDockingUser() != 0) {
             OpeSysStaff opeSysStaff = opeSysStaffService.getById(enter.getDockingUser());
-            if (opeSysStaff == null) {
+            if (StringManaConstant.entityIsNull(opeSysStaff)) {
                 throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
             }
             enter.setDockingUserName(opeSysStaff.getFirstName() + " " + opeSysStaff.getLastName());
         }
-        if (StringUtils.isEmpty(enter.getConsigneeUserName()) && enter.getConsigneeUser() != null && enter.getConsigneeUser() != 0) {
+        if (StringUtils.isEmpty(enter.getConsigneeUserName()) && StringManaConstant.entityIsNotNull(enter.getConsigneeUser()) && enter.getConsigneeUser() != 0) {
             OpeSysStaff opeSysStaff = opeSysStaffService.getById(enter.getConsigneeUser());
-            if (opeSysStaff == null) {
+            if (StringManaConstant.entityIsNull(opeSysStaff)) {
                 throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
             }
             enter.setConsigneeUserName(opeSysStaff.getFirstName() + " " + opeSysStaff.getLastName());
@@ -408,14 +410,14 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         result.setPaymentType(paymentEnter.getPaymentType());
         result.setPlannedPaymentTime(paymentEnter.getDate());
         result.setPaymentDay(paymentEnter.getDays());
-        if (paymentEnter.getDays() != null && paymentEnter.getDate() != null) {
+        if (StringManaConstant.entityIsNotNull(paymentEnter.getDays()) && StringManaConstant.entityIsNotNull(paymentEnter.getDate())) {
             result.setPaymentTime(DateUtil.addDays(paymentEnter.getDate(), paymentEnter.getDays()));
         }
         result.setPrePayRatio(new BigDecimal(paymentEnter.getPercentage()));
         result.setPurchaseAmount(totalPrice);
         result.setAmountType(paymentEnter.getAmountType());
-        if (PaymentTypeEnums.PREPAYMENTS.getValue().equals(paymentEnter.getPaymentType()) && paymentEnter.getAmount() != null) {
-            if (totalPrice.subtract(paymentEnter.getAmount()).longValue() < 0) {
+        if (PaymentTypeEnums.PREPAYMENTS.getValue().equals(paymentEnter.getPaymentType()) && StringManaConstant.entityIsNotNull(paymentEnter.getAmount())) {
+            if (0 > totalPrice.subtract(paymentEnter.getAmount()).longValue()) {
                 throw new SesWebRosException(ExceptionCodeEnums.PAY_AMOUNT_IS_FALSE.getCode(), ExceptionCodeEnums.PAY_AMOUNT_IS_FALSE.getMessage());
             }
             result.setPayAmount(paymentEnter.getAmount());
@@ -426,7 +428,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
     @Override
     public PageResult<PurchasPartListResult> purchasPartList(PurchasPartListEnter enter) {
         int count = productionPurchasServiceMapper.purchasPartListCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         return PageResult.create(enter, count, productionPurchasServiceMapper.purchasPartList(enter));
@@ -682,7 +684,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
     public GeneralResult generatorQcOrderByCombin(IdEnter enter) {
         log.info("生成组装单的质检单(提供给rps使用)的入参是:[{}]", enter);
         OpeCombinOrder combinOrder = opeCombinOrderMapper.selectById(enter.getId());
-        if (null == combinOrder) {
+        if (StringManaConstant.entityIsNull(combinOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
 
@@ -793,12 +795,12 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
     public GeneralResult generatorQcOrderByOutBound(IdEnter enter) {
         log.info("生成出库单的质检单(提供给rps使用)的入参是:[{}]", enter);
         OpeOutWhouseOrder outOrder = opeOutWhouseOrderMapper.selectById(enter.getId());
-        if (null == outOrder) {
+        if (StringManaConstant.entityIsNull(outOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
 
         // 限制是发货单生成的组装单
-        if (null != outOrder && outOrder.getRelationType() == 3) {
+        if (StringManaConstant.entityIsNotNull(outOrder) && 3 == outOrder.getRelationType()) {
             Integer outWhType = outOrder.getOutWhType();
             switch (outWhType) {
                 case 1:
@@ -950,7 +952,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult arrived(IdEnter enter) {
         OpeProductionPurchaseOrder order = opeProductionPurchaseOrderService.getById(enter.getId());
-        if (null == order) {
+        if (StringManaConstant.entityIsNull(order)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
 
@@ -1029,7 +1031,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
         List<OpeProductionScooterBom> list = opeProductionScooterBomMapper.selectList(wrapper);
         if (CollectionUtils.isNotEmpty(list)) {
             OpeProductionScooterBom bom = list.get(0);
-            if (null != bom) {
+            if (StringManaConstant.entityIsNotNull(bom)) {
                 return bom.getId();
             }
         }
@@ -1041,7 +1043,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
      */
     private String getCombinBomNoById(Long id) {
         OpeProductionCombinBom bom = opeProductionCombinBomService.getById(id);
-        if (null != bom) {
+        if (StringManaConstant.entityIsNotNull(bom)) {
             return bom.getBomNo();
         }
         throw new SesWebRosException(ExceptionCodeEnums.BOM_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.BOM_IS_NOT_EXIST.getMessage());
@@ -1061,7 +1063,7 @@ public class ProductionPurchasServiceImpl implements ProductionPurchasService {
             inWhouseOrderQueryWrapper.ne(OpeInWhouseOrder.COL_ID, inWhId);
             inWhouseOrderQueryWrapper.lt(OpeInWhouseOrder.COL_IN_WH_STATUS, NewInWhouseOrderStatusEnum.ALREADY_IN_WHOUSE.getValue());
             int inWhNum = opeInWhouseOrderService.count(inWhouseOrderQueryWrapper);
-            if (inWhNum > 0) {
+            if (0 < inWhNum) {
                 flag = false;
                 return flag;
             }

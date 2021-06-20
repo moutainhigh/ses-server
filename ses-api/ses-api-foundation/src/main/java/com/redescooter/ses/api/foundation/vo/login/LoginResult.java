@@ -30,6 +30,8 @@ public class LoginResult extends GeneralResult {
     private boolean noPassword;
     
     private Integer accountType;
+
+    private boolean flag;
     
     List<AccountsDto> accountSelectionList;
 }

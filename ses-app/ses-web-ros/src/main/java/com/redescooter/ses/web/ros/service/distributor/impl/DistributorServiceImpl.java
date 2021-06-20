@@ -17,6 +17,7 @@ import com.redescooter.ses.api.common.vo.distributor.SavaOrUpdateDistributorEnte
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.base.OpeSaleScooterMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSpecificatTypeMapper;
 import com.redescooter.ses.web.ros.dao.distributor.OpeDistributorExMapper;
@@ -30,6 +31,7 @@ import com.redescooter.ses.web.ros.enums.distributor.StatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.distributor.DistributorService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.distributor.enter.DistributorAddEnter;
 import com.redescooter.ses.web.ros.vo.distributor.enter.DistributorCityAndCPSelectorEnter;
 import com.redescooter.ses.web.ros.vo.distributor.enter.DistributorEnableOrDisableEnter;
@@ -123,7 +125,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
         }
 
         int count = opeDistributorExMapper.getListCount(enter,flag?null:deptIds);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return new Response<>(PageResult.createZeroRowResult(enter));
         }
         List<DistributorListResult> list = opeDistributorExMapper.getList(enter,flag?null:deptIds);
@@ -137,7 +139,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
     @Override
     public Response<DistributorCityAndCPSelectorResult> getCityAndCPSelector(DistributorCityAndCPSelectorEnter enter) {
         logger.info("城市和邮政编码联动的入参是:[{}]", enter);
-        if (null == enter || StringUtils.isBlank(enter.getKey())) {
+        if (StringManaConstant.entityIsNull(enter) || StringUtils.isBlank(enter.getKey())) {
             throw new SesWebRosException(ExceptionCodeEnums.ID_IS_NOT_NULL.getCode(), ExceptionCodeEnums.ID_IS_NOT_NULL.getMessage());
         }
 
@@ -261,7 +263,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
      * 新增门店
      */
     @Override
-    @GlobalTransactional(rollbackFor = Exception.class)  
+    @GlobalTransactional(rollbackFor = Exception.class)
     public Response<GeneralResult> add(DistributorAddEnter enter) {
         logger.info("新增门店的入参是:[{}]", enter);
         if (enter.getEmail().indexOf("@") == -1) {
@@ -306,7 +308,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
         model.setCreatedBy(enter.getUserId());
         model.setCreatedTime(new Date());
         int i = opeDistributorMapper.insert(model);
-        if (i > 0) {
+        if (0 < i) {
             return new Response<>();
         }
         throw new SesWebRosException(ExceptionCodeEnums.INSERT_FAIL.getCode(), ExceptionCodeEnums.INSERT_FAIL.getMessage());
@@ -316,7 +318,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
      * 编辑门店
      */
     @Override
-    @GlobalTransactional(rollbackFor = Exception.class)  
+    @GlobalTransactional(rollbackFor = Exception.class)
     public Response<GeneralResult> update(DistributorUpdateEnter enter) {
         logger.info("编辑门店的入参是:[{}]", enter);
         OpeDistributor model = new OpeDistributor();
@@ -324,7 +326,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
         model.setUpdatedBy(enter.getUserId());
         model.setUpdatedTime(new Date());
         int i = opeDistributorMapper.updateById(model);
-        if (i > 0) {
+        if (0 < i) {
             return new Response<>();
         }
         throw new SesWebRosException(ExceptionCodeEnums.UPDATE_FAIL.getCode(), ExceptionCodeEnums.UPDATE_FAIL.getMessage());
@@ -334,7 +336,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
      * 删除门店
      */
     @Override
-    @GlobalTransactional(rollbackFor = Exception.class)  
+    @GlobalTransactional(rollbackFor = Exception.class)
     public Response<GeneralResult> delete(IdEnter enter) {
         logger.info("删除门店的入参是:[{}]", enter);
         OpeDistributor distributor = opeDistributorMapper.selectById(enter.getId());
@@ -373,7 +375,7 @@ public class DistributorServiceImpl extends ServiceImpl<OpeDistributorMapper, Op
             List<String> saleProductList = Lists.newArrayList();
             for (String s : splits) {
                 OpeSaleScooter opeSaleScooter = opeSaleScooterMapper.selectById(s);
-                if (null != opeSaleScooter) {
+                if (StringManaConstant.entityIsNotNull(opeSaleScooter)) {
                     String specificationName = opeSaleScooter.getProductName();
                     saleProductList.add(specificationName);
                 }

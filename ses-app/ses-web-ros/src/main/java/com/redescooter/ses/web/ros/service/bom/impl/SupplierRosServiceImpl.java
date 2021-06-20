@@ -21,6 +21,7 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeSupplierService;
 import com.redescooter.ses.web.ros.service.base.OpeSupplierTraceService;
 import com.redescooter.ses.web.ros.service.bom.SupplierRosService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.supplier.SupplierEditEnter;
 import com.redescooter.ses.web.ros.vo.supplier.SupplierPage;
 import com.redescooter.ses.web.ros.vo.supplier.SupplierResult;
@@ -178,11 +179,11 @@ public class SupplierRosServiceImpl implements SupplierRosService {
 
     @Override
     public PageResult<SupplierResult> list(SupplierPage page) {
-        if (page.getKeyword() != null && page.getKeyword().length() > 50) {
+        if (NumberUtil.notNullAndGtFifty(page.getKeyword())) {
             return PageResult.createZeroRowResult(page);
         }
         int count = supplierServiceMapper.listCount(page);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(page);
         }
         List<SupplierResult> list = supplierServiceMapper.list(page);
@@ -213,25 +214,25 @@ public class SupplierRosServiceImpl implements SupplierRosService {
     }
 
     private void checkSaveSupplierParameter(SupplierSaveEnter enter) {
-        if (enter.getSupplierName().length() < 2 || enter.getSupplierName().length() > 40) {
+        if (NumberUtil.ltTwoOrGtForty(enter.getSupplierName().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.SUPPLIER_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.SUPPLIER_NAME_IS_NOT_ILLEGAL.getMessage());
         }
-        if (enter.getSupplierAddress().length() < 2 || enter.getSupplierAddress().length() > 40) {
+        if (NumberUtil.ltTwoOrGtForty(enter.getSupplierAddress().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.SUPPLIER_ADDRESS_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.SUPPLIER_ADDRESS_IS_NOT_ILLEGAL.getMessage());
         }
-        if (enter.getContactFullName().length() < 2 || enter.getContactFullName().length() > 20) {
+        if (NumberUtil.ltTwoOrGtTwenty(enter.getContactFullName().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
         }
-        if (enter.getContactEmail().length() < 2 || enter.getContactEmail().length() > 50 || !enter.getContactEmail().contains("@")) {
+        if (NumberUtil.ltTwoOrGtFifty(enter.getContactEmail().length()) || !enter.getContactEmail().contains("@")) {
             throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
         }
-        if (enter.getContactPhone().length() < 2 || enter.getContactPhone().length() > 20) {
+        if (NumberUtil.ltTwoOrGtTwenty(enter.getContactPhone().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
         }
-        if (enter.getSupplierTag().length() < 2 || enter.getSupplierTag().length() > 20) {
+        if (NumberUtil.ltTwoOrGtTwenty(enter.getSupplierTag().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.SUPPLIER_TAG_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.SUPPLIER_TAG_IS_NOT_ILLEGAL.getMessage());
         }
-        if (enter.getBusinessNumber().length() < 2 || enter.getBusinessNumber().length() > 20) {
+        if (NumberUtil.ltTwoOrGtTwenty(enter.getBusinessNumber().length())) {
             throw new SesWebRosException(ExceptionCodeEnums.ILLEGAL_BUSINESS_LICENSE_NUMBER.getCode(), ExceptionCodeEnums.ILLEGAL_BUSINESS_LICENSE_NUMBER.getMessage());
         }
     }

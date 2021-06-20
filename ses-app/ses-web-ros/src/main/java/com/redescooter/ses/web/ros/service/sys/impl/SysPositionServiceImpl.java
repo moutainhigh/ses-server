@@ -11,6 +11,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.sys.PositionServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysPosition;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
@@ -22,6 +23,7 @@ import com.redescooter.ses.web.ros.service.sys.RoleService;
 import com.redescooter.ses.web.ros.service.sys.StaffService;
 import com.redescooter.ses.web.ros.service.sys.SysDeptService;
 import com.redescooter.ses.web.ros.service.sys.SysPositionService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.sys.dept.DeptIdEnter;
 import com.redescooter.ses.web.ros.vo.sys.position.EditPositionEnter;
 import com.redescooter.ses.web.ros.vo.sys.position.PositionDetailsResult;
@@ -116,11 +118,11 @@ public class SysPositionServiceImpl implements SysPositionService {
                 }
             }
         }
-        if (page.getKeyWord() != null && page.getKeyWord().length() > 50) {
+        if (NumberUtil.notNullAndGtFifty(page.getKeyWord())) {
             return PageResult.createZeroRowResult(page);
         }
         int totalRows = positionServiceMapper.listcount(page, flag ? null : deptIds, Constant.SYSTEM_ROOT);
-        if (totalRows == 0) {
+        if (NumberUtil.eqZero(totalRows)) {
             return PageResult.createZeroRowResult(page);
         }
         List<PositionResult> list = positionServiceMapper.list(page, flag ? null : deptIds, Constant.SYSTEM_ROOT);
@@ -156,11 +158,11 @@ public class SysPositionServiceImpl implements SysPositionService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult positionEdit(EditPositionEnter enter) {
-        if (enter.getDeptId() != null) {
+        if (StringManaConstant.entityIsNotNull(enter.getDeptId())) {
             sysDeptService.checkDeptStatus(enter.getDeptId(), false);
         }
         OpeSysPosition byId = opeSysPositionService.getById(enter.getId());
-        if (byId == null) {
+        if (StringManaConstant.entityIsNull(byId)) {
             throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
         }
         // 修改时校验名称是否重复
@@ -187,7 +189,7 @@ public class SysPositionServiceImpl implements SysPositionService {
     @Override
     public PositionDetailsResult positionDetails(IdEnter enter) {
         OpeSysPosition position = opeSysPositionService.getById(enter.getId());
-        if (position == null) {
+        if (StringManaConstant.entityIsNull(position)) {
             throw new SesWebRosException(ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.POSITION_IS_NOT_EXIST.getMessage());
         }
         PositionDetailsResult positionDetailsResult = positionServiceMapper.positionDetails(position.getId());
@@ -232,11 +234,11 @@ public class SysPositionServiceImpl implements SysPositionService {
         QueryWrapper<OpeSysPosition> qw = new QueryWrapper<>();
         qw.eq(OpeSysPosition.COL_POSITION_NAME, positionName);
 //        qw.eq(OpeSysPosition.COL_DEPT_ID,deptId);
-        if (id != null) {
+        if (StringManaConstant.entityIsNotNull(id)) {
             qw.ne(OpeSysPosition.COL_ID, id);
         }
         int count = opeSysPositionService.count(qw);
-        if (count > 0) {
+        if (0 < count) {
             throw new SesWebRosException(ExceptionCodeEnums.SAVE_DEPT_POSITION_NAME_NOT_REPEAT.getCode(), ExceptionCodeEnums.SAVE_DEPT_POSITION_NAME_NOT_REPEAT.getMessage());
         }
     }
@@ -246,7 +248,7 @@ public class SysPositionServiceImpl implements SysPositionService {
     public BooleanResult deletePositionSelect(IdEnter enter) {
         Integer count = staffService.deptStaffCount(enter.getId(), 2);
         BooleanResult booleanResult = new BooleanResult();
-        if (count > 0) {
+        if (0 < count) {
             booleanResult.setSuccess(false);
         } else {
             booleanResult.setSuccess(true);
@@ -257,7 +259,7 @@ public class SysPositionServiceImpl implements SysPositionService {
     @Override
     public GeneralResult deletePosition(IdEnter enter) {
         Integer count = staffService.deptStaffCount(enter.getId(), 2);
-        if (count > 0) {
+        if (0 < count) {
             throw new SesWebRosException(ExceptionCodeEnums.UNBUNDLING_OF_EMPLOYEES.getCode(), ExceptionCodeEnums.UNBUNDLING_OF_EMPLOYEES.getMessage());
         }
         opeSysPositionService.removeById(enter.getId());
@@ -270,7 +272,7 @@ public class SysPositionServiceImpl implements SysPositionService {
         QueryWrapper<OpeSysPosition> qw = new QueryWrapper<>();
         qw.eq(OpeSysPosition.COL_POSITION_CODE, positionCode);
         int count = opeSysPositionService.count(qw);
-        if (count > 0) {
+        if (0 < count) {
             createCode();
         }
         return positionCode;

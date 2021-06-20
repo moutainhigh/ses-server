@@ -1,6 +1,5 @@
 package com.redescooter.ses.web.ros.service.codebase.impl;
 
-import cn.hutool.poi.excel.ExcelReader;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -33,6 +32,7 @@ import com.redescooter.ses.web.ros.vo.codebase.RSNDetailScooterResult;
 import com.redescooter.ses.web.ros.vo.codebase.RSNListEnter;
 import com.redescooter.ses.web.ros.vo.codebase.RSNListResult;
 import io.seata.spring.annotation.GlobalTransactional;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -43,12 +43,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -103,7 +101,7 @@ public class RSNServiceImpl implements RSNService {
     @Override
     public PageResult<RSNListResult> getList(RSNListEnter enter) {
         int count = opeCodebaseRsnMapper.getRsnListCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<RSNListResult> list = opeCodebaseRsnMapper.getRsnList(enter);
@@ -173,13 +171,13 @@ public class RSNServiceImpl implements RSNService {
         setWrapper.eq(OpeCarDistribute::getRsn, rsn);
         setWrapper.last("limit 1");
         OpeCarDistribute setModel = opeCarDistributeMapper.selectOne(setWrapper);
-        if (null != setModel) {
+        if (StringManaConstant.entityIsNotNull(setModel)) {
             LambdaQueryWrapper<OpeCarDistributeNode> nodeWrapper = new LambdaQueryWrapper<>();
             nodeWrapper.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
             nodeWrapper.eq(OpeCarDistributeNode::getCustomerId, setModel.getCustomerId());
             nodeWrapper.last("limit 1");
             OpeCarDistributeNode node = opeCarDistributeNodeMapper.selectOne(nodeWrapper);
-            if (null != node && node.getAppNode() == 6 && node.getFlag() == 2) {
+            if (StringManaConstant.entityIsNotNull(node) && 6 == node.getAppNode() && 2 == node.getFlag()) {
                 nodes.add(new Node("6", DateUtil.getTimeStr(setModel.getUpdatedTime(), DateUtil.DEFAULT_DATETIME_FORMAT)));
             } else {
                 nodes.add(new Node("6", "-"));
@@ -194,7 +192,7 @@ public class RSNServiceImpl implements RSNService {
         scooterWrapper.eq(OpeCarDistribute::getRsn, rsn);
         scooterWrapper.last("limit 1");
         OpeCarDistribute distribute = opeCarDistributeMapper.selectOne(scooterWrapper);
-        if (null != distribute) {
+        if (StringManaConstant.entityIsNotNull(distribute)) {
             scooterInfo.setBbi(distribute.getBbi());
             scooterInfo.setController(distribute.getController());
             scooterInfo.setElectricMachinery(distribute.getElectricMachinery());

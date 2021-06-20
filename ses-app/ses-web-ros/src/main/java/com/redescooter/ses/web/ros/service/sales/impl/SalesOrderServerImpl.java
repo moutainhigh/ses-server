@@ -10,12 +10,14 @@ import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryMapper;
 import com.redescooter.ses.web.ros.dao.sales.SalesOrderServerMapper;
 import com.redescooter.ses.web.ros.dm.OpeColor;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.service.base.OpeColorService;
 import com.redescooter.ses.web.ros.service.sales.SalesOrderServer;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.sales.ColorCountResult;
 import com.redescooter.ses.web.ros.vo.sales.SalesOrderDetailsResult;
 import com.redescooter.ses.web.ros.vo.sales.SalesOrderEnter;
@@ -121,11 +123,11 @@ public class SalesOrderServerImpl implements SalesOrderServer {
      */
     @Override
     public PageResult<SalesOrderListResult> list(SalesOrderEnter enter) {
-        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+        if (NumberUtil.notNullAndGtFifty(enter.getKeyword())) {
             return PageResult.createZeroRowResult(enter);
         }
         int count = salesOrderServerMapper.listCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<SalesOrderListResult> list = salesOrderServerMapper.list(enter);
@@ -136,14 +138,13 @@ public class SalesOrderServerImpl implements SalesOrderServer {
      * 销售订单详情
      *
      * @param enter
-     * @param id
      * @return
      */
     @Override
     public SalesOrderDetailsResult details(IdEnter enter) {
         SalesOrderDetailsResult detailsResult = salesOrderServerMapper.details(enter);
 
-        if (detailsResult == null) {
+        if (StringManaConstant.entityIsNull(detailsResult)) {
             return new SalesOrderDetailsResult();
         }
         return detailsResult;
@@ -153,7 +154,6 @@ public class SalesOrderServerImpl implements SalesOrderServer {
      * 销售订单添加或者删除标签
      *
      * @param enter
-     * @param id
      * @return
      */
     @Override
@@ -162,7 +162,7 @@ public class SalesOrderServerImpl implements SalesOrderServer {
         OpeCustomerInquiry inquiry = baseCustomerInquiryMapper.selectById(enter.getId());
         /*标签标记*/
         String labels = inquiry.getDef5();
-        if (labels == null) {
+        if (StringManaConstant.entityIsNull(labels)) {
             labels = String.valueOf(!Boolean.FALSE);
         } else {
             labels = String.valueOf(!Boolean.parseBoolean(labels));
@@ -176,7 +176,6 @@ public class SalesOrderServerImpl implements SalesOrderServer {
      * 取消销售订单提醒
      *
      * @param enter
-     * @param id
      * @return
      */
     @Override
@@ -185,9 +184,9 @@ public class SalesOrderServerImpl implements SalesOrderServer {
         OpeCustomerInquiry inquiry = baseCustomerInquiryMapper.selectById(enter.getId());
         /*提示标记*/
         Double warnDouble = inquiry.getDef6();
-        if (warnDouble == null) {
+        if (StringManaConstant.entityIsNull(warnDouble)) {
             warnDouble = new Double("1");
-        } else if (warnDouble <= 0) {
+        } else if (0 >= warnDouble) {
             warnDouble = new Double("1");
         } else {
             return new GeneralResult(enter.getRequestId());

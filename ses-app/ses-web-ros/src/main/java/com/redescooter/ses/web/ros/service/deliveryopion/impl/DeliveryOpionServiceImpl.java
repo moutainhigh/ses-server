@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dm.OpeDeliveryOption;
 import com.redescooter.ses.web.ros.service.base.OpeDeliveryOptionService;
 import com.redescooter.ses.web.ros.service.deliveryopion.DeliveryOpionService;
@@ -134,7 +135,7 @@ public class DeliveryOpionServiceImpl implements DeliveryOpionService {
                 .eq(OpeDeliveryOption::getId, enter.getId())
                 .last("limit 1"));
 
-        if (deliveryOption != null) {
+        if (StringManaConstant.entityIsNotNull(deliveryOption)) {
             result.setId(deliveryOption.getId());
             result.setStatus(deliveryOption.getStatus());
             result.setOptionNeme(deliveryOption.getOptionNeme());

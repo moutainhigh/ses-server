@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dm.OpeOpTrace;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -119,11 +120,11 @@ public class ProductionOrderTraceServiceImpl implements ProductionOrderTraceServ
     @Override
     public OpTraceResult detail(IdEnter enter) {
         OpeOpTrace opTrace = opeOpTraceService.getById(enter.getId());
-        if (opTrace == null) {
+        if (StringManaConstant.entityIsNull(opTrace)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_TRACE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_TRACE_IS_NOT_EXIST.getMessage());
         }
         OpeSysStaff opeSysStaff = opeSysStaffService.getOne(new LambdaQueryWrapper<OpeSysStaff>().eq(OpeSysStaff::getId, opTrace.getCreatedBy()));
-        if (opeSysStaff == null) {
+        if (StringManaConstant.entityIsNull(opeSysStaff)) {
             throw new SesWebRosException(ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.EMPLOYEE_IS_NOT_EXIST.getMessage());
         }
         OpTraceResult opTraceResult = new OpTraceResult();
@@ -146,7 +147,7 @@ public class ProductionOrderTraceServiceImpl implements ProductionOrderTraceServ
     public GeneralResult save(SaveOpTraceEnter enter) {
         OpeOpTrace saveOpeOpTrace = new OpeOpTrace();
         BeanUtils.copyProperties(enter, saveOpeOpTrace);
-        if (null == enter.getId() || enter.getId() == 0) {
+        if (StringManaConstant.entityIsNull(enter.getId()) || 0 == enter.getId()) {
             saveOpeOpTrace.setId(idAppService.getId(SequenceName.OPE_OP_TRACE));
             saveOpeOpTrace.setDr(0);
             saveOpeOpTrace.setCreatedBy(enter.getUserId());

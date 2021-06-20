@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.bom.BomCommonTypeEnums;
 import com.redescooter.ses.api.common.enums.bom.ProductionBomStatusEnums;
 import com.redescooter.ses.api.common.enums.bom.ProductionPartsRelationTypeEnums;
@@ -13,6 +14,7 @@ import com.redescooter.ses.api.common.enums.website.ProductModelEnums;
 import com.redescooter.ses.api.common.enums.whse.WhseTypeEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.production.PurchasingWhServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeProductionPartsRelation;
 import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
@@ -29,6 +31,7 @@ import com.redescooter.ses.web.ros.service.base.OpeStockPurchasService;
 import com.redescooter.ses.web.ros.service.base.OpeStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWhseService;
 import com.redescooter.ses.web.ros.service.production.purchasingWh.PurchasingWhService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.production.wh.AvailableListBatchNResult;
 import com.redescooter.ses.web.ros.vo.production.wh.AvailableListResult;
 import com.redescooter.ses.web.ros.vo.production.wh.OutWhResult;
@@ -163,13 +166,13 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
      */
     @Override
     public PageResult<AvailableListResult> availableList(WhEnter enter) {
-        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+        if (NumberUtil.notNullAndGtFifty(enter.getKeyword())) {
             return PageResult.createZeroRowResult(enter);
         }
         OpeWhse opeWhse = checkWhse(Lists.newArrayList(WhseTypeEnums.PURCHAS.getValue())).get(0);
 
         int count = purchasingWhServiceMapper.availableListCount(enter, opeWhse.getId());
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<AvailableListResult> availableList = purchasingWhServiceMapper.availableList(enter, opeWhse.getId());
@@ -223,7 +226,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
                     batchNMap.put(item.getStockId(), availableListBatchNList);
                 }
             }
-            ;
+
             log.info("返回的批次号：" + batchNMap.toString());
             //封装数据返回
             availableList.forEach(item -> {
@@ -247,7 +250,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
     @Override
     public PageResult<QcingListResult> qcingList(WhEnter enter) {
         int count = purchasingWhServiceMapper.qcingListCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         return PageResult.create(enter, count, purchasingWhServiceMapper.qcingList(enter));
@@ -262,7 +265,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
     @Override
     public PageResult<TobeStoredResult> tobeStoredList(WhEnter enter) {
         int count = purchasingWhServiceMapper.tobeStoredListCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         return PageResult.create(enter, count, purchasingWhServiceMapper.tobeStoredList(enter));
@@ -370,7 +373,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
         opeWhseQueryWrapper.eq(OpeWhse.COL_TYPE, WhseTypeEnums.PURCHAS.getValue());
         opeWhseQueryWrapper.last("limit 1");
         OpeWhse opeWhse = opeWhseService.getOne(opeWhseQueryWrapper);
-        if (opeWhse == null) {
+        if (StringManaConstant.entityIsNull(opeWhse)) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
         }
         //查询库存
@@ -402,7 +405,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
                         if (item.getPartsId().equals(stock.getMaterielProductId())) {
 
                             int canAss = Long.valueOf(stock.getAvailableTotal() / item.getPartsQty()).intValue();
-                            if (maxTotal == 0) {
+                            if (0 == maxTotal) {
                                 total++;
                                 maxTotal = canAss;
                                 continue flag2;
@@ -412,7 +415,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
                                 maxTotal = canAss;
                                 continue flag2;
                             }
-                            if (canAss == 0) {
+                            if (0 == canAss) {
                                 total++;
                                 break flag2;
                             }
@@ -434,7 +437,7 @@ public class PurchasingWhServiceImpl implements PurchasingWhService {
 
     private List<OpeWhse> checkWhse(List<String> types) {
         QueryWrapper<OpeWhse> opeWhseQueryWrapper = new QueryWrapper<>();
-        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, 0);
+        opeWhseQueryWrapper.eq(OpeWhse.COL_DR, Constant.DR_FALSE);
         opeWhseQueryWrapper.in(OpeWhse.COL_TYPE, types);
         List<OpeWhse> opeWhseList = opeWhseService.list(opeWhseQueryWrapper);
         if (opeWhseList.size() != types.size()) {

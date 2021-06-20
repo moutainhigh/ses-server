@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.restproductionorder.OrderStatusFlowServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeOrderStatusFlow;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
@@ -147,7 +148,7 @@ public class OrderStatusFlowServiceImpl implements OrderStatusFlowService {
     public OrderStatusFlowResult detail(IdEnter enter) {
         OrderStatusFlowResult opeOrderStatusFlow = orderStatusFlowServiceMapper.detail(enter);
 
-        if (opeOrderStatusFlow != null) {
+        if (StringManaConstant.entityIsNotNull(opeOrderStatusFlow)) {
             //创建人
             OpeSysStaff createSysStaff = opeSysStaffService.getById(new LambdaQueryWrapper<OpeSysStaff>().eq(OpeSysStaff::getId, opeOrderStatusFlow.getCreateById()));
             //更新人
@@ -176,7 +177,7 @@ public class OrderStatusFlowServiceImpl implements OrderStatusFlowService {
     public GeneralResult save(OrderStatusFlowEnter enter) {
         OpeOrderStatusFlow opeOrderStatusFlow = new OpeOrderStatusFlow();
         BeanUtils.copyProperties(enter, opeOrderStatusFlow);
-        if (enter.getId() == null || enter.getId() == 0) {
+        if (StringManaConstant.entityIsNull(enter.getId()) || 0 == enter.getId()) {
             opeOrderStatusFlow.setId(idAppService.getId(SequenceName.OPE_ORDER_STATUS_FLOW));
             opeOrderStatusFlow.setDr(0);
             opeOrderStatusFlow.setCreatedBy(enter.getUserId());

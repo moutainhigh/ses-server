@@ -6,6 +6,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeExMapper;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
 import com.redescooter.ses.web.ros.dm.OpeCarDistribute;
@@ -15,6 +16,7 @@ import com.redescooter.ses.web.ros.enums.distributor.DelStatusEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.assign.AssignedService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.assign.done.enter.AssignedListEnter;
 import com.redescooter.ses.web.ros.vo.assign.done.result.AssignedDetailResult;
 import com.redescooter.ses.web.ros.vo.assign.done.result.AssignedListResult;
@@ -62,7 +64,7 @@ public class AssignedServiceImpl implements AssignedService {
         SesStringUtils.objStringTrim(enter);
 
         int count = opeCarDistributeExMapper.getAssignedListCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<AssignedListResult> list = opeCarDistributeExMapper.getAssignedList(enter);
@@ -80,7 +82,7 @@ public class AssignedServiceImpl implements AssignedService {
 
         // 客户信息
         ToBeAssignDetailCustomerInfoResult customerInfo = opeCarDistributeExMapper.getCustomerInfo(enter.getCustomerId());
-        if (null == customerInfo) {
+        if (StringManaConstant.entityIsNull(customerInfo)) {
             throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_NOT_EXIST.getMessage());
         }
         String customerType = customerInfo.getCustomerType();
@@ -108,10 +110,10 @@ public class AssignedServiceImpl implements AssignedService {
             scooter.setVinCode(o.getVinCode());
             scooter.setLicensePlate(o.getLicensePlate());
             scooter.setRsn(o.getRsn());
-            if (null != o.getSpecificatTypeId()) {
+            if (StringManaConstant.entityIsNotNull(o.getSpecificatTypeId())) {
                 scooter.setSpecificatName(toBeAssignServiceImpl.getSpecificatNameById(o.getSpecificatTypeId()));
             }
-            if (null != o.getColorId()) {
+            if (StringManaConstant.entityIsNotNull(o.getColorId())) {
                 Map<String, String> map = toBeAssignServiceImpl.getColorNameAndValueById(o.getColorId());
                 scooter.setColorName(map.get("colorName"));
                 scooter.setColorValue(map.get("colorValue"));

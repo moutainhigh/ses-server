@@ -19,6 +19,7 @@ import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
 import com.redescooter.ses.api.foundation.vo.setting.SaveParamentEnter;
 import com.redescooter.ses.api.foundation.vo.setting.SaveParameterBatchEnter;
 import com.redescooter.ses.tool.utils.date.DateUtil;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.dm.OpeSysUserProfile;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -128,11 +129,11 @@ public class RosRosParameterServiceImpl implements RosParameterService {
 
         OpeSysUserProfile createUserProfile = opeSysUserProfileService.getById(detail.getCreatedById());
         OpeSysUserProfile updateUserProfile = opeSysUserProfileService.getById(detail.getUpadtedById());
-        if (createUserProfile != null) {
+        if (StringManaConstant.entityIsNotNull(createUserProfile)) {
             detail.setCreatedByFirtName(createUserProfile.getFirstName());
             detail.setCreatedByLastName(createUserProfile.getLastName());
         }
-        if (updateUserProfile != null) {
+        if (StringManaConstant.entityIsNotNull(updateUserProfile)) {
             detail.setUpadtedByFirtName(updateUserProfile.getFirstName());
             detail.setUpadtedByLastName(updateUserProfile.getLastName());
         }

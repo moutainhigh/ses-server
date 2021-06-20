@@ -12,6 +12,7 @@ import com.redescooter.ses.web.ros.dao.log.LogServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysLog;
 import com.redescooter.ses.web.ros.service.base.OpeSysLogService;
 import com.redescooter.ses.web.ros.service.log.SysLogService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.log.LogDetailResult;
 import com.redescooter.ses.web.ros.vo.log.LogExport;
 import com.redescooter.ses.web.ros.vo.log.LogListEnter;
@@ -52,7 +53,7 @@ public class SysLogServiceImpl implements SysLogService {
     public PageResult<LogListResult> logList(LogListEnter enter) {
         List<LogListResult> list = new ArrayList<>();
         int totalRows = logServiceMapper.totalRows(enter);
-        if (totalRows == 0) {
+        if (NumberUtil.eqZero(totalRows)) {
             return PageResult.createZeroRowResult(enter);
         }
         list = logServiceMapper.logList(enter);

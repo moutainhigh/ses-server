@@ -3,6 +3,7 @@ package com.redescooter.ses.web.ros.service.sys.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.JedisConstant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dm.OpeSysStaff;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
@@ -77,7 +78,7 @@ public class SysUserProfileServiceImpl implements SysUserProfileService {
         qw.eq(OpeSysStaff.COL_ID, enter.getUserId());
         qw.last("limit 1");
         OpeSysStaff staff = opeSysStaffService.getOne(qw);
-        if (staff == null) {
+        if (StringManaConstant.entityIsNull(staff)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         UserInfoResult result = new UserInfoResult();

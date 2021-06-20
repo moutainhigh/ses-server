@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.base.Strings;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dm.OpeSysDept;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleData;
 import com.redescooter.ses.web.ros.dm.OpeSysUserRole;
@@ -77,7 +78,7 @@ public class RoleDataServiceImpl implements RoleDataService {
                         tree.setChecked(true);
                     }
                 }
-            } else if (dataList.size() == 1) {
+            } else if (1 == dataList.size()) {
                 // 说明是勾选的上面的权限
                 result.setDataType(dataList.get(0).getDataType());
             }
@@ -95,7 +96,7 @@ public class RoleDataServiceImpl implements RoleDataService {
         opeSysRoleDataService.remove(qw);
         List<OpeSysRoleData> roleDataList = new ArrayList<>();
         // 先判断类型  （若类型不为空，则选择的是上面的几个，若类型为空，则需判断有没有勾选部门）
-        if (enter.getDataType() != null) {
+        if (StringManaConstant.entityIsNotNull(enter.getDataType())) {
             // 类型不为空，则选择的是上面的几个,下面的部门不用管
             OpeSysRoleData roleData = new OpeSysRoleData();
             roleData.setRoleId(enter.getRoleId());

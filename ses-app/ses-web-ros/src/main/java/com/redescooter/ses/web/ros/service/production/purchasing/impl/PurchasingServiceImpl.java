@@ -30,6 +30,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.date.DateUtil;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.production.PurchasingServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeFactory;
 import com.redescooter.ses.web.ros.dm.OpeProductionParts;
@@ -69,6 +70,7 @@ import com.redescooter.ses.web.ros.service.base.OpeWhseService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsPartsStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsQualifiedPartsStockService;
 import com.redescooter.ses.web.ros.service.production.purchasing.PurchasingService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.bo.PartDetailDto;
 import com.redescooter.ses.web.ros.vo.production.ConsigneeResult;
 import com.redescooter.ses.web.ros.vo.production.FactoryCommonResult;
@@ -231,7 +233,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public PageResult<PurchasingResult> list(PurchasingListEnter enter) {
-        if (enter.getKeyword() != null && enter.getKeyword().length() > 50) {
+        if (NumberUtil.notNullAndGtFifty(enter.getKeyword())) {
             return PageResult.createZeroRowResult(enter);
         }
         List<String> statusList = Lists.newArrayList();
@@ -248,7 +250,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         }
 
         int count = purchasingServiceMapper.purchasingListCount(enter, statusList);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<PurchasingResult> purchasingResultList = purchasingServiceMapper.purchasingList(enter, statusList);
@@ -324,21 +326,21 @@ public class PurchasingServiceImpl implements PurchasingService {
 
         // 收货人过滤
         QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
-        opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
+        opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, Constant.DR_FALSE);
         opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_SYS_USER_ID, enter.getConsigneeId());
         opeSysUserProfileQueryWrapper.last("limit 1");
         OpeSysUserProfile opeSysUserProfile = opeSysUserProfileService.getOne(opeSysUserProfileQueryWrapper);
-        if (opeSysUserProfile == null) {
+        if (StringManaConstant.entityIsNull(opeSysUserProfile)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
         }
         // 代工厂过滤
         QueryWrapper<OpeFactory> opeFactoryQueryWrapper = new QueryWrapper<>();
-        opeFactoryQueryWrapper.eq(OpeFactory.COL_DR, 0);
+        opeFactoryQueryWrapper.eq(OpeFactory.COL_DR, Constant.DR_FALSE);
         opeFactoryQueryWrapper.eq(OpeFactory.COL_ID, enter.getFactoryId());
         opeFactoryQueryWrapper.last("limit 1");
         OpeFactory opeFactory = opeFactoryService.getOne(opeFactoryQueryWrapper);
-        if (opeFactory == null) {
+        if (StringManaConstant.entityIsNull(opeFactory)) {
             throw new SesWebRosException(ExceptionCodeEnums.FACTORY_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.FACTORY_IS_NOT_EXIST.getMessage());
         }
@@ -363,7 +365,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         if (CollectionUtils.isNotEmpty(opePurchasProductList)) {
             opePurchasProductService.batchInsert(opePurchasProductList);
         }
-        if (opePurchas != null) {
+        if (StringManaConstant.entityIsNotNull(opePurchas)) {
             opePurchasService.save(opePurchas);
         }
         if (CollectionUtils.isNotEmpty(opePurchasPaymentList)) {
@@ -382,7 +384,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     public List<ConsigneeResult> consigneeList(GeneralEnter enter) {
         List<ConsigneeResult> consigneeResultlist = new ArrayList<>();
         QueryWrapper<OpeSysUserProfile> opeSysUserProfileQueryWrapper = new QueryWrapper<>();
-        opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, 0);
+        opeSysUserProfileQueryWrapper.eq(OpeSysUserProfile.COL_DR, Constant.DR_FALSE);
         opeSysUserProfileQueryWrapper.ne(OpeSysUserProfile.COL_FIRST_NAME, Constant.ADMIN_USER_NAME);
         List<OpeSysUserProfile> opeSysUserProfileList = opeSysUserProfileService.list(opeSysUserProfileQueryWrapper);
         opeSysUserProfileList.forEach(item -> {
@@ -403,7 +405,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     public List<FactoryCommonResult> factoryList(GeneralEnter enter) {
         List<FactoryCommonResult> result = new ArrayList<>();
         QueryWrapper<OpeFactory> opeFactoryQueryWrapper = new QueryWrapper();
-        opeFactoryQueryWrapper.eq(OpeFactory.COL_DR, 0);
+        opeFactoryQueryWrapper.eq(OpeFactory.COL_DR, Constant.DR_FALSE);
         List<OpeFactory> opeFactoryList = opeFactoryService.list(opeFactoryQueryWrapper);
         opeFactoryList.forEach(item -> {
             result.add(FactoryCommonResult.builder().id(item.getId()).factoryName(item.getFactoryName())
@@ -422,7 +424,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Override
     public PurchasingResult detail(IdEnter enter) {
         PurchasingResult result = purchasingServiceMapper.detail(enter);
-        if (result == null) {
+        if (StringManaConstant.entityIsNull(result)) {
             throw new SesWebRosException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
@@ -438,7 +440,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Override
     public List<CommonNodeResult> purchasingNode(IdEnter enter) {
         OpePurchas opePurchas = opePurchasService.getById(enter.getId());
-        if (opePurchas == null) {
+        if (StringManaConstant.entityIsNull(opePurchas)) {
             throw new SesWebRosException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
@@ -526,7 +528,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Override
     public PaymentDetailResullt paymentDetail(IdEnter enter) {
         OpePurchas opePurchas = opePurchasService.getById(enter.getId());
-        if (opePurchas == null) {
+        if (StringManaConstant.entityIsNull(opePurchas)) {
             throw new SesWebRosException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
@@ -549,7 +551,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Override
     public GeneralResult pay(PayEnter enter) {
         OpePurchasPayment opePurchasPayment = opePurchasPaymentService.getById(enter.getId());
-        if (opePurchasPayment == null) {
+        if (StringManaConstant.entityIsNull(opePurchasPayment)) {
             throw new SesWebRosException(ExceptionCodeEnums.OPEPURCHAS_PAYMENT_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.OPEPURCHAS_PAYMENT_IS_NOT_EXIST.getMessage());
         }
@@ -560,16 +562,16 @@ public class PurchasingServiceImpl implements PurchasingService {
         // 验证是否该支付的是当前分期
         QueryWrapper<OpePurchasPayment> opePurchasPaymentQueryWrapper = new QueryWrapper<>();
         opePurchasPaymentQueryWrapper.eq(OpePurchasPayment.COL_PURCHAS_ID, opePurchasPayment.getPurchasId());
-        opePurchasPaymentQueryWrapper.eq(OpePurchasPayment.COL_DR, 0);
+        opePurchasPaymentQueryWrapper.eq(OpePurchasPayment.COL_DR, Constant.DR_FALSE);
         opePurchasPaymentQueryWrapper.eq(OpePurchasPayment.COL_PAYMENT_STATUS, PayStatusEnums.UNPAID.getValue());
         opePurchasPaymentQueryWrapper.lt(OpePurchasPayment.COL_PAYMENT_PRIORITY,
                 opePurchasPayment.getPaymentPriority());
-        if (opePurchasPaymentService.count(opePurchasPaymentQueryWrapper) > 0) {
+        if (0 < opePurchasPaymentService.count(opePurchasPaymentQueryWrapper)) {
             throw new SesWebRosException(ExceptionCodeEnums.PAY_IN_INSTALLMENTS.getCode(),
                     (ExceptionCodeEnums.PAY_IN_INSTALLMENTS.getMessage()));
         }
         // 支付金额过滤
-        if (opePurchasPayment.getAmount().subtract(enter.getAmount()).intValue() != 0) {
+        if (0 != opePurchasPayment.getAmount().subtract(enter.getAmount()).intValue()) {
             throw new SesWebRosException(ExceptionCodeEnums.PAY_AMOUNT_IS_FALSE.getCode(),
                     (ExceptionCodeEnums.PAY_AMOUNT_IS_FALSE.getMessage()));
         }
@@ -595,7 +597,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         List<FactoryCommonResult> list = new ArrayList<>();
 
         QueryWrapper<OpeSupplier> opeSupplierQueryWrapper = new QueryWrapper<>();
-        opeSupplierQueryWrapper.eq(OpeSupplier.COL_DR, 0);
+        opeSupplierQueryWrapper.eq(OpeSupplier.COL_DR, Constant.DR_FALSE);
         List<OpeSupplier> opeSupplierList = opeSupplierService.list(opeSupplierQueryWrapper);
         opeSupplierList.forEach(item -> {
             list.add(FactoryCommonResult.builder().id(item.getId()).factoryName(item.getSupplierName())
@@ -632,7 +634,7 @@ public class PurchasingServiceImpl implements PurchasingService {
      */
     @Override
     public List<PruchasingItemResult> queryPurchasProductList(PruchasingItemListEnter enter) {
-        if (null == enter.getSource()) {
+        if (StringManaConstant.entityIsNull(enter.getSource())) {
             enter.setSource(3);
         }
         List<PruchasingItemResult> resultList = new ArrayList<>();
@@ -772,9 +774,9 @@ public class PurchasingServiceImpl implements PurchasingService {
 
         }
         List<PruchasingItemResult> result = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(resultList) && null != enter.getSource() && (enter.getSource() == 0 || enter.getSource() == 1)) {
+        if (CollectionUtils.isNotEmpty(resultList) && StringManaConstant.entityIsNotNull(enter.getSource()) && (0 == enter.getSource() || 1 == enter.getSource())) {
             for (PruchasingItemResult itemResult : resultList) {
-                if (itemResult.getAbleQty() > 0) {
+                if (0 < itemResult.getAbleQty()) {
                     result.add(itemResult);
                 }
             }
@@ -796,7 +798,7 @@ public class PurchasingServiceImpl implements PurchasingService {
             enter.setType(BomCommonTypeEnums.getCodeByValue(enter.getType()));
         }
         OpePurchas opePurchas = opePurchasService.getById(enter.getId());
-        if (opePurchas == null) {
+        if (StringManaConstant.entityIsNull(opePurchas)) {
             throw new SesWebRosException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
@@ -805,12 +807,12 @@ public class PurchasingServiceImpl implements PurchasingService {
 
         // 查询来料质检节点 计算应交货时间
         QueryWrapper<OpePurchasTrace> opePurchasTraceQueryWrapper = new QueryWrapper<>();
-        opePurchasTraceQueryWrapper.eq(OpePurchasTrace.COL_DR, 0);
+        opePurchasTraceQueryWrapper.eq(OpePurchasTrace.COL_DR, Constant.DR_FALSE);
         opePurchasTraceQueryWrapper.in(OpePurchasTrace.COL_PURCHAS_ID, enter.getId());
         opePurchasTraceQueryWrapper.eq(OpePurchasTrace.COL_STATUS, PurchasingStatusEnums.MATERIALS_QC.getValue());
         opePurchasTraceQueryWrapper.last("limit 1");
         OpePurchasTrace opePurchasTrace = opePurchasTraceService.getOne(opePurchasTraceQueryWrapper);
-        if (opePurchasTrace == null) {
+        if (StringManaConstant.entityIsNull(opePurchasTrace)) {
             return result;
         }
         // 交货时间计算
@@ -829,7 +831,7 @@ public class PurchasingServiceImpl implements PurchasingService {
     @Override
     public QueryFactorySupplierResult queryFactorySupplier(IdEnter enter) {
         QueryFactorySupplierResult result = purchasingServiceMapper.queryFactoryByPurchasId(enter);
-        if (result == null) {
+        if (StringManaConstant.entityIsNull(result)) {
             return new QueryFactorySupplierResult();
         }
 
@@ -857,12 +859,12 @@ public class PurchasingServiceImpl implements PurchasingService {
                     ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
         OpePurchas opePurchas = opePurchasService.getById(enter.getId());
-        if (opePurchas == null) {
+        if (StringManaConstant.entityIsNull(opePurchas)) {
             throw new SesWebRosException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
         OpeFactory opeFactory = opeFactoryService.getById(enter.getFactoryId());
-        if (opeFactory == null) {
+        if (StringManaConstant.entityIsNull(opeFactory)) {
             throw new SesWebRosException(ExceptionCodeEnums.FACTORY_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.FACTORY_IS_NOT_EXIST.getMessage());
         }
@@ -873,7 +875,7 @@ public class PurchasingServiceImpl implements PurchasingService {
 
         // 供应商 附件上传
         QueryWrapper<OpePurchasB> opePurchasBQueryWrapper = new QueryWrapper<>();
-        opePurchasBQueryWrapper.eq(OpePurchasB.COL_DR, 0);
+        opePurchasBQueryWrapper.eq(OpePurchasB.COL_DR, Constant.DR_FALSE);
         opePurchasBQueryWrapper.eq(OpePurchasB.COL_PURCHAS_ID, opePurchas.getId());
         List<OpePurchasB> purchasBList = opePurchasBService.list(opePurchasBQueryWrapper);
 
@@ -928,7 +930,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         }
         // 供应商 附件上传
         QueryWrapper<OpePurchasB> opePurchasBQueryWrapper = new QueryWrapper<>();
-        opePurchasBQueryWrapper.eq(OpePurchasB.COL_DR, 0);
+        opePurchasBQueryWrapper.eq(OpePurchasB.COL_DR, Constant.DR_FALSE);
         opePurchasBQueryWrapper.eq(OpePurchasB.COL_PURCHAS_ID, opePurchas.getId());
         List<OpePurchasB> purchasBList = opePurchasBService.list(opePurchasBQueryWrapper);
         if (CollectionUtils.isNotEmpty(purchasBList)) {
@@ -980,10 +982,10 @@ public class PurchasingServiceImpl implements PurchasingService {
             int passTotal = 0;
             int failTotal = 0;
             for (OpePurchasBQc item : opePurchasBQcList) {
-                if (item.getPassCount() != 0) {
+                if (0 != item.getPassCount()) {
                     passTotal++;
                 }
-                if (item.getFailCount() != 0) {
+                if (0 != item.getFailCount()) {
                     failTotal++;
                 }
             }
@@ -1032,10 +1034,10 @@ public class PurchasingServiceImpl implements PurchasingService {
             for (QcItemDetailResult qc : qcItemList) {
 
                 if (item.getId().equals(qc.getPruchasBId())) {
-                    if (StringUtils.equals(enter.getStatus(), QcStatusEnums.PASS.getValue()) && qc.getPassQty() != 0) {
+                    if (StringUtils.equals(enter.getStatus(), QcStatusEnums.PASS.getValue()) && 0 != qc.getPassQty()) {
                         qcItemResultList.add(qc);
                     }
-                    if (StringUtils.equals(enter.getStatus(), QcStatusEnums.FAIL.getValue()) && qc.getFailQty() != 0) {
+                    if (StringUtils.equals(enter.getStatus(), QcStatusEnums.FAIL.getValue()) && 0 != qc.getFailQty()) {
                         qcItemResultList.add(qc);
                     }
                 }
@@ -1118,7 +1120,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         if (StringUtils.equals(enter.getPaymentType(), PaymentTypeEnums.MONTHLY_PAY.getValue())) {
             // 月结
             // 参数过滤
-            if (enter.getDays() == null || enter.getStatementdate() == null) {
+            if (StringManaConstant.entityIsNull(enter.getDays()) || StringManaConstant.entityIsNull(enter.getStatementdate())) {
                 throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getCode(),
                         ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getMessage());
             }
@@ -1136,8 +1138,8 @@ public class PurchasingServiceImpl implements PurchasingService {
             int amountProportion = 0;
             for (int i = 0; i < paymentList.size(); i++) {
                 // 参数过滤
-                if (paymentList.get(i).getEstimatedPaymentDate() == null || paymentList.get(i).getRatio() == null
-                        || paymentList.get(i).getPrice() == null) {
+                if (StringManaConstant.entityIsNull(paymentList.get(i).getEstimatedPaymentDate()) || StringManaConstant.entityIsNull(paymentList.get(i).getRatio())
+                        || StringManaConstant.entityIsNull(paymentList.get(i).getPrice())) {
                     throw new SesWebRosException(ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getCode(),
                             ExceptionCodeEnums.PAYMENT_INFO_IS_WRONG.getMessage());
                 }
@@ -1247,7 +1249,7 @@ public class PurchasingServiceImpl implements PurchasingService {
             partsProductList.forEach(item -> {
                 ProductionPartsEnter productionPartsEnter = productsList.stream().filter(partQty -> (item.getId().equals(partQty.getId())) && StringUtils.equals(String.valueOf(item.getPartsType()),
                         partQty.getProductionProductType())).findFirst().orElse(null);
-                if (productionPartsEnter != null) {
+                if (StringManaConstant.entityIsNotNull(productionPartsEnter)) {
                     if (!partMap.containsKey(item.getId())) {
                         // 不存在部品id 就重新放入
                         partMap.put(item.getId(), productionPartsEnter.getQty());
@@ -1352,11 +1354,11 @@ public class PurchasingServiceImpl implements PurchasingService {
 
     private OpePurchas checkPurchasRepeatedly(Long id, PurchasingStatusEnums status) {
         OpePurchas opePurchas = opePurchasService.getById(id);
-        if (opePurchas == null) {
+        if (StringManaConstant.entityIsNull(opePurchas)) {
             throw new SesWebRosException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
-        if (status != null) {
+        if (StringManaConstant.entityIsNotNull(status)) {
             if (!StringUtils.equals(opePurchas.getStatus(), status.getValue())) {
                 throw new SesWebRosException(ExceptionCodeEnums.STATUS_ILLEGAL.getCode(),
                         ExceptionCodeEnums.STATUS_ILLEGAL.getMessage());
@@ -1374,7 +1376,7 @@ public class PurchasingServiceImpl implements PurchasingService {
         // 查询仓库
         OpeWhse whse = opeWhseService
                 .getOne(new LambdaQueryWrapper<OpeWhse>().eq(OpeWhse::getType, WhseTypeEnums.PURCHAS.getValue()));
-        if (whse == null) {
+        if (StringManaConstant.entityIsNull(whse)) {
             throw new SesWebRosException(ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getCode(),
                     ExceptionCodeEnums.WAREHOUSE_IS_NOT_EXIST.getMessage());
         }
@@ -1411,7 +1413,7 @@ public class PurchasingServiceImpl implements PurchasingService {
             for (OpePurchasB item : purchasBList) {
                 opeStock = opeStockList.stream().filter(stock -> stock.getMaterielProductId().equals(item.getPartId()))
                         .findFirst().orElse(null);
-                if (opeStock != null) {
+                if (StringManaConstant.entityIsNotNull(opeStock)) {
                     // 更新库存
                     opeStock.setWaitProductTotal(item.getInWaitWhQty() + opeStock.getWaitProductTotal());
                     saveOpeStockList.add(opeStock);

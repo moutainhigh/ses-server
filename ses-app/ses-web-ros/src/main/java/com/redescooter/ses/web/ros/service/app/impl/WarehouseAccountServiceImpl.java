@@ -12,6 +12,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeNodeMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeWarehouseAccountMapper;
@@ -23,6 +24,7 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.app.WarehouseAccountService;
 import com.redescooter.ses.web.ros.service.base.OpeWarehouseAccountService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.app.UpdatePasswordEnter;
 import com.redescooter.ses.web.ros.vo.app.WarehouseAccountListEnter;
 import com.redescooter.ses.web.ros.vo.app.WarehouseAccountSaveEnter;
@@ -95,7 +97,7 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
     @Override
     public PageResult<OpeWarehouseAccount> getList(WarehouseAccountListEnter enter) {
         int count = opeWarehouseAccountMapper.getListCount(enter);
-        if (count == 0) {
+        if (NumberUtil.eqZero(count)) {
             return PageResult.createZeroRowResult(enter);
         }
         List<OpeWarehouseAccount> list = opeWarehouseAccountMapper.getList(enter);
@@ -156,7 +158,7 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
         qw.eq(OpeWarehouseAccount::getEmail, enter.getEmail());
         qw.eq(OpeWarehouseAccount::getSystem, enter.getSystem());
         int count = opeWarehouseAccountService.count(qw);
-        if (count > 0) {
+        if (0 < count) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
     }
@@ -167,7 +169,7 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
     @Override
     public OpeWarehouseAccount getDetail(IdEnter enter) {
         OpeWarehouseAccount account = opeWarehouseAccountService.getById(enter.getId());
-        if (null == account) {
+        if (StringManaConstant.entityIsNull(account)) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
         return account;
@@ -181,7 +183,7 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
     public GeneralResult edit(WarehouseAccountUpdateEnter enter) {
         enter = SesStringUtils.objStringTrim(enter);
         OpeWarehouseAccount account = opeWarehouseAccountService.getById(enter.getId());
-        if (null == account) {
+        if (StringManaConstant.entityIsNull(account)) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
         LambdaQueryWrapper<OpeWarehouseAccount> qw = new LambdaQueryWrapper<>();
@@ -190,7 +192,7 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
         qw.eq(OpeWarehouseAccount::getEmail, account.getEmail());
         qw.eq(OpeWarehouseAccount::getSystem, enter.getSystem());
         int count = opeWarehouseAccountService.count(qw);
-        if (count > 0) {
+        if (0 < count) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
 
@@ -210,13 +212,13 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult editStatus(IdEnter enter) {
         OpeWarehouseAccount account = opeWarehouseAccountService.getById(enter.getId());
-        if (null == account) {
+        if (StringManaConstant.entityIsNull(account)) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
         Integer status = account.getStatus();
 
         // 关闭时判断,若账号下还有处理中的询价单,抛出异常
-        if (status == 1) {
+        if (1 == status) {
             LambdaQueryWrapper<OpeCarDistribute> qw = new LambdaQueryWrapper<>();
             qw.eq(OpeCarDistribute::getDr, Constant.DR_FALSE);
             qw.eq(OpeCarDistribute::getWarehouseAccountId, account.getId());
@@ -225,13 +227,13 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
                 boolean flag = false;
                 for (OpeCarDistribute item : list) {
                     Long customerId = item.getCustomerId();
-                    if (null != customerId) {
+                    if (StringManaConstant.entityIsNotNull(customerId)) {
                         LambdaQueryWrapper<OpeCarDistributeNode> wrapper = new LambdaQueryWrapper<>();
                         wrapper.eq(OpeCarDistributeNode::getDr, Constant.DR_FALSE);
                         wrapper.eq(OpeCarDistributeNode::getCustomerId, customerId);
                         wrapper.last("limit 1");
                         OpeCarDistributeNode node = opeCarDistributeNodeMapper.selectOne(wrapper);
-                        if (null != node) {
+                        if (StringManaConstant.entityIsNotNull(node)) {
                             Integer nodeFlag = node.getFlag();
                             Integer appNode = node.getAppNode();
 
@@ -252,7 +254,7 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
         boolean flag = opeWarehouseAccountService.updateById(account);
         if (flag) {
             OpeWarehouseAccount model = opeWarehouseAccountService.getById(enter.getId());
-            if (model.getStatus() == 2) {
+            if (2 == model.getStatus()) {
                 if (StringUtils.isNotBlank(model.getLastLoginToken())) {
                     // 调用法国仓库app登出接口
                     GeneralEnter generalEnter = new GeneralEnter();
@@ -271,7 +273,7 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult updatePassword(UpdatePasswordEnter enter) {
         OpeWarehouseAccount account = opeWarehouseAccountService.getById(enter.getId());
-        if (null == account) {
+        if (StringManaConstant.entityIsNull(account)) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
 
@@ -306,7 +308,7 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult delete(IdEnter enter) {
         OpeWarehouseAccount account = opeWarehouseAccountService.getById(enter.getId());
-        if (null == account) {
+        if (StringManaConstant.entityIsNull(account)) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
         boolean flag = opeWarehouseAccountService.removeById(enter.getId());

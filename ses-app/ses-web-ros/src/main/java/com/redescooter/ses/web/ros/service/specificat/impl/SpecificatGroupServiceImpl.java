@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.specificat.SpecificatGroupServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
@@ -18,6 +19,7 @@ import com.redescooter.ses.web.ros.service.base.OpeSaleScooterService;
 import com.redescooter.ses.web.ros.service.base.OpeSpecificatGroupService;
 import com.redescooter.ses.web.ros.service.base.OpeSpecificatTypeService;
 import com.redescooter.ses.web.ros.service.specificat.SpecificatGroupService;
+import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupDataResult;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupListEnter;
 import com.redescooter.ses.web.ros.vo.specificat.SpecificatGroupListResult;
@@ -80,7 +82,7 @@ public class SpecificatGroupServiceImpl implements SpecificatGroupService {
         // 去空格
         SesStringUtils.objStringTrim(enter);
         OpeSpecificatGroup group = opeSpecificatGroupService.getById(enter.getId());
-        if(group == null){
+        if(StringManaConstant.entityIsNull(group)){
             throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
         }
         group.setGroupName(enter.getGroupName());
@@ -96,7 +98,7 @@ public class SpecificatGroupServiceImpl implements SpecificatGroupService {
         // 去空格
         SesStringUtils.objStringTrim(enter);
         int num = specificatGroupServiceMapper.listNum(enter);
-        if(num == 0){
+        if(NumberUtil.eqZero(num)){
             return PageResult.createZeroRowResult(enter);
         }
         List<SpecificatGroupListResult> list = specificatGroupServiceMapper.groupList(enter);
@@ -110,14 +112,14 @@ public class SpecificatGroupServiceImpl implements SpecificatGroupService {
         QueryWrapper<OpeSpecificatType> qw = new QueryWrapper<>();
         qw.eq(OpeSpecificatType.COL_GROUP_ID,enter.getId());
         int count = opeSpecificatTypeService.count(qw);
-        if(count > 0){
+        if(0 < count){
             throw new SesWebRosException(ExceptionCodeEnums.GROUP_BE_USED.getCode(), ExceptionCodeEnums.GROUP_BE_USED.getMessage());
         }
         // 2020 10 14 追加 分组在销售整车中有使用
         QueryWrapper<OpeSaleScooter> scooterQueryWrapper = new QueryWrapper<>();
         scooterQueryWrapper.eq(OpeSaleScooter.COL_COLOR_ID,enter.getId());
         int count1 = opeSaleScooterService.count(scooterQueryWrapper);
-        if(count1 > 0){
+        if(0 < count1){
             throw new SesWebRosException(ExceptionCodeEnums.GROUP_BE_USED.getCode(), ExceptionCodeEnums.GROUP_BE_USED.getMessage());
         }
         opeSpecificatGroupService.removeById(enter.getId());

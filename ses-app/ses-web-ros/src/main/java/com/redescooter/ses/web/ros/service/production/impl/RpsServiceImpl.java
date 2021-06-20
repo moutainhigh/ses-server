@@ -3,11 +3,13 @@ package com.redescooter.ses.web.ros.service.production.impl;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.production.purchasing.PurchasingStatusEnums;
 import com.redescooter.ses.api.common.enums.production.purchasing.QcStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dm.OpePurchas;
 import com.redescooter.ses.web.ros.dm.OpePurchasB;
 import com.redescooter.ses.web.ros.dm.OpePurchasBQc;
@@ -60,7 +62,7 @@ public class RpsServiceImpl implements RpsServvice {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult scanBarCode(ScanBarCodeEnter enter) {
         OpePurchas opePurchas = opePurchasService.getById(enter.getPurchasingId());
-        if (opePurchas == null) {
+        if (StringManaConstant.entityIsNull(opePurchas)) {
             throw new SesWebRosException(ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PURCHAS_IS_NOT_EXIST.getMessage());
         }
         if (!StringUtils.equals(opePurchas.getStatus(), PurchasingStatusEnums.MATERIALS_QC.getValue())) {
@@ -72,7 +74,7 @@ public class RpsServiceImpl implements RpsServvice {
         //查询采购条目
         QueryWrapper<OpePurchasB> opePurchasBQueryWrapper = new QueryWrapper<>();
         opePurchasBQueryWrapper.eq(OpePurchasB.COL_PURCHAS_ID, enter.getPurchasingId());
-        opePurchasBQueryWrapper.eq(OpePurchasB.COL_DR, 0);
+        opePurchasBQueryWrapper.eq(OpePurchasB.COL_DR, Constant.DR_FALSE);
         List<OpePurchasB> purchasBList = opePurchasBService.list(opePurchasBQueryWrapper);
 
         List<OpePurchasBQc> opePurchasBQcServiceList = Lists.newArrayList();
@@ -85,7 +87,7 @@ public class RpsServiceImpl implements RpsServvice {
         //查询质检记录
         QueryWrapper<OpePurchasBQc> opePurchasBQcQueryWrapper = new QueryWrapper<>();
         opePurchasBQcQueryWrapper.in(OpePurchasBQc.COL_PURCHAS_B_ID, purchasBIdsList);
-        opePurchasBQcQueryWrapper.eq(OpePurchasBQc.COL_DR, 0);
+        opePurchasBQcQueryWrapper.eq(OpePurchasBQc.COL_DR, Constant.DR_FALSE);
 
         List<OpePurchasBQc> opePurchasBQcList = opePurchasBQcService.list(opePurchasBQcQueryWrapper);
 

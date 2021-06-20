@@ -20,6 +20,7 @@ import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dm.OpeInWhouseOrder;
 import com.redescooter.ses.web.ros.dm.OpeInWhouseOrderSerialBind;
 import com.redescooter.ses.web.ros.dm.OpeInWhouseScooterB;
@@ -300,7 +301,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
     public GeneralResult confirmInWh(IdEnter enter) {
         log.info("确认入库的入参是:[{}]", enter);
         OpeInWhouseOrder inWhOrder = opeInWhouseOrderService.getById(enter.getId());
-        if (null == inWhOrder) {
+        if (StringManaConstant.entityIsNull(inWhOrder)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
         if (!NewInWhouseOrderStatusEnum.DRAFT.getValue().equals(inWhOrder.getInWhStatus())) {
@@ -343,7 +344,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
                 lqw.eq(OpeWmsScooterStock::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
                 lqw.last("limit 1");
                 OpeWmsScooterStock stock = opeWmsScooterStockService.getOne(lqw);
-                if (null != stock) {
+                if (StringManaConstant.entityIsNotNull(stock)) {
                     stock.setAbleStockQty(stock.getAbleStockQty() + item.getInWhQty());
                     stock.setWaitInStockQty(stock.getWaitInStockQty() - item.getInWhQty());
                     stockList.add(stock);
@@ -392,7 +393,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             wrapper.eq(OpeInWhouseOrderSerialBind::getSerialNum, rsn);
             wrapper.last("limit 1");
             OpeInWhouseOrderSerialBind inSerialBind = opeInWhouseOrderSerialBindService.getOne(wrapper);
-            if (null == inSerialBind) {
+            if (StringManaConstant.entityIsNull(inSerialBind)) {
                 log.info("生成的rsn在ope_in_whouse_order_serial_bind表不存在,正常执行新增");
                 // 根据groupId和colorId找到productId
                 LambdaQueryWrapper<OpeProductionScooterBom> lqw = new LambdaQueryWrapper<>();
@@ -402,7 +403,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
                 lqw.eq(OpeProductionScooterBom::getColorId, item.getColorId());
                 lqw.last("limit 1");
                 OpeProductionScooterBom bom = opeProductionScooterBomService.getOne(lqw);
-                if (null != bom) {
+                if (StringManaConstant.entityIsNotNull(bom)) {
                     log.info("找到了bom");
                     OpeInWhouseOrderSerialBind bind = new OpeInWhouseOrderSerialBind();
                     bind.setId(idAppService.getId(SequenceName.OPE_IN_WHOUSE_ORDER));
@@ -435,7 +436,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             wmsWrapper.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
             wmsWrapper.last("limit 1");
             OpeWmsStockSerialNumber serialNumber = opeWmsStockSerialNumberService.getOne(wmsWrapper);
-            if (null == serialNumber) {
+            if (StringManaConstant.entityIsNull(serialNumber)) {
                 log.info("生成的rsn在ope_wms_stock_serial_number表不存在,正常执行新增");
                 // 根据groupId和colorId找到relationId
                 LambdaQueryWrapper<OpeWmsScooterStock> stockWrapper = new LambdaQueryWrapper<>();
@@ -445,7 +446,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
                 stockWrapper.eq(OpeWmsScooterStock::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
                 stockWrapper.last("limit 1");
                 OpeWmsScooterStock stock = opeWmsScooterStockService.getOne(stockWrapper);
-                if (null != stock) {
+                if (StringManaConstant.entityIsNotNull(stock)) {
                     log.info("找到了stock");
                     OpeWmsStockSerialNumber number = new OpeWmsStockSerialNumber();
                     number.setId(idAppService.getId(SequenceName.OPE_WMS_STOCK_SERIAL_NUMBER));

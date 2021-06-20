@@ -17,6 +17,7 @@ import com.redescooter.ses.api.common.vo.router.VueRouter;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
+import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.sys.MenuServiceMapper;
 import com.redescooter.ses.web.ros.dm.OpeSysMenu;
 import com.redescooter.ses.web.ros.dm.OpeSysRoleMenu;
@@ -158,7 +159,7 @@ public class MenuServiceImpl implements MenuService {
         if (StringUtils.isNotBlank(enter.getType())) {
             query.like(OpeSysMenu::getType, enter.getType());
         }
-        if (enter.getLevel() != null) {
+        if (StringManaConstant.entityIsNotNull(enter.getLevel())) {
             query.like(OpeSysMenu::getLevel, String.valueOf(enter.getLevel()));
         }
         return this.buildMenuParallel(sysMenuService.list(query), this.getRoleIds(new IdEnter(enter.getUserId())),Boolean.FALSE);
@@ -225,7 +226,7 @@ public class MenuServiceImpl implements MenuService {
             boolean flag = false;
             // 查看当前的登陆用户是否为超级管理员
             OpeSysUser user = sysUserService.getById(enter.getUserId());
-            if (user == null){
+            if (StringManaConstant.entityIsNull(user)){
                 throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
             }
             if (user.getLoginName().equals(Constant.ADMIN_USER_NAME)){
@@ -329,7 +330,7 @@ public class MenuServiceImpl implements MenuService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult edit(EditMenuEnter enter) {
         OpeSysMenu menuUpdate = sysMenuService.getById(enter.getId());
-        if (menuUpdate == null) {
+        if (StringManaConstant.entityIsNull(menuUpdate)) {
             throw new SesWebRosException(ExceptionCodeEnums.MENU_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.MENU_IS_NOT_EXIST.getMessage());
         }
         // 根节点不可编辑
@@ -358,7 +359,7 @@ public class MenuServiceImpl implements MenuService {
      */
     private OpeSysMenu buildMenuVo(Long id, SaveMenuEnter enter) {
         OpeSysMenu menu = new OpeSysMenu();
-        if (id == null || id == 0) {
+        if (StringManaConstant.entityIsNull(id) || 0 == id) {
             menu.setId(idAppService.getId(SequenceName.OPE_SYS_MENU));
             menu.setCreatedBy(enter.getUserId());
             menu.setCreatedTime(new Date());
@@ -366,7 +367,7 @@ public class MenuServiceImpl implements MenuService {
         } else {
             menu.setId(id);
         }
-        if (enter.getPid() == null || enter.getPid() == 0) {
+        if (StringManaConstant.entityIsNull(enter.getPid()) || 0 == enter.getPid()) {
             menu.setPId(Constant.MENU_TREE_ROOT_ID);
         } else {
             menu.setPId(enter.getPid());
@@ -450,7 +451,7 @@ public class MenuServiceImpl implements MenuService {
             }
         }
         for (MenuTreeResult tree : trees) {
-            if(tree.getLevel() == 1){
+            if(1 == tree.getLevel()){
                 tree.setChecked(false);
             }
         }
@@ -494,8 +495,8 @@ public class MenuServiceImpl implements MenuService {
      */
     private List<Long> getRoleIds(IdEnter enter) {
         List<Long> result = new ArrayList<>();
-        if (enter.getId() != null) {
-            if (enter.getId() != 0) {
+        if (StringManaConstant.entityIsNotNull(enter.getId())) {
+            if (0 != enter.getId()) {
                 //获取用户角色岗位
                 result = menuServiceMapper.getRoleIds(enter.getId());
 
@@ -532,7 +533,7 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     public List<MenuDatasListResult> menuDatas(MenuDatasEnter enter) {
-        if (null == enter || null == enter.getId()) {
+        if (StringManaConstant.entityIsNull(enter) || StringManaConstant.entityIsNull(enter.getId())) {
             throw new SesWebRosException(ExceptionCodeEnums.ID_IS_NOT_NULL.getCode(), ExceptionCodeEnums.ID_IS_NOT_NULL.getMessage());
         }
         /*List<MenuDatasListResult> list = new ArrayList<>();
@@ -541,16 +542,16 @@ public class MenuServiceImpl implements MenuService {
 
         // 根据id查询此菜单的level
         OpeSysMenu menu = sysMenuService.getById(enter.getId());
-        if (null == menu) {
+        if (StringManaConstant.entityIsNull(menu)) {
             throw new SesWebRosException(ExceptionCodeEnums.MENU_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.MENU_IS_NOT_EXIST.getMessage());
         }
         // level 1目录 2二级菜单 3三级菜单 9按钮
         Integer level = menu.getLevel();
         List<MenuDatasListResult> result;
-        if (level == 9) {
+        if (9 == level) {
             // 返回二级菜单和三级菜单
             result = menuServiceMapper.getSecondAndThirdMenu();
-        } else if (level == 2 || level == 3) {
+        } else if (2 == level || 3 == level) {
             // 返回除了自身外的其他所有目录和二级菜单和三级菜单
             result = menuServiceMapper.getAllCatalogAndMenu(enter.getId());
         } else {
@@ -571,7 +572,7 @@ public class MenuServiceImpl implements MenuService {
         userWrapper.eq(OpeSysUser::getDef1, SysUserSourceEnum.SYSTEM.getValue());
         userWrapper.last("limit 1");
         OpeSysUser admin = sysUserService.getOne(userWrapper);
-        if (null == admin) {
+        if (StringManaConstant.entityIsNull(admin)) {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_IS_NOT_EXIST.getMessage());
         }
 
