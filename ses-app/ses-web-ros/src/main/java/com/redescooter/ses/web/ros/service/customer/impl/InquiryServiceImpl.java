@@ -33,11 +33,19 @@ import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.InquiryServiceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeColorMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerInquiryBMapper;
+import com.redescooter.ses.web.ros.dao.base.OpePartsMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeProductionPartsMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeSalePartsMapper;
+import com.redescooter.ses.web.ros.dao.base.OpeSalePriceMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSaleScooterMapper;
 import com.redescooter.ses.web.ros.dao.base.OpeSpecificatTypeMapper;
 import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
+import com.redescooter.ses.web.ros.dm.OpeParts;
+import com.redescooter.ses.web.ros.dm.OpeProductionParts;
+import com.redescooter.ses.web.ros.dm.OpeSaleParts;
+import com.redescooter.ses.web.ros.dm.OpeSalePrice;
 import com.redescooter.ses.web.ros.dm.OpeSaleScooter;
 import com.redescooter.ses.web.ros.dm.OpeSpecificatType;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
@@ -69,6 +77,7 @@ import redis.clients.jedis.JedisCluster;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -89,6 +98,15 @@ public class InquiryServiceImpl implements InquiryService {
 
     @Autowired
     private OpeCustomerInquiryService opeCustomerInquiryService;
+
+    @Autowired
+    private OpeSalePriceMapper opeSalePriceMapper;
+
+    @Autowired
+    private OpeProductionPartsMapper opeProductionPartsMapper;
+
+    @Autowired
+    private OpeSalePartsMapper opeSalePartsMapper;
 
     @Autowired
     private JedisCluster jedisCluster;
@@ -512,7 +530,7 @@ public class InquiryServiceImpl implements InquiryService {
         QueryWrapper<OpeSaleScooter> wrapper = new QueryWrapper<OpeSaleScooter>()
                 .eq(OpeSaleScooter.COL_COLOR_ID, enter.getColorId())
                 .eq(OpeSaleScooter.COL_SPECIFICAT_ID, enter.getSpecificatTypeId())
-                .eq(OpeSaleScooter.COL_SALE_STUTAS,1)
+                .eq(OpeSaleScooter.COL_SALE_STUTAS, 1)
                 .last("limit 1");
         OpeSaleScooter scooter = opeSaleScooterMapper.selectOne(wrapper);
         Long productId = scooter.getId();
@@ -521,15 +539,49 @@ public class InquiryServiceImpl implements InquiryService {
         if (StringManaConstant.entityIsNull(inquiry)) {
             throw new SesWebRosException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
+        LambdaQueryWrapper<OpeSalePrice> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(OpeSalePrice::getDr, Constant.DR_FALSE);
+        queryWrapper.eq(OpeSalePrice::getType, 2);
+        queryWrapper.like(OpeSalePrice::getScooterBattery, scooter.getProductCode());
+        queryWrapper.last("limit 1");
+        OpeSalePrice opeSalePrice = opeSalePriceMapper.selectOne(queryWrapper);
+        if (null == opeSalePrice) {
+            throw new SesWebRosException(ExceptionCodeEnums.SALE_PRICE_NOT_FOUND.getCode(), ExceptionCodeEnums.SALE_PRICE_NOT_FOUND.getMessage());
+        }
+        LambdaQueryWrapper<OpeProductionParts> wrapper1 = new LambdaQueryWrapper<>();
+        wrapper1.eq(OpeProductionParts::getDr, Constant.DR_FALSE);
+        wrapper1.eq(OpeProductionParts::getPartsType, 3);
+        wrapper1.last("limit 1");
+        OpeProductionParts opeProductionParts = opeProductionPartsMapper.selectOne(wrapper1);
+        if (null == opeProductionParts) {
+            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        }
+        LambdaQueryWrapper<OpeSaleParts> wrapper2 = new LambdaQueryWrapper<>();
+        wrapper2.eq(OpeSaleParts::getDr, Constant.DR_FALSE);
+        wrapper2.eq(OpeSaleParts::getPartsId, opeProductionParts.getId());
+        wrapper2.last("limit 1");
+        OpeSaleParts opeSaleParts = opeSalePartsMapper.selectOne(wrapper2);
+        if (null == opeSaleParts){
+            throw new SesWebRosException(ExceptionCodeEnums.PART_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PART_IS_NOT_EXIST.getMessage());
+        }
+        int battery = enter.getProductQty() - scooter.getMinBatteryNum();
+
+        BigDecimal amount = opeSalePrice.getDeposit().add(opeSalePrice.getBalance()).add(new BigDecimal(battery).multiply(opeSaleParts.getPrice()));
+
+        inquiry.setTotalPrice(amount);
+        inquiry.setProductPrice(amount);
+        inquiry.setAmountObligation(amount);
         inquiry.setProductId(productId);
         opeCustomerInquiryService.updateById(inquiry);
 
+
         List<OpeCustomerInquiryB> inquiryBList = opeCustomerInquiryBMapper.selectList(new QueryWrapper<OpeCustomerInquiryB>().eq("inquiry_id", inquiry.getId()));
-        if(CollectionUtils.isEmpty(inquiryBList)){
+        if (CollectionUtils.isEmpty(inquiryBList)) {
             throw new SesWebRosException(ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.PRODUCT_IS_NOT_EXIST.getMessage());
         }
-        for (OpeCustomerInquiryB ope : inquiryBList){
+        for (OpeCustomerInquiryB ope : inquiryBList) {
             ope.setProductQty(enter.getProductQty());
+            ope.setProductPrice(amount);
         }
 
         opeCustomerInquiryBMapper.updateBatch(inquiryBList);
