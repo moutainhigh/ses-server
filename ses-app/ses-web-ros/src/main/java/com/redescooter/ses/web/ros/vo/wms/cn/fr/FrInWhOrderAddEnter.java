@@ -26,7 +26,7 @@ public class FrInWhOrderAddEnter extends GeneralEnter {
     @ApiModelProperty("备注")
     private String remark;
 
-    @ApiModelProperty("入库明细,json格式的字符串 格式:{\"groupId\":\"\",\"colorId\":\"\",\"sn\":\"\",\"bluetoothMacAddress\":\"\"}")
+    @ApiModelProperty("入库明细,json格式的字符串 color colorName colorValue rsn bbi controller motor tabletSn imei bluetoothMacAddress")
     private String st;
 
 }

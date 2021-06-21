@@ -86,6 +86,38 @@ public class OpeInWhouseScooterB {
     @ApiModelProperty(value = "实际入库数量")
     private Integer actInWhQty;
 
+    @TableField(value = "unqualified_qty")
+    @ApiModelProperty(value = "不合格数量")
+    private Integer unqualifiedQty;
+
+    @TableField(value = "rsn")
+    @ApiModelProperty(value = "整车序列号")
+    private String rsn;
+
+    @TableField(value = "tablet_sn")
+    @ApiModelProperty(value = "平板序列号")
+    private String tabletSn;
+
+    @TableField(value = "bbi")
+    @ApiModelProperty(value = "BBI")
+    private String bbi;
+
+    @TableField(value = "controller")
+    @ApiModelProperty(value = "控制器")
+    private String controller;
+
+    @TableField(value = "motor")
+    @ApiModelProperty(value = "电机")
+    private String motor;
+
+    @TableField(value = "imei")
+    @ApiModelProperty(value = "IMEI")
+    private String imei;
+
+    @TableField(value = "bluetooth_mac_address")
+    @ApiModelProperty(value = "蓝牙mac地址")
+    private String bluetoothMacAddress;
+
     /**
      * 备注
      */

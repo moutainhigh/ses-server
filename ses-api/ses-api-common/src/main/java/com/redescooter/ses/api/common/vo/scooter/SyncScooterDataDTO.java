@@ -19,7 +19,7 @@ public class SyncScooterDataDTO implements Serializable {
     private Long id;
 
     /**
-     * 车辆编号(暂时用车辆Id)
+     * 车辆编号(整车rsn)
      */
     private String scooterNo;
 
@@ -32,14 +32,35 @@ public class SyncScooterDataDTO implements Serializable {
      * 车载平板Mac蓝牙地址
      */
     private String bluetoothMacAddress;
-    /**
-     * 车辆型号 1-E25 2-E50 3-E100 4-E125
-     */
-    private String model;
 
     /**
      * 用户Id
      */
     private Long userId;
+
+    /**
+     * 颜色id
+     */
+    private Long colorId;
+
+    /**
+     * bbi
+     */
+    private String bbi;
+
+    /**
+     * 控制器
+     */
+    private String controller;
+
+    /**
+     * 电机
+     */
+    private String motor;
+
+    /**
+     * IMEI
+     */
+    private String imei;
 
 }

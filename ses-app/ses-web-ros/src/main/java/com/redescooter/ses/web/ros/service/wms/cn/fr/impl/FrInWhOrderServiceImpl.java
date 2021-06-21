@@ -10,7 +10,6 @@ import com.redescooter.ses.api.common.enums.restproductionorder.NewInWhouseOrder
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderOperationTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
-import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.enums.wms.WmsStockTypeEnum;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -21,18 +20,22 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.constant.StringManaConstant;
+import com.redescooter.ses.web.ros.dm.OpeColor;
 import com.redescooter.ses.web.ros.dm.OpeInWhouseOrder;
 import com.redescooter.ses.web.ros.dm.OpeInWhouseOrderSerialBind;
 import com.redescooter.ses.web.ros.dm.OpeInWhouseScooterB;
 import com.redescooter.ses.web.ros.dm.OpeProductionScooterBom;
+import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.OpeColorService;
 import com.redescooter.ses.web.ros.service.base.OpeInWhouseOrderService;
 import com.redescooter.ses.web.ros.service.base.OpeInWhouseScooterBService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionScooterBomService;
+import com.redescooter.ses.web.ros.service.base.OpeSpecificatGroupService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsScooterStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsStockRecordService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
@@ -105,6 +108,12 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
     @Autowired
     private OrderStatusFlowService orderStatusFlowService;
 
+    @Autowired
+    private OpeSpecificatGroupService opeSpecificatGroupService;
+
+    @Autowired
+    private OpeColorService opeColorService;
+
     @DubboReference
     private IdAppService idAppService;
 
@@ -129,58 +138,6 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
         }
         if (CollectionUtils.isEmpty(list)) {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
-        }
-
-        // 校验信息在ope_in_whouse_order_serial_bind表是否存在
-        /*boolean flag = false;
-        for (FrInWhOrderAddScooterBEnter scooterB : list) {
-            LambdaQueryWrapper<OpeInWhouseOrderSerialBind> qw = new LambdaQueryWrapper<>();
-            qw.eq(OpeInWhouseOrderSerialBind::getDr, Constant.DR_FALSE);
-            qw.eq(OpeInWhouseOrderSerialBind::getSerialNum, scooterB.getSn());
-            int count = opeInWhouseOrderSerialBindService.count(qw);
-            if (count > 0) {
-                flag = true;
-                break;
-            }
-
-            LambdaQueryWrapper<OpeInWhouseOrderSerialBind> lqw = new LambdaQueryWrapper<>();
-            lqw.eq(OpeInWhouseOrderSerialBind::getDr, Constant.DR_FALSE);
-            lqw.eq(OpeInWhouseOrderSerialBind::getTabletSn, scooterB.getTabletSn());
-            int tabletSnCount = opeInWhouseOrderSerialBindService.count(lqw);
-            if (tabletSnCount > 0) {
-                flag = true;
-                break;
-            }
-        }
-        if (flag) {
-            throw new SesWebRosException(ExceptionCodeEnums.FR_WH_RSN_IS_EXIST.getCode(), ExceptionCodeEnums.FR_WH_RSN_IS_EXIST.getMessage());
-        }*/
-
-        // 校验信息在ope_wms_stock_serial_number表是否存在
-        boolean flag = false;
-        for (FrInWhOrderAddScooterBEnter scooterB : list) {
-            LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
-            qw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
-            qw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
-            qw.eq(OpeWmsStockSerialNumber::getRsn, scooterB.getSn());
-            int count = opeWmsStockSerialNumberService.count(qw);
-            if (count > 0) {
-                flag = true;
-                break;
-            }
-
-            LambdaQueryWrapper<OpeWmsStockSerialNumber> lqw = new LambdaQueryWrapper<>();
-            lqw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
-            lqw.eq(OpeWmsStockSerialNumber::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
-            lqw.eq(OpeWmsStockSerialNumber::getSn, scooterB.getTabletSn()).or().eq(OpeWmsStockSerialNumber::getDef3, scooterB.getTabletSn());
-            int tabletSnCount = opeWmsStockSerialNumberService.count(lqw);
-            if (tabletSnCount > 0) {
-                flag = true;
-                break;
-            }
-        }
-        if (flag) {
-            throw new SesWebRosException(ExceptionCodeEnums.FR_WH_RSN_IS_EXIST.getCode(), ExceptionCodeEnums.FR_WH_RSN_IS_EXIST.getMessage());
         }
 
         // 新增入库单主表
@@ -210,6 +167,16 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
         inWhOrder.setUpdatedTime(new Date());
         opeInWhouseOrderService.save(inWhOrder);
 
+        // 查询低速
+        LambdaQueryWrapper<OpeSpecificatGroup> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeSpecificatGroup::getDr, Constant.DR_FALSE);
+        qw.like(OpeSpecificatGroup::getGroupName, "Low");
+        qw.last("limit 1");
+        OpeSpecificatGroup group = opeSpecificatGroupService.getOne(qw);
+        if (null == group) {
+            throw new SesWebRosException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
+        }
+
         // 新增入库单车辆子表
         List<OpeInWhouseScooterB> scooterBList = Lists.newArrayList();
         for (FrInWhOrderAddScooterBEnter item : list) {
@@ -217,17 +184,32 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             scooterB.setId(idAppService.getId(SequenceName.OPE_IN_WHOUSE_SCOOTER_B));
             scooterB.setDr(Constant.DR_FALSE);
             scooterB.setInWhId(inWhOrder.getId());
-            scooterB.setGroupId(item.getGroupId());
-            scooterB.setColorId(item.getColorId());
-            // 因为每一辆车只对应一个sn,所以入库数量只能是1
+            scooterB.setGroupId(group.getId());
+
+            // 根据色值查询颜色
+            LambdaQueryWrapper<OpeColor> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeColor::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeColor::getColorValue, item.getColorValue());
+            lqw.last("limit 1");
+            OpeColor color = opeColorService.getOne(lqw);
+            if (null == color) {
+                throw new SesWebRosException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+            }
+
+            scooterB.setColorId(color.getId());
+            // 因为每一辆车只对应一个rsn,所以入库数量只能是1
             scooterB.setInWhQty(1);
+            scooterB.setRsn(item.getRsn());
+            scooterB.setTabletSn(item.getTabletSn());
+            scooterB.setBbi(item.getBbi());
+            scooterB.setController(item.getController());
+            scooterB.setMotor(item.getMotor());
+            scooterB.setImei(item.getImei());
+            scooterB.setBluetoothMacAddress(item.getBluetoothMacAddress());
             scooterB.setCreatedBy(enter.getUserId());
             scooterB.setCreatedTime(new Date());
             scooterB.setUpdatedBy(enter.getUserId());
             scooterB.setUpdatedTime(new Date());
-            scooterB.setDef1(item.getSn());
-            scooterB.setDef2(item.getBluetoothMacAddress());
-            scooterB.setDef3(item.getTabletSn());
             scooterBList.add(scooterB);
         }
         opeInWhouseScooterBService.saveBatch(scooterBList);
@@ -320,7 +302,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             for (OpeInWhouseScooterB scooterB : list) {
                 scooterB.setActInWhQty(scooterB.getInWhQty());
             }
-            opeInWhouseScooterBService.saveOrUpdateBatch(list);
+            opeInWhouseScooterBService.updateBatchById(list);
         }
 
         // 操作记录
@@ -372,19 +354,27 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
 
         // 循环入库单车辆子表,拿到每辆要入库的车的信息
         for (OpeInWhouseScooterB item : list) {
-            // 为每一辆车生成一个RSN
-            //String rsn = getProductSerialNum();
-            String rsn = item.getDef1();
+
+            Long colorId = item.getColorId();
+            String rsn = item.getRsn();
+            String tabletSn = item.getTabletSn();
+            String bbi = item.getBbi();
+            String controller = item.getController();
+            String motor = item.getMotor();
+            String imei = item.getImei();
+            String bluetoothMacAddress = item.getBluetoothMacAddress();
+
             // 新增sco_scooter表
             SyncScooterDataDTO syncData = new SyncScooterDataDTO();
             syncData.setScooterNo(rsn);
-            // 仪表蓝牙地址
-            syncData.setBluetoothMacAddress(item.getDef2());
-            // 仪表序列号
-            syncData.setTabletSn(item.getDef3());
-            // 车辆入库默认型号是E50
-            syncData.setModel(String.valueOf(ScooterModelEnum.SCOOTER_E50.getType()));
+            syncData.setBluetoothMacAddress(bluetoothMacAddress);
+            syncData.setTabletSn(tabletSn);
             syncData.setUserId(enter.getUserId());
+            syncData.setColorId(colorId);
+            syncData.setBbi(bbi);
+            syncData.setController(controller);
+            syncData.setMotor(motor);
+            syncData.setImei(imei);
             syncList.add(syncData);
 
             // 新增ope_in_whouse_order_serial_bind表
@@ -400,7 +390,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
                 lqw.eq(OpeProductionScooterBom::getDr, Constant.DR_FALSE);
                 lqw.eq(OpeProductionScooterBom::getBomStatus, 1);
                 lqw.eq(OpeProductionScooterBom::getGroupId, item.getGroupId());
-                lqw.eq(OpeProductionScooterBom::getColorId, item.getColorId());
+                lqw.eq(OpeProductionScooterBom::getColorId, colorId);
                 lqw.last("limit 1");
                 OpeProductionScooterBom bom = opeProductionScooterBomService.getOne(lqw);
                 if (StringManaConstant.entityIsNotNull(bom)) {
@@ -414,9 +404,9 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
                     bind.setSerialNum(rsn);
                     bind.setDefaultSerialNum(rsn);
                     // 蓝牙地址
-                    bind.setBluetoothMacAddress(item.getDef2());
+                    bind.setBluetoothMacAddress(bluetoothMacAddress);
                     // 仪表序列号
-                    bind.setTabletSn(item.getDef3());
+                    bind.setTabletSn(tabletSn);
                     bind.setLot(lot);
                     bind.setProductId(bom.getId());
                     bind.setProductType(ProductTypeEnums.SCOOTER.getValue());
@@ -442,7 +432,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
                 LambdaQueryWrapper<OpeWmsScooterStock> stockWrapper = new LambdaQueryWrapper<>();
                 stockWrapper.eq(OpeWmsScooterStock::getDr, Constant.DR_FALSE);
                 stockWrapper.eq(OpeWmsScooterStock::getGroupId, item.getGroupId());
-                stockWrapper.eq(OpeWmsScooterStock::getColorId, item.getColorId());
+                stockWrapper.eq(OpeWmsScooterStock::getColorId, colorId);
                 stockWrapper.eq(OpeWmsScooterStock::getStockType, WmsStockTypeEnum.FRENCH_WAREHOUSE.getType());
                 stockWrapper.last("limit 1");
                 OpeWmsScooterStock stock = opeWmsScooterStockService.getOne(stockWrapper);
@@ -460,11 +450,11 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
                     number.setLotNum(lot);
                     // 整车序列号
                     number.setRsn(rsn);
-                    number.setSn(item.getDef3());
+                    number.setSn(tabletSn);
                     // 蓝牙地址
-                    number.setBluetoothMacAddress(item.getDef2());
+                    number.setBluetoothMacAddress(bluetoothMacAddress);
                     // 仪表序列号
-                    number.setDef3(item.getDef3());
+                    number.setDef3(tabletSn);
                     number.setCreatedBy(enter.getUserId());
                     number.setCreatedTime(new Date());
                     number.setUpdatedBy(enter.getUserId());

@@ -41,12 +41,36 @@ public class ScoScooter implements Serializable {
     @ApiModelProperty(value = "平板序列号")
     private String tabletSn;
 
+    @TableField(value = "color_id")
+    @ApiModelProperty(value = "颜色id")
+    private Long colorId;
+
+    @TableField(value = "bbi")
+    @ApiModelProperty(value = "BBI")
+    private String bbi;
+
+    @TableField(value = "controller")
+    @ApiModelProperty(value = "控制器")
+    private String controller;
+
+    @TableField(value = "motor")
+    @ApiModelProperty(value = "电机")
+    private String motor;
+
+    @TableField(value = "imei")
+    @ApiModelProperty(value = "IMEI")
+    private String imei;
+
     /**
      * 平板蓝牙mac地址
      */
     @TableField(value = "bluetooth_mac_address")
     @ApiModelProperty(value = "平板蓝牙mac地址")
     private String bluetoothMacAddress;
+
+    @TableField(value = "iccid")
+    @ApiModelProperty(value = "sim卡唯一标识")
+    private String iccid;
 
     /**
      * 车辆图片

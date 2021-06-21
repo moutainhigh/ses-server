@@ -271,31 +271,31 @@ public class ScooterServiceImpl implements ScooterService {
 
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
-    public int syncScooterData(List<SyncScooterDataDTO> syncScooterDataList) {
+    public int syncScooterData(List<SyncScooterDataDTO> list) {
         List<ScoScooter> scooterList = new ArrayList<>();
-
-        syncScooterDataList.forEach(scooterData -> {
+        for (SyncScooterDataDTO item : list) {
             ScoScooter scooter = new ScoScooter();
-            BeanUtils.copyProperties(scooterData, scooter);
             scooter.setId(idAppService.getId(SequenceName.SCO_SCOOTER));
             scooter.setDr(Constant.DR_FALSE);
-            scooter.setScooterNo(scooterData.getScooterNo());
-            //TODO 担心copyProperties出问题，所以在将部分值赋值一下
-            scooter.setTabletSn(scooterData.getTabletSn());
-            //TODO 新增保存蓝牙mac地址
-            scooter.setBluetoothMacAddress(scooterData.getBluetoothMacAddress());
-            scooter.setModel(scooterData.getModel());
+            scooter.setScooterNo(item.getScooterNo());
+            scooter.setTabletSn(item.getTabletSn());
+            scooter.setColorId(item.getColorId());
+            scooter.setBbi(item.getBbi());
+            scooter.setController(item.getController());
+            scooter.setMotor(item.getMotor());
+            scooter.setImei(item.getImei());
+            scooter.setBluetoothMacAddress(item.getBluetoothMacAddress());
             scooter.setStatus(ScooterLockStatusEnums.LOCK.getValue());
             scooter.setTotalMileage(0L);
             scooter.setAvailableStatus(ScooterStatusEnums.AVAILABLE.getValue());
             scooter.setBoxStatus(ScooterLockStatusEnums.LOCK.getValue());
             scooter.setModel(String.valueOf(ScooterModelEnum.SCOOTER_E50.getType()));
-            scooter.setCreatedBy(scooterData.getUserId());
+            scooter.setCreatedBy(item.getUserId());
             scooter.setCreatedTime(new Date());
-            scooter.setUpdatedBy(scooterData.getUserId());
+            scooter.setUpdatedBy(item.getUserId());
             scooter.setUpdatedTime(new Date());
             scooterList.add(scooter);
-        });
+        }
         scoScooterService.saveBatch(scooterList);
         return 1;
         //return scooterServiceMapper.batchInsertScooter(scooterList);
