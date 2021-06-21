@@ -38,6 +38,8 @@ public class SyncScooterDataDTO implements Serializable {
      */
     private Long userId;
 
+    private String model;
+
     /**
      * 颜色id
      */
