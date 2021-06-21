@@ -2,6 +2,7 @@ package com.redescooter.ses.api.hub.service.operation;
 
 import com.redescooter.ses.api.common.vo.base.SelectBaseResultDTO;
 import com.redescooter.ses.api.common.vo.scooter.ColorDTO;
+import com.redescooter.ses.api.common.vo.scooter.SpecificGroupDTO;
 
 import java.util.List;
 
@@ -29,5 +30,11 @@ public interface ColorService {
      * @date 2020/12/10
     */
     List<SelectBaseResultDTO> getScooterColorList();
+
+    /**
+     * 获取低速信息
+     */
+    SpecificGroupDTO getLowSpeed();
+
 
 }

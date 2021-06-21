@@ -1,4 +1,4 @@
-package com.redescooter.ses.mobile.wh.fr.vo;
+package com.redescooter.ses.api.common.vo.node;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
@@ -20,6 +20,9 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class InputScooterEnter extends GeneralEnter {
 
+    @ApiModelProperty(value = "车辆id")
+    private Long scooterId;
+
     @ApiModelProperty(value = "RSN")
     private String rsn;
 
@@ -27,7 +30,7 @@ public class InputScooterEnter extends GeneralEnter {
     private String tabletSn;
 
     @ApiModelProperty(value = "蓝牙地址")
-    private String bluetoothAddress;
+    private String bluetoothMacAddress;
 
     @ApiModelProperty(value = "BBI")
     private String bbi;
@@ -36,27 +39,9 @@ public class InputScooterEnter extends GeneralEnter {
     private String controller;
 
     @ApiModelProperty(value = "电机")
-    private String electricMachinery;
-
-    @ApiModelProperty(value = "仪表")
-    private String meter;
+    private String motor;
 
     @ApiModelProperty(value = "IMEI")
     private String imei;
-
-    @ApiModelProperty(value = "客户id")
-    private Long customerId;
-
-    @ApiModelProperty(value = "颜色id")
-    private Long colorId;
-
-    @ApiModelProperty(value = "车型id")
-    private Long specificatTypeId;
-
-    @ApiModelProperty(value = "车座")
-    private Integer seatNumber;
-
-    @ApiModelProperty(value = "VIN")
-    private String vin;
 
 }

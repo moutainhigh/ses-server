@@ -1,4 +1,4 @@
-package com.redescooter.ses.mobile.wh.fr.vo;
+package com.redescooter.ses.api.common.vo.node;
 
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import io.swagger.annotations.ApiModel;
@@ -14,19 +14,16 @@ import lombok.NoArgsConstructor;
  * @Date 2021/5/11 16:21
  */
 @Data
-@ApiModel(value = "录入电池入参")
+@ApiModel(value = "绑定VIN入参")
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class InputBatteryEnter extends GeneralEnter {
+public class BindVinEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "电池码")
-    private String battery;
+    @ApiModelProperty(value = "VIN", required = true)
+    private String vinCode;
 
-    @ApiModelProperty(value = "询价单id")
-    private Long id;
-
-    @ApiModelProperty(value = "客户id")
-    private Long customerId;
+    @ApiModelProperty(value = "车辆id", required = true)
+    private Long scooterId;
 
 }

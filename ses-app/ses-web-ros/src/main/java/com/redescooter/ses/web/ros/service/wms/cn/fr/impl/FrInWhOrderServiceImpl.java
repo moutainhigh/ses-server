@@ -358,23 +358,19 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             Long colorId = item.getColorId();
             String rsn = item.getRsn();
             String tabletSn = item.getTabletSn();
-            String bbi = item.getBbi();
-            String controller = item.getController();
-            String motor = item.getMotor();
-            String imei = item.getImei();
             String bluetoothMacAddress = item.getBluetoothMacAddress();
 
             // 新增sco_scooter表
             SyncScooterDataDTO syncData = new SyncScooterDataDTO();
             syncData.setScooterNo(rsn);
-            syncData.setBluetoothMacAddress(bluetoothMacAddress);
-            syncData.setTabletSn(tabletSn);
             syncData.setUserId(enter.getUserId());
             syncData.setColorId(colorId);
-            syncData.setBbi(bbi);
-            syncData.setController(controller);
-            syncData.setMotor(motor);
-            syncData.setImei(imei);
+            //syncData.setBluetoothMacAddress(bluetoothMacAddress);
+            //syncData.setTabletSn(tabletSn);
+            //syncData.setBbi(bbi);
+            //syncData.setController(controller);
+            //syncData.setMotor(motor);
+            //syncData.setImei(imei);
             syncList.add(syncData);
 
             // 新增ope_in_whouse_order_serial_bind表

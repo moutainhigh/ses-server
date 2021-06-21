@@ -78,7 +78,32 @@ public enum ExceptionCodeEnums {
 
     MILEAGE_IS_EMPTY(10035,"骑行距离为空"),
 
-    DURATION_IS_EMPTY(10036,"耗时为空")
+    DURATION_IS_EMPTY(10036,"耗时为空"),
+
+    ORDER_HAS_DISTRIBUTED(10037, "此询价单已分配给其他账户"),
+
+    COLOR_NOT_EXISTS(10038, "颜色不存在"),
+
+    PARTS_HAS_INPUT(10039, "部件已录入"),
+
+    CODEBASE_NOT_EXIST(10040, "码库中不存在"),
+
+    SN_ALREADY_EXISTS(10041, "SN已存在"),
+
+    SCOOTER_NOT_CLOSED(10042, "车辆未关闭"),
+
+    DATA_EXCEPTION(10043, "数据异常"),
+
+    VIN_NOT_MATCH(10044, "vin不匹配")
+
+
+
+
+
+
+
+
+
     ;
 
 

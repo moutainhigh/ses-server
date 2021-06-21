@@ -2,9 +2,9 @@ package com.redescooter.ses.mobile.wh.fr.dao.base;
 
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.mobile.wh.fr.vo.InquiryDetailEnter;
-import com.redescooter.ses.mobile.wh.fr.vo.InquiryDetailResult;
-import com.redescooter.ses.mobile.wh.fr.vo.InquiryListAppEnter;
-import com.redescooter.ses.mobile.wh.fr.vo.InquiryListResult;
+import com.redescooter.ses.api.common.vo.node.InquiryDetailResult;
+import com.redescooter.ses.api.common.vo.node.InquiryListAppEnter;
+import com.redescooter.ses.api.common.vo.node.InquiryListResult;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

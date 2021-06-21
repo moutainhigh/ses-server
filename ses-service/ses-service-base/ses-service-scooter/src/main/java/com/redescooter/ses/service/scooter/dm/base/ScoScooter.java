@@ -27,6 +27,10 @@ public class ScoScooter implements Serializable {
     @TableLogic
     private Integer dr;
 
+    @TableField(value = "warehouse_account_id")
+    @ApiModelProperty(value = "仓库账号id")
+    private Long warehouseAccountId;
+
     /**
      * 车辆编号
      */
@@ -60,6 +64,14 @@ public class ScoScooter implements Serializable {
     @TableField(value = "imei")
     @ApiModelProperty(value = "IMEI")
     private String imei;
+
+    @TableField(value = "battery")
+    @ApiModelProperty(value = "电池 多个时通过逗号分隔")
+    private String battery;
+
+    @TableField(value = "vin")
+    @ApiModelProperty(value = "vin码")
+    private String vin;
 
     /**
      * 平板蓝牙mac地址

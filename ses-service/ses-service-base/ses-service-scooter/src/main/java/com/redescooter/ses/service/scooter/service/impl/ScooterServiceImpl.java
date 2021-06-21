@@ -278,13 +278,7 @@ public class ScooterServiceImpl implements ScooterService {
             scooter.setId(idAppService.getId(SequenceName.SCO_SCOOTER));
             scooter.setDr(Constant.DR_FALSE);
             scooter.setScooterNo(item.getScooterNo());
-            scooter.setTabletSn(item.getTabletSn());
             scooter.setColorId(item.getColorId());
-            scooter.setBbi(item.getBbi());
-            scooter.setController(item.getController());
-            scooter.setMotor(item.getMotor());
-            scooter.setImei(item.getImei());
-            scooter.setBluetoothMacAddress(item.getBluetoothMacAddress());
             scooter.setStatus(ScooterLockStatusEnums.LOCK.getValue());
             scooter.setTotalMileage(0L);
             scooter.setAvailableStatus(ScooterStatusEnums.AVAILABLE.getValue());

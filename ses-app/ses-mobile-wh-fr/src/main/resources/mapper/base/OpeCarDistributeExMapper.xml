@@ -18,7 +18,7 @@
     </select>
 
     <!-- app询价单列表(注意:这里条件更改,service层判断也要改) -->
-    <select id="getInquiryList" resultType="com.redescooter.ses.mobile.wh.fr.vo.InquiryListResult">
+    <select id="getInquiryList" resultType="com.redescooter.ses.api.common.vo.node.InquiryListResult">
         select
             oci.id,
             oci.order_no,
@@ -102,7 +102,7 @@
     </select>
 
     <!-- app询价单详情 -->
-    <select id="getInquiryDetail" resultType="com.redescooter.ses.mobile.wh.fr.vo.InquiryDetailResult">
+    <select id="getInquiryDetail" resultType="com.redescooter.ses.api.common.vo.node.InquiryDetailResult">
         select
             ost.id as specificatTypeId,
             oci.order_no,

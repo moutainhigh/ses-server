@@ -1,45 +1,24 @@
-package com.redescooter.ses.mobile.wh.fr.service.app;
+package com.redescooter.ses.api.scooter.service;
 
-import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
-import com.redescooter.ses.api.common.vo.base.StringEnter;
-import com.redescooter.ses.api.common.vo.base.TokenResult;
+import com.redescooter.ses.api.common.vo.node.BindVinEnter;
 import com.redescooter.ses.api.common.vo.node.InputBatteryEnter;
 import com.redescooter.ses.api.common.vo.node.InputScooterEnter;
 import com.redescooter.ses.api.common.vo.node.InquiryDetailResult;
 import com.redescooter.ses.api.common.vo.node.InquiryListAppEnter;
 import com.redescooter.ses.api.common.vo.node.InquiryListResult;
 import com.redescooter.ses.api.common.vo.node.SetModelEnter;
-import com.redescooter.ses.mobile.wh.fr.dm.OpeWarehouseAccount;
-import com.redescooter.ses.mobile.wh.fr.vo.AppLoginEnter;
-import com.redescooter.ses.api.common.vo.node.BindVinEnter;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Description
  * @Author Chris
- * @Date 2021/5/10 13:57
+ * @Date 2021/6/21 17:11
  */
-public interface FrAppService {
-
-    /**
-     * 登录
-     */
-    TokenResult login(AppLoginEnter enter);
-
-    /**
-     * 登出
-     */
-    GeneralResult logout(GeneralEnter enter);
-
-    /**
-     * 获得个人信息
-     */
-    OpeWarehouseAccount getUserInfo(GeneralEnter enter);
+public interface ScooterNodeService {
 
     /**
      * 列表
@@ -52,11 +31,6 @@ public interface FrAppService {
     InquiryDetailResult getDetail(IdEnter enter);
 
     /**
-     * 根据rsn带出其他6个码
-     */
-    Map<String, String> getOtherCode(StringEnter enter);
-
-    /**
      * 录入车辆
      */
     GeneralResult inputScooter(InputScooterEnter enter);
@@ -67,13 +41,13 @@ public interface FrAppService {
     List<String> inputBattery(InputBatteryEnter enter);
 
     /**
-     * 绑定VIN
-     */
-    GeneralResult bindVin(BindVinEnter enter);
-
-    /**
      * 设置软体
      */
     GeneralResult setScooterModel(SetModelEnter enter);
+
+    /**
+     * 绑定VIN
+     */
+    GeneralResult bindVin(BindVinEnter enter);
 
 }

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.redescooter.ses.service.scooter.dao.base.ScoScooterNodeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.redescooter.ses.service.scooter.dm.base.ScoScooterNode">
+        <id column="id" property="id"/>
+        <result column="dr" property="dr"/>
+        <result column="scooter_id" property="scooterId"/>
+        <result column="app_node" property="appNode"/>
+        <result column="flag" property="flag"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="updated_by" property="updatedBy"/>
+        <result column="updated_time" property="updatedTime"/>
+        <result column="def1" property="def1"/>
+        <result column="def2" property="def2"/>
+        <result column="def3" property="def3"/>
+        <result column="def4" property="def4"/>
+        <result column="def5" property="def5"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, dr, scooter_id, app_node, flag, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5
+    </sql>
+
+    <!-- 列表count -->
+    <select id="getListCount" resultType="java.lang.Integer">
+        select count(*)
+        from sco_scooter scooter
+        left join sco_scooter_node node on scooter.id = node.scooter_id and node.dr = 0
+        where scooter.dr = 0 and scooter.warehouse_account_id = #{warehouseAccountId}
+        <if test="enter.status != null and enter.status == 1">
+            and node.flag = 1 and node.app_node in (1, 2, 3, 4)
+        </if>
+        <if test="enter.status != null and enter.status == 2">
+            and node.flag = 2 and node.app_node = 5
+        </if>
+        limit 1
+    </select>
+
+    <!-- 列表 -->
+    <select id="getList" resultType="com.redescooter.ses.api.common.vo.node.InquiryListResult">
+        select
+            scooter.id as scooterId,
+            ifnull(node.flag, 0) as status,
+            scooter.model,
+            scooter.color_id,
+            scooter.battery,
+            scooter.created_time,
+            ifnull(node.app_node, 0)
+        from sco_scooter scooter
+        left join sco_scooter_node node on scooter.id = node.scooter_id and node.dr = 0
+        where scooter.dr = 0 and scooter.warehouse_account_id = #{warehouseAccountId}
+        <if test="enter.status != null and enter.status == 1">
+            and node.flag = 1 and node.app_node in (1, 2, 3, 4)
+        </if>
+        <if test="enter.status != null and enter.status == 2">
+            and node.flag = 2 and node.app_node = 5
+        </if>
+        order by scooter.created_time desc
+        limit #{enter.startRow}, #{enter.pageSize}
+    </select>
+
+</mapper>

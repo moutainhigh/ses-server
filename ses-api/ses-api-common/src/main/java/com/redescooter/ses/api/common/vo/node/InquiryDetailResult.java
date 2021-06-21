@@ -1,4 +1,4 @@
-package com.redescooter.ses.mobile.wh.fr.vo;
+package com.redescooter.ses.api.common.vo.node;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import io.swagger.annotations.ApiModel;
@@ -22,32 +22,11 @@ import java.util.List;
 @EqualsAndHashCode
 public class InquiryDetailResult extends GeneralResult {
 
-    @ApiModelProperty(value = "车型id")
-    private Long specificatTypeId;
-
-    @ApiModelProperty(value = "询价单单号")
-    private String orderNo;
-
-    @ApiModelProperty(value = "客户id")
-    private Long customerId;
-
     @ApiModelProperty(value = "车型名称")
     private String scooterName;
 
     @ApiModelProperty(value = "颜色名称")
     private String colorName;
-
-    @ApiModelProperty(value = "颜色id")
-    private Long colorId;
-
-    @ApiModelProperty(value = "车牌")
-    private String licensePlate;
-
-    @ApiModelProperty(value = "电池数量")
-    private Integer batteryNum;
-
-    @ApiModelProperty(value = "车座")
-    private Integer seatNumber;
 
     @ApiModelProperty(value = "RSN")
     private String rsn;
@@ -68,23 +47,18 @@ public class InquiryDetailResult extends GeneralResult {
     private String controller;
 
     @ApiModelProperty(value = "电机")
-    private String electricMachinery;
-
-    @ApiModelProperty(value = "仪表")
-    private String meter;
+    private String motor;
 
     @ApiModelProperty(value = "IMEI")
     private String imei;
 
-    @ApiModelProperty(value = "电池数")
+    @ApiModelProperty(value = "电池数量")
     private Integer batteryNumber;
 
     @ApiModelProperty(value = "电池码")
     private List<String> batteryList;
 
-    @ApiModelProperty(value = "app节点 1绑定VIN 2绑定车牌 3录入车辆 4录入电池 5设置软体 6完成")
+    @ApiModelProperty(value = "app节点 1录入车辆 2录入电池 3设置软体 4录入vin 5完成")
     private Integer appNode;
-
-    private String battery;
 
 }
