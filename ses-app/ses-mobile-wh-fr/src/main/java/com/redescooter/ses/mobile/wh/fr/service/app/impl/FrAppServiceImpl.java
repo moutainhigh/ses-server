@@ -29,15 +29,10 @@ import com.redescooter.ses.api.hub.service.operation.SpecificService;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.api.scooter.service.ScooterNodeService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
-import com.redescooter.ses.mobile.wh.fr.dao.base.OpeCarDistributeExMapper;
-import com.redescooter.ses.mobile.wh.fr.dao.base.OpeCarDistributeMapper;
-import com.redescooter.ses.mobile.wh.fr.dao.base.OpeCarDistributeNodeMapper;
 import com.redescooter.ses.mobile.wh.fr.dao.base.OpeCustomerInquiryMapper;
-import com.redescooter.ses.mobile.wh.fr.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.mobile.wh.fr.dao.base.OpeSaleScooterMapper;
 import com.redescooter.ses.mobile.wh.fr.dao.base.OpeSpecificatTypeMapper;
 import com.redescooter.ses.mobile.wh.fr.dao.base.OpeWmsScooterStockMapper;
-import com.redescooter.ses.mobile.wh.fr.dao.base.OpeWmsStockRecordMapper;
 import com.redescooter.ses.mobile.wh.fr.dm.OpeColor;
 import com.redescooter.ses.mobile.wh.fr.dm.OpeCustomerInquiry;
 import com.redescooter.ses.mobile.wh.fr.dm.OpeInWhouseScooterB;
@@ -51,11 +46,7 @@ import com.redescooter.ses.mobile.wh.fr.enums.StatusEnum;
 import com.redescooter.ses.mobile.wh.fr.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.wh.fr.exception.SesMobileFrWhException;
 import com.redescooter.ses.mobile.wh.fr.service.app.FrAppService;
-import com.redescooter.ses.mobile.wh.fr.service.base.OpeCodebaseRelationService;
-import com.redescooter.ses.mobile.wh.fr.service.base.OpeCodebaseRsnService;
-import com.redescooter.ses.mobile.wh.fr.service.base.OpeCodebaseVinService;
 import com.redescooter.ses.mobile.wh.fr.service.base.OpeColorService;
-import com.redescooter.ses.mobile.wh.fr.service.base.OpeCustomerInquiryBService;
 import com.redescooter.ses.mobile.wh.fr.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.mobile.wh.fr.service.base.OpeInWhouseScooterBService;
 import com.redescooter.ses.mobile.wh.fr.service.base.OpeSaleScooterService;
@@ -103,22 +94,7 @@ public class FrAppServiceImpl implements FrAppService {
     private JedisCluster jedisCluster;
 
     @Autowired
-    private OpeCarDistributeMapper opeCarDistributeMapper;
-
-    @Autowired
-    private OpeCarDistributeNodeMapper opeCarDistributeNodeMapper;
-
-    @Autowired
-    private OpeCarDistributeExMapper opeCarDistributeExMapper;
-
-    @Autowired
-    private OpeCustomerMapper opeCustomerMapper;
-
-    @Autowired
     private OpeWmsScooterStockMapper opeWmsScooterStockMapper;
-
-    @Autowired
-    private OpeWmsStockRecordMapper opeWmsStockRecordMapper;
 
     @Autowired
     private OpeWmsStockSerialNumberService opeWmsStockSerialNumberService;
@@ -127,19 +103,7 @@ public class FrAppServiceImpl implements FrAppService {
     private OpeCustomerInquiryService opeCustomerInquiryService;
 
     @Autowired
-    private OpeCustomerInquiryBService opeCustomerInquiryBService;
-
-    @Autowired
     private OpeSaleScooterService opeSaleScooterService;
-
-    @Autowired
-    private OpeCodebaseRsnService opeCodebaseRsnService;
-
-    @Autowired
-    private OpeCodebaseVinService opeCodebaseVinService;
-
-    @Autowired
-    private OpeCodebaseRelationService opeCodebaseRelationService;
 
     @Autowired
     private OpeSpecificatGroupService opeSpecificatGroupService;

@@ -94,7 +94,9 @@ public enum ExceptionCodeEnums {
 
     DATA_EXCEPTION(10043, "数据异常"),
 
-    VIN_NOT_MATCH(10044, "vin不匹配")
+    VIN_NOT_MATCH(10044, "vin不匹配"),
+
+    CANNOT_SET_MODEL(10045, "不能再次设置软体")
 
 
 

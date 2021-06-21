@@ -301,6 +301,10 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
         if (null == scoScooter) {
             throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
         }
+        Integer revision = scoScooter.getRevision();
+        if (null != revision) {
+            throw new ScooterException(ExceptionCodeEnums.CANNOT_SET_MODEL.getCode(), ExceptionCodeEnums.CANNOT_SET_MODEL.getMessage());
+        }
 
         // 创建车辆
         AdmScooter admScooter = scooterModelService.getScooterBySn(scoScooter.getTabletSn());
@@ -391,6 +395,13 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
         wrapper.eq(ScoScooterNode::getDr, Constant.DR_FALSE);
         wrapper.eq(ScoScooterNode::getScooterId, enter.getScooterId());
         scoScooterNodeService.update(node, wrapper);
+
+        // 标识为已同步
+        ScoScooter syncModel = new ScoScooter();
+        syncModel.setId(enter.getScooterId());
+        syncModel.setRevision(1);
+        scoScooterService.updateById(syncModel);
+        log.info("已标识为已同步");
         return new GeneralResult(enter.getRequestId());
     }
 
