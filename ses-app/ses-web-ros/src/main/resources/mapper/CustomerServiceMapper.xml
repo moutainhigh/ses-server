@@ -154,13 +154,7 @@
             or opc.contact_full_name like concat('%',#{keyword},'%')
             )
         </if>
-
-        <if test="status ==2 or status==3 or status==4">
-            order by opc.updated_time desc
-        </if>
-        <if test="status ==1  or status==''">
-            order by opc.created_time desc
-        </if>
+        order by opc.created_time desc
         limit #{startRow},#{pageSize}
     </select>
     <select id="customerListCount" resultType="int">
@@ -168,9 +162,6 @@
         from ope_customer opc
         where 1=1
         and opc.dr =0
-        <if test="status != null and status != ''">
-            and opc.status =#{status}
-        </if>
         <if test="cityName != null and cityName != ''">
             and opc.def2 =#{cityName}
             <if test="distrustName != null and distrustName != ''">
@@ -201,12 +192,8 @@
             or opc.contact_full_name like concat('%',#{keyword},'%')
             )
         </if>
-        <if test="status ==2 or status==3">
-            order by opc.updated_time desc
-        </if>
-        <if test="status ==1  or status==''">
             order by opc.created_time desc
-        </if>
+
     </select>
     <select id="scooterCustomerResult"
             resultType="com.redescooter.ses.web.ros.vo.customer.ScooterCustomerResult">
