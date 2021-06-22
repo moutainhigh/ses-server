@@ -3,8 +3,10 @@ package com.redescooter.ses.mobile.wh.fr.service.app.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.api.common.constant.SpecificDefNameConstant;
 import com.redescooter.ses.api.common.enums.date.DayCodeEnum;
 import com.redescooter.ses.api.common.enums.date.MonthCodeEnum;
+import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -19,6 +21,7 @@ import com.redescooter.ses.api.common.vo.node.InquiryListAppEnter;
 import com.redescooter.ses.api.common.vo.node.InquiryListResult;
 import com.redescooter.ses.api.common.vo.node.SetModelEnter;
 import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
+import com.redescooter.ses.api.common.vo.specification.SpecificDefDTO;
 import com.redescooter.ses.api.foundation.service.base.AccountBaseService;
 import com.redescooter.ses.api.foundation.service.scooter.AssignScooterService;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
@@ -26,9 +29,17 @@ import com.redescooter.ses.api.hub.service.admin.ScooterModelService;
 import com.redescooter.ses.api.hub.service.customer.CusotmerScooterService;
 import com.redescooter.ses.api.hub.service.operation.ColorService;
 import com.redescooter.ses.api.hub.service.operation.SpecificService;
+import com.redescooter.ses.api.hub.vo.admin.AdmScooter;
+import com.redescooter.ses.api.hub.vo.admin.AdmScooterUpdateEnter;
+import com.redescooter.ses.api.hub.vo.operation.SpecificTypeDTO;
+import com.redescooter.ses.api.scooter.exception.ScooterException;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.api.scooter.service.ScooterNodeService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
+import com.redescooter.ses.api.scooter.vo.ScoScooterResult;
+import com.redescooter.ses.api.scooter.vo.emqx.SetScooterModelPublishDTO;
+import com.redescooter.ses.api.scooter.vo.emqx.SpecificDefGroupPublishDTO;
+import com.redescooter.ses.mobile.wh.fr.constant.SequenceName;
 import com.redescooter.ses.mobile.wh.fr.dao.base.OpeCustomerInquiryMapper;
 import com.redescooter.ses.mobile.wh.fr.dao.base.OpeSaleScooterMapper;
 import com.redescooter.ses.mobile.wh.fr.dao.base.OpeSpecificatTypeMapper;
@@ -84,6 +95,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @Description
@@ -439,7 +451,97 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult setScooterModel(SetModelEnter enter) {
-        return scooterNodeService.setScooterModel(enter);
+        ScoScooterResult scoScooter = scooterNodeService.setScooterModel(enter);
+
+        // 创建车辆
+        AdmScooter admScooter = scooterModelService.getScooterBySn(scoScooter.getTabletSn());
+        if (null != admScooter) {
+            throw new ScooterException(ExceptionCodeEnums.SN_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.SN_ALREADY_EXISTS.getMessage());
+        }
+        log.info("车辆不存在");
+
+        OpeColor color = opeColorService.getById(scoScooter.getColorId());
+        if (null == color) {
+            throw new ScooterException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+        }
+
+        // 获取低速
+        LambdaQueryWrapper<OpeSpecificatGroup> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeSpecificatGroup::getDr, Constant.DR_FALSE);
+        qw.like(OpeSpecificatGroup::getGroupName, "Low");
+        qw.last("limit 1");
+        OpeSpecificatGroup group = opeSpecificatGroupService.getOne(qw);
+        if (null == group) {
+            throw new ScooterException(ExceptionCodeEnums.GROUP_NOT_EXIST.getCode(), ExceptionCodeEnums.GROUP_NOT_EXIST.getMessage());
+        }
+
+        // 新增adm_scooter表
+        AdmScooter scooter = new AdmScooter();
+        scooter.setId(idAppService.getId(SequenceName.OPE_CAR_DISTRIBUTE));
+        scooter.setDr(Constant.DR_FALSE);
+        scooter.setSn(scoScooter.getTabletSn());
+        scooter.setGroupId(group.getId());
+        scooter.setColorId(scoScooter.getColorId());
+        scooter.setMacAddress(scoScooter.getBluetoothMacAddress());
+        scooter.setScooterController(enter.getModel());
+        scooter.setCreatedBy(0L);
+        scooter.setCreatedTime(new Date());
+        scooter.setUpdatedBy(0L);
+        scooter.setUpdatedTime(new Date());
+        scooter.setColorName(color.getColorName());
+        scooter.setColorValue(color.getColorValue());
+        scooter.setGroupName(group.getGroupName());
+        scooter.setMacName(scoScooter.getBluetoothMacAddress());
+        scooterModelService.insertScooter(scooter);
+        log.info("新增adm_scooter表成功");
+
+        // 设置软体
+        AdmScooter scooterModel = scooterModelService.getScooterById(scooter.getId());
+        if (null == scooterModel) {
+            throw new ScooterException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
+        }
+        // 只允许车辆关闭状态时进行软体设置
+        String status = scooterService.getScooterStatusByTabletSn(scooter.getSn());
+        if (ScooterLockStatusEnums.UNLOCK.getValue().equals(status)) {
+            throw new ScooterException(ExceptionCodeEnums.SCOOTER_NOT_CLOSED.getCode(), ExceptionCodeEnums.SCOOTER_NOT_CLOSED.getMessage());
+        }
+
+        // 更新车辆型号信息
+        AdmScooterUpdateEnter param = new AdmScooterUpdateEnter();
+        param.setId(scooterModel.getId());
+        Integer type = 2;
+        String specificName = "E50";
+        if (enter.getModel() == 1) {
+            type = 2;
+            specificName = "E50";
+        }
+        if (enter.getModel() == 2) {
+            type = 3;
+            specificName = "E100";
+        }
+        param.setScooterController(type);
+        param.setGroupId(group.getId());
+        param.setGroupName(group.getGroupName());
+        scooterModelService.updateAdmScooter(param);
+        log.info("更新车辆型号信息");
+        scooterService.syncScooterModel(scooterModel.getSn(), type);
+        log.info("同步车辆型号");
+
+        SpecificTypeDTO specificType = specificService.getSpecificTypeByName(specificName);
+        List<SpecificDefGroupPublishDTO> list = buildSetScooterModelData(specificType.getId());
+        if (CollectionUtils.isNotEmpty(list)) {
+            // 发送EMQ消息,通知车辆那边进行升级处理
+            SetScooterModelPublishDTO instance = new SetScooterModelPublishDTO();
+            instance.setTabletSn(scooterModel.getSn());
+            instance.setScooterModel(type);
+            instance.setSpecificDefGroupList(list);
+            scooterEmqXService.setScooterModel(instance);
+        }
+        log.info("设置软体完毕");
+
+        // 设置软体完成后节点流转
+        scooterNodeService.updateNode(enter.getUserId(), scoScooter.getId());
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -498,6 +600,51 @@ public class FrAppServiceImpl implements FrAppService {
             opeCodebaseVinService.updateById(model);
         }
         return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 组装设置车辆型号数据
+     */
+    private List<SpecificDefGroupPublishDTO> buildSetScooterModelData(Long specificTypeId) {
+        List<SpecificDefGroupPublishDTO> list = new ArrayList<>();
+
+        // 查询当前车辆电池信息,这里主要是为了拿车辆电池的出厂号/流水号信息(用于设置软体时使用) 先不给电池的出厂号/流水号(车辆那边现在不是强制性需要)
+        // 查询车辆型号自定义项信息
+        List<SpecificDefDTO> specificDefList = specificService.getSpecificDefBySpecificId(specificTypeId);
+        if (CollectionUtils.isNotEmpty(specificDefList)) {
+            // 旧数据ope_specificat_def表里面def_group_id字段值是空的,这里会导致stream分组的时候报错
+            specificDefList.forEach(def -> {
+                if (null == def.getSpecificDefGroupId()) {
+                    throw new ScooterException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+                }
+            });
+
+            Map<Long, List<SpecificDefDTO>> specificDefGroupMap = specificDefList.stream().collect(Collectors.groupingBy(SpecificDefDTO::getSpecificDefGroupId));
+
+            for (Map.Entry<Long, List<SpecificDefDTO>> map : specificDefGroupMap.entrySet()) {
+                Map<String, String> specificDefMap = map.getValue().stream().collect(Collectors.toMap(SpecificDefDTO::getDefName, SpecificDefDTO::getDefValue));
+
+                // 组装自定义项数据 -- 自定义项名称固定值
+                SpecificDefGroupPublishDTO publish = SpecificDefGroupPublishDTO.builder()
+                        .wheelDiameter(specificDefMap.get(SpecificDefNameConstant.WHEEL_DIAMETER))
+                        .speedRatio(specificDefMap.get(SpecificDefNameConstant.SPEED_RATIO))
+                        .limitSpeedBos(specificDefMap.get(SpecificDefNameConstant.LIMIT_SPEED_BOS))
+                        .limiting(specificDefMap.get(SpecificDefNameConstant.LIMITING))
+                        .speedLimit(specificDefMap.get(SpecificDefNameConstant.SPEED_LIMIT))
+                        .socRedWarning(specificDefMap.get(SpecificDefNameConstant.SOC_RED_WARNING))
+                        .orangeWarning(specificDefMap.get(SpecificDefNameConstant.ORANGE_WARNING))
+                        .stallSOC(specificDefMap.get(SpecificDefNameConstant.STALL_SOC))
+                        .setSOCTo0AtStallUndervoltage(specificDefMap.get(SpecificDefNameConstant.SET_SOC_TO_0_AT_STALL_UNDER_VOLTAGE))
+                        .stallVoltageUndervoltage(specificDefMap.get(SpecificDefNameConstant.STALL_VOLTAGE_UNDER_VOLTAGE))
+                        .voltageLegalRecognitionMin(specificDefMap.get(SpecificDefNameConstant.VOLTAGE_LEGAL_RECOGNITION_MAX))
+                        .voltageLegalRecognitionMax(specificDefMap.get(SpecificDefNameConstant.VOLTAGE_LEGAL_RECOGNITION_MIN))
+                        .controllerUndervoltage(specificDefMap.get(SpecificDefNameConstant.CONTROLLER_UNDER_VOLTAGE))
+                        .controllerUndervoltageRecovery(specificDefMap.get(SpecificDefNameConstant.CONTROLLER_UNDER_VOLTAGE_RECOVERY))
+                        .build();
+                list.add(publish);
+            }
+        }
+        return list;
     }
 
     /**

@@ -21,6 +21,8 @@ public class ScoScooterResult implements Serializable {
     @ApiModelProperty(value = "逻辑删除标识 0正常 1删除")
     private Integer dr;
 
+    private Long warehouseAccountId;
+
     /**
      * 车辆编号
      */
@@ -29,6 +31,33 @@ public class ScoScooterResult implements Serializable {
 
     @ApiModelProperty(value = "车辆平板序列号")
     private String tabletSn;
+
+    @ApiModelProperty(value = "颜色id")
+    private Long colorId;
+
+    @ApiModelProperty(value = "BBI")
+    private String bbi;
+
+    @ApiModelProperty(value = "控制器")
+    private String controller;
+
+    @ApiModelProperty(value = "电机")
+    private String motor;
+
+    @ApiModelProperty(value = "IMEI")
+    private String imei;
+
+    @ApiModelProperty(value = "电池 多个时通过逗号分隔")
+    private String battery;
+
+    @ApiModelProperty(value = "vin码")
+    private String vin;
+
+    @ApiModelProperty(value = "平板蓝牙mac地址")
+    private String bluetoothMacAddress;
+
+    @ApiModelProperty(value = "sim卡唯一标识")
+    private String iccid;
 
     /**
      * 车辆图片

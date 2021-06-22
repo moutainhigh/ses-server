@@ -10,6 +10,7 @@ import com.redescooter.ses.api.common.vo.node.InquiryDetailResult;
 import com.redescooter.ses.api.common.vo.node.InquiryListAppEnter;
 import com.redescooter.ses.api.common.vo.node.InquiryListResult;
 import com.redescooter.ses.api.common.vo.node.SetModelEnter;
+import com.redescooter.ses.api.scooter.vo.ScoScooterResult;
 
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,12 @@ public interface ScooterNodeService {
     /**
      * 设置软体
      */
-    GeneralResult setScooterModel(SetModelEnter enter);
+    ScoScooterResult setScooterModel(SetModelEnter enter);
+
+    /**
+     * 设置软体完成后节点流转
+     */
+    GeneralResult updateNode(Long userId, Long scooterId);
 
     /**
      * 绑定VIN
