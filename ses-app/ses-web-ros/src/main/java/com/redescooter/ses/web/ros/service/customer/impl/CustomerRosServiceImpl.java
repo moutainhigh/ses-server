@@ -425,7 +425,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
         if (CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue().equals(customer.getStatus())) {
             //客户验证
-            checkCustomer(enter);
+           // checkCustomer(enter);
             // 客户行业 类型不可修改
             if (!StringUtils.equals(enter.getCustomerType(), customer.getCustomerType())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_TYPE_IS_NOT_EDIT.getCode(), ExceptionCodeEnums.CUSTOMER_TYPE_IS_NOT_EDIT.getMessage());
