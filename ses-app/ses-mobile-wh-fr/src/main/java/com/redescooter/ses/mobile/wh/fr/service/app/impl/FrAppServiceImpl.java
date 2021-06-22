@@ -33,10 +33,13 @@ import com.redescooter.ses.mobile.wh.fr.dao.base.OpeCustomerInquiryMapper;
 import com.redescooter.ses.mobile.wh.fr.dao.base.OpeSaleScooterMapper;
 import com.redescooter.ses.mobile.wh.fr.dao.base.OpeSpecificatTypeMapper;
 import com.redescooter.ses.mobile.wh.fr.dao.base.OpeWmsScooterStockMapper;
+import com.redescooter.ses.mobile.wh.fr.dm.OpeCodebaseRsn;
+import com.redescooter.ses.mobile.wh.fr.dm.OpeCodebaseVin;
 import com.redescooter.ses.mobile.wh.fr.dm.OpeColor;
 import com.redescooter.ses.mobile.wh.fr.dm.OpeCustomerInquiry;
 import com.redescooter.ses.mobile.wh.fr.dm.OpeInWhouseScooterB;
 import com.redescooter.ses.mobile.wh.fr.dm.OpeSaleScooter;
+import com.redescooter.ses.mobile.wh.fr.dm.OpeSimInformation;
 import com.redescooter.ses.mobile.wh.fr.dm.OpeSpecificatGroup;
 import com.redescooter.ses.mobile.wh.fr.dm.OpeSpecificatType;
 import com.redescooter.ses.mobile.wh.fr.dm.OpeWarehouseAccount;
@@ -132,6 +135,9 @@ public class FrAppServiceImpl implements FrAppService {
 
     @Autowired
     private OpeCodebaseVinService opeCodebaseVinService;
+
+    @Autowired
+    private OpeSimInformationService opeSimInformationService;
 
     @Value("${Request.privateKey}")
     private String privateKey;
@@ -390,20 +396,20 @@ public class FrAppServiceImpl implements FrAppService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult inputScooter(InputScooterEnter enter) {
         // 校验码库
-        /*LambdaQueryWrapper<OpeCodebaseRsn> qw = new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<OpeCodebaseRsn> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
         qw.eq(OpeCodebaseRsn::getStatus, 1);
         qw.eq(OpeCodebaseRsn::getRsn, enter.getRsn());
         int count = opeCodebaseRsnService.count(qw);
         if (count <= 0) {
             throw new SesMobileFrWhException(ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getMessage());
-        }*/
+        }
 
         // 录入车辆
         scooterNodeService.inputScooter(enter);
 
         // 修改码库此rsn为已用
-        /*LambdaQueryWrapper<OpeCodebaseRsn> lqw = new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<OpeCodebaseRsn> lqw = new LambdaQueryWrapper<>();
         lqw.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
         lqw.eq(OpeCodebaseRsn::getStatus, 1);
         lqw.eq(OpeCodebaseRsn::getRsn, enter.getRsn());
@@ -414,7 +420,7 @@ public class FrAppServiceImpl implements FrAppService {
             model.setUpdatedBy(enter.getUserId());
             model.setUpdatedTime(new Date());
             opeCodebaseRsnService.updateById(model);
-        }*/
+        }
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -442,7 +448,7 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult bindVin(BindVinEnter enter) {
-        /*if (enter.getVinCode().length() != 17) {
+        if (enter.getVinCode().length() != 17) {
             throw new SesMobileFrWhException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
         }
         if (!enter.getVinCode().startsWith("VXSR2A")) {
@@ -457,13 +463,29 @@ public class FrAppServiceImpl implements FrAppService {
         int count = opeCodebaseVinService.count(qw);
         if (count <= 0) {
             throw new SesMobileFrWhException(ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getMessage());
-        }*/
+        }
 
         // 录入vin
-        scooterNodeService.bindVin(enter);
+        Map<String, String> map = scooterNodeService.bindVin(enter);
+        log.info("录入vin的返回结果是:[{}]", map);
+
+        // 录入sim卡
+        OpeSimInformation sim = new OpeSimInformation();
+        String iccid = jedisCluster.get(map.get("tabletSn"));
+        if (StringUtils.isNotBlank(iccid)) {
+            sim.setSimIccid(iccid);
+        }
+        sim.setRsn(map.get("rsn"));
+        sim.setBluetoothMacAddress(map.get("bluetoothMacAddress"));
+        sim.setTabletSn(map.get("tabletSn"));
+        sim.setVin(map.get("vin"));
+        sim.setCreatedBy(enter.getUserId());
+        sim.setCreatedTime(new Date());
+        opeSimInformationService.save(sim);
+        jedisCluster.del(map.get("tabletSn"));
 
         // 修改码库vin为已用
-        /*LambdaQueryWrapper<OpeCodebaseVin> lqw = new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<OpeCodebaseVin> lqw = new LambdaQueryWrapper<>();
         lqw.eq(OpeCodebaseVin::getDr, Constant.DR_FALSE);
         lqw.eq(OpeCodebaseVin::getStatus, 1);
         lqw.eq(OpeCodebaseVin::getVin, enter.getVinCode());
@@ -474,7 +496,7 @@ public class FrAppServiceImpl implements FrAppService {
             model.setUpdatedBy(enter.getUserId());
             model.setUpdatedTime(new Date());
             opeCodebaseVinService.updateById(model);
-        }*/
+        }
         return new GeneralResult(enter.getRequestId());
     }
 

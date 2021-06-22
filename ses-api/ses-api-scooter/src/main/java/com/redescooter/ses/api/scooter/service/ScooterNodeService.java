@@ -12,6 +12,7 @@ import com.redescooter.ses.api.common.vo.node.InquiryListResult;
 import com.redescooter.ses.api.common.vo.node.SetModelEnter;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description
@@ -48,6 +49,6 @@ public interface ScooterNodeService {
     /**
      * 绑定VIN
      */
-    GeneralResult bindVin(BindVinEnter enter);
+    Map<String, String> bindVin(BindVinEnter enter);
 
 }

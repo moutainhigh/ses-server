@@ -2,8 +2,10 @@ package com.redescooter.ses.service.scooter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.SpecificDefNameConstant;
+import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.PageResult;
@@ -15,16 +17,20 @@ import com.redescooter.ses.api.common.vo.node.InquiryDetailResult;
 import com.redescooter.ses.api.common.vo.node.InquiryListAppEnter;
 import com.redescooter.ses.api.common.vo.node.InquiryListResult;
 import com.redescooter.ses.api.common.vo.node.SetModelEnter;
+import com.redescooter.ses.api.common.vo.scooter.ColorDTO;
+import com.redescooter.ses.api.common.vo.scooter.SpecificGroupDTO;
 import com.redescooter.ses.api.common.vo.specification.SpecificDefDTO;
 import com.redescooter.ses.api.hub.service.admin.ScooterModelService;
-import com.redescooter.ses.api.hub.service.operation.CodebaseService;
 import com.redescooter.ses.api.hub.service.operation.ColorService;
 import com.redescooter.ses.api.hub.service.operation.SpecificService;
-import com.redescooter.ses.api.hub.vo.operation.OpeSimInformation;
+import com.redescooter.ses.api.hub.vo.admin.AdmScooter;
+import com.redescooter.ses.api.hub.vo.admin.AdmScooterUpdateEnter;
+import com.redescooter.ses.api.hub.vo.operation.SpecificTypeDTO;
 import com.redescooter.ses.api.scooter.exception.ScooterException;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.api.scooter.service.ScooterNodeService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
+import com.redescooter.ses.api.scooter.vo.emqx.SetScooterModelPublishDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.SpecificDefGroupPublishDTO;
 import com.redescooter.ses.service.scooter.constant.SequenceName;
 import com.redescooter.ses.service.scooter.dao.base.ScoScooterNodeMapper;
@@ -41,7 +47,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
-import redis.clients.jedis.JedisCluster;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,17 +80,11 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
     @Autowired
     private ScooterEmqXService scooterEmqXService;
 
-    @Autowired
-    private JedisCluster jedisCluster;
-
     @DubboReference
     private IdAppService idAppService;
 
     @DubboReference
     private ColorService colorService;
-
-    @DubboReference
-    private CodebaseService codebaseService;
 
     @DubboReference
     private ScooterModelService scooterModelService;
@@ -214,13 +213,13 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
         }
 
         // 校验重复
-        /*LambdaQueryWrapper<ScoScooter> qw = new LambdaQueryWrapper<>();
-        qw.eq(ScoScooter::getDr, Constant.DR_FALSE);
-        qw.eq(ScoScooter::getScooterNo, rsn);
-        List<ScoScooter> list = scoScooterService.list(qw);
+        LambdaQueryWrapper<ScoScooter> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(ScoScooter::getDr, Constant.DR_FALSE);
+        lqw.eq(ScoScooter::getScooterNo, rsn);
+        List<ScoScooter> list = scoScooterService.list(lqw);
         if (CollectionUtils.isNotEmpty(list)) {
             throw new ScooterException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
-        }*/
+        }
 
         // 先查看车辆在node表是否存在数据,不存在就新建
         LambdaQueryWrapper<ScoScooterNode> qw = new LambdaQueryWrapper<>();
@@ -324,7 +323,7 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult setScooterModel(SetModelEnter enter) {
         Long scooterId = getScooterId(enter.getRsn());
-        /*ScoScooter scoScooter = scoScooterService.getById(scooterId);
+        ScoScooter scoScooter = scoScooterService.getById(scooterId);
         if (null == scoScooter) {
             throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
         }
@@ -409,7 +408,7 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
             instance.setScooterModel(type);
             instance.setSpecificDefGroupList(list);
             scooterEmqXService.setScooterModel(instance);
-        }*/
+        }
         log.info("设置软体完毕");
 
         // node表appNode字段
@@ -437,7 +436,7 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
      */
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
-    public GeneralResult bindVin(BindVinEnter enter) {
+    public Map<String, String> bindVin(BindVinEnter enter) {
         Long scooterId = getScooterId(enter.getRsn());
         String vinCode = enter.getVinCode().trim();
 
@@ -447,25 +446,25 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
         }
 
         // 截取第7位,车型编号
-        /*String productTypeSub = vinCode.substring(6, 7);
+        String productTypeSub = vinCode.substring(6, 7);
         if (!StringUtils.equals(scoScooter.getModel(), productTypeSub)) {
             throw new ScooterException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
-        }*/
+        }
 
         // 截取第8位,座位数量
-        /*String seatNumberSub = vinCode.substring(7, 8);
+        String seatNumberSub = vinCode.substring(7, 8);
         if (!StringUtils.equals("2", seatNumberSub)) {
             throw new ScooterException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
-        }*/
+        }
 
         // 校验重复
-        /*LambdaQueryWrapper<ScoScooter> qw = new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<ScoScooter> qw = new LambdaQueryWrapper<>();
         qw.eq(ScoScooter::getDr, Constant.DR_FALSE);
         qw.eq(ScoScooter::getVin, vinCode);
         List<ScoScooter> list = scoScooterService.list(qw);
         if (CollectionUtils.isNotEmpty(list)) {
             throw new ScooterException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
-        }*/
+        }
 
         // 修改主表
         ScoScooter model = new ScoScooter();
@@ -487,26 +486,17 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
         wrapper.eq(ScoScooterNode::getScooterId, scooterId);
         scoScooterNodeService.update(node, wrapper);
 
-        // sim卡信息录入
         ScoScooter scooter = scoScooterService.getById(scooterId);
         if (null == scoScooter) {
             throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
         }
 
-        OpeSimInformation sim = new OpeSimInformation();
-        String iccid = jedisCluster.get(scooter.getTabletSn());
-        if (StringUtils.isNotBlank(iccid)) {
-            sim.setSimIccid(iccid);
-        }
-        sim.setRsn(scooter.getScooterNo());
-        sim.setBluetoothMacAddress(scooter.getBluetoothMacAddress());
-        sim.setTabletSn(scooter.getTabletSn());
-        sim.setVin(scooter.getVin());
-        sim.setCreatedBy(enter.getUserId());
-        sim.setCreatedTime(new Date());
-        codebaseService.saveSim(sim);
-        jedisCluster.del(scooter.getTabletSn());
-        return new GeneralResult(enter.getRequestId());
+        Map<String, String> map = Maps.newHashMap();
+        map.put("rsn", scooter.getScooterNo());
+        map.put("tabletSn", scooter.getTabletSn());
+        map.put("vin", scooter.getVin());
+        map.put("bluetoothMacAddress", scooter.getBluetoothMacAddress());
+        return map;
     }
 
     /**
