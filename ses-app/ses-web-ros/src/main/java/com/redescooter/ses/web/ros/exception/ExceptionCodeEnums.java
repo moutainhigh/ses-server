@@ -618,7 +618,25 @@ public enum ExceptionCodeEnums {
 
     LENGTH_ABNORMAL(10300,"长度异常"),
 
-    FULL_PHONE_NUMBER_ABNORMAL(10301,"区号或者手机号异常");
+    FULL_PHONE_NUMBER_ABNORMAL(10301,"区号或者手机号异常"),
+
+    DATA_CANNOT_REPEAT(10302, "数据不能重复"),
+
+    DATA_HAS_IN_DB(10303, "数据已存在")
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ;
 
 
 

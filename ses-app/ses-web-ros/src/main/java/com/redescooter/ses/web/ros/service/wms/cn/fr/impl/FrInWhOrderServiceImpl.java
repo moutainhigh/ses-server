@@ -178,7 +178,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             }
         }
         if (flag) {
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_CANNOT_REPEAT.getCode(), ExceptionCodeEnums.DATA_CANNOT_REPEAT.getMessage());
         }
 
         // 校验数据重复
@@ -254,7 +254,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             }
         }
         if (flag) {
-            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_HAS_IN_DB.getCode(), ExceptionCodeEnums.DATA_HAS_IN_DB.getMessage());
         }
 
         // 新增入库单主表
