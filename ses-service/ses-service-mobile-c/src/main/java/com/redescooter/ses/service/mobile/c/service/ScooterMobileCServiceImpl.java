@@ -1,24 +1,39 @@
 package com.redescooter.ses.service.mobile.c.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.enums.user.UserServiceTypeEnum;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.ScooterLockDTO;
 import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
+import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.api.mobile.c.exception.MobileCException;
 import com.redescooter.ses.api.mobile.c.service.ScooterMobileCService;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
+import com.redescooter.ses.service.mobile.c.constant.SequenceName;
 import com.redescooter.ses.service.mobile.c.dao.UserScooterMapper;
 import com.redescooter.ses.service.mobile.c.dm.base.ConUserScooter;
 import com.redescooter.ses.service.mobile.c.exception.ExceptionCodeEnums;
+import com.redescooter.ses.service.mobile.c.service.base.ConUserScooterService;
+import com.redescooter.ses.starter.common.service.IdAppService;
+import io.seata.spring.annotation.GlobalTransactional;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.beans.factory.annotation.Autowired;
+import redis.clients.jedis.JedisCluster;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,14 +41,26 @@ import java.util.Map;
  * @date 2020/11/18 17:50
  */
 @DubboService
+@Slf4j
 public class ScooterMobileCServiceImpl implements ScooterMobileCService {
 
     @Resource
     private UserScooterMapper userScooterMapper;
+
     @DubboReference
     private ScooterService scooterService;
+
     @DubboReference
     private ScooterEmqXService scooterEmqXService;
+
+    @Autowired
+    private JedisCluster jedisCluster;
+
+    @Autowired
+    private ConUserScooterService conUserScooterService;
+
+    @DubboReference
+    private IdAppService idAppService;
 
     @Override
     public BaseScooterResult getScooterInfo(GeneralEnter enter) {
@@ -104,6 +131,94 @@ public class ScooterMobileCServiceImpl implements ScooterMobileCService {
          * 开始/结束导航
          */
         return scooterEmqXService.scooterNavigation(enter, scooter.getScooterId(), UserServiceTypeEnum.C.getType());
+    }
+
+    /**
+     * 登录后验证此账号下是否有车
+     */
+    @Override
+    public BooleanResult checkScooter(GeneralEnter enter) {
+        Boolean flag = jedisCluster.exists(enter.getToken());
+        if (!flag) {
+            throw new MobileCException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+        }
+        Map<String, String> map = jedisCluster.hgetAll(enter.getToken());
+        if (map == null) {
+            throw new MobileCException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+        }
+        UserToken userToken = new UserToken();
+        try {
+            org.apache.commons.beanutils.BeanUtils.populate(userToken, map);
+        } catch (Exception e) {
+            log.error("checkToken Exception sessionMap:" + map, e);
+        }
+
+        LambdaQueryWrapper<ConUserScooter> qw = new LambdaQueryWrapper<>();
+        qw.eq(ConUserScooter::getDr, Constant.DR_FALSE);
+        qw.eq(ConUserScooter::getStatus, "1");
+        qw.eq(ConUserScooter::getUserId, userToken.getUserId());
+        List<ConUserScooter> list = conUserScooterService.list(qw);
+        if (CollectionUtils.isNotEmpty(list)) {
+            return new BooleanResult(Boolean.TRUE);
+        }
+        return new BooleanResult(Boolean.FALSE);
+    }
+
+    /**
+     * 登录后如果账号下没车进行绑车操作
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult bindScooter(StringEnter enter) {
+        Boolean flag = jedisCluster.exists(enter.getToken());
+        if (!flag) {
+            throw new MobileCException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+        }
+        Map<String, String> map = jedisCluster.hgetAll(enter.getToken());
+        if (map == null) {
+            throw new MobileCException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
+        }
+        UserToken userToken = new UserToken();
+        try {
+            org.apache.commons.beanutils.BeanUtils.populate(userToken, map);
+        } catch (Exception e) {
+            log.error("checkToken Exception sessionMap:" + map, e);
+        }
+
+        // 根据rsn获取scooterId
+        Long scooterId = scooterService.getScooterIdByRsn(enter);
+        // 校验车辆是否存在
+        if (null == scooterId) {
+            throw new MobileCException(ExceptionCodeEnums.SCOOTER_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_NOT_EXIST.getMessage());
+        }
+
+        // 校验车辆是否重复绑定
+        LambdaQueryWrapper<ConUserScooter> qw = new LambdaQueryWrapper<>();
+        qw.eq(ConUserScooter::getDr, Constant.DR_FALSE);
+        qw.eq(ConUserScooter::getStatus, "1");
+        qw.eq(ConUserScooter::getScooterId, scooterId);
+        List<ConUserScooter> list = conUserScooterService.list(qw);
+        if (CollectionUtils.isNotEmpty(list)) {
+            throw new MobileCException(ExceptionCodeEnums.SCOOTER_CANNOT_REPEAT_BIND.getCode(), ExceptionCodeEnums.SCOOTER_CANNOT_REPEAT_BIND.getMessage());
+        }
+
+        // 保存
+        ConUserScooter model = new ConUserScooter();
+        model.setId(idAppService.getId(SequenceName.CON_USER_PROFILE));
+        model.setDr(Constant.DR_FALSE);
+        model.setTenantId(0L);
+        model.setUserId(userToken.getUserId());
+        model.setScooterId(scooterId);
+        model.setBeginTime(new Date());
+        model.setStatus("1");
+        model.setMileage(new Double("0"));
+        model.setCreatedBy(enter.getUserId());
+        model.setCreatedTime(new Date());
+        model.setUpdatedBy(enter.getUserId());
+        model.setUpdatedTime(new Date());
+        conUserScooterService.save(model);
+        log.info("绑车完成");
+        return new GeneralResult(enter.getRequestId());
     }
 
 }

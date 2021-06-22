@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.enums.user.UserServiceTypeEnum;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.ScooterLockDTO;
 import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
@@ -113,6 +114,36 @@ public class ScooterServiceImpl implements ScooterService {
     @Override
     public BooleanResult checkScooterUpdateRecord(ScooterUpdateRecordCheckEnter enter) {
         return scooterRecordService.checkScooterUpdateRecord(enter);
+    }
+
+    /**
+     * 登录后验证此账号下是否有车
+     */
+    @Override
+    public BooleanResult checkScooter(GeneralEnter enter) {
+        BooleanResult result = null;
+        Integer type = userComponent.getUserServiceTypeById(enter);
+        if (UserServiceTypeEnum.B.getType().equals(type)) {
+
+        } else if (UserServiceTypeEnum.C.getType().equals(type)) {
+            result = scooterMobileCService.checkScooter(enter);
+        }
+        return result;
+    }
+
+    /**
+     * 登录后如果账号下没车进行绑车操作
+     */
+    @Override
+    public GeneralResult bindScooter(StringEnter enter) {
+        GeneralResult result = null;
+        Integer type = userComponent.getUserServiceTypeById(enter);
+        if (UserServiceTypeEnum.B.getType().equals(type)) {
+
+        } else if (UserServiceTypeEnum.C.getType().equals(type)) {
+            result = scooterMobileCService.bindScooter(enter);
+        }
+        return result;
     }
 
 }

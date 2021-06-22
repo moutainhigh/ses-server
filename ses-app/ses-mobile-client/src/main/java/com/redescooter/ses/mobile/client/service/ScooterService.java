@@ -3,6 +3,7 @@ package com.redescooter.ses.mobile.client.service;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.ScooterLockDTO;
 import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
@@ -46,5 +47,15 @@ public interface ScooterService {
      * 校验平板升级更新记录
      */
     BooleanResult checkScooterUpdateRecord(ScooterUpdateRecordCheckEnter enter);
+
+    /**
+     * 登录后验证此账号下是否有车
+     */
+    BooleanResult checkScooter(GeneralEnter enter);
+
+    /**
+     * 登录后如果账号下没车进行绑车操作
+     */
+    GeneralResult bindScooter(StringEnter enter);
 
 }

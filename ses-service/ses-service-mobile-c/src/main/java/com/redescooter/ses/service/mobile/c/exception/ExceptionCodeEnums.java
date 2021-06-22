@@ -78,7 +78,16 @@ public enum ExceptionCodeEnums {
     MILEAGE_IS_EMPTY(10032,"骑行距离为空"),
 
     DURATION_IS_EMPTY(10033,"耗时为空"),
+
     DRIVER_NOT_ASSIGNED_VEHICLE(10034, "司机未分配车辆"),
+
+    SCOOTER_NOT_EXIST(10035, "车辆不存在"),
+
+    SCOOTER_CANNOT_REPEAT_BIND(10036, "车辆不能重复绑定")
+
+
+
+
 
     ;
     private int code;

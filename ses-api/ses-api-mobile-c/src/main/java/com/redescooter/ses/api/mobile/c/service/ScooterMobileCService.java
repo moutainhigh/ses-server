@@ -1,7 +1,9 @@
 package com.redescooter.ses.api.mobile.c.service;
 
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.ScooterLockDTO;
 import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
@@ -40,4 +42,13 @@ public interface ScooterMobileCService {
      */
     GeneralResult scooterNavigation(ScooterNavigationDTO enter);
 
+    /**
+     * 登录后验证此账号下是否有车
+     */
+    BooleanResult checkScooter(GeneralEnter enter);
+
+    /**
+     * 登录后如果账号下没车进行绑车操作
+     */
+    GeneralResult bindScooter(StringEnter enter);
 }

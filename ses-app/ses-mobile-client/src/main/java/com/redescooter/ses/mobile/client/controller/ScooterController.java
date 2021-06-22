@@ -5,6 +5,7 @@ import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.Response;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.ScooterLockDTO;
 import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
@@ -86,6 +87,24 @@ public class ScooterController {
     @IgnoreLoginCheck
     public Response<BooleanResult> checkScooterUpdateRecord(@ModelAttribute ScooterUpdateRecordCheckEnter enter) {
         return new Response<>(scooterService.checkScooterUpdateRecord(enter));
+    }
+
+    /**
+     * 登录后验证此账号下是否有车
+     */
+    @ApiOperation(value = "登录后验证此账号下是否有车", notes = "登录后验证此账号下是否有车")
+    @PostMapping(value = "/checkScooter")
+    public Response<BooleanResult> checkScooter(@ModelAttribute GeneralEnter enter) {
+        return new Response<>(scooterService.checkScooter(enter));
+    }
+
+    /**
+     * 登录后如果账号下没车进行绑车操作
+     */
+    @ApiOperation(value = "登录后如果账号下没车进行绑车操作", notes = "登录后如果账号下没车进行绑车操作")
+    @PostMapping(value = "/bind")
+    public Response<GeneralResult> bindScooter(@ModelAttribute StringEnter enter) {
+        return new Response<>(scooterService.bindScooter(enter));
     }
 
 }

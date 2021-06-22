@@ -1,6 +1,7 @@
 package com.redescooter.ses.api.scooter.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
@@ -173,5 +174,10 @@ public interface ScooterService {
      * 删除车辆
      */
     String deleteScooter(String tabletSn);
+
+    /**
+     * 根据rsn获取scooterId
+     */
+    Long getScooterIdByRsn(StringEnter enter);
 
 }
