@@ -390,11 +390,11 @@ public class ExcelServiceImpl implements ExcelService {
             opeCustomer.setCustomerFirstName(read.get(i).getFirstName());
             opeCustomer.setCustomerLastName(read.get(i).getLastName());
             if (read.get(i).getAreaCode().contains("+")) {
-                opeCustomer.setAreaCode(read.get(i).getAreaCode().replaceAll("\\+", "").trim());
+                opeCustomer.setMobileAreaCode(read.get(i).getAreaCode().replaceAll("\\+", "").trim());
             } else {
-                opeCustomer.setAreaCode(read.get(i).getAreaCode());
+                opeCustomer.setMobileAreaCode(read.get(i).getAreaCode());
             }
-            if (!ValidatorUtil.isNumber(opeCustomer.getAreaCode()) || !ValidatorUtil.isNumber(read.get(i).getPhone())) {
+            if (!ValidatorUtil.isNumber(opeCustomer.getMobileAreaCode()) || !ValidatorUtil.isNumber(read.get(i).getPhone())) {
                 result.setSuccess(Boolean.FALSE);
                 Map<String, String> map = new TreeMap<>();
                 map.put("msg", "The areaCode or phone should be numeric only.");

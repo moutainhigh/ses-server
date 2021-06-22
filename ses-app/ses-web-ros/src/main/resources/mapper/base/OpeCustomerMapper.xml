@@ -30,7 +30,7 @@
         <result column="contact_first_name" jdbcType="VARCHAR" property="contactFirstName"/>
         <result column="contact_last_name" jdbcType="VARCHAR" property="contactLastName"/>
         <result column="contact_full_name" jdbcType="VARCHAR" property="contactFullName"/>
-        <result column="area_code" jdbcType="VARCHAR" property="areaCode"/>
+        <result column="mobile_area_code" jdbcType="VARCHAR" property="mobileAreaCode"/>
         <result column="telephone" jdbcType="VARCHAR" property="telephone"/>
         <result column="email" jdbcType="VARCHAR" property="email"/>
         <result column="memo" jdbcType="VARCHAR" property="memo"/>
@@ -199,7 +199,7 @@
 
             <trim prefix="area_code = case" suffix="end,">
                 <foreach collection="list" index="index" item="item">
-                    when id = #{item.id,jdbcType=BIGINT} then #{item.areaCode,jdbcType=VARCHAR}
+                    when id = #{item.id,jdbcType=BIGINT} then #{item.mobileAreaCode,jdbcType=VARCHAR}
                 </foreach>
             </trim>
 
@@ -354,7 +354,7 @@
             #{item.address,jdbcType=VARCHAR},
             #{item.placeId,jdbcType=VARCHAR}, #{item.longitude,jdbcType=DECIMAL}, #{item.latitude,jdbcType=DECIMAL},
             #{item.contactFirstName,jdbcType=VARCHAR}, #{item.contactLastName,jdbcType=VARCHAR},
-            #{item.contactFullName,jdbcType=VARCHAR},#{item.areaCode,jdbcType=VARCHAR}, #{item.telephone,jdbcType=VARCHAR},
+            #{item.contactFullName,jdbcType=VARCHAR},#{item.mobileAreaCode,jdbcType=VARCHAR}, #{item.telephone,jdbcType=VARCHAR},
             #{item.email,jdbcType=VARCHAR},
             #{item.memo,jdbcType=VARCHAR}, #{item.scooterQuantity,jdbcType=INTEGER},
             #{item.assignationScooterQty,jdbcType=INTEGER},
@@ -390,7 +390,7 @@
         #{customerSource,jdbcType=VARCHAR}, #{customerType,jdbcType=VARCHAR}, #{industryType,jdbcType=VARCHAR},
         #{address,jdbcType=VARCHAR}, #{placeId,jdbcType=VARCHAR}, #{longitude,jdbcType=DECIMAL},
         #{latitude,jdbcType=DECIMAL}, #{contactFirstName,jdbcType=VARCHAR}, #{contactLastName,jdbcType=VARCHAR},
-        #{contactFullName,jdbcType=VARCHAR},#{areaCode,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+        #{contactFullName,jdbcType=VARCHAR},#{mobileAreaCode,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
         #{memo,jdbcType=VARCHAR}, #{scooterQuantity,jdbcType=INTEGER}, #{assignationScooterQty,jdbcType=INTEGER},
         #{certificateType,jdbcType=VARCHAR}, #{certificatePositiveAnnex,jdbcType=VARCHAR},
         #{certificateNegativeAnnex,jdbcType=VARCHAR}, #{businessLicenseNum,jdbcType=VARCHAR},
@@ -426,7 +426,7 @@
         contact_first_name = #{contactFirstName,jdbcType=VARCHAR},
         contact_last_name = #{contactLastName,jdbcType=VARCHAR},
         contact_full_name = #{contactFullName,jdbcType=VARCHAR},
-        area_code = #{areaCode,jdbcType=VARCHAR},
+        area_code = #{mobileAreaCode,jdbcType=VARCHAR},
         telephone = #{telephone,jdbcType=VARCHAR},
         email = #{email,jdbcType=VARCHAR},
         memo = #{memo,jdbcType=VARCHAR},
@@ -534,8 +534,8 @@
             <if test="contactFullName != null">
                 contact_full_name,
             </if>
-            <if test="areaCode != null">
-                area_code,
+            <if test="mobileAreaCode != null">
+                mobile_area_code,
             </if>
             <if test="telephone != null">
                 telephone,
@@ -690,8 +690,8 @@
             <if test="contactFullName != null">
                 #{contactFullName,jdbcType=VARCHAR},
             </if>
-            <if test="areaCode != null">
-                #{areaCode,jdbcType=VARCHAR},
+            <if test="mobileAreaCode != null">
+                #{mobileAreaCode,jdbcType=VARCHAR},
             </if>
             <if test="telephone != null">
                 #{telephone,jdbcType=VARCHAR},
@@ -846,7 +846,7 @@
             <if test="contactFullName != null">
                 contact_full_name = #{contactFullName,jdbcType=VARCHAR},
             </if>
-            <if test="areaCode != null">
+            <if test="mobileAreaCode != null">
                 area_code = #{telephone,jdbcType=VARCHAR},
             </if>
             <if test="telephone != null">

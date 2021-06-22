@@ -202,9 +202,9 @@ public class OpeCustomer implements Serializable {
     @ApiModelProperty(value = "联系人全名")
     private String contactFullName;
 
-    @TableField(value = "area_code")
+    @TableField(value = "mobile_area_code")
     @ApiModelProperty(value = "区号")
-    private String areaCode;
+    private String mobileAreaCode;
 
     /**
      * 电话
