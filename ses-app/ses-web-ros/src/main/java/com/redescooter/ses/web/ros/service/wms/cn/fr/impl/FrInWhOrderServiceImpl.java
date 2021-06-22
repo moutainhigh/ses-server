@@ -140,6 +140,29 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
+        // 校验数据重复
+        boolean flag = false;
+        for (FrInWhOrderAddScooterBEnter o : list) {
+            LambdaQueryWrapper<OpeInWhouseScooterB> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(OpeInWhouseScooterB::getDr, Constant.DR_FALSE);
+            lqw.eq(OpeInWhouseScooterB::getRsn, o.getRsn())
+               .or().eq(OpeInWhouseScooterB::getTabletSn, o.getTabletSn())
+               .or().eq(OpeInWhouseScooterB::getBbi, o.getBbi())
+               .or().eq(OpeInWhouseScooterB::getController, o.getController())
+               .or().eq(OpeInWhouseScooterB::getMotor, o.getMotor())
+               .or().eq(OpeInWhouseScooterB::getImei, o.getImei())
+               .or().eq(OpeInWhouseScooterB::getBluetoothMacAddress, o.getBluetoothMacAddress());
+            lqw.last("limit 1");
+            OpeInWhouseScooterB scooterB = opeInWhouseScooterBService.getOne(lqw);
+            if (null != scooterB) {
+                flag = true;
+                break;
+            }
+        }
+        if (flag) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+
         // 新增入库单主表
         OpeInWhouseOrder inWhOrder = new OpeInWhouseOrder();
         inWhOrder.setId(idAppService.getId(SequenceName.OPE_IN_WHOUSE_ORDER));
