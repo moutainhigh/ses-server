@@ -276,7 +276,6 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         saveVo.setDef2(enter.getCityName());
         saveVo.setDef3(enter.getDistrustName());
         saveVo.setMobileAreaCode(enter.getAreaCode());
-        opeCustomerMapper.insert(saveVo);
         // 新增潜在客户的时候 给客户生成一个询价单
         //creatInquiry(saveVo);
         BaseUserResult userResult = null;
