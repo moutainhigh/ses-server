@@ -167,6 +167,14 @@ public class HubConUserProfile implements Serializable {
     @ApiModelProperty(value="证件正面图片")
     private String certificatePositiveAnnex;
 
+    @TableField(value = "invoice")
+    @ApiModelProperty(value = "发票")
+    private String invoice;
+
+    @TableField(value = "contract")
+    @ApiModelProperty(value = "合同")
+    private String contract;
+
     /**
      * 角色 DRIVER-司机；MANAGE-管理者
      */

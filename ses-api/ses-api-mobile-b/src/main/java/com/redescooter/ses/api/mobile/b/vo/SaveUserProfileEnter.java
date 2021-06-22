@@ -72,6 +72,12 @@ public class SaveUserProfileEnter extends GeneralEnter {
     @ApiModelProperty(value = "证件正面图片")
     private String certificatePositiveAnnex;
 
+    @ApiModelProperty(value = "发票附件")
+    private String invoiceAnnex;
+
+    @ApiModelProperty(value = "合同附件")
+    private String contractAnnex;
+
     @ApiModelProperty(value = "出生地")
     private String placeBirth;
 

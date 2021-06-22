@@ -78,6 +78,8 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             BeanUtils.copyProperties(enter, userProfile);
             userProfile.setId(idAppService.getId(SequenceName.CON_USER_PROFILE));
             userProfile.setDr(Constant.DR_FALSE);
+            userProfile.setInvoice(enter.getInvoiceAnnex());
+            userProfile.setContract(enter.getContractAnnex());
             userProfile.setAddress(enter.getAddress());
             userProfile.setTenantId(enter.getTenantId());
             userProfile.setJoinDate(new Date());
@@ -127,6 +129,12 @@ public class UserProfileProServiceImpl implements UserProfileProService {
             }
             if (StringUtils.isNotBlank(enter.getAddress())) {
                 model.setAddress(enter.getAddress());
+            }
+            if (StringUtils.isNotBlank(enter.getInvoiceAnnex())) {
+                model.setInvoice(enter.getInvoiceAnnex());
+            }
+            if (StringUtils.isNotBlank(enter.getContractAnnex())) {
+                model.setContract(enter.getContractAnnex());
             }
             model.setUpdatedBy(enter.getUserId());
             model.setUpdatedTime(new Date());

@@ -4,7 +4,6 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.country.CountryCodeEnum;
-import com.redescooter.ses.api.common.enums.customer.CustomerTypeEnum;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.hub.exception.SeSHubException;
 import com.redescooter.ses.api.hub.service.customer.ConsumerUserProfileService;
@@ -13,7 +12,6 @@ import com.redescooter.ses.api.mobile.c.service.UserProfileProService;
 import com.redescooter.ses.service.hub.exception.ExceptionCodeEnums;
 import com.redescooter.ses.service.hub.source.consumer.dao.HubConUserProfileMapper;
 import com.redescooter.ses.service.hub.source.consumer.dm.HubConUserProfile;
-import com.redescooter.ses.service.hub.source.operation.dm.OpeCustomer;
 import com.redescooter.ses.service.hub.source.operation.service.base.OpeCustomerService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -74,21 +72,8 @@ public class HubConsumerUserProfileServiceImpl implements ConsumerUserProfileSer
             }
         }
 
-        // 查询客户信息
-        QueryWrapper<OpeCustomer> lqw = new QueryWrapper();
-        lqw.eq(OpeCustomer.COL_DR, Constant.DR_FALSE);
-        lqw.eq(OpeCustomer.COL_EMAIL, profile.getEmail1());
-        lqw.eq(OpeCustomer.COL_CUSTOMER_TYPE, CustomerTypeEnum.PERSONAL.getValue());
-        lqw.eq(OpeCustomer.COL_TENANT_ID, 0);
-        lqw.last("limit 1");
-        OpeCustomer customer = opeCustomerService.getOne(lqw);
-        if (customer == null) {
-            throw new SeSHubException(ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.CUSTOMER_IS_NOT_EXIST.getMessage());
-        }
-
-        result.setInvoiceNum(customer.getInvoiceNum());
-        result.setInvoiceAnnex(customer.getInvoiceAnnex());
-        result.setContractAnnex(customer.getContractAnnex());
+        result.setInvoiceAnnex(profile.getInvoice());
+        result.setContractAnnex(profile.getContract());
         return result;
     }
 
