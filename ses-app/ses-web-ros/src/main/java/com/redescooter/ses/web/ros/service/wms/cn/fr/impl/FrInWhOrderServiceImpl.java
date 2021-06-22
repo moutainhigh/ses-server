@@ -147,7 +147,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
                 FrInWhOrderAddScooterBEnter first = list.get(i);
                 FrInWhOrderAddScooterBEnter second = list.get(j);
 
-                if (first.getRsn().equals(second.getRsn())) {
+                if (first.getSn().equals(second.getSn())) {
                     flag = true;
                     break outerLoop;
                 }
@@ -185,7 +185,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
         for (FrInWhOrderAddScooterBEnter o : list) {
             LambdaQueryWrapper<OpeInWhouseScooterB> lqw = new LambdaQueryWrapper<>();
             lqw.eq(OpeInWhouseScooterB::getDr, Constant.DR_FALSE);
-            lqw.eq(OpeInWhouseScooterB::getRsn, o.getRsn());
+            lqw.eq(OpeInWhouseScooterB::getRsn, o.getSn());
             lqw.last("limit 1");
             OpeInWhouseScooterB scooterB = opeInWhouseScooterBService.getOne(lqw);
             if (null != scooterB) {
@@ -316,7 +316,7 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             scooterB.setColorId(color.getId());
             // 因为每一辆车只对应一个rsn,所以入库数量只能是1
             scooterB.setInWhQty(1);
-            scooterB.setRsn(item.getRsn().replaceAll(" ", ""));
+            scooterB.setRsn(item.getSn().replaceAll(" ", ""));
             scooterB.setTabletSn(item.getTabletSn().replaceAll(" ", ""));
             scooterB.setBbi(item.getBbi().replaceAll(" ", ""));
             scooterB.setController(item.getController().replaceAll(" ", ""));

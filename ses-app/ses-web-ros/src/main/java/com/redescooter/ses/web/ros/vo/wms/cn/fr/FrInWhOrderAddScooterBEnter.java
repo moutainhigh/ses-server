@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class FrInWhOrderAddScooterBEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "整车序列号", required = true)
-    private String rsn;
+    private String sn;
 
     @ApiModelProperty(value = "蓝牙地址", required = true)
     private String bluetoothMacAddress;
