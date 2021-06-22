@@ -151,4 +151,6 @@ public interface AccountBaseService {
      * @return
      */
     BooleanResult checkOpenAccount(CheckOpenAccountEnter enter);
+
+    BooleanResult checkPassword(String email);
 }

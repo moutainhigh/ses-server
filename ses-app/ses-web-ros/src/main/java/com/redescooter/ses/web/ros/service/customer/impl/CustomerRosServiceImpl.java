@@ -268,17 +268,36 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
         saveVo.setMemo(enter.getRemark());
         saveVo.setAssignationScooterQty(0);
-        saveVo.setAccountFlag(CustomerAccountFlagEnum.NORMAL.getValue());
+        saveVo.setAccountFlag(CustomerAccountFlagEnum.INACTIVATED.getValue());
         saveVo.setCreatedBy(enter.getUserId());
         saveVo.setCreatedTime(new Date());
         saveVo.setUpdatedBy(enter.getUserId());
         saveVo.setUpdatedTime(new Date());
         saveVo.setDef2(enter.getCityName());
         saveVo.setDef3(enter.getDistrustName());
-        saveVo.setAreaCode(enter.getAreaCode());
+        saveVo.setMobileAreaCode(enter.getAreaCode());
         opeCustomerMapper.insert(saveVo);
         // 新增潜在客户的时候 给客户生成一个询价单
         //creatInquiry(saveVo);
+        BaseUserResult userResult = null;
+        // 开始创建客户
+        BaseCustomerResult baseCustomer = new BaseCustomerResult();
+        BeanUtils.copyProperties(saveVo, baseCustomer);
+
+        DateTimeParmEnter<BaseCustomerResult> parmEnter = new DateTimeParmEnter();
+        BeanUtils.copyProperties(enter, parmEnter);
+        parmEnter.setStartDateTime(new Date());
+        parmEnter.setEndDateTime(new Date());
+        parmEnter.setT(baseCustomer);
+
+        // 开通账号,操作pla_user
+        userResult = accountBaseService.open(parmEnter);
+        saveVo.setTenantId(userResult.getTenantId());
+        opeCustomerMapper.insert(saveVo);
+        //设置邮箱发送有效时间
+        String key = new StringBuffer().append("send::").append(saveVo.getEmail()).toString();
+        jedisCluster.set(key, DateUtil.getDate());
+        jedisCluster.expire(key, new Long(RedisExpireEnum.MINUTES_3.getSeconds()).intValue());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -538,9 +557,15 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @Override
     public DetailsCustomerResult details(IdEnter enter) {
+
         OpeCustomer opeCustomer = opeCustomerMapper.selectById(enter.getId());
         if (StringManaConstant.entityIsNull(opeCustomer)) {
             throw new SesWebRosException(ExceptionCodeEnums.USER_NOT_EXIST.getCode(), ExceptionCodeEnums.USER_NOT_EXIST.getMessage());
+        }
+        BooleanResult booleanResult1 = checkPassword(opeCustomer.getEmail());
+        if (booleanResult1.isSuccess()){
+            opeCustomer.setAccountFlag("2");
+            opeCustomerMapper.updateById(opeCustomer);
         }
         DetailsCustomerResult result = new DetailsCustomerResult();
         BeanUtils.copyProperties(opeCustomer, result);
@@ -594,6 +619,10 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         return result;
     }
 
+
+    public BooleanResult checkPassword(String email){
+        return accountBaseService.checkPassword(email);
+    }
 
     private OpeSysUserProfile getOpeSysUserProfile(Long userId) {
         QueryWrapper<OpeSysUserProfile> updated = new QueryWrapper<>();

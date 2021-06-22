@@ -964,6 +964,22 @@ public class AccountBaseServiceImpl implements AccountBaseService {
         return BooleanResult.builder().success(plaUser.getActivationTime() == null ? Boolean.FALSE : Boolean.TRUE).build();
     }
 
+    @Override
+    public BooleanResult checkPassword(String email) {
+        LambdaQueryWrapper<PlaUserPassword> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(PlaUserPassword::getDr, Constant.DR_FALSE);
+        queryWrapper.eq(PlaUserPassword::getLoginName,email);
+        queryWrapper.last("limit 1");
+        PlaUserPassword password = userPasswordMapper.selectOne(queryWrapper);
+        if (password == null){
+            return BooleanResult.builder().success(Boolean.FALSE).build();
+        }
+        if (password.getPassword() == null){
+            return BooleanResult.builder().success(Boolean.FALSE).build();
+        }
+        return BooleanResult.builder().success(Boolean.TRUE).build();
+    }
+
     private Long saveUserSingle(DateTimeParmEnter<BaseCustomerResult> enter, Long tenantId) {
         Integer accountType =
                 AccountTypeUtils.getAccountType(enter.getT().getCustomerType(), enter.getT().getIndustryType());
