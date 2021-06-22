@@ -140,21 +140,115 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
         }
 
-        // 校验数据重复
         boolean flag = false;
+        // 校验入参给的码多个时不能一样
+        outerLoop : for (int i = 0; i < list.size(); i++) {
+            for (int j = i + 1; j < list.size(); j++) {
+                FrInWhOrderAddScooterBEnter first = list.get(i);
+                FrInWhOrderAddScooterBEnter second = list.get(j);
+
+                if (first.getRsn().equals(second.getRsn())) {
+                    flag = true;
+                    break outerLoop;
+                }
+                if (first.getTabletSn().equals(second.getTabletSn())) {
+                    flag = true;
+                    break outerLoop;
+                }
+                if (first.getBbi().equals(second.getBbi())) {
+                    flag = true;
+                    break outerLoop;
+                }
+                if (first.getController().equals(second.getController())) {
+                    flag = true;
+                    break outerLoop;
+                }
+                if (first.getMotor().equals(second.getMotor())) {
+                    flag = true;
+                    break outerLoop;
+                }
+                if (first.getImei().equals(second.getImei())) {
+                    flag = true;
+                    break outerLoop;
+                }
+                if (first.getBluetoothMacAddress().equals(second.getBluetoothMacAddress())) {
+                    flag = true;
+                    break outerLoop;
+                }
+            }
+        }
+        if (flag) {
+            throw new SesWebRosException(ExceptionCodeEnums.DATA_EXCEPTION.getCode(), ExceptionCodeEnums.DATA_EXCEPTION.getMessage());
+        }
+
+        // 校验数据重复
         for (FrInWhOrderAddScooterBEnter o : list) {
             LambdaQueryWrapper<OpeInWhouseScooterB> lqw = new LambdaQueryWrapper<>();
             lqw.eq(OpeInWhouseScooterB::getDr, Constant.DR_FALSE);
-            lqw.eq(OpeInWhouseScooterB::getRsn, o.getRsn())
-               .or().eq(OpeInWhouseScooterB::getTabletSn, o.getTabletSn())
-               .or().eq(OpeInWhouseScooterB::getBbi, o.getBbi())
-               .or().eq(OpeInWhouseScooterB::getController, o.getController())
-               .or().eq(OpeInWhouseScooterB::getMotor, o.getMotor())
-               .or().eq(OpeInWhouseScooterB::getImei, o.getImei())
-               .or().eq(OpeInWhouseScooterB::getBluetoothMacAddress, o.getBluetoothMacAddress());
+            lqw.eq(OpeInWhouseScooterB::getRsn, o.getRsn());
             lqw.last("limit 1");
             OpeInWhouseScooterB scooterB = opeInWhouseScooterBService.getOne(lqw);
             if (null != scooterB) {
+                flag = true;
+                break;
+            }
+
+            LambdaQueryWrapper<OpeInWhouseScooterB> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(OpeInWhouseScooterB::getDr, Constant.DR_FALSE);
+            wrapper.eq(OpeInWhouseScooterB::getTabletSn, o.getTabletSn());
+            wrapper.last("limit 1");
+            OpeInWhouseScooterB one = opeInWhouseScooterBService.getOne(wrapper);
+            if (null != one) {
+                flag = true;
+                break;
+            }
+
+            LambdaQueryWrapper<OpeInWhouseScooterB> qw = new LambdaQueryWrapper<>();
+            qw.eq(OpeInWhouseScooterB::getDr, Constant.DR_FALSE);
+            qw.eq(OpeInWhouseScooterB::getBbi, o.getBbi());
+            qw.last("limit 1");
+            OpeInWhouseScooterB inWhouseScooterB = opeInWhouseScooterBService.getOne(qw);
+            if (null != inWhouseScooterB) {
+                flag = true;
+                break;
+            }
+
+            LambdaQueryWrapper<OpeInWhouseScooterB> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(OpeInWhouseScooterB::getDr, Constant.DR_FALSE);
+            queryWrapper.eq(OpeInWhouseScooterB::getController, o.getController());
+            queryWrapper.last("limit 1");
+            OpeInWhouseScooterB opeInWhouseScooterB = opeInWhouseScooterBService.getOne(queryWrapper);
+            if (null != opeInWhouseScooterB) {
+                flag = true;
+                break;
+            }
+
+            LambdaQueryWrapper<OpeInWhouseScooterB> motorWrapper = new LambdaQueryWrapper<>();
+            motorWrapper.eq(OpeInWhouseScooterB::getDr, Constant.DR_FALSE);
+            motorWrapper.eq(OpeInWhouseScooterB::getMotor, o.getMotor());
+            motorWrapper.last("limit 1");
+            OpeInWhouseScooterB instance = opeInWhouseScooterBService.getOne(motorWrapper);
+            if (null != instance) {
+                flag = true;
+                break;
+            }
+
+            LambdaQueryWrapper<OpeInWhouseScooterB> imeiWrapper = new LambdaQueryWrapper<>();
+            imeiWrapper.eq(OpeInWhouseScooterB::getDr, Constant.DR_FALSE);
+            imeiWrapper.eq(OpeInWhouseScooterB::getImei, o.getImei());
+            imeiWrapper.last("limit 1");
+            OpeInWhouseScooterB imeiModel = opeInWhouseScooterBService.getOne(imeiWrapper);
+            if (null != imeiModel) {
+                flag = true;
+                break;
+            }
+
+            LambdaQueryWrapper<OpeInWhouseScooterB> btWrapper = new LambdaQueryWrapper<>();
+            btWrapper.eq(OpeInWhouseScooterB::getDr, Constant.DR_FALSE);
+            btWrapper.eq(OpeInWhouseScooterB::getBluetoothMacAddress, o.getBluetoothMacAddress());
+            btWrapper.last("limit 1");
+            OpeInWhouseScooterB btModel = opeInWhouseScooterBService.getOne(btWrapper);
+            if (null != btModel) {
                 flag = true;
                 break;
             }

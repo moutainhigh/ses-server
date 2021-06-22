@@ -54,4 +54,16 @@ public class InWhouseDetailScooterResult {
     @ApiModelProperty(value = "仪表序列号")
     private String tabletSn;
 
+    @ApiModelProperty(value = "bbi")
+    private String bbi;
+
+    @ApiModelProperty(value = "controller")
+    private String controller;
+
+    @ApiModelProperty(value = "motor")
+    private String motor;
+
+    @ApiModelProperty(value = "imei")
+    private String imei;
+
 }
