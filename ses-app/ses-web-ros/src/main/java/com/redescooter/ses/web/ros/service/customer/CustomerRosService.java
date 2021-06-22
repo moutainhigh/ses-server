@@ -6,6 +6,7 @@ import com.redescooter.ses.web.ros.vo.account.AccountNodeResult;
 import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
 import com.redescooter.ses.web.ros.vo.account.RenewAccountEnter;
 import com.redescooter.ses.web.ros.vo.account.VerificationCodeResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.customer.AccountListEnter;
 import com.redescooter.ses.web.ros.vo.customer.AccountListResult;
 import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
@@ -201,6 +202,6 @@ public interface CustomerRosService {
      * @param
      * @return
      */
-    Boolean importCustomer(ImportParameterEnter enter) throws IOException;
+    ImportExcelPartsResult importCustomer(ImportParameterEnter enter) throws IOException;
 
 }

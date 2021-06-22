@@ -10,6 +10,7 @@ import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
 import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
 import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
 import com.redescooter.ses.web.ros.vo.customer.EditCustomerEnter;
@@ -108,7 +109,7 @@ public class CustomerController {
 
     @PostMapping(value = "/importCustomer")
     @ApiOperation(value = "导入客户", response = BooleanResult.class)
-    public Response<Boolean> importCustomer(@ModelAttribute @ApiParam("请求参数") ImportParameterEnter enter) throws IOException {
+    public Response<ImportExcelPartsResult> importCustomer(@ModelAttribute @ApiParam("请求参数") ImportParameterEnter enter) throws IOException {
         return new Response<>(customerRosService.importCustomer(enter));
     }
 
