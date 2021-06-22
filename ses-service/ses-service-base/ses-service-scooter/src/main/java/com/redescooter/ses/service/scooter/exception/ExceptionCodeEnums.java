@@ -96,10 +96,11 @@ public enum ExceptionCodeEnums {
 
     VIN_NOT_MATCH(10044, "vin不匹配"),
 
-    CANNOT_SET_MODEL(10045, "不能再次设置软体")
+    CANNOT_SET_MODEL(10045, "不能再次设置软体"),
 
+    DATA_DECRYPT_WRONG(10046, "数据解密失败"),
 
-
+    DATA_ENCRYPT_WRONG(10047, "数据加密失败")
 
 
 

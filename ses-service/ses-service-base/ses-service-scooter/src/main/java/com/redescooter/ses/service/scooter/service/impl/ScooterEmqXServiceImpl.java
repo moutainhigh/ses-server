@@ -30,6 +30,7 @@ import com.redescooter.ses.api.scooter.vo.emqx.ScooterNavigationPublishDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterTabletUpdatePublishDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.SetScooterModelPublishDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.SyncOrderQuantityPublishDTO;
+import com.redescooter.ses.service.scooter.config.RequestKeyProperties;
 import com.redescooter.ses.service.scooter.config.emqx.MqttClientUtil;
 import com.redescooter.ses.service.scooter.constant.SequenceName;
 import com.redescooter.ses.service.scooter.dao.ScooterEcuMapper;
@@ -48,6 +49,7 @@ import com.redescooter.ses.service.scooter.service.base.ScoScooterStatusService;
 import com.redescooter.ses.service.scooter.service.base.ScoScooterUpdateRecordService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
+import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.map.MapUtil;
 import com.redescooter.ses.tool.utils.thread.ThreadPoolExecutorUtil;
 import io.seata.spring.annotation.GlobalTransactional;
@@ -114,6 +116,9 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
 
     @Autowired
     private ScoScooterStatusService scoScooterStatusService;
+
+    @Autowired
+    private RequestKeyProperties requestKeyProperties;
 
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
@@ -211,9 +216,16 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
                  * 消息通知下发,消息下发时需要根据车辆平板序列号(tabletSn)准确下发到指定车辆平板上面去
                  * Topic：scooter-[车辆平板序列号]/device-lock
                  */
+                // 数据下发 加密
+                String encryptData;
+                try {
+                    encryptData = RsaUtils.encrypt(JSONObject.toJSONString(publishDTO), requestKeyProperties.getPublicKey());
+                } catch (Exception e) {
+                    throw new ScooterException(ExceptionCodeEnums.DATA_ENCRYPT_WRONG.getCode(), ExceptionCodeEnums.DATA_ENCRYPT_WRONG.getMessage());
+                }
                 ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
                     mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_LOCK_TOPIC, scooterResult.getTabletSn()),
-                            JSONObject.toJSONString(publishDTO));
+                            encryptData);
                 });
             }
         } catch (Exception e) {
@@ -326,9 +338,16 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
             /**
              * 消息通知下发,通知平板端进行导航操作
              */
+            // 数据下发 加密
+            String encryptData;
+            try {
+                encryptData = RsaUtils.encrypt(JSONObject.toJSONString(navigationPublish), requestKeyProperties.getPublicKey());
+            } catch (Exception e) {
+                throw new ScooterException(ExceptionCodeEnums.DATA_ENCRYPT_WRONG.getCode(), ExceptionCodeEnums.DATA_ENCRYPT_WRONG.getMessage());
+            }
             ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
                 mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_NAVIGATION_TOPIC, scooterResult.getTabletSn()),
-                        JSONObject.toJSONString(navigationPublish));
+                        encryptData);
             });
         }
 
@@ -383,8 +402,16 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
                 tabletUpdatePublish.setUpdateCode(UUID.randomUUID().toString().replaceAll("-", ""));
                 log.info("消息通知下发,通知平板端进行升级操作 sn: " + sn);
                 log.info("下发的消息为:[{}]", tabletUpdatePublish);
+
+                // 数据下发 加密
+                String encryptData;
+                try {
+                    encryptData = RsaUtils.encrypt(JSONObject.toJSONString(tabletUpdatePublish), requestKeyProperties.getPublicKey());
+                } catch (Exception e) {
+                    throw new ScooterException(ExceptionCodeEnums.DATA_ENCRYPT_WRONG.getCode(), ExceptionCodeEnums.DATA_ENCRYPT_WRONG.getMessage());
+                }
                 mqttClientUtil.publish(String.format(EmqXTopicConstant.SCOOTER_TABLET_UPDATE_TOPIC, sn),
-                        JSONObject.toJSONString(tabletUpdatePublish));
+                        encryptData);
 
                 // 新增平板升级更新记录表
                 ScoScooterUpdateRecord record = new ScoScooterUpdateRecord();
@@ -409,9 +436,17 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
         /**
          * 消息通知下发,通知平板端进行车型设置操作
          */
+        // 数据下发 加密
+        String encryptData;
+        try {
+            encryptData = RsaUtils.encrypt(JSONObject.toJSONString(publishDTO), requestKeyProperties.getPublicKey());
+        } catch (Exception e) {
+            throw new ScooterException(ExceptionCodeEnums.DATA_ENCRYPT_WRONG.getCode(), ExceptionCodeEnums.DATA_ENCRYPT_WRONG.getMessage());
+        }
+
         ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
             mqttClientUtil.publish(String.format(EmqXTopicConstant.SET_SCOOTER_MODEL_TOPIC, publishDTO.getTabletSn()),
-                    JSONObject.toJSONString(publishDTO));
+                    encryptData);
         });
 
         return new GeneralResult();
@@ -422,9 +457,17 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
         /**
          * 消息通知下发,将当前配送中、待配送的订单数量同步给车载平板
          */
+        // 数据下发 加密
+        String encryptData;
+        try {
+            encryptData = RsaUtils.encrypt(JSONObject.toJSONString(publishDTO), requestKeyProperties.getPublicKey());
+        } catch (Exception e) {
+            throw new ScooterException(ExceptionCodeEnums.DATA_ENCRYPT_WRONG.getCode(), ExceptionCodeEnums.DATA_ENCRYPT_WRONG.getMessage());
+        }
+
         ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
             mqttClientUtil.publish(String.format(EmqXTopicConstant.SYNC_ORDER_QUANTITY_TOPIC, publishDTO.getTabletSn()),
-                    JSONObject.toJSONString(publishDTO));
+                    encryptData);
         });
 
         return new GeneralResult();
