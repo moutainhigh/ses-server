@@ -1427,9 +1427,9 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             }
         }
         if (Strings.isNotBlank(enter.getTelephone())) {
-            if (NumberUtil.ltEightOrGtTwenty(enter.getTelephone().length())) {
+          //  if (NumberUtil.ltEightOrGtTwenty(enter.getTelephone().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
-            }
+//            }
         }
         if (StringUtils.isNotBlank(enter.getEmail())) {
             String email = enter.getEmail();
