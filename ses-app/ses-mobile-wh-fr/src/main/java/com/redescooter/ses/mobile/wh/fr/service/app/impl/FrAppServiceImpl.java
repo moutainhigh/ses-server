@@ -46,6 +46,8 @@ import com.redescooter.ses.mobile.wh.fr.enums.StatusEnum;
 import com.redescooter.ses.mobile.wh.fr.exception.ExceptionCodeEnums;
 import com.redescooter.ses.mobile.wh.fr.exception.SesMobileFrWhException;
 import com.redescooter.ses.mobile.wh.fr.service.app.FrAppService;
+import com.redescooter.ses.mobile.wh.fr.service.base.OpeCodebaseRsnService;
+import com.redescooter.ses.mobile.wh.fr.service.base.OpeCodebaseVinService;
 import com.redescooter.ses.mobile.wh.fr.service.base.OpeColorService;
 import com.redescooter.ses.mobile.wh.fr.service.base.OpeCustomerInquiryService;
 import com.redescooter.ses.mobile.wh.fr.service.base.OpeInWhouseScooterBService;
@@ -124,6 +126,12 @@ public class FrAppServiceImpl implements FrAppService {
 
     @Autowired
     private OpeInWhouseScooterBService opeInWhouseScooterBService;
+
+    @Autowired
+    private OpeCodebaseRsnService opeCodebaseRsnService;
+
+    @Autowired
+    private OpeCodebaseVinService opeCodebaseVinService;
 
     @Value("${Request.privateKey}")
     private String privateKey;
@@ -359,7 +367,33 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult inputScooter(InputScooterEnter enter) {
-        return scooterNodeService.inputScooter(enter);
+        // 校验码库
+        /*LambdaQueryWrapper<OpeCodebaseRsn> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
+        qw.eq(OpeCodebaseRsn::getStatus, 1);
+        qw.eq(OpeCodebaseRsn::getRsn, enter.getRsn());
+        int count = opeCodebaseRsnService.count(qw);
+        if (count <= 0) {
+            throw new SesMobileFrWhException(ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getMessage());
+        }*/
+
+        // 录入车辆
+        scooterNodeService.inputScooter(enter);
+
+        // 修改码库此rsn为已用
+        /*LambdaQueryWrapper<OpeCodebaseRsn> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
+        lqw.eq(OpeCodebaseRsn::getStatus, 1);
+        lqw.eq(OpeCodebaseRsn::getRsn, enter.getRsn());
+        lqw.last("limit 1");
+        OpeCodebaseRsn model = opeCodebaseRsnService.getOne(lqw);
+        if (null != model) {
+            model.setStatus(2);
+            model.setUpdatedBy(enter.getUserId());
+            model.setUpdatedTime(new Date());
+            opeCodebaseRsnService.updateById(model);
+        }*/
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**
@@ -386,7 +420,40 @@ public class FrAppServiceImpl implements FrAppService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult bindVin(BindVinEnter enter) {
-        return scooterNodeService.bindVin(enter);
+        /*if (enter.getVinCode().length() != 17) {
+            throw new SesMobileFrWhException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+        }
+        if (!enter.getVinCode().startsWith("VXSR2A")) {
+            throw new SesMobileFrWhException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
+        }
+
+        // 校验码库
+        LambdaQueryWrapper<OpeCodebaseVin> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeCodebaseVin::getDr, Constant.DR_FALSE);
+        qw.eq(OpeCodebaseVin::getStatus, 1);
+        qw.eq(OpeCodebaseVin::getVin, enter.getVinCode());
+        int count = opeCodebaseVinService.count(qw);
+        if (count <= 0) {
+            throw new SesMobileFrWhException(ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getMessage());
+        }*/
+
+        // 录入vin
+        scooterNodeService.bindVin(enter);
+
+        // 修改码库vin为已用
+        /*LambdaQueryWrapper<OpeCodebaseVin> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(OpeCodebaseVin::getDr, Constant.DR_FALSE);
+        lqw.eq(OpeCodebaseVin::getStatus, 1);
+        lqw.eq(OpeCodebaseVin::getVin, enter.getVinCode());
+        lqw.last("limit 1");
+        OpeCodebaseVin model = opeCodebaseVinService.getOne(lqw);
+        if (null != model) {
+            model.setStatus(2);
+            model.setUpdatedBy(enter.getUserId());
+            model.setUpdatedTime(new Date());
+            opeCodebaseVinService.updateById(model);
+        }*/
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**

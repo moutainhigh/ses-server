@@ -233,12 +233,6 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
             throw new ScooterException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
         }*/
 
-        // 校验码库
-        /*boolean flag = codebaseService.checkRsn(rsn);
-        if (flag) {
-            throw new ScooterException(ExceptionCodeEnums.CODEBASE_NOT_EXIST.getCode(), ExceptionCodeEnums.CODEBASE_NOT_EXIST.getMessage());
-        }*/
-
         // 先查看车辆在node表是否存在数据,不存在就新建
         LambdaQueryWrapper<ScoScooterNode> qw = new LambdaQueryWrapper<>();
         qw.eq(ScoScooterNode::getDr, Constant.DR_FALSE);
@@ -284,9 +278,6 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
         wrapper.eq(ScoScooterNode::getDr, Constant.DR_FALSE);
         wrapper.eq(ScoScooterNode::getScooterId, scooterId);
         scoScooterNodeService.update(node, wrapper);
-
-        // 修改码库此rsn为已用
-        //codebaseService.updateRsn(rsn, enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -460,12 +451,6 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
     public GeneralResult bindVin(BindVinEnter enter) {
         Long scooterId = getScooterId(enter.getRsn());
         String vinCode = enter.getVinCode().trim();
-        /*if (vinCode.length() != 17) {
-            throw new ScooterException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
-        }
-        if (!vinCode.startsWith("VXSR2A")) {
-            throw new ScooterException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
-        }*/
 
         ScoScooter scoScooter = scoScooterService.getById(scooterId);
         if (null == scoScooter) {
@@ -493,12 +478,6 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
             throw new ScooterException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
         }*/
 
-        // 校验码库
-        /*boolean flag = codebaseService.checkVin(vinCode);
-        if (flag) {
-            throw new ScooterException(ExceptionCodeEnums.CODEBASE_NOT_EXIST.getCode(), ExceptionCodeEnums.CODEBASE_NOT_EXIST.getMessage());
-        }*/
-
         // 修改主表
         ScoScooter model = new ScoScooter();
         model.setId(scooterId);
@@ -518,9 +497,6 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
         wrapper.eq(ScoScooterNode::getDr, Constant.DR_FALSE);
         wrapper.eq(ScoScooterNode::getScooterId, scooterId);
         scoScooterNodeService.update(node, wrapper);
-
-        // 修改码库此vin为已用
-        //codebaseService.updateVin(vinCode, enter.getUserId());
 
         // sim卡信息录入
         ScoScooter scooter = scoScooterService.getById(scooterId);
