@@ -104,6 +104,34 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
             return PageResult.createZeroRowResult(enter);
         }
         List<InquiryListResult> list = scoScooterNodeMapper.getList(enter, enter.getUserId());
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (InquiryListResult item : list) {
+
+                // 车辆型号
+                if ("2".equals(item.getModel())) {
+                    item.setScooterName("E50");
+                } else if ("3".equals(item.getModel())) {
+                    item.setScooterName("E100");
+                }
+
+                // 颜色
+                ColorDTO color = colorService.getColorInfoById(item.getColorId());
+                if (null != color) {
+                    item.setColorName(color.getColorName());
+                }
+
+                // 电池数量
+                String battery = item.getBattery();
+                if (StringUtils.isBlank(battery)) {
+                    item.setBatteryNum(0);
+                } else {
+                    String[] split = battery.split(",");
+                    List<String> batteryList = new ArrayList<>(Arrays.asList(split));
+                    batteryList.removeAll(Collections.singleton(null));
+                    item.setBatteryNum(batteryList.size());
+                }
+            }
+        }
         return PageResult.create(enter, count, list);
     }
 
