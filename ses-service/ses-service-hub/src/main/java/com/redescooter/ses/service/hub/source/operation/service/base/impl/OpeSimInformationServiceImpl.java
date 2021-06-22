@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.hub.source.operation.service.base.impl;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.api.hub.vo.operation.OpeSimInformation;
 import com.redescooter.ses.service.hub.source.operation.dao.base.OpeSimInformationMapper;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
  * @since 2021-06-21
  */
 @Service
+@DS("operation")
 public class OpeSimInformationServiceImpl extends ServiceImpl<OpeSimInformationMapper, OpeSimInformation> implements OpeSimInformationService {
 
 

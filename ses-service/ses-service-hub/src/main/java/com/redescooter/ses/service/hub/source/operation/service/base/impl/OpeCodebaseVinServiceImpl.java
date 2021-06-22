@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.hub.source.operation.service.base.impl;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.redescooter.ses.service.hub.source.operation.dao.base.OpeCodebaseVinMapper;
 import com.redescooter.ses.service.hub.source.operation.dm.OpeCodebaseVin;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Slf4j
+@DS("operation")
 public class OpeCodebaseVinServiceImpl extends ServiceImpl<OpeCodebaseVinMapper, OpeCodebaseVin> implements OpeCodebaseVinService {
 
 

@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.hub.source.operation.service.impl;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.hub.service.operation.CodebaseService;
@@ -38,6 +39,7 @@ public class CodebaseServiceImpl implements CodebaseService {
      * 校验rsn在码库是否存在
      */
     @Override
+    @DS("operation")
     public boolean checkRsn(String rsn) {
         LambdaQueryWrapper<OpeCodebaseRsn> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
@@ -55,6 +57,7 @@ public class CodebaseServiceImpl implements CodebaseService {
      */
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
+    @DS("operation")
     public void updateRsn(String rsn, Long userId) {
         LambdaQueryWrapper<OpeCodebaseRsn> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
@@ -74,6 +77,7 @@ public class CodebaseServiceImpl implements CodebaseService {
      * 校验vin在码库是否存在
      */
     @Override
+    @DS("operation")
     public boolean checkVin(String vinCode) {
         LambdaQueryWrapper<OpeCodebaseVin> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeCodebaseVin::getDr, Constant.DR_FALSE);
@@ -91,6 +95,7 @@ public class CodebaseServiceImpl implements CodebaseService {
      */
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
+    @DS("operation")
     public void updateVin(String vinCode, Long userId) {
         LambdaQueryWrapper<OpeCodebaseVin> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeCodebaseVin::getDr, Constant.DR_FALSE);
@@ -110,6 +115,7 @@ public class CodebaseServiceImpl implements CodebaseService {
      * 保存sim卡信息
      */
     @Override
+    @DS("operation")
     public void saveSim(OpeSimInformation enter) {
         opeSimInformationService.save(enter);
     }
