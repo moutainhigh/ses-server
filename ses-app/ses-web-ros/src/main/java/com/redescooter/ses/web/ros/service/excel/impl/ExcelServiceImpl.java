@@ -438,6 +438,7 @@ public class ExcelServiceImpl implements ExcelService {
             opeCustomer.setTenantId(Long.parseLong("0"));
             opeCustomer.setAccountFlag(CustomerAccountFlagEnum.INACTIVATED.getValue());
             opeCustomer.setCreatedBy(enter.getUserId());
+            opeCustomer.setUpdatedBy(enter.getUserId());
             BaseUserResult userResult = null;
             // 开始创建客户
             BaseCustomerResult baseCustomer = new BaseCustomerResult();
