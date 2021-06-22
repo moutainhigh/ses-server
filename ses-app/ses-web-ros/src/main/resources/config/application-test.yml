@@ -491,7 +491,7 @@ sendinblue:
 
 monday:
   url: https://api.monday.com/v2
-  authorization: eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjI5MjE5MzMxLCJ1aWQiOjUwODM2NTksImlhZCI6IjIwMTktMTItMzBUMTA6NTU6MTEuMDAwWiIsInBlciI6Im1lOndyaXRlIn0.Z_dXLUCgiEUoHQXzeFlOqeG2jfSeiyKIdBNdwaAOKrA
+  authorization: eyJhbGciOiJIUzI1NiJ9.eyJ0aWQiOjExNDM4NzE3MiwidWlkIjoyMjc5NDk3NSwiaWFkIjoiMjAyMS0wNi0yMVQxMjo0NzowNy4wMDBaIiwicGVyIjoibWU6d3JpdGUiLCJhY3RpZCI6OTI3NDI2NCwicmduIjoidXNlMSJ9.-frcIm9JFMe1Mlk3-70Nc7EXn9sb4zsRux802XCJ06w
   paramQuery: query
   paramVariables: variables
   httpMethod: POST
@@ -508,6 +508,9 @@ monday:
   subEmailBoardName: Test Website Email
   subEmailBoardBackName: abonnement
   subEmailGroupName: Backlog
+  #客户
+  customerBoardName: Rede Customer
+  customerGroupName: Backlog
   # 工作空间 alex:132750
   workspaceId: 21182
   #模板Id

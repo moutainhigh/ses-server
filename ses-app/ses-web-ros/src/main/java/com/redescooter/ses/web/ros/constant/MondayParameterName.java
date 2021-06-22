@@ -60,4 +60,20 @@ public interface MondayParameterName {
 
     //钩子监听事件
     String WEBHOOK_EVENT = "#{WEBHOOK_EVENT}";
+
+    /*————————————————————————————————————————————————————————————————————*/
+    /**
+     * ITEM_ID
+     */
+    String ITEM_ID = "#{ITEM_ID}";
+
+    /**
+     * 板子工作空间
+     */
+    String BOARD_WORKSPACE_NAME = "#{BOARD_WORKSPACE_NAME}";
+
+    /**
+     * 板子空间备注
+     */
+    String BOARD_WORKSPACE_DESCRIPTION = "#{BOARD_WORKSPACE_DESCRIPTION}";
 }

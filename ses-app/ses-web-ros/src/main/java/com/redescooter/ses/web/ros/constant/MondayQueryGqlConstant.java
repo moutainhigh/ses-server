@@ -83,4 +83,65 @@ public interface MondayQueryGqlConstant {
             "\t\tid\n" +
             "\t}\n" +
             "}";
+
+    /*————————————————————————————————————————————————————————————————————————————————————————————————————————*/
+    /**
+     * 创建分组行
+     */
+    String MUTATION_INSERT_ITEM = "mutation {\n" +
+            "create_item (board_id: "+MondayParameterName.COLUMN_BOARD_ID+", group_id: "+MondayParameterName.GROUP_BOARD_NAME+", item_name: "+MondayParameterName.CREATE_ITEM_NAME+") {\n" +
+            "id\n" +
+            "}\n" +
+            "}";
+
+    /**
+     * 当前行，列插入值
+     */
+    String MUTATION_INSERT_ITEM_DATA = "mutation {\n" +
+            "change_simple_column_value (board_id: "+MondayParameterName.COLUMN_BOARD_ID+", item_id: "+MondayParameterName.ITEM_ID+", column_id: "+MondayParameterName.COLUMN_TITLE+", value: "+MondayParameterName.CREATE_COLUMN_VALUES+") " +
+            "{\n" +
+            "id\n" +
+            "}\n" +
+            "}";
+
+    /**
+     * 查询这个板子下的列以及类型
+     */
+    String QUERY_BOARDS_COLUMNS = "query {\n" +
+            "boards (ids: "+MondayParameterName.COLUMN_BOARD_ID+") {owner {id}\n" +
+            "columns {title\n" +
+            "type\n" +
+            "}}}";
+
+    /**
+     * 查看这个板子下有无这个分组
+     */
+    String QUERY_BOARDS_GROUPS = "query {\n" +
+            "boards (ids: "+MondayParameterName.COLUMN_BOARD_ID+") {\n" +
+            "groups (ids: "+MondayParameterName.GROUP_BOARD_NAME+") {\n" +
+            "title\n" +
+            "color\n" +
+            "position\n" +
+            "}\n" +
+            "}\n" +
+            "}";
+
+    /**
+     * 创建工作空间
+     */
+    String MUTATION_WORKSPACE = "mutation {\n" +
+            "create_workspace ( name: "+MondayParameterName.BOARD_WORKSPACE_NAME+", kind: open, description: "+MondayParameterName.BOARD_WORKSPACE_DESCRIPTION+") {\n" +
+            "id\n" +
+            "}\n" +
+            "}";
+
+    /**
+     * 删除组
+     */
+    String DELETE_GROUP = "mutation {\n" +
+            "delete_group (board_id: "+MondayParameterName.COLUMN_BOARD_ID+", group_id: "+MondayParameterName.GROUP_BOARD_NAME+") {\n" +
+            "id\n" +
+            "deleted\n" +
+            "}\n" +
+            "}";
 }

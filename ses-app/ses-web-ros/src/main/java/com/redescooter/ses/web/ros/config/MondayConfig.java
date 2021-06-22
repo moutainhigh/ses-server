@@ -62,6 +62,12 @@ public class MondayConfig {
     //订阅邮件分组
     private String subEmailGroupName;
 
+    // 客户
+    private String customerBoardName;
+
+    // 客户分组
+    private String customerGroupName;
+
     //是否加载模版
     private Boolean loadTemplate = Boolean.FALSE;
 }
