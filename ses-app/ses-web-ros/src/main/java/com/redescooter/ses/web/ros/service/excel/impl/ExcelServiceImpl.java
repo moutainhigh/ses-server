@@ -434,7 +434,7 @@ public class ExcelServiceImpl implements ExcelService {
             opeCustomer.setCountryCode(read.get(i).getCountryCode());
             opeCustomer.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
             opeCustomer.setCreatedTime(new Date());
-            opeCustomer.setCustomerFullName(new StringBuffer().append(read.get(i).getFirstName()).append(" ").append(read.get(i).getFirstName()).toString());
+            opeCustomer.setCustomerFullName(new StringBuffer().append(read.get(i).getFirstName()).append(" ").append(read.get(i).getLastName()).toString());
             opeCustomer.setTenantId(Long.parseLong("0"));
             opeCustomer.setAccountFlag(CustomerAccountFlagEnum.INACTIVATED.getValue());
             opeCustomer.setCreatedBy(enter.getUserId());
