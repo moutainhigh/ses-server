@@ -53,6 +53,10 @@ public class ImportCustomerExcleData implements Serializable, IExcelModel, IExce
     private String email;
 
 
+    @Excel(name = "country_code", width = 25)
+    private String countryCode;
+
+
     /**
      * 解析错误信息
      */

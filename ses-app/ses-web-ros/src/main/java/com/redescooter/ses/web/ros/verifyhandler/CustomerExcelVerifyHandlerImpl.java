@@ -22,24 +22,29 @@ public class CustomerExcelVerifyHandlerImpl implements IExcelVerifyHandler<Impor
     public ExcelVerifyHandlerResult verifyHandler(ImportCustomerExcleData obj) {
         StringBuilder builder = new StringBuilder();
         if (StringUtils.isEmpty(obj.getFirstName())) {
-            builder.append("Group Name ,This is  not must null;");
+            builder.append("firstnName ,This is  not must null;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (StringUtils.isEmpty(obj.getLastName())) {
-            builder.append("Key,This is  not must null;");
+            builder.append("lastName,This is  not must null;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (StringUtils.isEmpty(obj.getAreaCode())) {
-            builder.append("Value,This is  not must null;");
+            builder.append("areaCode,This is  not must null;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (StringUtils.isEmpty(obj.getEmail())) {
-            builder.append("ParameterName,This is  not must null;");
+            builder.append("phone,This is  not must null;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
 
-        if (obj.getPhone() == null) {
-            builder.append("Enable,This is  not must null;");
+        if (StringUtils.isEmpty(obj.getPhone())) {
+            builder.append("phone,This is  not must null;");
+            return new ExcelVerifyHandlerResult(false, builder.toString());
+        }
+
+        if (StringUtils.isEmpty(obj.getCountryCode())) {
+            builder.append("countryCode,This is  not must null;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         return new ExcelVerifyHandlerResult(true, builder.toString());

@@ -325,9 +325,9 @@ public class ExcelServiceImpl implements ExcelService {
             result.setSuccess(Boolean.FALSE);
             result.setSuccessNum(read.size());
             result.setFailNum(failList.size());
-            for (ImportCustomerExcleData excle : failList) {
+            for (ImportCustomerExcleData e : failList) {
                 map = new HashMap<>();
-                map.put(String.valueOf(excle.getRowNum()), excle.getErrorMsg());
+                map.put(String.valueOf(e.getRowNum()), e.getErrorMsg());
                 errorMsgList.add(map);
             }
             result.setErrorMsgList(errorMsgList);
@@ -356,7 +356,7 @@ public class ExcelServiceImpl implements ExcelService {
             if (!ValidatorUtil.isEmail(read.get(i).getEmail())) {
                 result.setSuccess(Boolean.FALSE);
                 Map<String, String> map = new TreeMap<>();
-                map.put("msg", "The email is not legal..");
+                map.put("msg", "The email is not legal.");
                 List<Map<String, String>> mapList = new ArrayList<>();
                 mapList.add(map);
                 result.setSuccessNum(0);
@@ -367,7 +367,7 @@ public class ExcelServiceImpl implements ExcelService {
             if (read.get(i).getFirstName().length() < 0 || read.get(i).getFirstName().length() > 30) {
                 result.setSuccess(Boolean.FALSE);
                 Map<String, String> map = new TreeMap<>();
-                map.put("msg", "Abnormal last or last name length.");
+                map.put("msg", "Abnormal firstName or firstName length.");
                 List<Map<String, String>> mapList = new ArrayList<>();
                 mapList.add(map);
                 result.setSuccessNum(0);
@@ -397,7 +397,7 @@ public class ExcelServiceImpl implements ExcelService {
             if (!ValidatorUtil.isNumber(opeCustomer.getAreaCode()) || !ValidatorUtil.isNumber(read.get(i).getPhone())) {
                 result.setSuccess(Boolean.FALSE);
                 Map<String, String> map = new TreeMap<>();
-                map.put("msg", "The area code or cell phone number should be numeric only.");
+                map.put("msg", "The areaCode or phone should be numeric only.");
                 List<Map<String, String>> mapList = new ArrayList<>();
                 mapList.add(map);
                 result.setSuccessNum(0);
@@ -431,6 +431,7 @@ public class ExcelServiceImpl implements ExcelService {
             opeCustomer.setCustomerType("2");
             opeCustomer.setIndustryType("1");
             opeCustomer.setScooterQuantity(1);
+            opeCustomer.setCountryCode(read.get(i).getCountryCode());
             opeCustomer.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
             opeCustomer.setCreatedTime(new Date());
             opeCustomer.setCustomerFullName(new StringBuffer().append(read.get(i).getFirstName()).append(" ").append(read.get(i).getFirstName()).toString());
@@ -465,16 +466,4 @@ public class ExcelServiceImpl implements ExcelService {
         return result;
     }
 
-
-    public static String randomString(String salt, int length) {
-        StringBuilder sb = new StringBuilder();
-        Random random = new Random();
-        int len = salt.length();
-
-        for (int i = 0; i < length; ++i) {
-            sb.append(salt.charAt(random.nextInt(len)));
-        }
-
-        return sb.toString();
-    }
 }

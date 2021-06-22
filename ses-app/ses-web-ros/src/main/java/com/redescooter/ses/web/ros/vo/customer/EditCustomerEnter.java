@@ -95,6 +95,10 @@ public class EditCustomerEnter extends GeneralEnter {
     @ApiModelProperty(value = "国家编码，如手机号 中国 +86")
     private String countryCode;
 
+    @ApiModelProperty(value = "区号")
+    @Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.TELEPHONE_IS_NUMBER,message = "区号必须为数字0~9")
+    private String areaCode;
+
     @ApiModelProperty(value = "电话")
     @Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.TELEPHONE_IS_NUMBER,message = "号码必须为数字0~9")
     private String telephone;

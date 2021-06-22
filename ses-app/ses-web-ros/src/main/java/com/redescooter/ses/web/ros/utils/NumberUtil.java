@@ -86,6 +86,20 @@ public class NumberUtil {
         return false;
     }
 
+
+    /**
+     * 大于 30
+     * @param num
+     * @return
+     */
+    public static boolean GtThirty(int num){
+        if (NUM_THIRTY < num) {
+            return true;
+        }
+        return false;
+    }
+
+
     /**
      * 小于8 或者 大于20
      * @param num
@@ -117,6 +131,19 @@ public class NumberUtil {
      */
     public static boolean ltTwoOrGtFifty(int num) {
         if (NUM_TWO > num || NUM_FIFTY < num) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * 大于50
+     * @param num
+     * @return
+     */
+    public static boolean GtFifty(int num) {
+        if ( NUM_FIFTY < num) {
             return true;
         }
         return false;
