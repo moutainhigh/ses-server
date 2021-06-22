@@ -4,11 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.google.common.collect.Lists;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.constant.SpecificDefNameConstant;
-import com.redescooter.ses.api.common.enums.scooter.ScooterLockStatusEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.node.BindVinEnter;
 import com.redescooter.ses.api.common.vo.node.InputBatteryEnter;
 import com.redescooter.ses.api.common.vo.node.InputScooterEnter;
@@ -17,21 +16,16 @@ import com.redescooter.ses.api.common.vo.node.InquiryListAppEnter;
 import com.redescooter.ses.api.common.vo.node.InquiryListResult;
 import com.redescooter.ses.api.common.vo.node.SetModelEnter;
 import com.redescooter.ses.api.common.vo.scooter.ColorDTO;
-import com.redescooter.ses.api.common.vo.scooter.SpecificGroupDTO;
 import com.redescooter.ses.api.common.vo.specification.SpecificDefDTO;
 import com.redescooter.ses.api.hub.service.admin.ScooterModelService;
 import com.redescooter.ses.api.hub.service.operation.CodebaseService;
 import com.redescooter.ses.api.hub.service.operation.ColorService;
 import com.redescooter.ses.api.hub.service.operation.SpecificService;
-import com.redescooter.ses.api.hub.vo.admin.AdmScooter;
-import com.redescooter.ses.api.hub.vo.admin.AdmScooterUpdateEnter;
 import com.redescooter.ses.api.hub.vo.operation.OpeSimInformation;
-import com.redescooter.ses.api.hub.vo.operation.SpecificTypeDTO;
 import com.redescooter.ses.api.scooter.exception.ScooterException;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.api.scooter.service.ScooterNodeService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
-import com.redescooter.ses.api.scooter.vo.emqx.SetScooterModelPublishDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.SpecificDefGroupPublishDTO;
 import com.redescooter.ses.service.scooter.constant.SequenceName;
 import com.redescooter.ses.service.scooter.dao.base.ScoScooterNodeMapper;
@@ -117,8 +111,9 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
      * 详情
      */
     @Override
-    public InquiryDetailResult getDetail(IdEnter enter) {
-        ScoScooter scooter = scoScooterService.getById(enter.getId());
+    public InquiryDetailResult getDetail(StringEnter enter) {
+        Long scooterId = getScooterId(enter.getKeyword().trim());
+        ScoScooter scooter = scoScooterService.getById(scooterId);
 
         Integer appNode = 0;
         LambdaQueryWrapper<ScoScooterNode> qw = new LambdaQueryWrapper<>();
@@ -321,7 +316,7 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult setScooterModel(SetModelEnter enter) {
         Long scooterId = getScooterId(enter.getRsn());
-        ScoScooter scoScooter = scoScooterService.getById(scooterId);
+        /*ScoScooter scoScooter = scoScooterService.getById(scooterId);
         if (null == scoScooter) {
             throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
         }
@@ -406,7 +401,7 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
             instance.setScooterModel(type);
             instance.setSpecificDefGroupList(list);
             scooterEmqXService.setScooterModel(instance);
-        }
+        }*/
         log.info("设置软体完毕");
 
         // node表appNode字段

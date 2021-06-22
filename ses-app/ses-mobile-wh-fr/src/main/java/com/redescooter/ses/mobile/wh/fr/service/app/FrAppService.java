@@ -3,7 +3,6 @@ package com.redescooter.ses.mobile.wh.fr.service.app;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
@@ -50,7 +49,7 @@ public interface FrAppService {
     /**
      * 详情
      */
-    InquiryDetailResult getDetail(IdEnter enter);
+    InquiryDetailResult getDetail(StringEnter enter);
 
     /**
      * 根据rsn带出其他6个码

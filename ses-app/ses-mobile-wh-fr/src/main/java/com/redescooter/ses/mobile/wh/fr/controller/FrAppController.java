@@ -4,11 +4,11 @@ import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
+import com.redescooter.ses.api.common.vo.node.BindVinEnter;
 import com.redescooter.ses.api.common.vo.node.InputBatteryEnter;
 import com.redescooter.ses.api.common.vo.node.InputScooterEnter;
 import com.redescooter.ses.api.common.vo.node.InquiryDetailResult;
@@ -18,7 +18,6 @@ import com.redescooter.ses.api.common.vo.node.SetModelEnter;
 import com.redescooter.ses.mobile.wh.fr.dm.OpeWarehouseAccount;
 import com.redescooter.ses.mobile.wh.fr.service.app.FrAppService;
 import com.redescooter.ses.mobile.wh.fr.vo.AppLoginEnter;
-import com.redescooter.ses.api.common.vo.node.BindVinEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,7 +106,7 @@ public class FrAppController {
      */
     @PostMapping("/detail")
     @ApiOperation(value = "详情", notes = "详情")
-    public Response<InquiryDetailResult> getDetail(@ModelAttribute IdEnter enter) {
+    public Response<InquiryDetailResult> getDetail(@ModelAttribute StringEnter enter) {
         return new Response<>(frAppService.getDetail(enter));
     }
 

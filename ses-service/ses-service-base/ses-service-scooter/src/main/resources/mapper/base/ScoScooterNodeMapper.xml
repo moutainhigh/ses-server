@@ -44,6 +44,7 @@
     <select id="getList" resultType="com.redescooter.ses.api.common.vo.node.InquiryListResult">
         select
             scooter.id as scooterId,
+            scooter.scooter_no as rsn,
             ifnull(node.flag, 0) as status,
             scooter.model,
             scooter.color_id,

@@ -8,7 +8,6 @@ import com.redescooter.ses.api.common.enums.date.MonthCodeEnum;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.base.TokenResult;
@@ -325,7 +324,7 @@ public class FrAppServiceImpl implements FrAppService {
      * 详情
      */
     @Override
-    public InquiryDetailResult getDetail(IdEnter enter) {
+    public InquiryDetailResult getDetail(StringEnter enter) {
         return scooterNodeService.getDetail(enter);
     }
 

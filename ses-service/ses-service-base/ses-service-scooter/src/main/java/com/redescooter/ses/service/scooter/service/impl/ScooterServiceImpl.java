@@ -10,6 +10,7 @@ import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnum;
 import com.redescooter.ses.api.common.enums.scooter.ScooterModelEnums;
 import com.redescooter.ses.api.common.enums.scooter.ScooterStatusEnums;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterEnter;
 import com.redescooter.ses.api.common.vo.scooter.BaseScooterResult;
 import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
@@ -503,6 +504,23 @@ public class ScooterServiceImpl implements ScooterService {
             }
         }
         return rsn;
+    }
+
+    /**
+     * 根据rsn获取scooterId
+     */
+    @Override
+    public Long getScooterIdByRsn(StringEnter enter) {
+        Long result = null;
+        LambdaQueryWrapper<ScoScooter> qw = new LambdaQueryWrapper<>();
+        qw.eq(ScoScooter::getDr, Constant.DR_FALSE);
+        qw.eq(ScoScooter::getScooterNo, enter.getKeyword().trim());
+        qw.last("limit 1");
+        ScoScooter scooter = scoScooterService.getOne(qw);
+        if (null != scooter) {
+            result = scooter.getId();
+        }
+        return result;
     }
 
 }

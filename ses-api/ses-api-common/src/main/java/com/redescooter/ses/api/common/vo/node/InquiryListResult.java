@@ -27,6 +27,9 @@ public class InquiryListResult extends PageResult {
     @ApiModelProperty(value = "车辆id")
     private Long scooterId;
 
+    @ApiModelProperty(value = "rsn")
+    private String rsn;
+
     @ApiModelProperty(value = "状态 1处理中 2已完成")
     private Integer status;
 

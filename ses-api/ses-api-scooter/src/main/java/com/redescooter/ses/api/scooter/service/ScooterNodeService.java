@@ -1,8 +1,8 @@
 package com.redescooter.ses.api.scooter.service;
 
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
-import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
+import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.common.vo.node.BindVinEnter;
 import com.redescooter.ses.api.common.vo.node.InputBatteryEnter;
 import com.redescooter.ses.api.common.vo.node.InputScooterEnter;
@@ -28,7 +28,7 @@ public interface ScooterNodeService {
     /**
      * 详情
      */
-    InquiryDetailResult getDetail(IdEnter enter);
+    InquiryDetailResult getDetail(StringEnter enter);
 
     /**
      * 录入车辆
