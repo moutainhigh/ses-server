@@ -1,6 +1,5 @@
 package com.redescooter.ses.mobile.wh.fr.controller;
 
-import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
@@ -107,7 +106,6 @@ public class FrAppController {
      */
     @PostMapping("/detail")
     @ApiOperation(value = "详情", notes = "详情")
-    @AvoidDuplicateSubmit
     public Response<InquiryDetailResult> getDetail(@ModelAttribute StringEnter enter) {
         return new Response<>(frAppService.getDetail(enter));
     }
