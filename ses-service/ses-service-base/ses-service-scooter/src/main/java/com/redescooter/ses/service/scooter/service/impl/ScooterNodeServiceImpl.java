@@ -15,7 +15,6 @@ import com.redescooter.ses.api.common.vo.node.InquiryDetailResult;
 import com.redescooter.ses.api.common.vo.node.InquiryListAppEnter;
 import com.redescooter.ses.api.common.vo.node.InquiryListResult;
 import com.redescooter.ses.api.common.vo.node.SetModelEnter;
-import com.redescooter.ses.api.common.vo.scooter.ColorDTO;
 import com.redescooter.ses.api.common.vo.specification.SpecificDefDTO;
 import com.redescooter.ses.api.hub.service.admin.ScooterModelService;
 import com.redescooter.ses.api.hub.service.operation.CodebaseService;
@@ -112,12 +111,6 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
                     item.setScooterName("E50");
                 } else if ("3".equals(item.getModel())) {
                     item.setScooterName("E100");
-                }
-
-                // 颜色
-                ColorDTO color = colorService.getColorInfoById(item.getColorId());
-                if (null != color) {
-                    item.setColorName(color.getColorName());
                 }
 
                 // 电池数量

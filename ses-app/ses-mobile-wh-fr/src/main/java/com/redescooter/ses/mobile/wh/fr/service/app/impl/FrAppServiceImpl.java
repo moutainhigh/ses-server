@@ -325,7 +325,19 @@ public class FrAppServiceImpl implements FrAppService {
      */
     @Override
     public PageResult<InquiryListResult> getList(InquiryListAppEnter enter) {
-        return scooterNodeService.getList(enter);
+        PageResult<InquiryListResult> pageResult = scooterNodeService.getList(enter);
+        if (null != pageResult) {
+            List<InquiryListResult> list = pageResult.getList();
+            if (CollectionUtils.isNotEmpty(list)) {
+                for (InquiryListResult item : list) {
+                    OpeColor color = opeColorService.getById(item.getColorId());
+                    if (null != color) {
+                        item.setColorName(color.getColorName());
+                    }
+                }
+            }
+        }
+        return pageResult;
     }
 
     /**
