@@ -49,6 +49,7 @@ import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
 import com.redescooter.ses.tool.utils.SesStringUtils;
+import com.redescooter.ses.tool.utils.ValidatorUtil;
 import com.redescooter.ses.tool.utils.VerificationCodeImgUtil;
 import com.redescooter.ses.tool.utils.accountType.AccountTypeUtils;
 import com.redescooter.ses.tool.utils.chart.StatisticalUtil;
@@ -68,9 +69,11 @@ import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryBService;
 import com.redescooter.ses.web.ros.service.base.OpeCustomerInquiryService;
+import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.base.OpeSalePriceService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
+import com.redescooter.ses.web.ros.utils.ExcelUtil;
 import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.account.AccountDeatilResult;
 import com.redescooter.ses.web.ros.vo.account.AccountNodeResult;
@@ -93,6 +96,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 import redis.clients.jedis.JedisCluster;
 
 import java.math.BigDecimal;
@@ -102,6 +106,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -118,6 +123,9 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
     @Autowired
     private OpeCustomerMapper opeCustomerMapper;
+
+    @Autowired
+    private OpeCustomerService opeCustomerService;
 
     @Autowired
     private CustomerServiceMapper customerServiceMapper;
@@ -223,7 +231,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         OpeCustomer saveVo = new OpeCustomer();
         BeanUtils.copyProperties(enter, saveVo);
         saveVo.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
-        saveVo.setStatus(CustomerStatusEnum.POTENTIAL_CUSTOMERS.getValue());
+        saveVo.setStatus(CustomerStatusEnum.OFFICIAL_CUSTOMER.getValue());
         saveVo.setCustomerSource(CustomerSourceEnum.SYSTEM.getValue());
         if (enter.getCustomerType().equals(CustomerTypeEnum.ENTERPRISE.getValue())) {
             saveVo.setContactFullName(new StringBuffer().append(saveVo.getContactFirstName()).append(" ").append(saveVo.getContactLastName()).toString());
@@ -246,7 +254,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         saveVo.setDef3(enter.getDistrustName());
         opeCustomerMapper.insert(saveVo);
         // 新增潜在客户的时候 给客户生成一个询价单
-        creatInquiry(saveVo);
+        //creatInquiry(saveVo);
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -304,12 +312,12 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
 
         LambdaQueryWrapper<OpeSalePrice> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(OpeSalePrice::getDr,Constant.DR_FALSE);
-        wrapper.like(OpeSalePrice::getScooterBattery,"E50");
-        wrapper.eq(OpeSalePrice::getType,2);
+        wrapper.eq(OpeSalePrice::getDr, Constant.DR_FALSE);
+        wrapper.like(OpeSalePrice::getScooterBattery, "E50");
+        wrapper.eq(OpeSalePrice::getType, 2);
         wrapper.last("limit 1");
         OpeSalePrice opeSalePrice = opeSalePriceMapper.selectOne(wrapper);
-        if (opeSalePrice==null){
+        if (opeSalePrice == null) {
             throw new SesWebRosException(ExceptionCodeEnums.SALE_PRICE_NOT_FOUND.getCode(), ExceptionCodeEnums.SALE_PRICE_NOT_FOUND.getMessage());
         }
         inquiry.setProductPrice(opeSalePrice.getDeposit().add(opeSalePrice.getBalance()));
@@ -354,9 +362,9 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             code = orderNoEnum + DateUtil.getSimpleDateStamp() + "001";
         }
         //生成订单号之后 在流水号前面加上R（表示ROS的数据）
-        String frond = code.substring(0,code.length()-3);
-        String back = code.substring(code.length()-3,code.length());
-        return frond +"R"+back;
+        String frond = code.substring(0, code.length() - 3);
+        String back = code.substring(code.length() - 3, code.length());
+        return frond + "R" + back;
     }
 
 
@@ -443,14 +451,14 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         update.setContactFullName(enter.getContactFirstName() + " " + enter.getContactLastName());
         opeCustomerMapper.updateById(update);
 
-        // 修改客户咨询
-        UpdateWrapper<OpeCustomerInquiry> updateWrapper = new UpdateWrapper();
-        updateWrapper.eq(OpeCustomerInquiry.COL_CUSTOMER_ID, enter.getId());
-        updateWrapper.eq(OpeCustomerInquiry.COL_DR, Constant.DR_FALSE);
-        updateWrapper.set(OpeCustomerInquiry.COL_SCOOTER_QUANTITY, enter.getScooterQuantity());
-        updateWrapper.set(OpeCustomerInquiry.COL_UPDATED_BY, enter.getUserId());
-        updateWrapper.set(OpeCustomerInquiry.COL_UPDATED_TIME, new Date());
-        opeCustomerInquiryService.update(updateWrapper);
+//        // 修改客户咨询
+//        UpdateWrapper<OpeCustomerInquiry> updateWrapper = new UpdateWrapper();
+//        updateWrapper.eq(OpeCustomerInquiry.COL_CUSTOMER_ID, enter.getId());
+//        updateWrapper.eq(OpeCustomerInquiry.COL_DR, Constant.DR_FALSE);
+//        updateWrapper.set(OpeCustomerInquiry.COL_SCOOTER_QUANTITY, enter.getScooterQuantity());
+//        updateWrapper.set(OpeCustomerInquiry.COL_UPDATED_BY, enter.getUserId());
+//        updateWrapper.set(OpeCustomerInquiry.COL_UPDATED_TIME, new Date());
+//        opeCustomerInquiryService.update(updateWrapper);
 
         // 修改客户的时候，数据同步到platform数据库的租户表(这个方法异步执行，不影响现有逻辑)
         SynchTenantEnter tenantEnter = new SynchTenantEnter();
@@ -590,7 +598,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
 
         // 信息完善度 计算
-        result.setInformationPerfectionNum(checkCustomerInformation(opeCustomer));
+       // result.setInformationPerfectionNum(checkCustomerInformation(opeCustomer));
         return result;
     }
 
@@ -1179,6 +1187,85 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         jedisCluster.expire(key, new Long(RedisExpireEnum.MINUTES_3.getSeconds()).intValue());
 
         return new BooleanResult(true);
+    }
+
+    @Override
+    public Boolean importCustomer(MultipartFile file,GeneralEnter enter) {
+        List<List<Object>> read = ExcelUtil.readExcel(file);
+        List<OpeCustomer> customerImportDataList = new ArrayList<>();
+        List<String> customerCodes = new ArrayList<>();
+        OpeCustomer opeCustomer = new OpeCustomer();
+        for (int i = 0; i < read.size(); i++) {
+            opeCustomer = new OpeCustomer();
+            //去掉姓和名的空格
+            SesStringUtils.stringTrim(read.get(i).get(0).toString());
+            SesStringUtils.stringTrim(read.get(i).get(1).toString());
+            //判断邮箱是否合法
+            if (!ValidatorUtil.isEmail(read.get(i).get(4).toString())) {
+                throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
+            }
+            if (read.get(i).get(0).toString().length() < 0 && read.get(i).get(0).toString().length() > 30) {
+                throw new SesWebRosException(ExceptionCodeEnums.LENGTH_ABNORMAL.getCode(), ExceptionCodeEnums.LENGTH_ABNORMAL.getMessage());
+            }
+            if (read.get(i).get(1).toString().length() < 0 && read.get(i).get(1).toString().length() > 30) {
+                throw new SesWebRosException(ExceptionCodeEnums.LENGTH_ABNORMAL.getCode(), ExceptionCodeEnums.LENGTH_ABNORMAL.getMessage());
+            }
+            if (read.get(i).get(4).toString().length() < 0 && read.get(i).get(4).toString().length() > 60) {
+                throw new SesWebRosException(ExceptionCodeEnums.LENGTH_ABNORMAL.getCode(), ExceptionCodeEnums.LENGTH_ABNORMAL.getMessage());
+            }
+            //set姓名
+            opeCustomer.setCustomerFirstName(read.get(i).get(0).toString());
+            opeCustomer.setCustomerLastName(read.get(i).get(1).toString());
+            if (read.get(i).get(2).toString().contains("+")) {
+                opeCustomer.setAreaCode(read.get(i).get(2).toString().replaceAll("\\+", "").trim());
+            } else {
+                opeCustomer.setAreaCode(read.get(i).get(2).toString());
+            }
+            if (!ValidatorUtil.isNumber(opeCustomer.getAreaCode()) || !ValidatorUtil.isNumber(read.get(i).get(3).toString())) {
+                throw new SesWebRosException(ExceptionCodeEnums.FULL_PHONE_NUMBER_ABNORMAL.getCode(), ExceptionCodeEnums.FULL_PHONE_NUMBER_ABNORMAL.getMessage());
+            }
+            //set邮箱
+            customerCodes.add(read.get(i).get(4).toString());
+            LambdaQueryWrapper<OpeCustomer> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(OpeCustomer::getDr, Constant.DR_FALSE);
+            queryWrapper.in(OpeCustomer::getEmail, customerCodes);
+            List<OpeCustomer> list = opeCustomerMapper.selectList(queryWrapper);
+            if (org.apache.commons.collections.CollectionUtils.isNotEmpty(list)) {
+                throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_IS_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.CUSTOMER_IS_ALREADY_EXISTS.getMessage());
+            }
+            opeCustomer.setTelephone(read.get(i).get(3).toString());
+            opeCustomer.setDr(Constant.DR_FALSE);
+            opeCustomer.setEmail(read.get(i).get(4).toString());
+            opeCustomer.setTimeZone("08:00");
+            opeCustomer.setStatus("2");
+            opeCustomer.setCustomerSource("1");
+            opeCustomer.setCustomerType("2");
+            opeCustomer.setIndustryType("1");
+            opeCustomer.setScooterQuantity(1);
+            opeCustomer.setId(Long.parseLong(randomString("123456789", 11)));
+            opeCustomer.setCreatedTime(new Date());
+            opeCustomer.setCustomerFullName(new StringBuffer().append(read.get(i).get(0)).append(" ").append(read.get(i).get(0)).toString());
+            opeCustomer.setTenantId(Long.parseLong("0"));
+            opeCustomer.setAccountFlag(CustomerAccountFlagEnum.NORMAL.getValue());
+            customerImportDataList.add(opeCustomer);
+        }
+        return opeCustomerService.saveBatch(customerImportDataList);
+    }
+
+    public void platformUser(String email) {
+        userBaseService.importPlatformUser(email);
+    }
+
+    public static String randomString(String salt, int length) {
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        int len = salt.length();
+
+        for (int i = 0; i < length; ++i) {
+            sb.append(salt.charAt(random.nextInt(len)));
+        }
+
+        return sb.toString();
     }
 
     /**

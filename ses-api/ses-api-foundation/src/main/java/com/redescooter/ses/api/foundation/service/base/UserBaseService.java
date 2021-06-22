@@ -92,4 +92,7 @@ public interface UserBaseService {
 
     //删除用户
     void deletePlaUser(String email);
+
+    //导入用户
+    void importPlatformUser(String email);
 }

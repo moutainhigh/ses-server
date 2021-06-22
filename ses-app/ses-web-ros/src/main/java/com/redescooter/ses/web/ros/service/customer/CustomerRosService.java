@@ -13,6 +13,7 @@ import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
 import com.redescooter.ses.web.ros.vo.customer.EditCustomerEnter;
 import com.redescooter.ses.web.ros.vo.customer.ListCustomerEnter;
 import com.redescooter.ses.web.ros.vo.customer.TrashCustomerEnter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -192,5 +193,12 @@ public interface CustomerRosService {
      * @return
      */
     BooleanResult sendEmailAgian(IdEnter enter);
+
+    /**
+     * 导入客户
+     * @param file
+     * @return
+     */
+    Boolean importCustomer(MultipartFile file,GeneralEnter enter);
 
 }

@@ -308,4 +308,45 @@ public class UserBaseServiceImpl implements UserBaseService {
         }
     }
 
+    @Override
+    public void importPlatformUser(String email) {
+        LambdaQueryWrapper<PlaUser> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(PlaUser::getDr, Constant.DR_FALSE);
+        wrapper.eq(PlaUser::getLoginName, email);
+        PlaUser plaUser = plaUserMapper.selectOne(wrapper);
+        if (null != plaUser) {
+            throw new FoundationException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+        }
+        plaUser.setId(idAppService.getId(SequenceName.PLA_USER));
+        plaUser.setDr(Constant.DR_FALSE);
+        plaUser.setTenantId(Long.parseLong("0"));
+        plaUser.setSystemId("REDE_SAAS");
+        plaUser.setAppId("2");
+        plaUser.setLoginName(email);
+        plaUser.setLoginType(1);
+        plaUser.setStatus("1");
+        plaUser.setUserType(6);
+        plaUser.setDr(0);
+        plaUser.setCreatedTime(new Date());
+        int userResult = plaUserMapper.insert(plaUser);
+        if (userResult > 0) {
+            PlaUserPassword password = new PlaUserPassword();
+            password.setId(idAppService.getId(SequenceName.PLA_USER_PASSWORD));
+            password.setDr(Constant.DR_FALSE);
+            password.setLoginName(email);
+            password.setCreatedTime(new Date());
+            int passwordResult = plaUserPasswordMapper.insert(password);
+            if (passwordResult > 0) {
+                PlaUserPermission permission = new PlaUserPermission();
+                permission.setId(idAppService.getId(SequenceName.PLA_USER_PERMISSION));
+                permission.setDr(Constant.DR_FALSE);
+                permission.setUserId(plaUser.getId());
+                permission.setSystemId("REDE_SAAS");
+                permission.setAppId("2");
+                permission.setStatus("1");
+                permission.setCreatedTime(new Date());
+                plaUserPermissionMapper.insert(permission);
+            }
+        }
+    }
 }

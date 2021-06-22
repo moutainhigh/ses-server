@@ -80,7 +80,7 @@ public class OpeCustomer implements Serializable {
      * 状态
      */
     @TableField(value = "status")
-    @ApiModelProperty(value = "状态")
+    @ApiModelProperty(value = "状态--1.潜在 2.正式 3.垃圾 4.注册")
     private String status;
 
     /**
@@ -201,6 +201,10 @@ public class OpeCustomer implements Serializable {
     @TableField(value = "contact_full_name")
     @ApiModelProperty(value = "联系人全名")
     private String contactFullName;
+
+    @TableField(value = "area_code")
+    @ApiModelProperty(value = "区号")
+    private String areaCode;
 
     /**
      * 电话

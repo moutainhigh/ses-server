@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -101,6 +102,12 @@ public class CustomerController {
     @ApiOperation(value = "客户再次发生邮件", response = BooleanResult.class)
     public Response<BooleanResult> sendEmailAgian(@ModelAttribute @ApiParam("请求参数") IdEnter enter) {
         return new Response<>(customerRosService.sendEmailAgian(enter));
+    }
+
+    @PostMapping(value = "/importCustomer")
+    @ApiOperation(value = "导入客户", response = BooleanResult.class)
+    public Response<Boolean> importCustomer(@ModelAttribute @ApiParam("请求参数") MultipartFile file,GeneralEnter enter) {
+        return new Response<>(customerRosService.importCustomer(file,enter));
     }
 
 }

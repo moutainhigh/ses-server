@@ -395,7 +395,7 @@ public class TokenWebsiteServiceImpl implements TokenWebsiteService {
         mailMultiTaskService.subscribeToEmailSuccessfully(enter);
 
         // todo  数据同步Monday
-        //mondayService.websiteSubscriptionEmail(email);
+       // mondayService.websiteSubscriptionEmail(email);
     }
 
 

@@ -612,7 +612,15 @@ public enum ExceptionCodeEnums {
 
     EXCEL_IMPORT_DATA_IS_EMPTY(10297, "导入数据为空"),
 
-    INSERT_SCAN_CODE_RECORD_WRONG(10298, "该部件已被使用,请更换扫码");
+    INSERT_SCAN_CODE_RECORD_WRONG(10298, "该部件已被使用,请更换扫码"),
+
+    CUSTOMER_IS_ALREADY_EXISTS(10299, "客户已经存在"),
+
+    LENGTH_ABNORMAL(10300,"长度异常"),
+
+    FULL_PHONE_NUMBER_ABNORMAL(10301,"区号或者手机号异常");
+
+
 
     private int code;
 
