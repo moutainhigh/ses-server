@@ -118,38 +118,15 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
      */
     @Override
     public InquiryDetailResult getDetail(IdEnter enter) {
-        // 校验此车辆是否已分配给其他仓库账号
-        LambdaQueryWrapper<ScoScooter> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(ScoScooter::getDr, Constant.DR_FALSE);
-        lqw.eq(ScoScooter::getId, enter.getId());
-        lqw.last("limit 1");
-        ScoScooter scooter = scoScooterService.getOne(lqw);
-        if (null != scooter) {
-            Long warehouseAccountId = scooter.getWarehouseAccountId();
-            if (null != warehouseAccountId && !enter.getUserId().equals(warehouseAccountId)) {
-                throw new ScooterException(ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getCode(), ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getMessage());
-            }
-        }
+        ScoScooter scooter = scoScooterService.getById(enter.getId());
 
-        // 先查看车辆在node表是否存在数据,不存在就新建
         Integer appNode = 0;
         LambdaQueryWrapper<ScoScooterNode> qw = new LambdaQueryWrapper<>();
         qw.eq(ScoScooterNode::getDr, Constant.DR_FALSE);
         qw.eq(ScoScooterNode::getScooterId, scooter.getId());
         qw.last("limit 1");
         ScoScooterNode model = scoScooterNodeService.getOne(qw);
-        if (null == model) {
-            // 新增node表
-            ScoScooterNode node = new ScoScooterNode();
-            node.setId(idAppService.getId(SequenceName.SCO_SCOOTER));
-            node.setDr(Constant.DR_FALSE);
-            node.setScooterId(scooter.getId());
-            node.setAppNode(1);
-            node.setFlag(0);
-            node.setCreatedBy(enter.getUserId() == null ? 0L : enter.getUserId());
-            node.setCreatedTime(new Date());
-            scoScooterNodeService.save(node);
-        } else {
+        if (null != model) {
             appNode = model.getAppNode();
         }
 
@@ -185,12 +162,26 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
     }
 
     /**
+     * 根据rsn获取车辆id
+     */
+    private Long getScooterId(String rsn) {
+        LambdaQueryWrapper<ScoScooter> qw = new LambdaQueryWrapper<>();
+        qw.eq(ScoScooter::getDr, Constant.DR_FALSE);
+        qw.eq(ScoScooter::getScooterNo, rsn);
+        qw.last("limit 1");
+        ScoScooter scooter = scoScooterService.getOne(qw);
+        if (null == scooter) {
+            throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
+        }
+        return scooter.getId();
+    }
+
+    /**
      * 录入车辆
      */
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult inputScooter(InputScooterEnter enter) {
-        Long scooterId = enter.getScooterId();
         String rsn = enter.getRsn().trim();
         String tabletSn = enter.getTabletSn().trim();
         String bluetoothAddress = enter.getBluetoothMacAddress().trim();
@@ -199,35 +190,65 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
         String motor = enter.getMotor().trim();
         String imei = enter.getImei().trim();
 
+        Long scooterId = getScooterId(rsn);
+
+        // 校验此车辆是否已分配给其他仓库账号
+        ScoScooter scooter = scoScooterService.getById(scooterId);
+        if (null != scooter) {
+            Long warehouseAccountId = scooter.getWarehouseAccountId();
+            if (null != warehouseAccountId && !enter.getUserId().equals(warehouseAccountId)) {
+                throw new ScooterException(ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getCode(), ExceptionCodeEnums.ORDER_HAS_DISTRIBUTED.getMessage());
+            }
+        }
+
         // 校验重复
-        LambdaQueryWrapper<ScoScooter> qw = new LambdaQueryWrapper<>();
+        /*LambdaQueryWrapper<ScoScooter> qw = new LambdaQueryWrapper<>();
         qw.eq(ScoScooter::getDr, Constant.DR_FALSE);
         qw.eq(ScoScooter::getScooterNo, rsn);
         List<ScoScooter> list = scoScooterService.list(qw);
         if (CollectionUtils.isNotEmpty(list)) {
             throw new ScooterException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
-        }
+        }*/
 
         // 校验码库
-        boolean flag = codebaseService.checkRsn(rsn);
+        /*boolean flag = codebaseService.checkRsn(rsn);
         if (flag) {
             throw new ScooterException(ExceptionCodeEnums.CODEBASE_NOT_EXIST.getCode(), ExceptionCodeEnums.CODEBASE_NOT_EXIST.getMessage());
+        }*/
+
+        // 先查看车辆在node表是否存在数据,不存在就新建
+        LambdaQueryWrapper<ScoScooterNode> qw = new LambdaQueryWrapper<>();
+        qw.eq(ScoScooterNode::getDr, Constant.DR_FALSE);
+        qw.eq(ScoScooterNode::getScooterId, scooter.getId());
+        qw.last("limit 1");
+        ScoScooterNode model = scoScooterNodeService.getOne(qw);
+        if (null == model) {
+            // 新增node表
+            ScoScooterNode node = new ScoScooterNode();
+            node.setId(idAppService.getId(SequenceName.SCO_SCOOTER));
+            node.setDr(Constant.DR_FALSE);
+            node.setScooterId(scooter.getId());
+            node.setAppNode(1);
+            node.setFlag(0);
+            node.setCreatedBy(enter.getUserId() == null ? 0L : enter.getUserId());
+            node.setCreatedTime(new Date());
+            scoScooterNodeService.save(node);
         }
 
         // 修改主表
-        ScoScooter model = new ScoScooter();
-        model.setId(scooterId);
-        model.setWarehouseAccountId(enter.getUserId());
-        model.setScooterNo(rsn);
-        model.setTabletSn(tabletSn);
-        model.setBbi(bbi);
-        model.setController(controller);
-        model.setMotor(motor);
-        model.setImei(imei);
-        model.setBluetoothMacAddress(bluetoothAddress);
-        model.setUpdatedBy(enter.getUserId());
-        model.setUpdatedTime(new Date());
-        scoScooterService.updateById(model);
+        ScoScooter param = new ScoScooter();
+        param.setId(scooterId);
+        param.setWarehouseAccountId(enter.getUserId());
+        param.setScooterNo(rsn);
+        param.setTabletSn(tabletSn);
+        param.setBbi(bbi);
+        param.setController(controller);
+        param.setMotor(motor);
+        param.setImei(imei);
+        param.setBluetoothMacAddress(bluetoothAddress);
+        param.setUpdatedBy(enter.getUserId());
+        param.setUpdatedTime(new Date());
+        scoScooterService.updateById(param);
 
         // node表appNode字段
         ScoScooterNode node = new ScoScooterNode();
@@ -252,6 +273,8 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public List<String> inputBattery(InputBatteryEnter enter) {
+        Long scooterId = getScooterId(enter.getRsn());
+
         // 校验重复
         List<String> result = Lists.newArrayList();
         String[] split = enter.getBattery().split(",");
@@ -272,7 +295,7 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
 
         // 修改主表
         ScoScooter model = new ScoScooter();
-        model.setId(enter.getScooterId());
+        model.setId(scooterId);
         model.setBattery(enter.getBattery());
         model.setUpdatedBy(enter.getUserId());
         model.setUpdatedTime(new Date());
@@ -286,7 +309,7 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
         // 条件
         LambdaQueryWrapper<ScoScooterNode> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ScoScooterNode::getDr, Constant.DR_FALSE);
-        wrapper.eq(ScoScooterNode::getScooterId, enter.getScooterId());
+        wrapper.eq(ScoScooterNode::getScooterId, scooterId);
         scoScooterNodeService.update(node, wrapper);
         return result;
     }
@@ -297,7 +320,8 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult setScooterModel(SetModelEnter enter) {
-        ScoScooter scoScooter = scoScooterService.getById(enter.getScooterId());
+        Long scooterId = getScooterId(enter.getRsn());
+        ScoScooter scoScooter = scoScooterService.getById(scooterId);
         if (null == scoScooter) {
             throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
         }
@@ -393,12 +417,12 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
         // 条件
         LambdaQueryWrapper<ScoScooterNode> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ScoScooterNode::getDr, Constant.DR_FALSE);
-        wrapper.eq(ScoScooterNode::getScooterId, enter.getScooterId());
+        wrapper.eq(ScoScooterNode::getScooterId, scooterId);
         scoScooterNodeService.update(node, wrapper);
 
         // 标识为已同步
         ScoScooter syncModel = new ScoScooter();
-        syncModel.setId(enter.getScooterId());
+        syncModel.setId(scooterId);
         syncModel.setRevision(1);
         scoScooterService.updateById(syncModel);
         log.info("已标识为已同步");
@@ -411,49 +435,50 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult bindVin(BindVinEnter enter) {
+        Long scooterId = getScooterId(enter.getRsn());
         String vinCode = enter.getVinCode().trim();
-        if (vinCode.length() != 17) {
+        /*if (vinCode.length() != 17) {
             throw new ScooterException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
         }
         if (!vinCode.startsWith("VXSR2A")) {
             throw new ScooterException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
-        }
+        }*/
 
-        ScoScooter scoScooter = scoScooterService.getById(enter.getScooterId());
+        ScoScooter scoScooter = scoScooterService.getById(scooterId);
         if (null == scoScooter) {
             throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
         }
 
         // 截取第7位,车型编号
-        String productTypeSub = vinCode.substring(6, 7);
+        /*String productTypeSub = vinCode.substring(6, 7);
         if (!StringUtils.equals(scoScooter.getModel(), productTypeSub)) {
             throw new ScooterException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
-        }
+        }*/
 
         // 截取第8位,座位数量
-        String seatNumberSub = vinCode.substring(7, 8);
+        /*String seatNumberSub = vinCode.substring(7, 8);
         if (!StringUtils.equals("2", seatNumberSub)) {
             throw new ScooterException(ExceptionCodeEnums.VIN_NOT_MATCH.getCode(), ExceptionCodeEnums.VIN_NOT_MATCH.getMessage());
-        }
+        }*/
 
         // 校验重复
-        LambdaQueryWrapper<ScoScooter> qw = new LambdaQueryWrapper<>();
+        /*LambdaQueryWrapper<ScoScooter> qw = new LambdaQueryWrapper<>();
         qw.eq(ScoScooter::getDr, Constant.DR_FALSE);
         qw.eq(ScoScooter::getVin, vinCode);
         List<ScoScooter> list = scoScooterService.list(qw);
         if (CollectionUtils.isNotEmpty(list)) {
             throw new ScooterException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
-        }
+        }*/
 
         // 校验码库
-        boolean flag = codebaseService.checkVin(vinCode);
+        /*boolean flag = codebaseService.checkVin(vinCode);
         if (flag) {
             throw new ScooterException(ExceptionCodeEnums.CODEBASE_NOT_EXIST.getCode(), ExceptionCodeEnums.CODEBASE_NOT_EXIST.getMessage());
-        }
+        }*/
 
         // 修改主表
         ScoScooter model = new ScoScooter();
-        model.setId(enter.getScooterId());
+        model.setId(scooterId);
         model.setVin(vinCode);
         model.setUpdatedBy(enter.getUserId());
         model.setUpdatedTime(new Date());
@@ -468,14 +493,14 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
         // 条件
         LambdaQueryWrapper<ScoScooterNode> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(ScoScooterNode::getDr, Constant.DR_FALSE);
-        wrapper.eq(ScoScooterNode::getScooterId, enter.getScooterId());
+        wrapper.eq(ScoScooterNode::getScooterId, scooterId);
         scoScooterNodeService.update(node, wrapper);
 
         // 修改码库此rsn为已用
         codebaseService.updateVin(vinCode, enter.getUserId());
 
         // sim卡信息录入
-        ScoScooter scooter = scoScooterService.getById(enter.getScooterId());
+        ScoScooter scooter = scoScooterService.getById(scooterId);
         if (null == scoScooter) {
             throw new ScooterException(ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getCode(), ExceptionCodeEnums.SCOOTER_IS_NOT_EXIST.getMessage());
         }
@@ -540,8 +565,5 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
         }
         return list;
     }
-
-
-
 
 }

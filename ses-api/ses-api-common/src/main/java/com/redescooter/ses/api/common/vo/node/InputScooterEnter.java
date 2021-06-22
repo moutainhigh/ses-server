@@ -20,9 +20,6 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class InputScooterEnter extends GeneralEnter {
 
-    @ApiModelProperty(value = "车辆id")
-    private Long scooterId;
-
     @ApiModelProperty(value = "RSN")
     private String rsn;
 

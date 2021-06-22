@@ -23,7 +23,7 @@ public class BindVinEnter extends GeneralEnter {
     @ApiModelProperty(value = "VIN", required = true)
     private String vinCode;
 
-    @ApiModelProperty(value = "车辆id", required = true)
-    private Long scooterId;
+    @ApiModelProperty(value = "RSN", required = true)
+    private String rsn;
 
 }

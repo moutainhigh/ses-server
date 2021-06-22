@@ -23,7 +23,7 @@ public class InputBatteryEnter extends GeneralEnter {
     @ApiModelProperty(value = "电池码 多个时通过逗号分隔", required = true)
     private String battery;
 
-    @ApiModelProperty(value = "车辆id", required = true)
-    private Long scooterId;
+    @ApiModelProperty(value = "RSN", required = true)
+    private String rsn;
 
 }
