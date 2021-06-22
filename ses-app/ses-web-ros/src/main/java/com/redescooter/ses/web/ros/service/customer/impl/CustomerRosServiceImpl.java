@@ -1,5 +1,7 @@
 package com.redescooter.ses.web.ros.service.customer.impl;
 
+import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -45,6 +47,7 @@ import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeDetailResult;
 import com.redescooter.ses.api.foundation.vo.user.QueryAccountNodeEnter;
 import com.redescooter.ses.api.hub.common.UserProfileService;
 import com.redescooter.ses.api.hub.vo.EditUserProfileEnter;
+import com.redescooter.ses.app.common.service.excel.ImportExcelService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.OrderNoGenerateUtil;
@@ -73,13 +76,16 @@ import com.redescooter.ses.web.ros.service.base.OpeCustomerService;
 import com.redescooter.ses.web.ros.service.base.OpeSalePriceService;
 import com.redescooter.ses.web.ros.service.base.OpeSysUserService;
 import com.redescooter.ses.web.ros.service.customer.CustomerRosService;
+import com.redescooter.ses.web.ros.service.excel.ExcelService;
 import com.redescooter.ses.web.ros.utils.ExcelUtil;
 import com.redescooter.ses.web.ros.utils.NumberUtil;
+import com.redescooter.ses.web.ros.verifyhandler.ParameterExcelVerifyHandlerImpl;
 import com.redescooter.ses.web.ros.vo.account.AccountDeatilResult;
 import com.redescooter.ses.web.ros.vo.account.AccountNodeResult;
 import com.redescooter.ses.web.ros.vo.account.OpenAccountEnter;
 import com.redescooter.ses.web.ros.vo.account.RenewAccountEnter;
 import com.redescooter.ses.web.ros.vo.account.VerificationCodeResult;
+import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.customer.AccountListEnter;
 import com.redescooter.ses.web.ros.vo.customer.AccountListResult;
 import com.redescooter.ses.web.ros.vo.customer.CreateCustomerEnter;
@@ -87,11 +93,17 @@ import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
 import com.redescooter.ses.web.ros.vo.customer.EditCustomerEnter;
 import com.redescooter.ses.web.ros.vo.customer.ListCustomerEnter;
 import com.redescooter.ses.web.ros.vo.customer.TrashCustomerEnter;
+import com.redescooter.ses.web.ros.vo.setting.ImportParameterEnter;
+import com.redescooter.ses.web.ros.vo.setting.ImportParameterExcleData;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -99,7 +111,12 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import redis.clients.jedis.JedisCluster;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -148,11 +165,17 @@ public class CustomerRosServiceImpl implements CustomerRosService {
     @DubboReference
     private CityBaseService cityBaseService;
 
+    @Autowired
+    private ExcelService excelService;
+
     @DubboReference
     private AccountBaseService accountBaseService;
 
     @DubboReference
     private TenantBaseService tenantBaseService;
+
+    @Autowired
+    private ImportExcelService importExcelService;
 
     @DubboReference
     private MailMultiTaskService mailMultiTaskService;
@@ -598,7 +621,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         }
 
         // 信息完善度 计算
-       // result.setInformationPerfectionNum(checkCustomerInformation(opeCustomer));
+        // result.setInformationPerfectionNum(checkCustomerInformation(opeCustomer));
         return result;
     }
 
@@ -1189,84 +1212,19 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         return new BooleanResult(true);
     }
 
+
+
+
     @Override
-    public Boolean importCustomer(MultipartFile file,GeneralEnter enter) {
-        List<List<Object>> read = ExcelUtil.readExcel(file);
-        List<OpeCustomer> customerImportDataList = new ArrayList<>();
-        List<String> customerCodes = new ArrayList<>();
-        OpeCustomer opeCustomer = new OpeCustomer();
-        for (int i = 0; i < read.size(); i++) {
-            opeCustomer = new OpeCustomer();
-            //去掉姓和名的空格
-            SesStringUtils.stringTrim(read.get(i).get(0).toString());
-            SesStringUtils.stringTrim(read.get(i).get(1).toString());
-            //判断邮箱是否合法
-            if (!ValidatorUtil.isEmail(read.get(i).get(4).toString())) {
-                throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
-            }
-            if (read.get(i).get(0).toString().length() < 0 && read.get(i).get(0).toString().length() > 30) {
-                throw new SesWebRosException(ExceptionCodeEnums.LENGTH_ABNORMAL.getCode(), ExceptionCodeEnums.LENGTH_ABNORMAL.getMessage());
-            }
-            if (read.get(i).get(1).toString().length() < 0 && read.get(i).get(1).toString().length() > 30) {
-                throw new SesWebRosException(ExceptionCodeEnums.LENGTH_ABNORMAL.getCode(), ExceptionCodeEnums.LENGTH_ABNORMAL.getMessage());
-            }
-            if (read.get(i).get(4).toString().length() < 0 && read.get(i).get(4).toString().length() > 60) {
-                throw new SesWebRosException(ExceptionCodeEnums.LENGTH_ABNORMAL.getCode(), ExceptionCodeEnums.LENGTH_ABNORMAL.getMessage());
-            }
-            //set姓名
-            opeCustomer.setCustomerFirstName(read.get(i).get(0).toString());
-            opeCustomer.setCustomerLastName(read.get(i).get(1).toString());
-            if (read.get(i).get(2).toString().contains("+")) {
-                opeCustomer.setAreaCode(read.get(i).get(2).toString().replaceAll("\\+", "").trim());
-            } else {
-                opeCustomer.setAreaCode(read.get(i).get(2).toString());
-            }
-            if (!ValidatorUtil.isNumber(opeCustomer.getAreaCode()) || !ValidatorUtil.isNumber(read.get(i).get(3).toString())) {
-                throw new SesWebRosException(ExceptionCodeEnums.FULL_PHONE_NUMBER_ABNORMAL.getCode(), ExceptionCodeEnums.FULL_PHONE_NUMBER_ABNORMAL.getMessage());
-            }
-            //set邮箱
-            customerCodes.add(read.get(i).get(4).toString());
-            LambdaQueryWrapper<OpeCustomer> queryWrapper = new LambdaQueryWrapper<>();
-            queryWrapper.eq(OpeCustomer::getDr, Constant.DR_FALSE);
-            queryWrapper.in(OpeCustomer::getEmail, customerCodes);
-            List<OpeCustomer> list = opeCustomerMapper.selectList(queryWrapper);
-            if (org.apache.commons.collections.CollectionUtils.isNotEmpty(list)) {
-                throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_IS_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.CUSTOMER_IS_ALREADY_EXISTS.getMessage());
-            }
-            opeCustomer.setTelephone(read.get(i).get(3).toString());
-            opeCustomer.setDr(Constant.DR_FALSE);
-            opeCustomer.setEmail(read.get(i).get(4).toString());
-            opeCustomer.setTimeZone("08:00");
-            opeCustomer.setStatus("2");
-            opeCustomer.setCustomerSource("1");
-            opeCustomer.setCustomerType("2");
-            opeCustomer.setIndustryType("1");
-            opeCustomer.setScooterQuantity(1);
-            opeCustomer.setId(Long.parseLong(randomString("123456789", 11)));
-            opeCustomer.setCreatedTime(new Date());
-            opeCustomer.setCustomerFullName(new StringBuffer().append(read.get(i).get(0)).append(" ").append(read.get(i).get(0)).toString());
-            opeCustomer.setTenantId(Long.parseLong("0"));
-            opeCustomer.setAccountFlag(CustomerAccountFlagEnum.NORMAL.getValue());
-            customerImportDataList.add(opeCustomer);
-        }
-        return opeCustomerService.saveBatch(customerImportDataList);
+    public Boolean importCustomer(ImportParameterEnter enter) throws IOException {
+        return excelService.customerExport(enter);
     }
 
     public void platformUser(String email) {
         userBaseService.importPlatformUser(email);
     }
 
-    public static String randomString(String salt, int length) {
-        StringBuilder sb = new StringBuilder();
-        Random random = new Random();
-        int len = salt.length();
 
-        for (int i = 0; i < length; ++i) {
-            sb.append(salt.charAt(random.nextInt(len)));
-        }
-
-        return sb.toString();
-    }
 
     /**
      * 校验客户信息

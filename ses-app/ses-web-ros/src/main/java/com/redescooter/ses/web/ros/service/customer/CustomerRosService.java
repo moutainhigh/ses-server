@@ -13,8 +13,10 @@ import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
 import com.redescooter.ses.web.ros.vo.customer.EditCustomerEnter;
 import com.redescooter.ses.web.ros.vo.customer.ListCustomerEnter;
 import com.redescooter.ses.web.ros.vo.customer.TrashCustomerEnter;
+import com.redescooter.ses.web.ros.vo.setting.ImportParameterEnter;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -196,9 +198,9 @@ public interface CustomerRosService {
 
     /**
      * 导入客户
-     * @param file
+     * @param
      * @return
      */
-    Boolean importCustomer(MultipartFile file,GeneralEnter enter);
+    Boolean importCustomer(ImportParameterEnter enter) throws IOException;
 
 }

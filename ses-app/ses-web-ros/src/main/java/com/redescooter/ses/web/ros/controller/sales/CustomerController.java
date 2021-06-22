@@ -15,6 +15,7 @@ import com.redescooter.ses.web.ros.vo.customer.DetailsCustomerResult;
 import com.redescooter.ses.web.ros.vo.customer.EditCustomerEnter;
 import com.redescooter.ses.web.ros.vo.customer.ListCustomerEnter;
 import com.redescooter.ses.web.ros.vo.customer.TrashCustomerEnter;
+import com.redescooter.ses.web.ros.vo.setting.ImportParameterEnter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -106,8 +108,8 @@ public class CustomerController {
 
     @PostMapping(value = "/importCustomer")
     @ApiOperation(value = "导入客户", response = BooleanResult.class)
-    public Response<Boolean> importCustomer(@ModelAttribute @ApiParam("请求参数") MultipartFile file,GeneralEnter enter) {
-        return new Response<>(customerRosService.importCustomer(file,enter));
+    public Response<Boolean> importCustomer(@ModelAttribute @ApiParam("请求参数") ImportParameterEnter enter) throws IOException {
+        return new Response<>(customerRosService.importCustomer(enter));
     }
 
 }

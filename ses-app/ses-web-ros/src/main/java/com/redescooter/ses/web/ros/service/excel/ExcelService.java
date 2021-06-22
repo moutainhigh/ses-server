@@ -30,4 +30,13 @@ public interface ExcelService<T extends GeneralEnter> {
      * @return
      */
     ImportExcelPartsResult readExcelDataByParameter(ImportParameterEnter enter);
+
+
+    /**
+     * 客户表格导入
+     *
+     * @param enter
+     * @return
+     */
+    Boolean customerExport(ImportParameterEnter enter);
 }
