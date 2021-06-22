@@ -17,10 +17,12 @@ import com.redescooter.ses.api.foundation.service.setting.ParameterSettingServic
 import com.redescooter.ses.api.foundation.vo.setting.ParameterGroupResultList;
 import com.redescooter.ses.api.foundation.vo.setting.ParameterResult;
 import com.redescooter.ses.app.common.service.excel.ImportExcelService;
+import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.redis.enums.RedisExpireEnum;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.tool.utils.ValidatorUtil;
 import com.redescooter.ses.tool.utils.date.DateUtil;
+import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.dao.base.OpeCustomerMapper;
 import com.redescooter.ses.web.ros.dao.bom.BomRosServiceMapper;
@@ -78,6 +80,9 @@ public class ExcelServiceImpl implements ExcelService {
 
     @Autowired
     private OpeCustomerMapper opeCustomerMapper;
+
+    @Autowired
+    private IdAppService idAppService;
 
     @Autowired
     private AccountBaseService accountBaseService;
@@ -299,8 +304,8 @@ public class ExcelServiceImpl implements ExcelService {
 
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
-    public Boolean customerExport(ImportParameterEnter enter) {
-
+    public ImportExcelPartsResult customerExport(ImportParameterEnter enter) {
+        ImportExcelPartsResult result = new ImportExcelPartsResult();
         ExcelImportResult<ImportCustomerExcleData> excelImportResult = importExcelService.setiExcelVerifyHandler(new CustomerExcelVerifyHandlerImpl()).importOssExcel(enter.getUrl(),
                 ImportCustomerExcleData.class, new ImportParams());
         if (StringManaConstant.entityIsNull(excelImportResult)) {
@@ -313,27 +318,73 @@ public class ExcelServiceImpl implements ExcelService {
         List<String> customerCodes = new ArrayList<>();
         OpeCustomer opeCustomer = new OpeCustomer();
 
-        if (CollectionUtils.isEmpty(read)) {
-
+        //验证是否有不合法的Eecel数据
+        if (CollectionUtils.isNotEmpty(failList)) {
+            Map<String, String> map = null;
+            List<Map<String, String>> errorMsgList = new ArrayList<>();
+            result.setSuccess(Boolean.FALSE);
+            result.setSuccessNum(read.size());
+            result.setFailNum(failList.size());
+            for (ImportCustomerExcleData excle : failList) {
+                map = new HashMap<>();
+                map.put(String.valueOf(excle.getRowNum()), excle.getErrorMsg());
+                errorMsgList.add(map);
+            }
+            result.setErrorMsgList(errorMsgList);
+            return result;
         }
+
+        if (CollectionUtils.isEmpty(read)) {
+            //表格数据为空 做逻辑判断
+            result.setSuccess(Boolean.FALSE);
+            Map<String, String> map = new TreeMap<>();
+            map.put("msg", "The table data is empty and the import failed.");
+            List<Map<String, String>> mapList = new ArrayList<>();
+            mapList.add(map);
+            result.setSuccessNum(0);
+            result.setFailNum(read.size());
+            result.setErrorMsgList(mapList);
+            return result;
+        }
+
         for (int i = 0; i < read.size(); i++) {
-            log.info(read.get(i).getFirstName().length() + "length>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             opeCustomer = new OpeCustomer();
             //去掉姓和名的空格
             SesStringUtils.stringTrim(read.get(i).getFirstName());
             SesStringUtils.stringTrim(read.get(i).getLastName());
             //判断邮箱是否合法
             if (!ValidatorUtil.isEmail(read.get(i).getEmail())) {
-                throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
+                result.setSuccess(Boolean.FALSE);
+                Map<String, String> map = new TreeMap<>();
+                map.put("msg", "The email is not legal..");
+                List<Map<String, String>> mapList = new ArrayList<>();
+                mapList.add(map);
+                result.setSuccessNum(0);
+                result.setFailNum(read.size());
+                result.setErrorMsgList(mapList);
+                return result;
             }
             if (read.get(i).getFirstName().length() < 0 || read.get(i).getFirstName().length() > 30) {
-                throw new SesWebRosException(ExceptionCodeEnums.LENGTH_ABNORMAL.getCode(), ExceptionCodeEnums.LENGTH_ABNORMAL.getMessage());
-            }
-            if (read.get(i).getLastName().length() < 0 || read.get(i).getLastName().length() > 30) {
-                throw new SesWebRosException(ExceptionCodeEnums.LENGTH_ABNORMAL.getCode(), ExceptionCodeEnums.LENGTH_ABNORMAL.getMessage());
+                result.setSuccess(Boolean.FALSE);
+                Map<String, String> map = new TreeMap<>();
+                map.put("msg", "Abnormal last or last name length.");
+                List<Map<String, String>> mapList = new ArrayList<>();
+                mapList.add(map);
+                result.setSuccessNum(0);
+                result.setFailNum(read.size());
+                result.setErrorMsgList(mapList);
+                return result;
             }
             if (read.get(i).getEmail().length() < 0 || read.get(i).getEmail().length() > 60) {
-                throw new SesWebRosException(ExceptionCodeEnums.LENGTH_ABNORMAL.getCode(), ExceptionCodeEnums.LENGTH_ABNORMAL.getMessage());
+                result.setSuccess(Boolean.FALSE);
+                Map<String, String> map = new TreeMap<>();
+                map.put("msg", "Mail Length Abnormal.");
+                List<Map<String, String>> mapList = new ArrayList<>();
+                mapList.add(map);
+                result.setSuccessNum(0);
+                result.setFailNum(read.size());
+                result.setErrorMsgList(mapList);
+                return result;
             }
             //set姓名
             opeCustomer.setCustomerFirstName(read.get(i).getFirstName());
@@ -343,39 +394,50 @@ public class ExcelServiceImpl implements ExcelService {
             } else {
                 opeCustomer.setAreaCode(read.get(i).getAreaCode());
             }
-            if (!ValidatorUtil.isNumber(opeCustomer.getAreaCode()) || !ValidatorUtil.isNumber(read.get(i).getPhone().toString())) {
-                throw new SesWebRosException(ExceptionCodeEnums.FULL_PHONE_NUMBER_ABNORMAL.getCode(), ExceptionCodeEnums.FULL_PHONE_NUMBER_ABNORMAL.getMessage());
+            if (!ValidatorUtil.isNumber(opeCustomer.getAreaCode()) || !ValidatorUtil.isNumber(read.get(i).getPhone())) {
+                result.setSuccess(Boolean.FALSE);
+                Map<String, String> map = new TreeMap<>();
+                map.put("msg", "The area code or cell phone number should be numeric only.");
+                List<Map<String, String>> mapList = new ArrayList<>();
+                mapList.add(map);
+                result.setSuccessNum(0);
+                result.setFailNum(read.size());
+                result.setErrorMsgList(mapList);
+                return result;
             }
             //set邮箱
-            customerCodes.add(read.get(i).getEmail().toString());
+            customerCodes.add(read.get(i).getEmail());
             LambdaQueryWrapper<OpeCustomer> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(OpeCustomer::getDr, Constant.DR_FALSE);
             queryWrapper.in(OpeCustomer::getEmail, customerCodes);
             List<OpeCustomer> list = opeCustomerMapper.selectList(queryWrapper);
             if (org.apache.commons.collections.CollectionUtils.isNotEmpty(list)) {
-                throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_IS_ALREADY_EXISTS.getCode(), ExceptionCodeEnums.CUSTOMER_IS_ALREADY_EXISTS.getMessage());
+                result.setSuccess(Boolean.FALSE);
+                Map<String, String> map = new TreeMap<>();
+                map.put("msg", "Repeated account.");
+                List<Map<String, String>> mapList = new ArrayList<>();
+                mapList.add(map);
+                result.setSuccessNum(0);
+                result.setFailNum(read.size());
+                result.setErrorMsgList(mapList);
+                return result;
             }
-            opeCustomer.setTelephone(read.get(i).getPhone().toString());
+            opeCustomer.setTelephone(read.get(i).getPhone());
             opeCustomer.setDr(Constant.DR_FALSE);
-            opeCustomer.setEmail(read.get(i).getEmail().toString());
+            opeCustomer.setEmail(read.get(i).getEmail());
             opeCustomer.setTimeZone("08:00");
             opeCustomer.setStatus("2");
             opeCustomer.setCustomerSource("1");
             opeCustomer.setCustomerType("2");
             opeCustomer.setIndustryType("1");
             opeCustomer.setScooterQuantity(1);
-            opeCustomer.setId(Long.parseLong(randomString("123456789", 11)));
+            opeCustomer.setId(idAppService.getId(SequenceName.OPE_CUSTOMER));
             opeCustomer.setCreatedTime(new Date());
             opeCustomer.setCustomerFullName(new StringBuffer().append(read.get(i).getFirstName()).append(" ").append(read.get(i).getFirstName()).toString());
             opeCustomer.setTenantId(Long.parseLong("0"));
             opeCustomer.setAccountFlag(CustomerAccountFlagEnum.INACTIVATED.getValue());
 
             BaseUserResult userResult = null;
-
-        /*if (checkMail.isSuccess()) {
-            throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
-        }*/
-
             // 开始创建客户
             BaseCustomerResult baseCustomer = new BaseCustomerResult();
             BeanUtils.copyProperties(opeCustomer, baseCustomer);
@@ -395,7 +457,12 @@ public class ExcelServiceImpl implements ExcelService {
         String key = new StringBuffer().append("send::").append(opeCustomer.getEmail()).toString();
         jedisCluster.set(key, DateUtil.getDate());
         jedisCluster.expire(key, new Long(RedisExpireEnum.MINUTES_3.getSeconds()).intValue());
-        return opeCustomerService.saveBatch(customerImportDataList);
+        opeCustomerService.saveBatch(customerImportDataList);
+        result.setSuccess(Boolean.TRUE);
+        result.setSuccessNum(read.size());
+        result.setFailNum(0);
+        result.setRequestId(enter.getRequestId());
+        return result;
     }
 
 

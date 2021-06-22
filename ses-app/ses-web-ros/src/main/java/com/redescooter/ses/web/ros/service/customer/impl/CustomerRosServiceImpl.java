@@ -1216,7 +1216,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
 
     @Override
-    public Boolean importCustomer(ImportParameterEnter enter) throws IOException {
+    public ImportExcelPartsResult importCustomer(ImportParameterEnter enter) throws IOException {
         return excelService.customerExport(enter);
     }
 

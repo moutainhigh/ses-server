@@ -38,5 +38,5 @@ public interface ExcelService<T extends GeneralEnter> {
      * @param enter
      * @return
      */
-    Boolean customerExport(ImportParameterEnter enter);
+    ImportExcelPartsResult customerExport(ImportParameterEnter enter);
 }
