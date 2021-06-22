@@ -333,7 +333,17 @@ public class FrAppServiceImpl implements FrAppService {
      */
     @Override
     public InquiryDetailResult getDetail(StringEnter enter) {
-        return scooterNodeService.getDetail(enter);
+        InquiryDetailResult result = scooterNodeService.getDetail(enter);
+        Long colorId = result.getColorId();
+        if (null == colorId) {
+            throw new SesMobileFrWhException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+        }
+        OpeColor color = opeColorService.getById(colorId);
+        if (null == color) {
+            throw new SesMobileFrWhException(ExceptionCodeEnums.COLOR_NOT_EXIST.getCode(), ExceptionCodeEnums.COLOR_NOT_EXIST.getMessage());
+        }
+        result.setColorName(color.getColorName());
+        return result;
     }
 
     /**

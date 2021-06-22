@@ -28,6 +28,9 @@ public class InquiryDetailResult extends GeneralResult {
     @ApiModelProperty(value = "颜色名称")
     private String colorName;
 
+    @ApiModelProperty(value = "颜色id")
+    private Long colorId;
+
     @ApiModelProperty(value = "RSN")
     private String rsn;
 

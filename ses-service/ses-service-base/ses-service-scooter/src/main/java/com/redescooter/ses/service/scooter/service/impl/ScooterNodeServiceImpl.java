@@ -155,11 +155,7 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
 
         InquiryDetailResult result = new InquiryDetailResult();
         result.setScooterName(ScooterModelEnum.getScooterModelByType(Integer.valueOf(scooter.getModel())));
-        ColorDTO color = colorService.getColorInfoById(scooter.getColorId());
-        if (null == color) {
-            throw new ScooterException(ExceptionCodeEnums.COLOR_NOT_EXISTS.getCode(), ExceptionCodeEnums.COLOR_NOT_EXISTS.getMessage());
-        }
-        result.setColorName(color.getColorName());
+        result.setColorId(scooter.getColorId());
         result.setRsn(scooter.getScooterNo());
         result.setTabletSn(scooter.getTabletSn());
         result.setBluetoothAddress(scooter.getBluetoothMacAddress());
