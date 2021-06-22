@@ -261,7 +261,7 @@ public class InWhouseServiceImpl implements InWhouseService {
                     scooterB.setCreatedTime(new Date());
                     scooterB.setUpdatedBy(enter.getUserId());
                     scooterB.setUpdatedTime(new Date());
-                    scooterB.setRsn(scooterEnter.getRsn());
+                    scooterB.setRsn(scooterEnter.getSn());
                     scooterB.setTabletSn(scooterEnter.getTabletSn());
                     scooterB.setBbi(scooterEnter.getBbi());
                     scooterB.setController(scooterEnter.getController());
