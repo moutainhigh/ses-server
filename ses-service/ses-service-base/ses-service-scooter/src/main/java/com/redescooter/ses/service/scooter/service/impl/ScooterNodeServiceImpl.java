@@ -263,7 +263,7 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
         scoScooterNodeService.update(node, wrapper);
 
         // 修改码库此rsn为已用
-        codebaseService.updateRsn(rsn, enter.getUserId());
+        //codebaseService.updateRsn(rsn, enter.getUserId());
         return new GeneralResult(enter.getRequestId());
     }
 
@@ -496,8 +496,8 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
         wrapper.eq(ScoScooterNode::getScooterId, scooterId);
         scoScooterNodeService.update(node, wrapper);
 
-        // 修改码库此rsn为已用
-        codebaseService.updateVin(vinCode, enter.getUserId());
+        // 修改码库此vin为已用
+        //codebaseService.updateVin(vinCode, enter.getUserId());
 
         // sim卡信息录入
         ScoScooter scooter = scoScooterService.getById(scooterId);

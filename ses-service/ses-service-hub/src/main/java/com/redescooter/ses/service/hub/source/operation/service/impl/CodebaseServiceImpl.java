@@ -24,6 +24,7 @@ import java.util.Date;
  */
 @DubboService
 @Slf4j
+@DS("operation")
 public class CodebaseServiceImpl implements CodebaseService {
 
     @Autowired
