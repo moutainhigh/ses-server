@@ -389,10 +389,10 @@ public class ExcelServiceImpl implements ExcelService {
             //set姓名
             opeCustomer.setCustomerFirstName(read.get(i).getFirstName());
             opeCustomer.setCustomerLastName(read.get(i).getLastName());
-            if (read.get(i).getAreaCode().contains("+")) {
-                opeCustomer.setMobileAreaCode(read.get(i).getAreaCode().replaceAll("\\+", "").trim());
+            if (read.get(i).getMobileAreaCode().contains("+")) {
+                opeCustomer.setMobileAreaCode(read.get(i).getMobileAreaCode().replaceAll("\\+", "").trim());
             } else {
-                opeCustomer.setMobileAreaCode(read.get(i).getAreaCode());
+                opeCustomer.setMobileAreaCode(read.get(i).getMobileAreaCode());
             }
             if (!ValidatorUtil.isNumber(opeCustomer.getMobileAreaCode()) || !ValidatorUtil.isNumber(read.get(i).getPhone())) {
                 result.setSuccess(Boolean.FALSE);

@@ -29,7 +29,7 @@ public class CustomerExcelVerifyHandlerImpl implements IExcelVerifyHandler<Impor
             builder.append("lastName,This is  not must null;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
-        if (StringUtils.isEmpty(obj.getAreaCode())) {
+        if (StringUtils.isEmpty(obj.getMobileAreaCode())) {
             builder.append("areaCode,This is  not must null;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }

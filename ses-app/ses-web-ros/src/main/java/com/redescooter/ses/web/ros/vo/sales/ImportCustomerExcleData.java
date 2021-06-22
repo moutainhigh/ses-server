@@ -37,8 +37,8 @@ public class ImportCustomerExcleData implements Serializable, IExcelModel, IExce
     /**
      * 区号
      */
-    @Excel(name = "area_code", width = 25)
-    private String areaCode;
+    @Excel(name = "mobile_area_code", width = 25)
+    private String mobileAreaCode;
 
     /**
      * 手机号码
