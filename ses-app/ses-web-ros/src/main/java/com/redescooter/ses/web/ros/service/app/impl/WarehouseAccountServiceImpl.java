@@ -9,7 +9,6 @@ import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.hub.service.operation.FrWhAppService;
 import com.redescooter.ses.starter.common.service.IdAppService;
-import com.redescooter.ses.tool.crypt.RsaUtils;
 import com.redescooter.ses.tool.utils.SesStringUtils;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.constant.StringManaConstant;
@@ -25,15 +24,12 @@ import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.app.WarehouseAccountService;
 import com.redescooter.ses.web.ros.service.base.OpeWarehouseAccountService;
 import com.redescooter.ses.web.ros.utils.NumberUtil;
-import com.redescooter.ses.web.ros.vo.app.UpdatePasswordEnter;
 import com.redescooter.ses.web.ros.vo.app.WarehouseAccountListEnter;
 import com.redescooter.ses.web.ros.vo.app.WarehouseAccountSaveEnter;
 import com.redescooter.ses.web.ros.vo.app.WarehouseAccountUpdateEnter;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,16 +110,6 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
         // 校验
         check(enter);
 
-        // 密码解密
-        String decryptPassword;
-        try {
-            decryptPassword = RsaUtils.decrypt(enter.getNewPassword(), privateKey);
-        } catch (Exception e) {
-            throw new SesWebRosException(ExceptionCodeEnums.PASSROD_WRONG.getCode(), ExceptionCodeEnums.PASSROD_WRONG.getMessage());
-        }
-
-        int salt = RandomUtils.nextInt(10000, 99999);
-        String pwd = DigestUtils.md5Hex(decryptPassword + salt);
         OpeWarehouseAccount account = new OpeWarehouseAccount();
         account.setId(idAppService.getId(SequenceName.OPE_WAREHOUSE_ACCOUNT));
         account.setDr(Constant.DR_FALSE);
@@ -132,8 +118,6 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
         account.setEmail(enter.getEmail());
         account.setPosition(enter.getPosition());
         account.setSystem(enter.getSystem());
-        account.setPassword(pwd);
-        account.setSalt(String.valueOf(salt));
         account.setStatus(StatusEnum.DISABLE.getCode());
         account.setCreatedBy(enter.getUserId());
         account.setCreatedTime(new Date());
@@ -196,7 +180,6 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
             throw new SesWebRosException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
 
-        account.setName(enter.getName());
         account.setPosition(enter.getPosition());
         account.setSystem(enter.getSystem());
         account.setUpdatedBy(enter.getUserId());
@@ -269,7 +252,7 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
     /**
      * 修改密码
      */
-    @Override
+    /*@Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult updatePassword(UpdatePasswordEnter enter) {
         OpeWarehouseAccount account = opeWarehouseAccountService.getById(enter.getId());
@@ -299,7 +282,7 @@ public class WarehouseAccountServiceImpl implements WarehouseAccountService {
             }
         }
         return new GeneralResult(enter.getRequestId());
-    }
+    }*/
 
     /**
      * 删除

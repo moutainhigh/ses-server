@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.date.DayCodeEnum;
 import com.redescooter.ses.api.common.enums.date.MonthCodeEnum;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -63,6 +64,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,6 +75,7 @@ import redis.clients.jedis.JedisCluster;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -256,6 +259,44 @@ public class FrAppServiceImpl implements FrAppService {
         Boolean flag = jedisCluster.exists(token);
         if (flag) {
             jedisCluster.del(token);
+        }
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
+     * 注册时输入邮箱校验是否可用
+     */
+    @Override
+    public BooleanResult checkEmail(StringEnter enter) {
+        LambdaQueryWrapper<OpeWarehouseAccount> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeWarehouseAccount::getDr, Constant.DR_FALSE);
+        qw.eq(OpeWarehouseAccount::getEmail, enter.getKeyword().trim());
+        qw.eq(OpeWarehouseAccount::getSystem, 1);
+        OpeWarehouseAccount account = opeWarehouseAccountService.getOne(qw);
+        if (null == account) {
+            return new BooleanResult(Boolean.FALSE);
+        }
+        return new BooleanResult(Boolean.TRUE);
+    }
+
+    /**
+     * 注册
+     */
+    @Override
+    public GeneralResult register(AppLoginEnter enter) {
+        LambdaQueryWrapper<OpeWarehouseAccount> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeWarehouseAccount::getDr, Constant.DR_FALSE);
+        qw.eq(OpeWarehouseAccount::getEmail, enter.getEmail().trim());
+        qw.eq(OpeWarehouseAccount::getSystem, 1);
+        OpeWarehouseAccount account = opeWarehouseAccountService.getOne(qw);
+        if (null != account) {
+            int salt = RandomUtils.nextInt(10000, 99999);
+            String pwd = DigestUtils.md5Hex(enter.getPassword() + salt);
+            account.setSalt(String.valueOf(salt));
+            account.setPassword(pwd);
+            account.setStatus(StatusEnum.ENABLE.getCode());
+            account.setUpdatedTime(new Date());
+            opeWarehouseAccountService.updateById(account);
         }
         return new GeneralResult(enter.getRequestId());
     }

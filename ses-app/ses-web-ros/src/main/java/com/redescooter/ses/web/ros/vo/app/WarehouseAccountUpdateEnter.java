@@ -23,9 +23,6 @@ public class WarehouseAccountUpdateEnter extends GeneralEnter {
     @ApiModelProperty(value = "id")
     private Long id;
 
-    @ApiModelProperty(value = "使用者")
-    private String name;
-
     @ApiModelProperty(value = "职位")
     private String position;
 

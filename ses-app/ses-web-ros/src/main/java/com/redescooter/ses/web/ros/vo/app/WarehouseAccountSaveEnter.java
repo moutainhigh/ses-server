@@ -35,7 +35,4 @@ public class WarehouseAccountSaveEnter extends GeneralEnter {
     @ApiModelProperty(value = "可操作系统 1FR 2CH")
     private Integer system;
 
-    @ApiModelProperty(value = "新密码")
-    private String newPassword;
-
 }

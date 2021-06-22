@@ -1,6 +1,7 @@
 package com.redescooter.ses.mobile.wh.fr.controller;
 
 import com.redescooter.ses.api.common.annotation.IgnoreLoginCheck;
+import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
@@ -61,6 +62,26 @@ public class FrAppController {
     @ApiOperation(value = "登出", notes = "登出")
     public Response<GeneralResult> logout(@ModelAttribute GeneralEnter enter) {
         return new Response<>(frAppService.logout(enter));
+    }
+
+    /**
+     * 注册时输入邮箱校验是否可用
+     */
+    @PostMapping("/check")
+    @ApiOperation(value = "注册时输入邮箱校验是否可用", notes = "注册时输入邮箱校验是否可用")
+    @IgnoreLoginCheck
+    public Response<BooleanResult> checkEmail(@ModelAttribute StringEnter enter) {
+        return new Response<>(frAppService.checkEmail(enter));
+    }
+
+    /**
+     * 注册
+     */
+    @PostMapping("/register")
+    @ApiOperation(value = "注册", notes = "注册")
+    @IgnoreLoginCheck
+    public Response<GeneralResult> register(@ModelAttribute AppLoginEnter enter) {
+        return new Response<>(frAppService.register(enter));
     }
 
     /**

@@ -199,13 +199,13 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
             scooterB.setColorId(color.getId());
             // 因为每一辆车只对应一个rsn,所以入库数量只能是1
             scooterB.setInWhQty(1);
-            scooterB.setRsn(item.getRsn());
-            scooterB.setTabletSn(item.getTabletSn());
-            scooterB.setBbi(item.getBbi());
-            scooterB.setController(item.getController());
-            scooterB.setMotor(item.getMotor());
-            scooterB.setImei(item.getImei());
-            scooterB.setBluetoothMacAddress(item.getBluetoothMacAddress());
+            scooterB.setRsn(item.getRsn().replaceAll(" ", ""));
+            scooterB.setTabletSn(item.getTabletSn().replaceAll(" ", ""));
+            scooterB.setBbi(item.getBbi().replaceAll(" ", ""));
+            scooterB.setController(item.getController().replaceAll(" ", ""));
+            scooterB.setMotor(item.getMotor().replaceAll(" ", ""));
+            scooterB.setImei(item.getImei().replaceAll(" ", ""));
+            scooterB.setBluetoothMacAddress(item.getBluetoothMacAddress().replaceAll(" ", ""));
             scooterB.setCreatedBy(enter.getUserId());
             scooterB.setCreatedTime(new Date());
             scooterB.setUpdatedBy(enter.getUserId());

@@ -8,7 +8,6 @@ import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.service.app.WarehouseAccountService;
-import com.redescooter.ses.web.ros.vo.app.UpdatePasswordEnter;
 import com.redescooter.ses.web.ros.vo.app.WarehouseAccountListEnter;
 import com.redescooter.ses.web.ros.vo.app.WarehouseAccountSaveEnter;
 import com.redescooter.ses.web.ros.vo.app.WarehouseAccountUpdateEnter;
@@ -97,12 +96,12 @@ public class WarehouseAccountController {
     /**
      * 修改密码
      */
-    @PostMapping("/password")
+    /*@PostMapping("/password")
     @ApiOperation(value = "修改密码", notes = "修改密码")
     @AvoidDuplicateSubmit
     public Response<GeneralResult> updatePassword(@ModelAttribute UpdatePasswordEnter enter) {
         return new Response<>(warehouseAccountService.updatePassword(enter));
-    }
+    }*/
 
     /**
      * 删除

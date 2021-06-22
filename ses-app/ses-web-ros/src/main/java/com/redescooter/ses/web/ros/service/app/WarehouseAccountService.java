@@ -5,7 +5,6 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
-import com.redescooter.ses.web.ros.vo.app.UpdatePasswordEnter;
 import com.redescooter.ses.web.ros.vo.app.WarehouseAccountListEnter;
 import com.redescooter.ses.web.ros.vo.app.WarehouseAccountSaveEnter;
 import com.redescooter.ses.web.ros.vo.app.WarehouseAccountUpdateEnter;
@@ -52,7 +51,7 @@ public interface WarehouseAccountService {
     /**
      * 修改密码
      */
-    GeneralResult updatePassword(UpdatePasswordEnter enter);
+    //GeneralResult updatePassword(UpdatePasswordEnter enter);
 
     /**
      * 删除
