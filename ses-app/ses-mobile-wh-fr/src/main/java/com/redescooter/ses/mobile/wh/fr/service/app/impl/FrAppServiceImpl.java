@@ -342,11 +342,13 @@ public class FrAppServiceImpl implements FrAppService {
         if (null == scooterB) {
             throw new SesMobileFrWhException(ExceptionCodeEnums.ORDER_NOT_EXIST.getCode(), ExceptionCodeEnums.ORDER_NOT_EXIST.getMessage());
         }
-        Map<String, String> result = Maps.newHashMapWithExpectedSize(6);
-        result.put("tabletSn", scooterB.getTabletSn());
+
+        Map<String, String> result = Maps.newLinkedHashMap();
+        result.put("rsn", scooterB.getRsn());
         result.put("bbi", scooterB.getBbi());
         result.put("controller", scooterB.getController());
         result.put("motor", scooterB.getMotor());
+        result.put("tabletSn", scooterB.getTabletSn());
         result.put("imei", scooterB.getImei());
         result.put("bluetoothMacAddress", scooterB.getBluetoothMacAddress());
         return result;
