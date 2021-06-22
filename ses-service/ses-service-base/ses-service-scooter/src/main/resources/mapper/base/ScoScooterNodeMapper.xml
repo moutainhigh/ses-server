@@ -50,7 +50,7 @@
             scooter.color_id,
             scooter.battery,
             scooter.created_time,
-            ifnull(node.app_node, 0)
+            ifnull(node.app_node, 0) as appNode
         from sco_scooter scooter
         left join sco_scooter_node node on scooter.id = node.scooter_id and node.dr = 0
         where scooter.dr = 0 and scooter.warehouse_account_id = #{warehouseAccountId}
