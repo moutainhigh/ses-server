@@ -95,8 +95,13 @@ public class CreateCustomerEnter extends GeneralEnter {
     private String countryCode;
 
     @ApiModelProperty(value = "电话")
-    @Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.QTY_IS_NUMBER,message = "数量必须为数字")
+    @Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.QTY_IS_NUMBER,message = "电话必须为数字")
     private String telephone;
+
+
+    @ApiModelProperty(value = "区号")
+    @Regexp(value = RegexpConstant.number,code = ValidationExceptionCode.QTY_IS_NUMBER,message = "区号必须为数字")
+    private String areaCode;
 
     @ApiModelProperty(value = "邮件")
     @NotNull(code = ValidationExceptionBaseCode.EMAIL_IS_EMPTY, message = "邮箱不能为空")

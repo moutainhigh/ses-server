@@ -275,6 +275,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         saveVo.setUpdatedTime(new Date());
         saveVo.setDef2(enter.getCityName());
         saveVo.setDef3(enter.getDistrustName());
+        saveVo.setAreaCode(enter.getAreaCode());
         opeCustomerMapper.insert(saveVo);
         // 新增潜在客户的时候 给客户生成一个询价单
         //creatInquiry(saveVo);
@@ -507,12 +508,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
             }
         }
 
-        if (StringUtils.isNotEmpty(enter.getAreaCode())) {
-                throw new SesWebRosException(ExceptionCodeEnums.FULL_PHONE_NUMBER_ABNORMAL.getCode(), ExceptionCodeEnums.FULL_PHONE_NUMBER_ABNORMAL.getMessage());
-        }
-
-
-        if (Strings.isNotBlank(enter.getTelephone())) {
+        if (Strings.isBlank(enter.getTelephone())) {
                 throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
         }
         if (StringUtils.isNotBlank(enter.getEmail())) {
@@ -1378,60 +1374,24 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      * @param enter
      */
     private void checkSaveCustomerFiledSingle(CreateCustomerEnter enter) {
-        if (StringUtils.isNotEmpty(enter.getContactFirstName())) {
-            if (NumberUtil.ltTwoOrGtTwenty(enter.getContactFirstName().length())) {
-                throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
-            }
-        }
-        if (StringUtils.isNotEmpty(enter.getContactLastName())) {
-            if (NumberUtil.ltTwoOrGtTwenty(enter.getContactLastName().length())) {
-                throw new SesWebRosException(ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CONSTANT_NAME_IS_NOT_ILLEGAL.getMessage());
-            }
-        }
-        if (StringUtils.isNotEmpty(enter.getCompanyName())) {
-            if (NumberUtil.ltTwoOrGtThirty(enter.getCompanyName().length())) {
-                throw new SesWebRosException(ExceptionCodeEnums.COMPANY_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.COMPANY_NAME_IS_NOT_ILLEGAL.getMessage());
-            }
-        }
         //名称校验
         if (StringUtils.isNotEmpty(enter.getCustomerFirstName())) {
-            if (NumberUtil.ltTwoOrGtTwenty(enter.getCustomerFirstName().length())) {
+            if (NumberUtil.GtThirty(enter.getCustomerFirstName().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getMessage());
             }
         }
         if (StringUtils.isNotEmpty(enter.getCustomerLastName())) {
-            if (NumberUtil.ltTwoOrGtTwenty(enter.getCustomerLastName().length())) {
+            if (NumberUtil.GtThirty(enter.getCustomerLastName().length())) {
                 throw new SesWebRosException(ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.CUSTOMER_NAME_IS_NOT_ILLEGAL.getMessage());
             }
         }
-        if (StringUtils.isNotEmpty(enter.getRemark())) {
-            if (NumberUtil.ltTwoOrGtTwoHundred(enter.getRemark().length())) {
-                throw new SesWebRosException(ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.REMARK_IS_NOT_ILLEGAL.getMessage());
-            }
-        }
-        if (StringUtils.isNotEmpty(enter.getInvoiceNum())) {
-            //发票号
-            if (NumberUtil.ltTwoOrGtThirty(enter.getInvoiceNum().length())) {
-                throw new SesWebRosException(ExceptionCodeEnums.INVOICE_NUM_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.INVOICE_NUM_IS_NOT_ILLEGAL.getMessage());
-            }
-        }
-        if (StringUtils.isNotEmpty(enter.getBusinessLicenseNum())) {
-            //营业执照编号 校验
-            if (NumberUtil.ltTwoOrGtThirty(enter.getBusinessLicenseNum().length())) {
-                throw new SesWebRosException(ExceptionCodeEnums.BUSSINESS_NUM_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.BUSSINESS_NUM_IS_NOT_ILLEGAL.getMessage());
-            }
-        }
-        if (StringManaConstant.entityIsNotNull(enter.getScooterQuantity())) {
-            if (NumberUtil.ltOneOrGtSix(String.valueOf(enter.getScooterQuantity()).length())) {
-                throw new SesWebRosException(ExceptionCodeEnums.SCOOTER_QTY_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.SCOOTER_QTY_IS_NOT_ILLEGAL.getMessage());
-            }
-        }
-        if (Strings.isNotBlank(enter.getTelephone())) {
-          //  if (NumberUtil.ltEightOrGtTwenty(enter.getTelephone().length())) {
+        if (Strings.isBlank(enter.getTelephone())) {
                 throw new SesWebRosException(ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.TELEPHONE_IS_NOT_ILLEGAL.getMessage());
-//            }
         }
         if (StringUtils.isNotBlank(enter.getEmail())) {
+            if (NumberUtil.GtFifty(enter.getEmail().length())) {
+                throw new SesWebRosException(ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getCode(), ExceptionCodeEnums.EMAIL_IS_NOT_ILLEGAL.getMessage());
+            }
             String email = enter.getEmail();
             int firstIndex = email.indexOf("@");
             int secondIndex = email.lastIndexOf(".");

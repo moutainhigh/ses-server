@@ -50,10 +50,10 @@
     </sql>
 
     <select id="countStatus" resultType="com.redescooter.ses.api.common.vo.CountByStatusResult">
-           select a.status, count(*) totalCount
-           from ope_customer a
-           where a.dr =0
-           group by a.status
+        select a.status, count(*) totalCount
+        from ope_customer a
+        where a.dr = 0
+        group by a.status
     </select>
 
     <select id="customerAccountCount" resultType="int">
@@ -123,9 +123,7 @@
         from ope_customer opc
         where 1=1
         and opc.dr =0
-        <if test="status != null and status != ''">
-            and opc.status =#{status}
-        </if>
+        and opc.status = 2
         <if test="cityName != null and cityName != ''">
             and opc.def2 =#{cityName}
             <if test="distrustName != null and distrustName != ''">
@@ -151,11 +149,12 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and (
-               opc.customer_full_name like concat('%',#{keyword},'%')
+            opc.customer_full_name like concat('%',#{keyword},'%')
             or opc.email like concat('%',#{keyword},'%')
             or opc.contact_full_name like concat('%',#{keyword},'%')
             )
         </if>
+
         <if test="status ==2 or status==3 or status==4">
             order by opc.updated_time desc
         </if>
@@ -197,7 +196,7 @@
         </if>
         <if test="keyword != null and keyword != ''">
             and (
-               opc.customer_full_name like concat('%',#{keyword},'%')
+            opc.customer_full_name like concat('%',#{keyword},'%')
             or opc.email like concat('%',#{keyword},'%')
             or opc.contact_full_name like concat('%',#{keyword},'%')
             )
@@ -221,46 +220,48 @@
                assignation_scooter_qty as assignationScooterQty
         from ope_customer
         where dr = 0
-        and status = 2
+          and status = 2
         order by created_time desc
-        limit #{startRow},#{pageSize}
+            limit #{startRow}, #{pageSize}
     </select>
     <select id="scooterCustomerCount"
             resultType="int">
-            select count(*)
-            from ope_customer
-            where dr = 0
-            and status = 2
-            order by created_time desc
+        select count(*)
+        from ope_customer
+        where dr = 0
+          and status = 2
+        order by created_time desc
     </select>
     <select id="queryAccountRecordEamil"
             resultType="com.redescooter.ses.web.ros.vo.customer.AccountListResult">
-        select id as id,
-        tenant_id as tenantId,
-        customer_first_name as customerFirstName,
-        customer_last_name as customerLastName,
-        customer_full_name as customerFullName,
-        contact_first_name as contactFirstName,
-        contact_last_name as contactLastName,
-        contact_full_name as contactFullName,
-        company_name as companyName,
-        email as email,
-        customer_type as customerType,
-        industry_type as industryType
+        select id                  as id,
+               tenant_id           as tenantId,
+               customer_first_name as customerFirstName,
+               customer_last_name  as customerLastName,
+               customer_full_name  as customerFullName,
+               contact_first_name  as contactFirstName,
+               contact_last_name   as contactLastName,
+               contact_full_name   as contactFullName,
+               company_name        as companyName,
+               email               as email,
+               customer_type       as customerType,
+               industry_type       as industryType
         from ope_customer
         where dr = 0
-        and status!=4
+          and status!=4
     </select>
 
 
     <select id="getProductId" resultType="java.lang.Long">
         select scooter.id
         from ope_sale_scooter scooter
-        left join ope_specificat_type spe on scooter.specificat_id = spe.id
-        left join ope_color color on scooter.color_id = color.id
-        where color.dr = 0 and scooter.dr = 0 and spe.dr = 0
-        and spe.specificat_name = 'E50' and color.color_value = '#2D2926'
-        limit 1
+                 left join ope_specificat_type spe on scooter.specificat_id = spe.id
+                 left join ope_color color on scooter.color_id = color.id
+        where color.dr = 0
+          and scooter.dr = 0
+          and spe.dr = 0
+          and spe.specificat_name = 'E50'
+          and color.color_value = '#2D2926' limit 1
     </select>
 
 </mapper>
