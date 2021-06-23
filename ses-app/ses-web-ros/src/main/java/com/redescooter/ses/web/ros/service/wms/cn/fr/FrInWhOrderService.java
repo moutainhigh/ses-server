@@ -1,10 +1,14 @@
 package com.redescooter.ses.web.ros.service.wms.cn.fr;
 
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrColorResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderAddEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderCheckEnter;
+
+import java.util.List;
 
 /**
  * @Description 法国仓库入库单Service层
@@ -27,5 +31,10 @@ public interface FrInWhOrderService {
      * 校验rsn在法国库存产品序列号表是否存在
      */
     BooleanResult checkRsn(FrInWhOrderCheckEnter enter);
+
+    /**
+     * 获取颜色
+     */
+    List<FrColorResult> getColorList(GeneralEnter enter);
 
 }
