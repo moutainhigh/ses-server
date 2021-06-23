@@ -18,6 +18,7 @@ import com.redescooter.ses.web.ros.vo.setting.ImportParameterEnter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +53,7 @@ public interface CustomerRosService {
      * @param enter
      * @return
      */
-    GeneralResult save(CreateCustomerEnter enter);
+    GeneralResult save(CreateCustomerEnter enter) throws ParseException;
 
     /**
      * 编辑更新客户
@@ -202,6 +203,6 @@ public interface CustomerRosService {
      * @param
      * @return
      */
-    ImportExcelPartsResult importCustomer(ImportParameterEnter enter) throws IOException;
+    ImportExcelPartsResult importCustomer(ImportParameterEnter enter) throws ParseException;
 
 }

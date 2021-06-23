@@ -5,6 +5,8 @@ import com.redescooter.ses.web.ros.vo.bom.parts.ImportExcelPartsResult;
 import com.redescooter.ses.web.ros.vo.bom.parts.ImportPartsEnter;
 import com.redescooter.ses.web.ros.vo.setting.ImportParameterEnter;
 
+import java.text.ParseException;
+
 
 /**
  * @author Mr.lijiating
@@ -38,5 +40,5 @@ public interface ExcelService<T extends GeneralEnter> {
      * @param enter
      * @return
      */
-    ImportExcelPartsResult customerExport(ImportParameterEnter enter);
+    ImportExcelPartsResult customerExport(ImportParameterEnter enter) throws ParseException;
 }

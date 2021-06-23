@@ -117,6 +117,8 @@ import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -236,7 +238,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
      */
     @GlobalTransactional(rollbackFor = Exception.class)
     @Override
-    public GeneralResult save(CreateCustomerEnter createCustomerEnter) {
+    public GeneralResult save(CreateCustomerEnter createCustomerEnter) throws ParseException {
         //employeeListEnter参数值去空格
         CreateCustomerEnter enter = SesStringUtils.objStringTrim(createCustomerEnter);
         //客户字段校验
@@ -286,7 +288,8 @@ public class CustomerRosServiceImpl implements CustomerRosService {
         DateTimeParmEnter<BaseCustomerResult> parmEnter = new DateTimeParmEnter();
         BeanUtils.copyProperties(enter, parmEnter);
         parmEnter.setStartDateTime(new Date());
-        parmEnter.setEndDateTime(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:sss");
+        parmEnter.setEndDateTime(sdf.parse(DateUtil.addDate(sdf.format(new Date()),1)));
         parmEnter.setT(baseCustomer);
 
         // 开通账号,操作pla_user
@@ -1213,7 +1216,7 @@ public class CustomerRosServiceImpl implements CustomerRosService {
 
 
     @Override
-    public ImportExcelPartsResult importCustomer(ImportParameterEnter enter) throws IOException {
+    public ImportExcelPartsResult importCustomer(ImportParameterEnter enter) throws ParseException {
         return excelService.customerExport(enter);
     }
 

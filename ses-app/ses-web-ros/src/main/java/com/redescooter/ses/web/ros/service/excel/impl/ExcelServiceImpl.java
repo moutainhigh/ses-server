@@ -54,6 +54,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.JedisCluster;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -304,7 +306,7 @@ public class ExcelServiceImpl implements ExcelService {
 
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
-    public ImportExcelPartsResult customerExport(ImportParameterEnter enter) {
+    public ImportExcelPartsResult customerExport(ImportParameterEnter enter) throws ParseException {
         ImportExcelPartsResult result = new ImportExcelPartsResult();
         ExcelImportResult<ImportCustomerExcleData> excelImportResult = importExcelService.setiExcelVerifyHandler(new CustomerExcelVerifyHandlerImpl()).importOssExcel(enter.getUrl(),
                 ImportCustomerExcleData.class, new ImportParams());
@@ -448,7 +450,8 @@ public class ExcelServiceImpl implements ExcelService {
             DateTimeParmEnter<BaseCustomerResult> parmEnter = new DateTimeParmEnter();
             BeanUtils.copyProperties(enter, parmEnter);
             parmEnter.setStartDateTime(new Date());
-            parmEnter.setEndDateTime(new Date());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:sss");
+            parmEnter.setEndDateTime(sdf.parse(DateUtil.addDate(sdf.format(new Date()),1)));
             parmEnter.setT(baseCustomer);
 
             // 开通账号,操作pla_user

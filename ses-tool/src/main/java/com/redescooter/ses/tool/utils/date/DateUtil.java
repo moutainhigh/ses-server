@@ -49,7 +49,7 @@ public class DateUtil {
     /**
      * 缺省的日期显示格式： HH:mm:ss
      */
-    public static final String DEFAULT_TIME_FORMAT="HH:mm:ss";
+    public static final String DEFAULT_TIME_FORMAT = "HH:mm:ss";
     /**
      * 缺省的日期时间显示格式：yyyy-MM-dd HH:mm:ss:sss
      */
@@ -96,6 +96,33 @@ public class DateUtil {
         return dateFormat.format(date);
     }
 
+
+    public static String addDate(String date, int n) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:sss");
+        Calendar cd = Calendar.getInstance();//获取一个Calendar对象
+        try {
+            cd.setTime(sdf.parse(date));//设置calendar日期
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        cd.add(Calendar.DATE, n);//增加n天
+        cd.add(Calendar.YEAR, n);//增加n年
+        cd.add(Calendar.MONTH, n);//增加n个月
+
+        //另一种方法
+        //Calendar curr = Calendar.getInstance();
+        //curr.set(Calendar.MONTH,curr.get(Calendar.MONTH)+1); //增加一月
+        //Date date=curr.getTime();
+
+
+        return sdf.format(cd.getTime());
+    }
+
+    public static void main(String[] args) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:sss");
+       System.out.println(sdf.parse(addDate(sdf.format(new Date()),1)));
+       System.out.println(new Date());
+    }
     /**
      * 获取当前时间字符串
      *
@@ -133,7 +160,7 @@ public class DateUtil {
      * @return 2017-05-13
      * @throws ParseException
      */
-    public static Date subMonth(Date date,Integer num) {
+    public static Date subMonth(Date date, Integer num) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date dt = date;
         Calendar rightNow = Calendar.getInstance();
@@ -143,6 +170,7 @@ public class DateUtil {
         return dt1;
 
     }
+
     /**
      * 获取指定时间字符串
      *
@@ -153,6 +181,7 @@ public class DateUtil {
         SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
         return dateFormat.format(date);
     }
+
     /**
      * @Title: getTimeAddHours
      * @Description: // 加上固定时间转换指定字符串
@@ -786,17 +815,17 @@ public class DateUtil {
 
 
     /**
-     * @Author Aleks
-     * @Description  获取两个日期之间的日期数组（包含起始日期和结束日期）
-     * @Date  2020/10/16 15:52
-     * @Param [start, end]
      * @return
+     * @Author Aleks
+     * @Description 获取两个日期之间的日期数组（包含起始日期和结束日期）
+     * @Date 2020/10/16 15:52
+     * @Param [start, end]
      **/
     public static List<String> getBetweenDates(Date start, Date end) {
-        if (start == null){
+        if (start == null) {
             start = parse(getDateTime(new Date(), "yyyy-MM-dd") + " 00:00:00", "yyyy-MM-dd HH:mm:ss");
         }
-        if (end == null){
+        if (end == null) {
             end = parse(getDateTime(new Date(), "yyyy-MM-dd") + " 23:59:59", "yyyy-MM-dd HH:mm:ss");
         }
         List<String> result = new ArrayList<String>();
@@ -807,7 +836,7 @@ public class DateUtil {
         Calendar tempEnd = Calendar.getInstance();
         tempEnd.setTime(end);
         while (tempStart.before(tempEnd)) {
-            result.add(getTimeStr(tempStart.getTime(),DEFAULT_DATE_FORMAT));
+            result.add(getTimeStr(tempStart.getTime(), DEFAULT_DATE_FORMAT));
             tempStart.add(Calendar.DAY_OF_YEAR, 1);
         }
         return result;
@@ -965,7 +994,7 @@ public class DateUtil {
      * @param timeStamp
      * @return
      */
-    public static Date timeStampToDate(Long timeStamp,String timeZone) {
+    public static Date timeStampToDate(Long timeStamp, String timeZone) {
         TimeZone tz = TimeZone.getTimeZone(timeZone);
         TimeZone.setDefault(tz);
         return new Date(timeStamp);
@@ -982,13 +1011,13 @@ public class DateUtil {
 
 
     /**
-     * @Author Aleks
-     * @Description  时间加上小时
-     * @Date  2020/8/21 10:05
-     * @Param [date, hour]
      * @return 时间
+     * @Author Aleks
+     * @Description 时间加上小时
+     * @Date 2020/8/21 10:05
+     * @Param [date, hour]
      **/
-    public static  Date dateAddHour(Date date, int hour){
+    public static Date dateAddHour(Date date, int hour) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (date == null) {
             return new Date();
@@ -1006,14 +1035,14 @@ public class DateUtil {
 
 
     /**
-     * @Author Aleks
-     * @Description  返回YYMMDD
-     * @Date  2020/9/29 12:03
-     * @Param []
      * @return
+     * @Author Aleks
+     * @Description 返回YYMMDD
+     * @Date 2020/9/29 12:03
+     * @Param []
      **/
     public static String getSimpleDateStamp() {
-        return getSimpleTimeStamp().replaceAll("-","");
+        return getSimpleTimeStamp().replaceAll("-", "");
     }
 
     /**

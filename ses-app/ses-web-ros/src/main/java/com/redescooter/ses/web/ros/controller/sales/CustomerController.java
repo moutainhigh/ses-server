@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Map;
 
 /**
@@ -55,7 +56,7 @@ public class CustomerController {
 
     @PostMapping(value = "/save")
     @ApiOperation(value = "新建客户", response = GeneralResult.class)
-    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") CreateCustomerEnter enter) {
+    public Response<GeneralResult> save(@ModelAttribute @ApiParam("请求参数") CreateCustomerEnter enter) throws ParseException {
         return new Response<>(customerRosService.save(enter));
     }
 
@@ -109,7 +110,7 @@ public class CustomerController {
 
     @PostMapping(value = "/importCustomer")
     @ApiOperation(value = "导入客户", response = BooleanResult.class)
-    public Response<ImportExcelPartsResult> importCustomer(@ModelAttribute @ApiParam("请求参数") ImportParameterEnter enter) throws IOException {
+    public Response<ImportExcelPartsResult> importCustomer(@ModelAttribute @ApiParam("请求参数") ImportParameterEnter enter) throws ParseException {
         return new Response<>(customerRosService.importCustomer(enter));
     }
 
