@@ -320,7 +320,7 @@ public class ExcelServiceImpl implements ExcelService {
         List<String> customerCodes = new ArrayList<>();
         OpeCustomer opeCustomer = new OpeCustomer();
 
-        //验证是否有不合法的Eecel数据
+        //验证是否有不合法的Excel数据
         if (CollectionUtils.isNotEmpty(failList)) {
             Map<String, String> map = null;
             List<Map<String, String>> errorMsgList = new ArrayList<>();
@@ -366,7 +366,7 @@ public class ExcelServiceImpl implements ExcelService {
                 result.setErrorMsgList(mapList);
                 return result;
             }
-            if (read.get(i).getFirstName().length() < 0 || read.get(i).getFirstName().length() > 30) {
+            if (read.get(i).getFirstName().length() > 30 || read.get(i).getLastName().length() > 30) {
                 result.setSuccess(Boolean.FALSE);
                 Map<String, String> map = new TreeMap<>();
                 map.put("msg", "Abnormal firstName or firstName length.");
@@ -451,7 +451,7 @@ public class ExcelServiceImpl implements ExcelService {
             BeanUtils.copyProperties(enter, parmEnter);
             parmEnter.setStartDateTime(new Date());
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:sss");
-            parmEnter.setEndDateTime(sdf.parse(DateUtil.addDate(sdf.format(new Date()),1)));
+            parmEnter.setEndDateTime(sdf.parse(DateUtil.addDate(sdf.format(new Date()), 1)));
             parmEnter.setT(baseCustomer);
 
             // 开通账号,操作pla_user
