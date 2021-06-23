@@ -150,6 +150,7 @@
         <if test="keyword != null and keyword != ''">
             and (
             opc.customer_full_name like concat('%',#{keyword},'%')
+            or opc.company_name like concat('%',#{keyword},'%')
             or opc.email like concat('%',#{keyword},'%')
             or opc.contact_full_name like concat('%',#{keyword},'%')
             )
