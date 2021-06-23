@@ -10,6 +10,7 @@
 
     <select id="inWhList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseListResult">
         select
+         max(scooter.rsn),
          inwh.id,
          inwh.in_wh_no,
          inwh.in_wh_status,
@@ -19,12 +20,14 @@
          staff.full_name    as createdByName
         from ope_in_whouse_order inwh
         left join ope_sys_staff staff on staff.id = inwh.created_by
+        left join ope_in_whouse_scooter_b scooter on scooter.in_wh_id = inwh.id
         <include refid="listCondition"></include>
         order by inwh.created_time desc limit #{enter.startRow},#{enter.pageSize}
+        GROUP BY inwh.id
     </select>
 
     <sql id="listCondition">
-        where inwh.dr = 0 and inwh.order_type = #{enter.classType}
+        where inwh.dr = 0 and scooter.dr = 0  and inwh.order_type = #{enter.classType}
         <if test="enter.inWhStatus != null">
             and inwh.in_wh_status = #{enter.inWhStatus}
         </if>

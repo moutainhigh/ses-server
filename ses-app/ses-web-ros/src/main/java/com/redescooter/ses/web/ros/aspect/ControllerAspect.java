@@ -99,9 +99,9 @@ public class ControllerAspect {
             for (Object obj : objs) {
                 if (obj instanceof GeneralEnter) {
                     //TODO 多个参数处理优化
-                    GeneralEnter enter = (GeneralEnter) obj;
-                    checkEnterParameter(enter,request);
-                    checkToken(point, enter);
+//                    GeneralEnter enter = (GeneralEnter) obj;
+//                    checkEnterParameter(enter,request);
+//                    checkToken(point, enter);
                 }
                 ValidationUtil.validation(obj);
             }
