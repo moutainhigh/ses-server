@@ -45,11 +45,11 @@ public class CreateCustomerEnter extends GeneralEnter {
     private Long salesId;
 
     @ApiModelProperty(value = "客户名字")
-    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "客户名字非法")
+   //@Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "客户名字非法")
     private String customerFirstName;
 
     @ApiModelProperty(value = "客户姓氏")
-    @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "客户姓氏非法")
+   // @Regexp(value = RegexpConstant.name,code = ValidationExceptionCode.NAME_IS_ILLEGAL,message = "客户姓氏非法")
     private String customerLastName;
 
     @ApiModelProperty(value = "企业名称")
@@ -105,13 +105,13 @@ public class CreateCustomerEnter extends GeneralEnter {
 
     @ApiModelProperty(value = "邮件")
     @NotNull(code = ValidationExceptionBaseCode.EMAIL_IS_EMPTY, message = "邮箱不能为空")
-    @MinimumLength(value = "2",code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL,message = "邮件非法")
+   // @MinimumLength(value = "2",code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL,message = "邮件非法")
     @MaximumLength(value = "50",code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL,message = "邮件非法")
     //@Regexp(value = RegexpConstant.email,code = ValidationExceptionCode.EMAIL_CHAR_IS_ILLEGAL,message = "邮件非法")
     private String email;
 
     @ApiModelProperty(value = "车辆数量")
-    @Regexp(value = RegexpConstant.twoNumber,code = ValidationExceptionCode.QTY_IS_NUMBER,message = "数量必须为数字")
+   // @Regexp(value = RegexpConstant.twoNumber,code = ValidationExceptionCode.QTY_IS_NUMBER,message = "数量必须为数字")
     private Integer scooterQuantity;
 
     @ApiModelProperty(value="证件类型:ID_CARD-身份证-1,DRIVER_LICENSE-驾驶证2，PASSPORT-护照-3")
@@ -124,14 +124,14 @@ public class CreateCustomerEnter extends GeneralEnter {
     private String certificateNegativeAnnex;
 
     @ApiModelProperty(value = "营业执照编号")
-    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.BUSINESS_LICENSE_NUM_ILLEGAL_CHARACTER,message = "营业执照存在非法字符")
+   // @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.BUSINESS_LICENSE_NUM_ILLEGAL_CHARACTER,message = "营业执照存在非法字符")
     private String businessLicenseNum;
 
     @ApiModelProperty(value = "营业执照附件")
     private String businessLicenseAnnex;
 
     @ApiModelProperty(value = "发票编号")
-    @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.INVOICENUM_ILLEGAL_CHARACTER,message = "发票号存在非法字符")
+   // @Regexp(value = RegexpConstant.specialCharacters,code = ValidationExceptionCode.INVOICENUM_ILLEGAL_CHARACTER,message = "发票号存在非法字符")
     private String invoiceNum;
 
     @ApiModelProperty(value = "发票附件")
