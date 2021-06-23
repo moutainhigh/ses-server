@@ -291,7 +291,6 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
      * 设置软体
      */
     @Override
-    @GlobalTransactional(rollbackFor = Exception.class)
     public ScoScooterResult setScooterModel(SetModelEnter enter) {
         Long scooterId = getScooterId(enter.getRsn());
         ScoScooter scoScooter = scoScooterService.getById(scooterId);
