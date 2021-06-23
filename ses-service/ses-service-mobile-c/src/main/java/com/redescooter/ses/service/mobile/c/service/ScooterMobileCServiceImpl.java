@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.mobile.c.service;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
@@ -14,8 +15,10 @@ import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.api.mobile.c.exception.MobileCException;
 import com.redescooter.ses.api.mobile.c.service.ScooterMobileCService;
+import com.redescooter.ses.api.common.service.MondayProducerService;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
+import com.redescooter.ses.api.scooter.vo.ScoScooterResult;
 import com.redescooter.ses.service.mobile.c.constant.SequenceName;
 import com.redescooter.ses.service.mobile.c.dao.UserScooterMapper;
 import com.redescooter.ses.service.mobile.c.dm.base.ConUserScooter;
@@ -61,6 +64,9 @@ public class ScooterMobileCServiceImpl implements ScooterMobileCService {
 
     @DubboReference
     private IdAppService idAppService;
+
+    @DubboReference
+    private MondayProducerService mondayRecordService;
 
     @Override
     public BaseScooterResult getScooterInfo(GeneralEnter enter) {
@@ -218,6 +224,9 @@ public class ScooterMobileCServiceImpl implements ScooterMobileCService {
         model.setUpdatedTime(new Date());
         conUserScooterService.save(model);
         log.info("绑车完成");
+
+        ScoScooterResult scoScooterByTableSn = scooterService.getScoScooterByTableSn(enter.getKeyword().trim());
+        mondayRecordService.save(userToken.getUserId(), JSON.toJSONString(scoScooterByTableSn));
         return new GeneralResult(enter.getRequestId());
     }
 
