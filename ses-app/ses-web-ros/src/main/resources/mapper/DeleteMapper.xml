@@ -107,7 +107,7 @@
         delete from ope_in_whouse_scooter_b where id = #{id}
     </delete>
 
-    <!--  -->
+    <!-- 删除ope_in_whouse_order -->
     <delete id="deleteInWhouse" parameterType="java.lang.Long">
         delete from ope_in_whouse_order where id = #{id}
     </delete>
