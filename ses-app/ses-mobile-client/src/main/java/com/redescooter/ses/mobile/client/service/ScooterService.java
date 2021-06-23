@@ -56,6 +56,6 @@ public interface ScooterService {
     /**
      * 登录后如果账号下没车进行绑车操作
      */
-    GeneralResult bindScooter(StringEnter enter);
+    BooleanResult bindScooter(StringEnter enter);
 
 }
