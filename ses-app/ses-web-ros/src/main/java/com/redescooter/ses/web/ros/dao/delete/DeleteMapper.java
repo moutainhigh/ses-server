@@ -64,4 +64,14 @@ public interface DeleteMapper {
 
     int deleteDeposit();
 
+    /**
+     * 删除ope_in_whouse_scooter_b
+     */
+    int deleteInWhouseScooterB(@Param("id") Long id);
+
+    /**
+     * 删除ope_in_whouse_order
+     */
+    int deleteInWhouse(@Param("id") Long id);
+
 }

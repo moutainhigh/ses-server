@@ -101,4 +101,15 @@
         delete
         from ope_set_deposit where dr = 0
     </delete>
+
+    <!-- 删除ope_in_whouse_scooter_b -->
+    <delete id="deleteInWhouseScooterB" parameterType="java.lang.Long">
+        delete from ope_in_whouse_scooter_b where id = #{id}
+    </delete>
+
+    <!--  -->
+    <delete id="deleteInWhouse" parameterType="java.lang.Long">
+        delete from ope_in_whouse_order where id = #{id}
+    </delete>
+
 </mapper>

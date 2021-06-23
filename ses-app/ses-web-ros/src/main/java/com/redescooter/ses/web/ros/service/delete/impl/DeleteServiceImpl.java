@@ -28,6 +28,7 @@ import com.redescooter.ses.web.ros.dm.OpeCustomer;
 import com.redescooter.ses.web.ros.dm.OpeCustomerContact;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiry;
 import com.redescooter.ses.web.ros.dm.OpeCustomerInquiryB;
+import com.redescooter.ses.web.ros.dm.OpeInWhouseScooterB;
 import com.redescooter.ses.web.ros.dm.OpeProductPrice;
 import com.redescooter.ses.web.ros.dm.OpeProductPriceHistory;
 import com.redescooter.ses.web.ros.dm.OpeProductionCombinBom;
@@ -42,6 +43,7 @@ import com.redescooter.ses.web.ros.service.base.OpeCodebaseRelationService;
 import com.redescooter.ses.web.ros.service.base.OpeCodebaseRsnService;
 import com.redescooter.ses.web.ros.service.base.OpeCodebaseVinService;
 import com.redescooter.ses.web.ros.service.base.OpeColorService;
+import com.redescooter.ses.web.ros.service.base.OpeInWhouseScooterBService;
 import com.redescooter.ses.web.ros.service.base.OpeProductPriceHistoryService;
 import com.redescooter.ses.web.ros.service.base.OpeProductPriceService;
 import com.redescooter.ses.web.ros.service.base.OpeProductionCombinBomService;
@@ -111,6 +113,9 @@ public class DeleteServiceImpl implements DeleteService {
 
     @Autowired
     private DeleteMapper deleteMapper;
+
+    @Autowired
+    private OpeInWhouseScooterBService opeInWhouseScooterBService;
 
     @Autowired
     private OpeProductionPartsService opeProductionPartsService;
@@ -220,6 +225,20 @@ public class DeleteServiceImpl implements DeleteService {
     public GeneralResult deleteScooter(StringEnter enter) {
         log.info("开始删除车辆,平板序列号是:[{}]", enter.getKeyword());
         String tabletSn = enter.getKeyword();
+
+        // 删除入库单车辆子表
+        LambdaQueryWrapper<OpeInWhouseScooterB> inWrapper = new LambdaQueryWrapper<>();
+        inWrapper.eq(OpeInWhouseScooterB::getDr, Constant.DR_FALSE);
+        inWrapper.eq(OpeInWhouseScooterB::getTabletSn, tabletSn);
+        inWrapper.last("limit 1");
+        OpeInWhouseScooterB scooterB = opeInWhouseScooterBService.getOne(inWrapper);
+        if (null != scooterB) {
+            log.info("入库单车辆子表存在");
+            deleteMapper.deleteInWhouseScooterB(scooterB.getId());
+
+            // 删除入库单
+            deleteMapper.deleteInWhouse(scooterB.getInWhId());
+        }
 
         // 删除scooter库
         String rsn = scooterService.deleteScooter(tabletSn);
