@@ -348,4 +348,10 @@
             </if>
         </trim>
     </insert>
+
+    <!-- 删除客户车辆关系表 -->
+    <delete id="deleteUserScooter">
+        delete from con_user_scooter where SCOOTER_ID = #{scooterId}
+    </delete>
+
 </mapper>

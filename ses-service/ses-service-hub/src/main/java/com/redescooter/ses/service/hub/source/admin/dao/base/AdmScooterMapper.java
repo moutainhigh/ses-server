@@ -4,6 +4,7 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.redescooter.ses.api.hub.vo.admin.AdmScooter;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -16,5 +17,10 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 @DS("admin")
 public interface AdmScooterMapper extends BaseMapper<AdmScooter> {
+
+    /**
+     * 删除oms的车辆
+     */
+    void deleteScooter(@Param("tabletSn") String tabletSn);
 
 }

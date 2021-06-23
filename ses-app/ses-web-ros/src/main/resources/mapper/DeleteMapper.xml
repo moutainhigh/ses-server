@@ -112,4 +112,16 @@
         delete from ope_in_whouse_order where id = #{id}
     </delete>
 
+    <!-- 删除入库单产品序列号表 -->
+    <delete id="deleteInWhouseSN">
+        delete from ope_in_whouse_order_serial_bind where tablet_sn = #{tabletSn}
+    </delete>
+
+    <!-- 删除库存产品序列号表 -->
+    <delete id="deleteWmsSN">
+        delete from ope_wms_stock_serial_number where sn = #{tabletSn}
+    </delete>
+
+
+
 </mapper>

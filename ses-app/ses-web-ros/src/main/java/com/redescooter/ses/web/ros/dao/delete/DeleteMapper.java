@@ -74,4 +74,13 @@ public interface DeleteMapper {
      */
     int deleteInWhouse(@Param("id") Long id);
 
+    /**
+     * 删除入库单产品序列号表
+     */
+    int deleteInWhouseSN(@Param("tabletSn") String tabletSn);
+
+    /**
+     * 删除库存产品序列号表
+     */
+    int deleteWmsSN(@Param("tabletSn") String tabletSn);
 }

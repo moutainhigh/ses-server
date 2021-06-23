@@ -8,6 +8,7 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.StringEnter;
 import com.redescooter.ses.api.foundation.service.base.UserBaseService;
+import com.redescooter.ses.api.hub.service.admin.ScooterModelService;
 import com.redescooter.ses.api.mobile.c.service.UserProfileProService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.web.ros.dao.assign.OpeCarDistributeMapper;
@@ -141,6 +142,9 @@ public class DeleteServiceImpl implements DeleteService {
     @DubboReference
     private ScooterService scooterService;
 
+    @DubboReference
+    private ScooterModelService scooterModelService;
+
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
     public GeneralResult deleteCustomer(IdEnter idEnter) {
@@ -215,6 +219,57 @@ public class DeleteServiceImpl implements DeleteService {
             }
         }
         return map;
+    }
+
+    /**
+     * 最新的删除车辆
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult deleteScooterNew(StringEnter enter) {
+        log.info("开始删除车辆,tabletSn是:[{}]", enter.getKeyword());
+        String tabletSn = enter.getKeyword().trim();
+
+        LambdaQueryWrapper<OpeInWhouseScooterB> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeInWhouseScooterB::getTabletSn, tabletSn);
+        List<OpeInWhouseScooterB> list = opeInWhouseScooterBService.list(qw);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (OpeInWhouseScooterB scooterB : list) {
+                // 删除入库单车辆子表
+                deleteMapper.deleteInWhouseScooterB(scooterB.getId());
+                // 删除入库单
+                deleteMapper.deleteInWhouse(scooterB.getInWhId());
+                // 删除入库单产品序列号表
+                deleteMapper.deleteInWhouseSN(scooterB.getTabletSn());
+
+                // 删除库存产品序列号表
+                deleteMapper.deleteWmsSN(scooterB.getTabletSn());
+
+                // 修改码库rsn表
+                LambdaQueryWrapper<OpeCodebaseRsn> lqw = new LambdaQueryWrapper<>();
+                lqw.eq(OpeCodebaseRsn::getRsn, scooterB.getRsn());
+                lqw.last("limit 1");
+                OpeCodebaseRsn codebaseRsn = opeCodebaseRsnService.getOne(lqw);
+                if (null != codebaseRsn) {
+                    codebaseRsn.setStatus(1);
+                    opeCodebaseRsnService.updateById(codebaseRsn);
+                }
+
+                // 删除sco_scooter表
+                Long scooterId = scooterService.deleteScoScooter(scooterB.getTabletSn());
+                // 删除sco_scooter_node表
+                scooterService.deleteScooterNode(scooterId);
+                // 删除sco_scooter_ecu表
+                scooterService.deleteEcu(scooterB.getTabletSn());
+
+                // 删除toc的客户车辆关系表
+                userProfileProService.deleteConUserScooter(scooterId);
+
+                // 删除oms的车辆
+                scooterModelService.deleteOmsScooter(scooterB.getTabletSn());
+            }
+        }
+        return new GeneralResult(enter.getRequestId());
     }
 
     /**

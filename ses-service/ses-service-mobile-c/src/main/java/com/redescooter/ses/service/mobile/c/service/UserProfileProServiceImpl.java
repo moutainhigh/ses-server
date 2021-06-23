@@ -224,6 +224,15 @@ public class UserProfileProServiceImpl implements UserProfileProService {
     }
 
     /**
+     * 删除客户车辆关系表
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public void deleteConUserScooter(Long scooterId) {
+        conUserScooterMapper.deleteUserScooter(scooterId);
+    }
+
+    /**
      * checkUserProfile
      *
      * @param enter

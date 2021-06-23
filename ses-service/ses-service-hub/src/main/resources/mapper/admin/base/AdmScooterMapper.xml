@@ -29,4 +29,10 @@
     <sql id="Base_Column_List">
         id, dr, sn, group_id, color_id, mac_address, scooter_controller, remark, created_by, created_time, updated_by, updated_time, def1, def2, def3, def4, def5, color_name, color_value, group_name, mac_name
     </sql>
+
+    <!-- 删除oms的车辆 -->
+    <delete id="deleteScooter">
+        delete from adm_scooter where sn = #{tabletSn}
+    </delete>
+
 </mapper>

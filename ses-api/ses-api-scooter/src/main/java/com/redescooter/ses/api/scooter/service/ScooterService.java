@@ -180,4 +180,20 @@ public interface ScooterService {
      */
     Long getScooterIdByRsn(StringEnter enter);
 
+    /**
+     * 删除sco_scooter表
+     */
+    Long deleteScoScooter(String tabletSn);
+
+    /**
+     * 删除sco_scooter_node表
+     */
+    void deleteScooterNode(Long scooterId);
+
+    /**
+     * 删除sco_scooter_ecu表
+     */
+    void deleteEcu(String tabletSn);
+
+
 }

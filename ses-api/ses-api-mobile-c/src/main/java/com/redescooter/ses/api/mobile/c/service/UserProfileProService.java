@@ -38,4 +38,10 @@ public interface UserProfileProService {
      * 删除客户对于的个人信息
      */
     void deleteUserProfile(String email);
+
+    /**
+     * 删除客户车辆关系表
+     */
+    void deleteConUserScooter(Long scooterId);
+
 }
