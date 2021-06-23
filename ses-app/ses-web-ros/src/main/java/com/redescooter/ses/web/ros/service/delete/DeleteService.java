@@ -46,4 +46,9 @@ public interface DeleteService {
      */
     GeneralResult deleteScooterNew(StringEnter enter);
 
+    /**
+     * 最新的删除客户
+     */
+    GeneralResult deleteCustomerNew(StringEnter enter);
+
 }

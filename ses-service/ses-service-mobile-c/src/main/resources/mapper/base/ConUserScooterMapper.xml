@@ -354,4 +354,15 @@
         delete from con_user_scooter where SCOOTER_ID = #{scooterId}
     </delete>
 
+    <!-- 删除客户车辆关系表 -->
+    <delete id="deleteConUserScooterByUserId">
+        delete from con_user_scooter where USER_ID = #{userId}
+    </delete>
+
+    <!-- 删除toc的con_user_profile表 -->
+    <delete id="deleteConUserProfile">
+        delete from con_user_profile where EMAIL_1 = #{email}
+    </delete>
+
+
 </mapper>

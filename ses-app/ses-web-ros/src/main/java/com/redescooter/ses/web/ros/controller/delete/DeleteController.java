@@ -105,4 +105,14 @@ public class DeleteController {
         return new Response<>(deleteService.deleteScooterNew(enter));
     }
 
+    /**
+     * 最新的删除客户
+     */
+    @PostMapping("/new/customer")
+    @ApiOperation(value = "最新的删除客户", tags = "最新的删除客户")
+    @IgnoreLoginCheck
+    public Response<GeneralResult> deleteCustomerNew(@ModelAttribute StringEnter enter) {
+        return new Response<>(deleteService.deleteCustomerNew(enter));
+    }
+
 }

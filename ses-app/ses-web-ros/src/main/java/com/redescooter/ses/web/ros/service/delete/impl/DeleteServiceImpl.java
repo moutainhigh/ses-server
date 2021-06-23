@@ -273,6 +273,34 @@ public class DeleteServiceImpl implements DeleteService {
     }
 
     /**
+     * 最新的删除客户
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public GeneralResult deleteCustomerNew(StringEnter enter) {
+        log.info("开始删除客户,email是:[{}]", enter.getKeyword());
+        String email = enter.getKeyword().trim();
+
+        // 删除客户表
+        deleteMapper.deleteOpeCustomer(email);
+
+        // 删除pla_user表
+        Long userId = userBaseService.deleteUser(email);
+        // 删除pla_user_node表
+        userBaseService.deleteUserNode(userId);
+        // 删除pla_user_password表
+        userBaseService.deletePwd(email);
+        // 删除pla_user_permission表
+        userBaseService.deletePermission(userId);
+
+        // 删除toc的con_user_profile表
+        userProfileProService.deleteConUserProfile(email);
+        // 删除toc的客户车辆关系表
+        userProfileProService.deleteConUserScooterByUserId(userId);
+        return new GeneralResult(enter.getRequestId());
+    }
+
+    /**
      * 删除车辆
      */
     @Override

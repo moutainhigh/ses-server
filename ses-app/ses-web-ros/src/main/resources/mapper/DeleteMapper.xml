@@ -122,6 +122,12 @@
         delete from ope_wms_stock_serial_number where sn = #{tabletSn}
     </delete>
 
+    <!-- 删除客户表 -->
+    <delete id="deleteOpeCustomer">
+        delete from ope_customer where email = #{email}
+    </delete>
+
+
 
 
 </mapper>

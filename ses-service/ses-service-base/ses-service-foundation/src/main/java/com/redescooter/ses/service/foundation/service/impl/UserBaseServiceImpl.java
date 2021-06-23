@@ -65,9 +65,6 @@ public class UserBaseServiceImpl implements UserBaseService {
     private PlaUserNodeService plaUserNodeService;
 
     @Autowired
-    private PlaUserMapper plaUserMapper;
-
-    @Autowired
     private PlaUserNodeMapper plaUserNodeMapper;
 
     @Autowired
@@ -273,7 +270,7 @@ public class UserBaseServiceImpl implements UserBaseService {
         LambdaQueryWrapper<PlaUser> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(PlaUser::getLoginName, email);
         wrapper.last("limit 1");
-        PlaUser plaUser = plaUserMapper.selectOne(wrapper);
+        PlaUser plaUser = userMapper.selectOne(wrapper);
         if (null != plaUser) {
             // 删除pla_user
             accountBaseServiceMapper.deletePlaUser(email);
@@ -308,12 +305,59 @@ public class UserBaseServiceImpl implements UserBaseService {
         }
     }
 
+    /**
+     * 删除pla_user表
+     */
     @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public Long deleteUser(String email) {
+        Long userId = null;
+        LambdaQueryWrapper<PlaUser> qw = new LambdaQueryWrapper<>();
+        qw.eq(PlaUser::getLoginName, email);
+        qw.last("limit 1");
+        PlaUser one = userMapper.selectOne(qw);
+        if (null != one) {
+            userId = one.getId();
+            // 删除pla_user表
+            userMapper.deleteUser(userId);
+        }
+        return userId;
+    }
+
+    /**
+     * 删除pla_user_node表
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public void deleteUserNode(Long userId) {
+        userMapper.deleteUserNode(userId);
+    }
+
+    /**
+     * 删除pla_user_password表
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public void deletePwd(String email) {
+        userMapper.deletePwd(email);
+    }
+
+    /**
+     * 删除pla_user_permission表
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public void deletePermission(Long userId) {
+        userMapper.deletePermission(userId);
+    }
+
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
     public void importPlatformUser(String email) {
         LambdaQueryWrapper<PlaUser> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(PlaUser::getDr, Constant.DR_FALSE);
         wrapper.eq(PlaUser::getLoginName, email);
-        PlaUser plaUser = plaUserMapper.selectOne(wrapper);
+        PlaUser plaUser = userMapper.selectOne(wrapper);
         if (null != plaUser) {
             throw new FoundationException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
         }
@@ -328,7 +372,7 @@ public class UserBaseServiceImpl implements UserBaseService {
         plaUser.setUserType(6);
         plaUser.setDr(0);
         plaUser.setCreatedTime(new Date());
-        int userResult = plaUserMapper.insert(plaUser);
+        int userResult = userMapper.insert(plaUser);
         if (userResult > 0) {
             PlaUserPassword password = new PlaUserPassword();
             password.setId(idAppService.getId(SequenceName.PLA_USER_PASSWORD));

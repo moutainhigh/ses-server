@@ -20,4 +20,14 @@ public interface ConUserScooterMapper extends BaseMapper<ConUserScooter> {
      */
     int deleteUserScooter(@Param("scooterId") Long scooterId);
 
+    /**
+     * 删除toc的客户车辆关系表
+     */
+    int deleteConUserScooterByUserId(@Param("userId") Long userId);
+
+    /**
+     * 删除toc的con_user_profile表
+     */
+    int deleteConUserProfile(@Param("email") String email);
+
 }

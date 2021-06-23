@@ -95,4 +95,25 @@ public interface UserBaseService {
 
     //导入用户
     void importPlatformUser(String email);
+
+    /**
+     * 删除pla_user表
+     */
+    Long deleteUser(String email);
+
+    /**
+     * 删除pla_user_node表
+     */
+    void deleteUserNode(Long userId);
+
+    /**
+     * 删除pla_user_password表
+     */
+    void deletePwd(String email);
+
+    /**
+     * 删除pla_user_permission表
+     */
+    void deletePermission(Long userId);
+
 }

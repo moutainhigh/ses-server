@@ -453,4 +453,24 @@
       </if>
     </trim>
   </insert>
+
+    <!-- 删除pla_user表 -->
+    <delete id="deleteUser">
+        delete from pla_user where id = #{userId}
+    </delete>
+
+    <!-- 删除pla_user_node表 -->
+    <delete id="deleteUserNode">
+        delete from pla_user_node where user_id = #{userId}
+    </delete>
+
+    <!-- 删除pla_user_password表 -->
+    <delete id="deletePwd">
+        delete from pla_user_password where login_name = #{email}
+    </delete>
+
+    <!-- 删除pla_user_permission表 -->
+    <delete id="deletePermission">
+        delete from pla_user_permission where USER_ID = #{userId}
+    </delete>
 </mapper>

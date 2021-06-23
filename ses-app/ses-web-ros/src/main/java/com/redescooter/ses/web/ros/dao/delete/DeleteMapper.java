@@ -83,4 +83,12 @@ public interface DeleteMapper {
      * 删除库存产品序列号表
      */
     int deleteWmsSN(@Param("tabletSn") String tabletSn);
+
+    /**
+     * 删除客户表
+     */
+    int deleteOpeCustomer(@Param("email") String email);
+
+
+
 }
