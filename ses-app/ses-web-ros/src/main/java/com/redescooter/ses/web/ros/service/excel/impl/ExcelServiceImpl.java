@@ -369,7 +369,7 @@ public class ExcelServiceImpl implements ExcelService {
             if (read.get(i).getFirstName().length() > 30 || read.get(i).getLastName().length() > 30) {
                 result.setSuccess(Boolean.FALSE);
                 Map<String, String> map = new TreeMap<>();
-                map.put("msg", "Abnormal firstName or firstName length.");
+                map.put("msg", "Abnormal firstName or lastName length.");
                 List<Map<String, String>> mapList = new ArrayList<>();
                 mapList.add(map);
                 result.setSuccessNum(0);
