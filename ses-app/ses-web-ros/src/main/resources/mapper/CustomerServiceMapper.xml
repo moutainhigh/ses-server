@@ -156,7 +156,7 @@
             )
         </if>
         order by opc.created_time desc
-        limit #{pageNo},#{pageSize}
+        limit #{startRow},#{pageSize}
     </select>
     <select id="customerListCount" resultType="int">
         select count(*)
