@@ -535,6 +535,7 @@ public class FrAppServiceImpl implements FrAppService {
             instance.setTabletSn(scooterModel.getSn());
             instance.setScooterModel(type);
             instance.setSpecificDefGroupList(list);
+            log.info("设置软体的请求参数是:[{}]", instance);
             scooterEmqXService.setScooterModel(instance);
         }
         log.info("设置软体完毕");
