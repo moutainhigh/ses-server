@@ -427,7 +427,7 @@ public class AdminScooterServiceImpl implements AdminScooterService {
         if (admScooter != null) {
             adminScooterMapper.deleteScooterById(enter.getId());
             // 删除scooter的数据库的sco_scooter_ecu / sco_scooter数据
-            scooterService.deleteScooterData(admScooter.getSn());
+            //scooterService.deleteScooterData(admScooter.getSn());
         }
         return new GeneralResult(enter.getRequestId());
     }
