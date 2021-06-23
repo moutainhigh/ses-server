@@ -107,9 +107,27 @@
         delete from ope_in_whouse_scooter_b where id = #{id}
     </delete>
 
-    <!--  -->
+    <!-- 删除ope_in_whouse_order -->
     <delete id="deleteInWhouse" parameterType="java.lang.Long">
         delete from ope_in_whouse_order where id = #{id}
     </delete>
+
+    <!-- 删除入库单产品序列号表 -->
+    <delete id="deleteInWhouseSN">
+        delete from ope_in_whouse_order_serial_bind where tablet_sn = #{tabletSn}
+    </delete>
+
+    <!-- 删除库存产品序列号表 -->
+    <delete id="deleteWmsSN">
+        delete from ope_wms_stock_serial_number where sn = #{tabletSn}
+    </delete>
+
+    <!-- 删除客户表 -->
+    <delete id="deleteOpeCustomer">
+        delete from ope_customer where email = #{email}
+    </delete>
+
+
+
 
 </mapper>

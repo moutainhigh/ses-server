@@ -22,7 +22,7 @@ public class CustomerExcelVerifyHandlerImpl implements IExcelVerifyHandler<Impor
     public ExcelVerifyHandlerResult verifyHandler(ImportCustomerExcleData obj) {
         StringBuilder builder = new StringBuilder();
         if (StringUtils.isEmpty(obj.getFirstName())) {
-            builder.append("firstnName ,This is  not must null;");
+            builder.append("firstName ,This is  not must null;");
             return new ExcelVerifyHandlerResult(false, builder.toString());
         }
         if (StringUtils.isEmpty(obj.getLastName())) {

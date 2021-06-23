@@ -523,4 +523,42 @@ public class ScooterServiceImpl implements ScooterService {
         return result;
     }
 
+    /**
+     * 删除sco_scooter表
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public Long deleteScoScooter(String tabletSn) {
+        Long scooterId = null;
+        LambdaQueryWrapper<ScoScooter> qw = new LambdaQueryWrapper<>();
+        qw.eq(ScoScooter::getTabletSn, tabletSn);
+        qw.last("limit 1");
+        ScoScooter one = scoScooterService.getOne(qw);
+        if (null != one) {
+            scooterId = one.getId();
+            // 删除sco_scooter表
+            scooterServiceMapper.deleteScooter(scooterId);
+        }
+        return scooterId;
+    }
+
+    /**
+     * 删除sco_scooter_node表
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public void deleteScooterNode(Long scooterId) {
+        scooterServiceMapper.deleteScooterNode(scooterId);
+    }
+
+    /**
+     * 删除sco_scooter_ecu表
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public void deleteEcu(String tabletSn) {
+        scooterServiceMapper.deleteScooterEcu(tabletSn);
+    }
+
+
 }

@@ -12,6 +12,7 @@ import com.redescooter.ses.api.common.enums.restproductionorder.OrderTypeEnums;
 import com.redescooter.ses.api.common.enums.restproductionorder.ProductTypeEnums;
 import com.redescooter.ses.api.common.enums.wms.WmsStockTypeEnum;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.scooter.SyncScooterDataDTO;
@@ -29,6 +30,7 @@ import com.redescooter.ses.web.ros.dm.OpeSpecificatGroup;
 import com.redescooter.ses.web.ros.dm.OpeWmsScooterStock;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockRecord;
 import com.redescooter.ses.web.ros.dm.OpeWmsStockSerialNumber;
+import com.redescooter.ses.web.ros.enums.FrColorEnum;
 import com.redescooter.ses.web.ros.exception.ExceptionCodeEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
 import com.redescooter.ses.web.ros.service.base.OpeColorService;
@@ -49,6 +51,7 @@ import com.redescooter.ses.web.ros.vo.restproductionorder.number.OrderNumberEnte
 import com.redescooter.ses.web.ros.vo.restproductionorder.optrace.SaveOpTraceEnter;
 import com.redescooter.ses.web.ros.vo.restproductionorder.orderflow.OrderStatusFlowEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.china.WmsInStockRecordEnter;
+import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrColorResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderAddEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderAddScooterBEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderCheckEnter;
@@ -390,6 +393,27 @@ public class FrInWhOrderServiceImpl implements FrInWhOrderService {
         result.setSuccess(Boolean.TRUE);
         result.setRequestId(enter.getRequestId());
         return result;
+    }
+
+    /**
+     * 获取颜色
+     */
+    @Override
+    public List<FrColorResult> getColorList(GeneralEnter enter) {
+        List<FrColorResult> resultList = Lists.newArrayList();
+        LambdaQueryWrapper<OpeColor> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeColor::getDr, Constant.DR_FALSE);
+        List<OpeColor> list = opeColorService.list(qw);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (OpeColor color : list) {
+                FrColorResult item = new FrColorResult();
+                item.setKey(FrColorEnum.showKey(color.getColorValue()));
+                item.setColorName(color.getColorName());
+                item.setColorValue(color.getColorValue());
+                resultList.add(item);
+            }
+        }
+        return resultList;
     }
 
     /**

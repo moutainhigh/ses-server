@@ -135,8 +135,8 @@ public class ScooterServiceImpl implements ScooterService {
      * 登录后如果账号下没车进行绑车操作
      */
     @Override
-    public GeneralResult bindScooter(StringEnter enter) {
-        GeneralResult result = null;
+    public BooleanResult bindScooter(StringEnter enter) {
+        BooleanResult result = null;
         Integer type = userComponent.getUserServiceTypeById(enter);
         if (UserServiceTypeEnum.B.getType().equals(type)) {
 

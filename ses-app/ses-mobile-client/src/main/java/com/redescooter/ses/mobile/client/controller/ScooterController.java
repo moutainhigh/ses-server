@@ -103,7 +103,7 @@ public class ScooterController {
      */
     @ApiOperation(value = "登录后如果账号下没车进行绑车操作", notes = "登录后如果账号下没车进行绑车操作")
     @PostMapping(value = "/bind")
-    public Response<GeneralResult> bindScooter(@ModelAttribute StringEnter enter) {
+    public Response<BooleanResult> bindScooter(@ModelAttribute StringEnter enter) {
         return new Response<>(scooterService.bindScooter(enter));
     }
 

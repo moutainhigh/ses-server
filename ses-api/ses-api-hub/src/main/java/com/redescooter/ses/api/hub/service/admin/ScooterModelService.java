@@ -30,4 +30,9 @@ public interface ScooterModelService {
      */
     void updateAdmScooter(AdmScooterUpdateEnter enter);
 
+    /**
+     * 删除oms的车辆
+     */
+    void deleteOmsScooter(String tabletSn);
+
 }

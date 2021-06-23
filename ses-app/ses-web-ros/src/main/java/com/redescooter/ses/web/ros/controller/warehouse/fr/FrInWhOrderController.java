@@ -2,10 +2,12 @@ package com.redescooter.ses.web.ros.controller.warehouse.fr;
 
 import com.redescooter.ses.api.common.annotation.AvoidDuplicateSubmit;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
+import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.Response;
 import com.redescooter.ses.web.ros.service.wms.cn.fr.FrInWhOrderService;
+import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrColorResult;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderAddEnter;
 import com.redescooter.ses.web.ros.vo.wms.cn.fr.FrInWhOrderCheckEnter;
 import io.swagger.annotations.Api;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @Description 法国仓库入库单控制器
@@ -31,6 +35,15 @@ public class FrInWhOrderController {
 
     @Autowired
     private FrInWhOrderService frInWhOrderService;
+
+    /**
+     * 获取颜色
+     */
+    @PostMapping("/color")
+    @ApiOperation(value = "获取颜色", tags = "获取颜色")
+    public Response<List<FrColorResult>> getColorList(@ModelAttribute GeneralEnter enter) {
+        return new Response<>(frInWhOrderService.getColorList(enter));
+    }
 
     /**
      * 新增法国仓库入库单

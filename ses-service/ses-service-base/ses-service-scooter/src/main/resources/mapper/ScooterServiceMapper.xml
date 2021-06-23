@@ -259,4 +259,16 @@
         delete from sco_scooter_navigation where id = #{id}
     </delete>
 
+    <!-- 删除sco_scooter_node表 -->
+    <delete id="deleteScooterNode">
+        delete from sco_scooter_node where scooter_id = #{scooterId}
+    </delete>
+
+    <!-- 删除sco_scooter_ecu表 -->
+    <delete id="deleteScooterEcu">
+        delete from sco_scooter_ecu where sn = #{tabletSn}
+    </delete>
+
+
+
 </mapper>

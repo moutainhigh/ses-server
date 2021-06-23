@@ -187,9 +187,12 @@ public class ScooterNodeServiceImpl implements ScooterNodeService {
         LambdaQueryWrapper<ScoScooter> lqw = new LambdaQueryWrapper<>();
         lqw.eq(ScoScooter::getDr, Constant.DR_FALSE);
         lqw.eq(ScoScooter::getScooterNo, rsn);
-        List<ScoScooter> list = scoScooterService.list(lqw);
-        if (CollectionUtils.isNotEmpty(list)) {
-            throw new ScooterException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
+        lqw.last("limit 1");
+        ScoScooter one = scoScooterService.getOne(lqw);
+        if (null != one) {
+            if (StringUtils.isNotBlank(one.getTabletSn())) {
+                throw new ScooterException(ExceptionCodeEnums.PARTS_HAS_INPUT.getCode(), ExceptionCodeEnums.PARTS_HAS_INPUT.getMessage());
+            }
         }
 
         // 先查看车辆在node表是否存在数据,不存在就新建

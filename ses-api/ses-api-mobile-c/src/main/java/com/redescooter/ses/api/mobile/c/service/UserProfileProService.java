@@ -38,4 +38,20 @@ public interface UserProfileProService {
      * 删除客户对于的个人信息
      */
     void deleteUserProfile(String email);
+
+    /**
+     * 删除客户车辆关系表
+     */
+    void deleteConUserScooter(Long scooterId);
+
+    /**
+     * 删除toc的客户车辆关系表
+     */
+    void deleteConUserScooterByUserId(Long userId);
+
+    /**
+     * 删除toc的con_user_profile表
+     */
+    void deleteConUserProfile(String email);
+
 }

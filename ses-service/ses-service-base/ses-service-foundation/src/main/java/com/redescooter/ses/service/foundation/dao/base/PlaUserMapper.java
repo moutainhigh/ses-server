@@ -15,4 +15,24 @@ public interface PlaUserMapper extends BaseMapper<PlaUser> {
 
     int insertOrUpdateSelective(PlaUser record);
 
+    /**
+     * 删除pla_user表
+     */
+    int deleteUser(@Param("userId") Long userId);
+
+    /**
+     * 删除pla_user_node表
+     */
+    int deleteUserNode(@Param("userId") Long userId);
+
+    /**
+     * 删除pla_user_password表
+     */
+    int deletePwd(@Param("email") String email);
+
+    /**
+     * 删除pla_user_permission表
+     */
+    int deletePermission(@Param("userId") Long userId);
+
 }

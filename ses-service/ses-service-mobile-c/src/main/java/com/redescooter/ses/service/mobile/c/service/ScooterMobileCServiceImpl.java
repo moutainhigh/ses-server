@@ -175,7 +175,7 @@ public class ScooterMobileCServiceImpl implements ScooterMobileCService {
      */
     @Override
     @GlobalTransactional(rollbackFor = Exception.class)
-    public GeneralResult bindScooter(StringEnter enter) {
+    public BooleanResult bindScooter(StringEnter enter) {
         Boolean flag = jedisCluster.exists(enter.getToken());
         if (!flag) {
             throw new MobileCException(ExceptionCodeEnums.TOKEN_NOT_EXIST.getCode(), ExceptionCodeEnums.TOKEN_NOT_EXIST.getMessage());
@@ -222,12 +222,14 @@ public class ScooterMobileCServiceImpl implements ScooterMobileCService {
         model.setCreatedTime(new Date());
         model.setUpdatedBy(enter.getUserId());
         model.setUpdatedTime(new Date());
-        conUserScooterService.save(model);
+        boolean saveFlag = conUserScooterService.save(model);
         log.info("绑车完成");
-
+        if (saveFlag) {
+            return new BooleanResult(Boolean.TRUE);
+        }
         ScoScooterResult scoScooterByTableSn = scooterService.getScoScooterByTableSn(enter.getKeyword().trim());
         mondayRecordService.save(userToken.getUserId(), JSON.toJSONString(scoScooterByTableSn));
-        return new GeneralResult(enter.getRequestId());
+        return new BooleanResult(Boolean.FALSE);
     }
 
 }

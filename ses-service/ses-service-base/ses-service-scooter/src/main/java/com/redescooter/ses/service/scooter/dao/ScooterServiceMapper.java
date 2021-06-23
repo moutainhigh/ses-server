@@ -197,4 +197,16 @@ public interface ScooterServiceMapper {
      */
     int deleteNavigation(@Param("id") Long id);
 
+    /**
+     * 删除sco_scooter_node表
+     */
+    int deleteScooterNode(@Param("scooterId") Long scooterId);
+
+    /**
+     * 删除sco_scooter_ecu表
+     */
+    int deleteScooterEcu(@Param("tabletSn") String tabletSn);
+
+
+
 }

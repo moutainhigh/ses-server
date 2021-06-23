@@ -10,6 +10,7 @@
 
     <select id="inWhList" resultType="com.redescooter.ses.web.ros.vo.restproductionorder.inwhouse.InWhouseListResult">
         select
+         (select rsn from ope_in_whouse_scooter_b where in_wh_id = inwh.id and dr = 0 order by created_time desc limit 1) as rsn,
          inwh.id,
          inwh.in_wh_no,
          inwh.in_wh_status,
@@ -20,11 +21,12 @@
         from ope_in_whouse_order inwh
         left join ope_sys_staff staff on staff.id = inwh.created_by
         <include refid="listCondition"></include>
-        order by inwh.created_time desc limit #{enter.startRow},#{enter.pageSize}
+        order by inwh.created_time desc
+        limit #{enter.startRow},#{enter.pageSize}
     </select>
 
     <sql id="listCondition">
-        where inwh.dr = 0 and inwh.order_type = #{enter.classType}
+        where inwh.dr = 0  and inwh.order_type = #{enter.classType}
         <if test="enter.inWhStatus != null">
             and inwh.in_wh_status = #{enter.inWhStatus}
         </if>

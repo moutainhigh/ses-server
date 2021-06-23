@@ -224,6 +224,33 @@ public class UserProfileProServiceImpl implements UserProfileProService {
     }
 
     /**
+     * 删除客户车辆关系表
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public void deleteConUserScooter(Long scooterId) {
+        conUserScooterMapper.deleteUserScooter(scooterId);
+    }
+
+    /**
+     * 删除toc的客户车辆关系表
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public void deleteConUserScooterByUserId(Long userId) {
+        conUserScooterMapper.deleteConUserScooterByUserId(userId);
+    }
+
+    /**
+     * 删除toc的con_user_profile表
+     */
+    @Override
+    @GlobalTransactional(rollbackFor = Exception.class)
+    public void deleteConUserProfile(String email) {
+        conUserScooterMapper.deleteConUserProfile(email);
+    }
+
+    /**
      * checkUserProfile
      *
      * @param enter
