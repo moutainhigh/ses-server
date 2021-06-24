@@ -1,7 +1,17 @@
 package com.redescooter.ses.web.ros.service.monday;
 
-import com.redescooter.ses.web.ros.vo.monday.enter.*;
-import com.redescooter.ses.web.ros.vo.monday.result.*;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationBoardEnter;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationColumnEnter;
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationGroupEnter;
+import com.redescooter.ses.web.ros.vo.monday.enter.MultipleWebhookEnter;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayBoardResult;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayColumnResult;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayCreateResult;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayData;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayGeneralResult;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayGroupResult;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayItem;
+import com.redescooter.ses.web.ros.vo.monday.result.MondayTagResult;
 
 import java.util.List;
 
@@ -28,31 +38,6 @@ public interface MondayService {
      * 初始化备份模版
      */
     void initializationBackMondaytemplate();
-
-    /**
-     * 官网联系我们
-     *
-     * @param enter
-     * @return
-     */
-    MondayCreateResult websiteContantUs(MondayGeneralEnter enter);
-
-    /**
-     * 官网预订单
-     *
-     * @param enter
-     * @return
-     */
-    MondayCreateResult websiteBookOrder(MondayGeneralEnter<MondayBookOrderEnter> enter);
-
-    /**
-     * 官网订阅邮件
-     *
-     * @param email
-     * @return
-     */
-    MondayCreateResult websiteSubscriptionEmail(String email);
-
 
     /**
      * 查询板子

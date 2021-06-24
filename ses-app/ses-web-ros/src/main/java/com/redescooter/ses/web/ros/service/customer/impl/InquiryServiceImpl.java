@@ -223,7 +223,7 @@ public class InquiryServiceImpl implements InquiryService {
         contactUsService.websiteContactUs(enter);
 
         //Monday 同步数据
-        MondayGeneralEnter mondayGeneralEnter = new MondayGeneralEnter();
+        /*MondayGeneralEnter mondayGeneralEnter = new MondayGeneralEnter();
         mondayGeneralEnter.setFirstName(enter.getFirstName());
         mondayGeneralEnter.setLastName(enter.getLastName());
         mondayGeneralEnter.setTelephone(enter.getTelephone());
@@ -234,7 +234,7 @@ public class InquiryServiceImpl implements InquiryService {
         mondayGeneralEnter.setDistant(enter.getDistrust());
         mondayGeneralEnter.setRemarks(enter.getRemark());
         mondayGeneralEnter.setAddress(enter.getAddress());
-        mondayService.websiteContantUs(mondayGeneralEnter);
+        mondayService.websiteContantUs(mondayGeneralEnter);*/
         return new GeneralResult(enter.getRequestId());
     }
 

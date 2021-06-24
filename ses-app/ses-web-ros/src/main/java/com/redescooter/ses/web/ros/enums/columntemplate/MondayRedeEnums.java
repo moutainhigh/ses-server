@@ -1,11 +1,14 @@
 package com.redescooter.ses.web.ros.enums.columntemplate;
 
+import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationColumnEnter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -59,5 +62,17 @@ public enum MondayRedeEnums {
             redeCustomerMap.put(item.getTitle(), item.getId());
         }
         return redeCustomerMap;
+    }
+
+    public static List<MondayMutationColumnEnter> init(int boardId) {
+        List<MondayMutationColumnEnter> columnEnterList = new ArrayList<>();
+        for (MondayRedeEnums enums : MondayRedeEnums.values()) {
+            MondayMutationColumnEnter columnEnter = new MondayMutationColumnEnter();
+            columnEnter.setBoardId(boardId);
+            columnEnter.setColumnType(enums.getType());
+            columnEnter.setTitle(enums.getTitle());
+            columnEnterList.add(columnEnter);
+        }
+        return columnEnterList;
     }
 }

@@ -291,7 +291,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
      * @param opeCustomerInquiry
      */
     private void mondayData(String productColor, int batteryQty, String productModel, OpeCustomerInquiry opeCustomerInquiry) {
-        MondayGeneralEnter mondayGeneralEnter = new MondayGeneralEnter();
+        /*MondayGeneralEnter mondayGeneralEnter = new MondayGeneralEnter();
         mondayGeneralEnter.setFirstName(opeCustomerInquiry.getFirstName());
         mondayGeneralEnter.setLastName(opeCustomerInquiry.getLastName());
         mondayGeneralEnter.setTelephone(opeCustomerInquiry.getTelephone());
@@ -310,7 +310,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         mondayGeneralEnter.setT(mondayBookOrderEnter);
 
         //Monday 同步数据
-        mondayService.websiteBookOrder(mondayGeneralEnter);
+        mondayService.websiteBookOrder(mondayGeneralEnter);*/
     }
 
     /**
@@ -817,7 +817,7 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
         mailMultiTaskService.subscribeToEmailSuccessfully(enter);
 
         //数据同步Monday
-        mondayService.websiteSubscriptionEmail(email);
+        //mondayService.websiteSubscriptionEmail(email);
     }
 
     /**
