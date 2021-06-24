@@ -21,8 +21,10 @@ import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.api.scooter.vo.ScoScooterResult;
 import com.redescooter.ses.service.mobile.c.constant.SequenceName;
 import com.redescooter.ses.service.mobile.c.dao.UserScooterMapper;
+import com.redescooter.ses.service.mobile.c.dm.base.ConUserProfile;
 import com.redescooter.ses.service.mobile.c.dm.base.ConUserScooter;
 import com.redescooter.ses.service.mobile.c.exception.ExceptionCodeEnums;
+import com.redescooter.ses.service.mobile.c.service.base.ConUserProfileService;
 import com.redescooter.ses.service.mobile.c.service.base.ConUserScooterService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import io.seata.spring.annotation.GlobalTransactional;
@@ -67,6 +69,9 @@ public class ScooterMobileCServiceImpl implements ScooterMobileCService {
 
     @DubboReference
     private MondayProducerService mondayRecordService;
+
+    @Autowired
+    private ConUserProfileService conUserProfileService;
 
     @Override
     public BaseScooterResult getScooterInfo(GeneralEnter enter) {
@@ -190,6 +195,16 @@ public class ScooterMobileCServiceImpl implements ScooterMobileCService {
         } catch (Exception e) {
             log.error("checkToken Exception sessionMap:" + map, e);
         }
+        LambdaQueryWrapper<ConUserProfile> lambda = new LambdaQueryWrapper<>();
+        lambda.eq(ConUserProfile :: getDr, Constant.DR_FALSE);
+        lambda.eq(ConUserProfile :: getUserId, userToken.getUserId());
+        ConUserProfile userProfile = conUserProfileService.getOne(lambda);
+        String userEmail = "";
+        String telphone = "";
+        if(null != userProfile){
+            userEmail = userProfile.getEmail1();
+            telphone = userProfile.getTelNumber1();
+        }
 
         // 根据rsn获取scooterId
         Long scooterId = scooterService.getScooterIdByRsn(enter);
@@ -226,7 +241,7 @@ public class ScooterMobileCServiceImpl implements ScooterMobileCService {
         log.info("-----------------------------绑车完成-------------------");
         if (saveFlag) {
             ScoScooterResult scoScooterByTableSn = scooterService.getScoScooterByTableSn(enter.getKeyword().trim());
-            mondayRecordService.save(userToken.getUserId(), JSON.toJSONString(scoScooterByTableSn));
+            mondayRecordService.save(userToken.getUserId(), JSON.toJSONString(scoScooterByTableSn), userEmail, telphone);
             return new BooleanResult(Boolean.TRUE);
         }
         return new BooleanResult(Boolean.FALSE);

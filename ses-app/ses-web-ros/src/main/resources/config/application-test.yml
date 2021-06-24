@@ -510,7 +510,7 @@ monday:
   subEmailGroupName: Backlog
   #客户
   customerBoardName: Rede Customer
-  customerGroupName: Backlog
+  customerGroupName: redegroup
   # 工作空间 alex:132750
   workspaceId: 21182
   #模板Id
