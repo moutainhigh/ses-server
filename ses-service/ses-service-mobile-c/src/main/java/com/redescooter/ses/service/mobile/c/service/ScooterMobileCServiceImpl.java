@@ -223,12 +223,12 @@ public class ScooterMobileCServiceImpl implements ScooterMobileCService {
         model.setUpdatedBy(enter.getUserId());
         model.setUpdatedTime(new Date());
         boolean saveFlag = conUserScooterService.save(model);
-        log.info("绑车完成");
+        log.info("-----------------------------绑车完成-------------------");
         if (saveFlag) {
+            ScoScooterResult scoScooterByTableSn = scooterService.getScoScooterByTableSn(enter.getKeyword().trim());
+            mondayRecordService.save(userToken.getUserId(), JSON.toJSONString(scoScooterByTableSn));
             return new BooleanResult(Boolean.TRUE);
         }
-        ScoScooterResult scoScooterByTableSn = scooterService.getScoScooterByTableSn(enter.getKeyword().trim());
-        mondayRecordService.save(userToken.getUserId(), JSON.toJSONString(scoScooterByTableSn));
         return new BooleanResult(Boolean.FALSE);
     }
 

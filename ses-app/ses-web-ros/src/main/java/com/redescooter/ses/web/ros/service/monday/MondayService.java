@@ -121,4 +121,10 @@ public interface MondayService {
      * @return
      */
     MondayGeneralResult mutationData(String enter);
+
+    String insertItem(MondayItem item);
+
+    void batchItemData(List<MondayData> list, String boardId, String itemId);
+
+    String existBoardName(String s);
 }

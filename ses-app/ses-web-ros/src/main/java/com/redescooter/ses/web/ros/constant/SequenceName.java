@@ -283,5 +283,5 @@ public interface SequenceName {
 
     String OPE_SCAN_CODE_RECORD = "OPE_SCAN_CODE_RECORD";
 
-
+    String MONDAY_RECORD = "MONDAY_RECORD";
 }

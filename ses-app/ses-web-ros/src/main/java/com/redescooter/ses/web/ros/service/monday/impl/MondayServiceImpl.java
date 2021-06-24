@@ -10,7 +10,7 @@ import com.redescooter.ses.web.ros.constant.MondayQueryGqlConstant;
 import com.redescooter.ses.web.ros.constant.StringManaConstant;
 import com.redescooter.ses.web.ros.enums.columntemplate.MondayBookOrderColumnEnums;
 import com.redescooter.ses.web.ros.enums.columntemplate.MondayContantUsColumnEnums;
-import com.redescooter.ses.web.ros.enums.columntemplate.MondayRedeCustomerEnums;
+import com.redescooter.ses.web.ros.enums.columntemplate.MondayRedeEnums;
 import com.redescooter.ses.web.ros.enums.columntemplate.MondayWebsiteSubscriptionEmailEnums;
 import com.redescooter.ses.web.ros.enums.datatype.BoardKindEnums;
 import com.redescooter.ses.web.ros.enums.datatype.MondayColumnDateEnums;
@@ -128,7 +128,7 @@ public class MondayServiceImpl implements MondayService {
     private void initBoardMapHandler() {
         log.info("-----------------------------初始化正式数据Monday模板------------------------------------------");
 
-        // 初始化预订单模板
+        /*// 初始化预订单模板
         for (MondayBookOrderColumnEnums item : MondayBookOrderColumnEnums.values()) {
             bookOrderMap.put(item.getTitle(), item.getId());
         }
@@ -145,9 +145,9 @@ public class MondayServiceImpl implements MondayService {
             subscribeEmailMap.put(item.getTitle(), item.getId());
         }
         checkSubscribeEmailoardColumn(mondayConfig.getSubEmailBoardName(), subscribeEmailMap,
-                mondayConfig.getWorkspaceId());
+                mondayConfig.getWorkspaceId());*/
 
-        for (MondayRedeCustomerEnums item : MondayRedeCustomerEnums.values()) {
+        for (MondayRedeEnums item : MondayRedeEnums.values()) {
             redeCustomerMap.put(item.getTitle(), item.getId());
         }
         checkCustomerEnumsColumn(mondayConfig.getCustomerBoardName(), redeCustomerMap, mondayConfig.getWorkspaceId());
@@ -180,7 +180,7 @@ public class MondayServiceImpl implements MondayService {
         checkSubscribeEmailoardColumn(mondayConfig.getSubEmailBoardBackName(), subscribeEmailBackMap,
                 mondayConfig.getWorkspaceBackId());
 
-        for (MondayRedeCustomerEnums item : MondayRedeCustomerEnums.values()) {
+        for (MondayRedeEnums item : MondayRedeEnums.values()) {
             redeCustomerMap.put(item.getTitle(), item.getId());
         }
         checkCustomerEnumsColumn(mondayConfig.getCustomerBoardName(), redeCustomerMap, mondayConfig.getWorkspaceId());
@@ -421,6 +421,10 @@ public class MondayServiceImpl implements MondayService {
      */
     @Override
     public MondayCreateResult mutationGroup(MondayMutationGroupEnter enter) {
+        String groupName = queryGroup(String.valueOf(enter.getBoardId()), enter.getGroupName());
+        if (StringUtils.isNotBlank(groupName)) {
+            return MondayCreateResult.builder().id(groupName).build();
+        }
         String graphGql = MondayQueryGqlConstant.MUTATION_GROUP
                 .replace(MondayParameterName.GROUP_BOARD_ID, String.valueOf(enter.getBoardId()))
                 .replace(MondayParameterName.GROUP_BOARD_NAME, enter.getGroupName());
@@ -513,8 +517,7 @@ public class MondayServiceImpl implements MondayService {
         // 执行HTTP请求，将返回的结构使用ResultVO类格式化
         ResponseEntity<String> response = null;
         try {
-            response =
-                    restTemplate.exchange(mondayConfig.getUrl(), method, requestEntity, String.class);
+            response = restTemplate.exchange(mondayConfig.getUrl(), method, requestEntity, String.class);
         } catch (Exception e) {
             throw new SesWebRosException();
         }
@@ -900,14 +903,28 @@ public class MondayServiceImpl implements MondayService {
     private void checkCustomerEnumsColumn(String boardName, Map<String, String> parameterMap, String workSpaceId) {
         // 板子校验
         MondayBoardResult mondayBoardResult = getBoardByBoardName(boardName, workSpaceId);
-
+        List<MondayMutationColumnEnter> columnEnterList = new ArrayList<>();
+        for(MondayRedeEnums enums : MondayRedeEnums.values()){
+            MondayMutationColumnEnter columnEnter = new MondayMutationColumnEnter();
+            columnEnter.setBoardId(Integer.parseInt(mondayBoardResult.getId()));
+            columnEnter.setColumnType(enums.getType());
+            columnEnter.setTitle(enums.getTitle());
+            columnEnterList.add(columnEnter);
+        }
+        log.info("create column ----");
+        multipleColumn(columnEnterList);
+        MondayMutationGroupEnter redeGroup = new MondayMutationGroupEnter();
+        redeGroup.setBoardId(Integer.parseInt(mondayBoardResult.getId()));
+        redeGroup.setGroupName("redegroup");
+        log.info("create column ----");
+        mutationGroup(redeGroup);
         // 列校验
-        List<MondayColumnResult> mondayColumnResults = queryColumnResult(mondayBoardResult.getId());
+        //List<MondayColumnResult> mondayColumnResults = queryColumnResult(mondayBoardResult.getId());
 
         // 放入插入的列集合
-        List<MondayMutationColumnEnter> bookOrderColumnList = new ArrayList<>();
+        //List<MondayMutationColumnEnter> bookOrderColumnList = new ArrayList<>();
 
-        // 过滤更新
+        /*// 过滤更新
         if (!CollectionUtils.isEmpty(mondayColumnResults)) {
             // 覆盖map中的初始Id
             mondayColumnResults.forEach(item -> {
@@ -948,7 +965,7 @@ public class MondayServiceImpl implements MondayService {
                 }
 
             }
-        }
+        }*/
     }
 
     /**
@@ -992,16 +1009,17 @@ public class MondayServiceImpl implements MondayService {
      * @Date: 2021/6/22 6:40 下午
      * @Author: Charles
      */
+    @Override
     public void batchItemData(List<MondayData> list, String boardId, String itemId) {
         if (CollectionUtils.isEmpty(list)) {
             return;
         }
-        for (MondayData user : list) {
+        for (MondayData data : list) {
             String graphGql = MondayQueryGqlConstant.MUTATION_INSERT_ITEM_DATA
                     .replace(MondayParameterName.COLUMN_BOARD_ID, boardId)
                     .replace(MondayParameterName.ITEM_ID, itemId)
-                    .replace(MondayParameterName.COLUMN_TITLE, JSON.toJSONString(user.getTitle()))
-                    .replace(MondayParameterName.CREATE_COLUMN_VALUES, JSON.toJSONString(user.getValue()));
+                    .replace(MondayParameterName.COLUMN_TITLE, JSON.toJSONString(data.getTitle()))
+                    .replace(MondayParameterName.CREATE_COLUMN_VALUES, JSON.toJSONString(data.getValue()));
             MondayGeneralResult mondayGeneralResult = mutationData(graphGql);
             System.out.println(mondayGeneralResult);
 
@@ -1016,6 +1034,7 @@ public class MondayServiceImpl implements MondayService {
      * @Date: 2021/6/22 6:41 下午
      * @Author: Charles
      */
+    @Override
     public String insertItem(MondayItem item) {
         String graphGql = MondayQueryGqlConstant.MUTATION_INSERT_ITEM
                 .replace(MondayParameterName.COLUMN_BOARD_ID, item.getBoardId())
@@ -1040,5 +1059,36 @@ public class MondayServiceImpl implements MondayService {
                 .replace(MondayParameterName.GROUP_BOARD_NAME, groupName);
         MondayGeneralResult mondayGeneralResult = mutationData(gql);
         System.out.println(mondayGeneralResult);
+    }
+
+    /**
+     * 存在返回false， 不存在返回true
+     * @param boardName
+     * @return
+     */
+    @Override
+    public String existBoardName(String boardName) {
+        if (StringUtils.isBlank(boardName)) {
+            return null;
+        }
+
+        List<MondayBoardResult> result = queryBoard();
+        if (CollectionUtils.isEmpty(result)) {
+            MondayMutationBoardEnter enter = new MondayMutationBoardEnter();
+            enter.setBoardName(boardName);
+            enter.setBoardKind(BoardKindEnums.PUBLIC.getCode());
+            MondayCreateResult mondayCreateResult = mutationBoard(enter);
+            return mondayCreateResult.getId();
+        }
+        for (MondayBoardResult res : result) {
+            if (StringUtils.equals(boardName, res.getName())) {
+                return res.getId();
+            }
+        }
+        MondayMutationBoardEnter enter = new MondayMutationBoardEnter();
+        enter.setBoardName(boardName);
+        enter.setBoardKind(BoardKindEnums.PUBLIC.getCode());
+        MondayCreateResult mondayCreateResult = mutationBoard(enter);
+        return mondayCreateResult.getId();
     }
 }
