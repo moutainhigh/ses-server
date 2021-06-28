@@ -1,5 +1,6 @@
 package com.redescooter.ses.service.hub.common;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.redescooter.ses.api.common.enums.base.AccountTypeEnums;
 import com.redescooter.ses.api.common.enums.scooter.CommonEvent;
@@ -46,6 +47,7 @@ import java.util.List;
  */
 @Slf4j
 @DubboService
+@DS("consumer")
 public class UserProfileServiceImpl implements UserProfileService {
 
     @DubboReference
