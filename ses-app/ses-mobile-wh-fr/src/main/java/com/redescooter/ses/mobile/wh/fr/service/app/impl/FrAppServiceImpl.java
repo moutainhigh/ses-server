@@ -410,11 +410,19 @@ public class FrAppServiceImpl implements FrAppService {
         // 校验码库
         LambdaQueryWrapper<OpeCodebaseRsn> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
-        qw.eq(OpeCodebaseRsn::getStatus, 1);
         qw.eq(OpeCodebaseRsn::getRsn, enter.getRsn());
         int count = opeCodebaseRsnService.count(qw);
         if (count <= 0) {
             throw new SesMobileFrWhException(ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.RSN_NOT_EXISTS_CODEBASE.getMessage());
+        }
+
+        LambdaQueryWrapper<OpeCodebaseRsn> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeCodebaseRsn::getDr, Constant.DR_FALSE);
+        wrapper.eq(OpeCodebaseRsn::getRsn, enter.getRsn());
+        wrapper.eq(OpeCodebaseRsn::getStatus, 2);
+        int num = opeCodebaseRsnService.count(wrapper);
+        if (num > 0) {
+            throw new SesMobileFrWhException(ExceptionCodeEnums.RSN_HAS_USED.getCode(), ExceptionCodeEnums.RSN_HAS_USED.getMessage());
         }
 
         // 录入车辆
@@ -561,11 +569,19 @@ public class FrAppServiceImpl implements FrAppService {
         // 校验码库
         LambdaQueryWrapper<OpeCodebaseVin> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeCodebaseVin::getDr, Constant.DR_FALSE);
-        qw.eq(OpeCodebaseVin::getStatus, 1);
         qw.eq(OpeCodebaseVin::getVin, enter.getVinCode());
         int count = opeCodebaseVinService.count(qw);
         if (count <= 0) {
             throw new SesMobileFrWhException(ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getCode(), ExceptionCodeEnums.VIN_NOT_EXISTS_CODEBASE.getMessage());
+        }
+
+        LambdaQueryWrapper<OpeCodebaseVin> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OpeCodebaseVin::getDr, Constant.DR_FALSE);
+        wrapper.eq(OpeCodebaseVin::getVin, enter.getVinCode());
+        wrapper.eq(OpeCodebaseVin::getStatus, 2);
+        int num = opeCodebaseVinService.count(wrapper);
+        if (num > 0) {
+            throw new SesMobileFrWhException(ExceptionCodeEnums.VIN_HAS_INPUT.getCode(), ExceptionCodeEnums.VIN_HAS_INPUT.getMessage());
         }
 
         // 录入vin
