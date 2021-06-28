@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,11 +50,12 @@ public class MondayProducerServiceImpl implements MondayProducerService {
 
     private Map<String, String> map = MondayRedeEnums.getMondayRedeTitle();
 
+    @Async
     @Override
     public void save(Long userId, String scooterResult, String email, String telphone) {
         ScoScooterResult scooter = JSONObject.parseObject(scooterResult, ScoScooterResult.class);
         log.info("——————————————————————执行monday相关数据  start——————————————————————");
-        if (null == scooterResult) {
+        if (null == scooter) {
             log.error("scoScooter data is null,mondayRecord data save fail ");
             return;
         }
