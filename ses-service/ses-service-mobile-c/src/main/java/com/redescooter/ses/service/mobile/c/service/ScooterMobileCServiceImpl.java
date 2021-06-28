@@ -242,6 +242,7 @@ public class ScooterMobileCServiceImpl implements ScooterMobileCService {
         if (saveFlag) {
             ScoScooterResult scoScooterByTableSn = scooterService.getScoScooterByTableSn(enter.getKeyword().trim());
             mondayRecordService.save(userToken.getUserId(), JSON.toJSONString(scoScooterByTableSn), userEmail, telphone);
+            log.info("-----------------------------绑车Over-------------------");
             return new BooleanResult(Boolean.TRUE);
         }
         return new BooleanResult(Boolean.FALSE);
