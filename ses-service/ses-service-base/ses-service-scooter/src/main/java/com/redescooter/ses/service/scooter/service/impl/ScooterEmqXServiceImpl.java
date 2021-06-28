@@ -421,7 +421,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
         try {
             String json = JSONObject.toJSONString(publishDTO);
             log.info("对象转换成json格式字符串为:[{}]", json);
-            encryptData = AESUtil.encrypt(json, requestKeyProperties.getPublicKey());
+            encryptData = AESUtil.encrypt(json, requestKeyProperties.getAesKey());
         } catch (Exception e) {
             log.error("设置软体数据下发异常", e);
             throw new ScooterException(ExceptionCodeEnums.DATA_ENCRYPT_WRONG.getCode(), ExceptionCodeEnums.DATA_ENCRYPT_WRONG.getMessage());

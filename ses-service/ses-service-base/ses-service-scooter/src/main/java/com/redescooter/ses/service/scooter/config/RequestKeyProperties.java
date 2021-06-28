@@ -24,4 +24,9 @@ public class RequestKeyProperties {
      */
     private String privateKey;
 
+    /**
+     * AES算法的key
+     */
+    private String aesKey;
+
 }
