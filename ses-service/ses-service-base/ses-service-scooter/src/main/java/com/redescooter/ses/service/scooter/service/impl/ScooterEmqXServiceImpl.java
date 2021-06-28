@@ -57,6 +57,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
@@ -181,6 +182,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
                         log.info("关锁时,计算行驶所花时间是:[{}]", duration);
 
                         InsertRideStatDataDTO param = new InsertRideStatDataDTO();
+                        BeanUtils.copyProperties(enter, param);
                         param.setMileage(new BigDecimal(mileage));
                         param.setDuration(duration);
                         param.setBizType(BizType.SCOOTER.getValue());

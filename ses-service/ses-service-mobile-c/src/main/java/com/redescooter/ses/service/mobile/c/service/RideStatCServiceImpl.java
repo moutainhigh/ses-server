@@ -90,8 +90,8 @@ public class RideStatCServiceImpl implements RideStatCService {
             } else {
                 log.info("不存在,新增");
                 model.setId(idAppService.getId(SequenceName.CON_DRIVER_RIDE_STAT));
-                model.setTenantId(enter.getTenantId());
-                model.setDriverId(enter.getUserId());
+                model.setTenantId(enter.getTenantId() == null ? 0L : enter.getTenantId());
+                model.setDriverId(enter.getUserId() == null ? 0L : enter.getUserId());
                 model.setTotalDuration(enter.getDuration());
                 model.setCo2Total(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
                 model.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
@@ -111,10 +111,10 @@ public class RideStatCServiceImpl implements RideStatCService {
              * 新增司机骑行统计数据详情
              */
             detail.setId(idAppService.getId(SequenceName.CON_DRIVER_RIDE_STAT_DETAIL));
-            detail.setTenantId(enter.getTenantId());
+            detail.setTenantId(enter.getTenantId() == null ? 0L : enter.getTenantId());
             detail.setBizId(enter.getBizId());
             detail.setBizType(enter.getBizType());
-            detail.setDriverId(enter.getUserId());
+            detail.setDriverId(enter.getUserId() == null ? 0L : enter.getUserId());
             detail.setDuration(enter.getDuration());
             detail.setCo2Increment(new BigDecimal(CO2MoneyConversionUtil.cO2Conversion(enter.getMileage().longValue())));
             detail.setSvgSpeed(enter.getMileage().divide(new BigDecimal(enter.getDuration()), BigDecimal.ROUND_HALF_UP));
