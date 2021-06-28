@@ -2,6 +2,7 @@ package com.redescooter.ses.web.ros.service.wms.cn.fr.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.IntResult;
@@ -26,6 +27,7 @@ import com.redescooter.ses.web.ros.service.base.OpeWmsCombinStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsPartsStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsQualifiedScooterStockService;
 import com.redescooter.ses.web.ros.service.base.OpeWmsScooterStockService;
+import com.redescooter.ses.web.ros.service.base.OpeWmsStockSerialNumberService;
 import com.redescooter.ses.web.ros.service.wms.cn.fr.FrWhService;
 import com.redescooter.ses.web.ros.utils.NumberUtil;
 import com.redescooter.ses.web.ros.vo.bom.combination.CombinationListEnter;
@@ -87,6 +89,9 @@ public class FrWhServiceImpl implements FrWhService {
     @Autowired
     private OpeWmsStockSerialNumberMapper opeWmsStockSerialNumberMapper;
 
+    @Autowired
+    private OpeWmsStockSerialNumberService opeWmsStockSerialNumberService;
+
 
     /**
      * 出入库统计
@@ -127,10 +132,18 @@ public class FrWhServiceImpl implements FrWhService {
     public FrStockCountResult stockCount(GeneralEnter enter) {
         FrStockCountResult result = new FrStockCountResult();
         // 车辆
-        QueryWrapper<OpeWmsScooterStock> scooter = new QueryWrapper<>();
+        /*QueryWrapper<OpeWmsScooterStock> scooter = new QueryWrapper<>();
         scooter.eq(OpeWmsScooterStock.COL_STOCK_TYPE, 2);
         List<OpeWmsScooterStock> scooterStockList = opeWmsScooterStockService.list(scooter);
-        result.setScooterNum(CollectionUtils.isEmpty(scooterStockList) ? 0 : scooterStockList.stream().mapToInt(OpeWmsScooterStock::getAbleStockQty).sum());
+        result.setScooterNum(CollectionUtils.isEmpty(scooterStockList) ? 0 : scooterStockList.stream().mapToInt(OpeWmsScooterStock::getAbleStockQty).sum());*/
+
+        LambdaQueryWrapper<OpeWmsStockSerialNumber> qw = new LambdaQueryWrapper<>();
+        qw.eq(OpeWmsStockSerialNumber::getDr, Constant.DR_FALSE);
+        qw.eq(OpeWmsStockSerialNumber::getStockType, 2);
+        qw.eq(OpeWmsStockSerialNumber::getStockStatus, 1);
+        Integer count = opeWmsStockSerialNumberService.count(qw);
+        result.setScooterNum(null == count ? 0 : count);
+
         // 组装件
         QueryWrapper<OpeWmsCombinStock> comb = new QueryWrapper<>();
         comb.eq(OpeWmsCombinStock.COL_STOCK_TYPE, 2);
