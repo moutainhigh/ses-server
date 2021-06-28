@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.redescooter.ses.api.common.constant.Constant;
 import com.redescooter.ses.api.common.enums.scooter.DriverScooterStatusEnums;
 import com.redescooter.ses.api.common.enums.user.UserServiceTypeEnum;
+import com.redescooter.ses.api.common.service.MondayProducerService;
+import com.redescooter.ses.api.common.service.WmsStockService;
 import com.redescooter.ses.api.common.vo.base.BooleanResult;
 import com.redescooter.ses.api.common.vo.base.GeneralEnter;
 import com.redescooter.ses.api.common.vo.base.GeneralResult;
@@ -15,7 +17,6 @@ import com.redescooter.ses.api.common.vo.scooter.ScooterNavigationDTO;
 import com.redescooter.ses.api.foundation.vo.user.UserToken;
 import com.redescooter.ses.api.mobile.c.exception.MobileCException;
 import com.redescooter.ses.api.mobile.c.service.ScooterMobileCService;
-import com.redescooter.ses.api.common.service.MondayProducerService;
 import com.redescooter.ses.api.scooter.service.ScooterEmqXService;
 import com.redescooter.ses.api.scooter.service.ScooterService;
 import com.redescooter.ses.api.scooter.vo.ScoScooterResult;
@@ -69,6 +70,9 @@ public class ScooterMobileCServiceImpl implements ScooterMobileCService {
 
     @DubboReference
     private MondayProducerService mondayRecordService;
+
+    @DubboReference
+    private WmsStockService wmsStockService;
 
     @Autowired
     private ConUserProfileService conUserProfileService;
@@ -195,13 +199,15 @@ public class ScooterMobileCServiceImpl implements ScooterMobileCService {
         } catch (Exception e) {
             log.error("checkToken Exception sessionMap:" + map, e);
         }
+
         LambdaQueryWrapper<ConUserProfile> lambda = new LambdaQueryWrapper<>();
-        lambda.eq(ConUserProfile :: getDr, Constant.DR_FALSE);
-        lambda.eq(ConUserProfile :: getUserId, userToken.getUserId());
+        lambda.eq(ConUserProfile::getDr, Constant.DR_FALSE);
+        lambda.eq(ConUserProfile::getUserId, userToken.getUserId());
+        lambda.last("limit 1");
         ConUserProfile userProfile = conUserProfileService.getOne(lambda);
         String userEmail = "";
         String telphone = "";
-        if(null != userProfile){
+        if (null != userProfile) {
             userEmail = userProfile.getEmail1();
             telphone = userProfile.getTelNumber1();
         }
@@ -222,6 +228,9 @@ public class ScooterMobileCServiceImpl implements ScooterMobileCService {
         if (CollectionUtils.isNotEmpty(list)) {
             throw new MobileCException(ExceptionCodeEnums.SCOOTER_CANNOT_REPEAT_BIND.getCode(), ExceptionCodeEnums.SCOOTER_CANNOT_REPEAT_BIND.getMessage());
         }
+
+        // 处理
+        wmsStockService.handle(enter.getKeyword().trim(), enter.getUserId());
 
         // 保存
         ConUserScooter model = new ConUserScooter();
