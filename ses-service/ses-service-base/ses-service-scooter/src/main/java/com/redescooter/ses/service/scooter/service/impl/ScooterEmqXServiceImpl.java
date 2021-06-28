@@ -49,7 +49,7 @@ import com.redescooter.ses.service.scooter.service.base.ScoScooterStatusService;
 import com.redescooter.ses.service.scooter.service.base.ScoScooterUpdateRecordService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
-import com.redescooter.ses.tool.crypt.AESUtils;
+import com.redescooter.ses.tool.crypt.DES;
 import com.redescooter.ses.tool.utils.map.MapUtil;
 import com.redescooter.ses.tool.utils.thread.ThreadPoolExecutorUtil;
 import io.seata.spring.annotation.GlobalTransactional;
@@ -421,10 +421,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
         try {
             String json = JSONObject.toJSONString(publishDTO);
             log.info("对象转换成json格式字符串为:[{}]", json);
-
-            byte[] encode = AESUtils.encrypt(json, requestKeyProperties.getAesKey());
-            // 二进制转为十六进制
-            encryptData = AESUtils.parseByte2HexStr(encode);
+            encryptData = DES.encrypt(requestKeyProperties.getAesKey(), json);
         } catch (Exception e) {
             log.error("设置软体数据下发异常", e);
             throw new ScooterException(ExceptionCodeEnums.DATA_ENCRYPT_WRONG.getCode(), ExceptionCodeEnums.DATA_ENCRYPT_WRONG.getMessage());
