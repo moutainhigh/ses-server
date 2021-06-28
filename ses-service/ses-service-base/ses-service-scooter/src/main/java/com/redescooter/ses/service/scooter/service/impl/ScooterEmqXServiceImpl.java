@@ -49,6 +49,7 @@ import com.redescooter.ses.service.scooter.service.base.ScoScooterStatusService;
 import com.redescooter.ses.service.scooter.service.base.ScoScooterUpdateRecordService;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
+import com.redescooter.ses.tool.crypt.AESUtil;
 import com.redescooter.ses.tool.utils.map.MapUtil;
 import com.redescooter.ses.tool.utils.thread.ThreadPoolExecutorUtil;
 import io.seata.spring.annotation.GlobalTransactional;
@@ -415,18 +416,20 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
          * 消息通知下发,通知平板端进行车型设置操作
          */
         // 数据下发 加密
-        log.info("设置软体的入参是:[{}]", publishDTO);
-        /*String encryptData;
+        log.info("设置软体的原始入参是:[{}]", publishDTO);
+        String encryptData;
         try {
-            encryptData = RsaUtils.encrypt(JSONObject.toJSONString(publishDTO), requestKeyProperties.getPublicKey());
+            String json = JSONObject.toJSONString(publishDTO);
+            log.info("对象转换成json格式字符串为:[{}]", json);
+            encryptData = AESUtil.encrypt(json, requestKeyProperties.getPublicKey());
         } catch (Exception e) {
+            log.error("设置软体数据下发异常", e);
             throw new ScooterException(ExceptionCodeEnums.DATA_ENCRYPT_WRONG.getCode(), ExceptionCodeEnums.DATA_ENCRYPT_WRONG.getMessage());
         }
-        log.info("设置软体加密后的信息是:[{}]", encryptData);*/
+        log.info("设置软体加密后的信息是:[{}]", encryptData);
 
         ThreadPoolExecutorUtil.getThreadPool().execute(() -> {
-            mqttClientUtil.publish(String.format(EmqXTopicConstant.SET_SCOOTER_MODEL_TOPIC, publishDTO.getTabletSn()),
-                    JSONObject.toJSONString(publishDTO));
+            mqttClientUtil.publish(String.format(EmqXTopicConstant.SET_SCOOTER_MODEL_TOPIC, publishDTO.getTabletSn()), encryptData);
         });
 
         return new GeneralResult();

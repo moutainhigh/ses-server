@@ -10,11 +10,9 @@ import com.redescooter.ses.api.scooter.vo.emqx.ScooterAllReportedDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterBbiReportedDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterEcuDTO;
 import com.redescooter.ses.api.scooter.vo.emqx.ScooterMcuReportedDTO;
-import com.redescooter.ses.service.scooter.config.RequestKeyProperties;
 import com.redescooter.ses.starter.emqx.constants.EmqXTopicConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
@@ -39,9 +37,6 @@ public class ScooterDataReportedComponent {
     @DubboReference
     private ScooterService scooterService;
 
-    @Autowired
-    private RequestKeyProperties requestKeyProperties;
-
     /**
      * 车辆数据保存到数据库
      *
@@ -49,17 +44,6 @@ public class ScooterDataReportedComponent {
      * @param topic
      */
     public void insertScooterData(String data, String topic) {
-        //log.info("数据上报的入参是:[{}],[{}]", topic, data);
-
-        // 数据上报(安卓给后端),解密
-        /*String decryptData = "";
-        if (StringUtils.isNotBlank(data)) {
-            try {
-                decryptData = RsaUtils.decrypt(data, requestKeyProperties.getPrivateKey());
-            } catch (Exception e) {
-                throw new ScooterException(ExceptionCodeEnums.DATA_DECRYPT_WRONG.getCode(), ExceptionCodeEnums.DATA_DECRYPT_WRONG.getMessage());
-            }
-        }*/
 
         log.info("上报主题：【{}】", topic);
         log.info("上报数据：{}", data);
