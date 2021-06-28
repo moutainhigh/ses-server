@@ -178,7 +178,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
                         }
 
                         // 计算行驶所花时间,单位/s
-                        Long duration = (scooterStatus.getCreatedTime().getTime() - System.currentTimeMillis()) / 1000;
+                        Long duration = (System.currentTimeMillis() - scooterStatus.getCreatedTime().getTime()) / 1000;
                         log.info("关锁时,计算行驶所花时间是:[{}]", duration);
 
                         InsertRideStatDataDTO param = new InsertRideStatDataDTO();
@@ -284,7 +284,7 @@ public class ScooterEmqXServiceImpl implements ScooterEmqXService {
                 }
 
                 // 计算导航所花时间,单位/s
-                Long duration = (scoScooterNavigation.getCreatedTime().getTime() - new Date().getTime()) / 1000;
+                Long duration = (new Date().getTime() - scoScooterNavigation.getCreatedTime().getTime()) / 1000;
                 log.info("计算导航所花时间是:[{}]", duration);
 
                 enter.setMileage(String.valueOf(distance));
