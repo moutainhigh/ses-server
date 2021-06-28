@@ -63,8 +63,8 @@ public class HubConsumerUserProfileServiceImpl implements ConsumerUserProfileSer
 
         // 给countryCodeNumber字段赋值
         if (StringUtils.isNotBlank(result.getCountryCode1())) {
-            boolean flag = isNumeric(result.getCountryCode1());
-            if (flag) {
+
+            if (isNumeric(result.getCountryCode1())) {
                 result.setCountryCodeNumber(result.getCountryCode1());
             } else {
                 String number = CountryCodeEnum.getValue(result.getCountryCode1());

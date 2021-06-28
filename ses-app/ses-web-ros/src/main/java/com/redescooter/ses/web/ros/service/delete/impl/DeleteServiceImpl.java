@@ -235,19 +235,24 @@ public class DeleteServiceImpl implements DeleteService {
         List<OpeInWhouseScooterB> list = opeInWhouseScooterBService.list(qw);
         if (CollectionUtils.isNotEmpty(list)) {
             for (OpeInWhouseScooterB scooterB : list) {
-                // 删除入库单车辆子表
-                deleteMapper.deleteInWhouseScooterB(scooterB.getId());
-                // 删除入库单
-                deleteMapper.deleteInWhouse(scooterB.getInWhId());
+                Long scooterBId = scooterB.getId();
+                Long inWhId = scooterB.getInWhId();
+                String rsn = scooterB.getRsn();
+                String tableSn = scooterB.getTabletSn();
+
                 // 删除入库单产品序列号表
-                deleteMapper.deleteInWhouseSN(scooterB.getTabletSn());
+                deleteMapper.deleteInWhouseSN(tableSn);
+                // 删除入库单
+                deleteMapper.deleteInWhouse(inWhId);
+                // 删除入库单车辆子表
+                deleteMapper.deleteInWhouseScooterB(scooterBId);
 
                 // 删除库存产品序列号表
-                deleteMapper.deleteWmsSN(scooterB.getTabletSn());
+                deleteMapper.deleteWmsSN(tableSn);
 
                 // 修改码库rsn表
                 LambdaQueryWrapper<OpeCodebaseRsn> lqw = new LambdaQueryWrapper<>();
-                lqw.eq(OpeCodebaseRsn::getRsn, scooterB.getRsn());
+                lqw.eq(OpeCodebaseRsn::getRsn, rsn);
                 lqw.last("limit 1");
                 OpeCodebaseRsn codebaseRsn = opeCodebaseRsnService.getOne(lqw);
                 if (null != codebaseRsn) {
@@ -256,17 +261,17 @@ public class DeleteServiceImpl implements DeleteService {
                 }
 
                 // 删除sco_scooter表
-                Long scooterId = scooterService.deleteScoScooter(scooterB.getTabletSn());
+                Long scooterId = scooterService.deleteScoScooter(tableSn);
                 // 删除sco_scooter_node表
                 scooterService.deleteScooterNode(scooterId);
                 // 删除sco_scooter_ecu表
-                scooterService.deleteEcu(scooterB.getTabletSn());
+                scooterService.deleteEcu(tableSn);
 
                 // 删除toc的客户车辆关系表
                 userProfileProService.deleteConUserScooter(scooterId);
 
                 // 删除oms的车辆
-                scooterModelService.deleteOmsScooter(scooterB.getTabletSn());
+                scooterModelService.deleteOmsScooter(tableSn);
             }
         }
         return new GeneralResult(enter.getRequestId());
