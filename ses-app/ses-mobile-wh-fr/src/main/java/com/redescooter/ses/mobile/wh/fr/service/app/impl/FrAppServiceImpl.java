@@ -309,6 +309,18 @@ public class FrAppServiceImpl implements FrAppService {
      */
     @Override
     public GeneralResult register(AppLoginEnter enter) {
+        LambdaQueryWrapper<OpeWarehouseAccount> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(OpeWarehouseAccount::getDr, Constant.DR_FALSE);
+        lqw.eq(OpeWarehouseAccount::getEmail, enter.getEmail().trim());
+        lqw.eq(OpeWarehouseAccount::getSystem, 1);
+        lqw.eq(OpeWarehouseAccount::getStatus, 1);
+        lqw.isNotNull(OpeWarehouseAccount::getPassword);
+        lqw.last("limit 1");
+        OpeWarehouseAccount model = opeWarehouseAccountService.getOne(lqw);
+        if (null != model) {
+            throw new SesMobileFrWhException(ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getCode(), ExceptionCodeEnums.ACCOUNT_ALREADY_EXIST.getMessage());
+        }
+
         LambdaQueryWrapper<OpeWarehouseAccount> qw = new LambdaQueryWrapper<>();
         qw.eq(OpeWarehouseAccount::getDr, Constant.DR_FALSE);
         qw.eq(OpeWarehouseAccount::getEmail, enter.getEmail().trim());
