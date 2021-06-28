@@ -1,7 +1,6 @@
 package com.redescooter.ses.web.ros.service.base;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.redescooter.ses.api.scooter.vo.ScoScooterResult;
 import com.redescooter.ses.web.ros.dm.MondayRecord;
 
 /**
@@ -12,5 +11,4 @@ import com.redescooter.ses.web.ros.dm.MondayRecord;
  */
 public interface MondayRecordService extends IService<MondayRecord> {
 
-    void save(Long userId, ScoScooterResult scooterResult);
 }

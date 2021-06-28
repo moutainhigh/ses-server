@@ -7,11 +7,12 @@ import com.redescooter.ses.api.common.service.MondayProducerService;
 import com.redescooter.ses.api.scooter.vo.ScoScooterResult;
 import com.redescooter.ses.starter.common.service.IdAppService;
 import com.redescooter.ses.tool.utils.date.DateUtil;
-import com.redescooter.ses.web.ros.config.MondayConfig;
+import com.redescooter.ses.web.ros.config.MondayConfigYml;
 import com.redescooter.ses.web.ros.constant.SequenceName;
 import com.redescooter.ses.web.ros.dao.base.MondayRecordMapper;
 import com.redescooter.ses.web.ros.dm.MondayRecord;
 import com.redescooter.ses.web.ros.enums.columntemplate.MondayRedeEnums;
+import com.redescooter.ses.web.ros.service.base.MondayConfigService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.vo.monday.result.MondayData;
 import com.redescooter.ses.web.ros.vo.monday.result.MondayItem;
@@ -43,10 +44,13 @@ public class MondayProducerServiceImpl implements MondayProducerService {
     private IdAppService idAppService;
 
     @Autowired
-    private MondayConfig mondayConfig;
+    private MondayConfigYml mondayConfig;
 
     @Autowired
     private MondayService mondayService;
+
+    @Autowired
+    private MondayConfigService mondayConfigService;
 
     private Map<String, String> map = MondayRedeEnums.getMondayRedeTitle();
 
@@ -63,7 +67,7 @@ public class MondayProducerServiceImpl implements MondayProducerService {
 
             log.info("——————————————————————上传 monday start——————————————————————");
             log.info("monday 板名 {}", mondayConfig.getCustomerBoardName());
-            String boardId = mondayService.existBoardName(mondayConfig.getCustomerBoardName());
+            String boardId = mondayConfigService.queryBoardName(mondayConfig.getCustomerBoardName(), mondayConfig.getWorkspaceId());
             // 创建行
             log.info("——————————————————————创建行 monday start——————————————————————组名{}", mondayConfig.getCustomerGroupName());
             MondayItem item = new MondayItem();

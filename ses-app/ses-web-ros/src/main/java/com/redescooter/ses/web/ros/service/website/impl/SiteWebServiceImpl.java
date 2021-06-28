@@ -74,9 +74,6 @@ public class SiteWebServiceImpl implements SiteWebInquiryService {
     private OpeCustomerService opeCustomerService;
 
     @Autowired
-    private MondayService mondayService;
-
-    @Autowired
     private DeleteMapper deleteMapper;
 
     @Autowired

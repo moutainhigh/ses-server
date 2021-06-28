@@ -35,9 +35,6 @@ public class WebsiteTokenController {
     @Autowired
     private WebSiteTokenService webSiteService;
 
-    @Autowired
-    private MondayService mondayService;
-
     @IgnoreLoginCheck
     @PostMapping(value = "/login")
     @ApiOperation(value = "登录", response = TokenResult.class)

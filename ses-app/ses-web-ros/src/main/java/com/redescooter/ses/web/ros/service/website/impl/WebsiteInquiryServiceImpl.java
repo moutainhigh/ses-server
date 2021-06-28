@@ -132,9 +132,6 @@ public class WebsiteInquiryServiceImpl implements WebsiteOrderFormService {
     @Autowired
     private OpeSysUserService opeSysUserService;
 
-    @Autowired
-    private MondayService mondayService;
-
     @Value("${Request.privateKey}")
     private String privatekey;
 

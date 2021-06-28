@@ -6,11 +6,8 @@ import com.redescooter.ses.api.common.vo.base.GeneralResult;
 import com.redescooter.ses.api.common.vo.base.IdEnter;
 import com.redescooter.ses.api.common.vo.base.PageResult;
 import com.redescooter.ses.api.common.vo.base.Response;
-import com.redescooter.ses.api.scooter.service.ScooterService;
-import com.redescooter.ses.api.scooter.vo.ScoScooterResult;
 import com.redescooter.ses.web.ros.dm.OpeWarehouseAccount;
 import com.redescooter.ses.web.ros.service.app.WarehouseAccountService;
-import com.redescooter.ses.web.ros.service.base.MondayRecordService;
 import com.redescooter.ses.web.ros.vo.app.WarehouseAccountListEnter;
 import com.redescooter.ses.web.ros.vo.app.WarehouseAccountSaveEnter;
 import com.redescooter.ses.web.ros.vo.app.WarehouseAccountUpdateEnter;
@@ -18,7 +15,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -116,19 +112,4 @@ public class WarehouseAccountController {
         return new Response<>(warehouseAccountService.delete(enter));
     }
 
-
-    @Autowired
-    private MondayRecordService recordService;
-
-    /*@Autowired
-    private ScooterService searchService;*/
-
-    @GetMapping("/testMonday")
-    public void testMonday(){
-        ScoScooterResult salcoScooterResult = new ScoScooterResult();
-        salcoScooterResult.setBattery("www.rthj.123,www.dhj.123");
-        salcoScooterResult.setModel("2");
-        salcoScooterResult.setTabletSn("465464645");
-        recordService.save(1654654L, salcoScooterResult);
-    }
 }

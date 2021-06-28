@@ -16,7 +16,7 @@ import org.springframework.http.MediaType;
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "monday", ignoreUnknownFields = true)
-public class MondayConfig {
+public class MondayConfigYml {
     private String url;
 
     private String authorization;

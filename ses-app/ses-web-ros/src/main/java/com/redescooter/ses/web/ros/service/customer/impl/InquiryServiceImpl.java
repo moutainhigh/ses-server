@@ -145,9 +145,6 @@ public class InquiryServiceImpl implements InquiryService {
     private String excelFolder;
 
     @Autowired
-    private MondayService mondayService;
-
-    @Autowired
     private OssConfig ossConfig;
 
     @Autowired
