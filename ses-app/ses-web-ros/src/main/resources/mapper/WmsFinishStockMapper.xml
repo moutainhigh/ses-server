@@ -76,7 +76,7 @@
     <select id="wmsScooterStockCount" resultType="com.redescooter.ses.web.ros.vo.wms.cn.china.WmsStockCountResult">
         SELECT
             (select count(*) from ope_wms_stock_serial_number where dr = 0 and stock_status = 1 and stock_type = #{stockType}) as ableStockQty,
-            sum(used_stock_qty) as usedStockQty,
+            (select count(*) from ope_wms_stock_serial_number where dr = 0 and stock_status = 2 and stock_type = #{stockType}) as usedStockQty,
             sum(wait_in_stock_qty) as waitInStockQty,
             sum(wait_out_stock_qty) as waitOutStockQty
         from ope_wms_scooter_stock
@@ -180,7 +180,7 @@
         select
         stock.id,
         (select count(*) from ope_wms_stock_serial_number where dr = 0 and stock_status = 1 and relation_id = stock.id) as ableStockQty,
-        stock.used_stock_qty,
+        (select count(*) from ope_wms_stock_serial_number where dr = 0 and stock_status = 2 and relation_id = stock.id) as usedStockQty,
         stock.wait_in_stock_qty,
         stock.wait_out_stock_qty,
         group1.group_name,
