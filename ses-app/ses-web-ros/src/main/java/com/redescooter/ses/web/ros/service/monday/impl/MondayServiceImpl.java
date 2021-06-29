@@ -2,13 +2,17 @@ package com.redescooter.ses.web.ros.service.monday.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
-import com.redescooter.ses.web.ros.config.MondayConfig;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.redescooter.ses.api.common.constant.Constant;
+import com.redescooter.ses.web.ros.config.MondayConfigYml;
 import com.redescooter.ses.web.ros.constant.MondayParameterName;
 import com.redescooter.ses.web.ros.constant.MondayQueryGqlConstant;
 import com.redescooter.ses.web.ros.constant.StringManaConstant;
+import com.redescooter.ses.web.ros.dm.MondayConfig;
 import com.redescooter.ses.web.ros.enums.columntemplate.MondayRedeEnums;
 import com.redescooter.ses.web.ros.enums.datatype.BoardKindEnums;
 import com.redescooter.ses.web.ros.exception.SesWebRosException;
+import com.redescooter.ses.web.ros.service.base.MondayConfigService;
 import com.redescooter.ses.web.ros.service.monday.MondayService;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationBoardEnter;
 import com.redescooter.ses.web.ros.vo.monday.enter.MondayMutationColumnEnter;
@@ -57,7 +61,22 @@ public class MondayServiceImpl implements MondayService {
     private static Map<String, String> redeCustomerMap = MondayRedeEnums.getMondayRedeTitle();
 
     @Autowired
-    private MondayConfig mondayConfig;
+    private MondayConfigYml mondayConfig;
+
+    @Autowired
+    private MondayConfigService mondayConfigService;
+
+    /**
+     * 获取monday
+     * @return
+     */
+    public MondayConfig getMondayConfig() {
+        LambdaQueryWrapper<MondayConfig> qw = new LambdaQueryWrapper<>();
+        qw.eq(MondayConfig::getDr, Constant.DR_FALSE);
+        qw.orderByDesc(MondayConfig::getCreatedTime);
+        qw.last("limit 1");
+        return mondayConfigService.getOne(qw);
+    }
 
     /**
      * 初始化集合
@@ -80,6 +99,7 @@ public class MondayServiceImpl implements MondayService {
      * 注意：初始化模板主要逻辑如下 1、板子校验 没有就新建 2、列 是否合法 不合法就新建 （列不可通过API 删除）
      */
     @PostConstruct
+    @GlobalTransactional
     @Override
     public void initializationMondaytemplate() {
         if (mondayConfig.getLoadTemplate()) {
@@ -92,7 +112,7 @@ public class MondayServiceImpl implements MondayService {
 
     private void initBoardMapHandler() {
         log.info("-----------------------------初始化正式数据Monday模板------------------------------------------");
-        checkCustomerEnumsColumn(mondayConfig.getCustomerBoardName(), redeCustomerMap, mondayConfig.getWorkspaceId());
+        checkCustomerEnumsColumn(this.mondayConfig.getCustomerBoardName(), redeCustomerMap, this.mondayConfig.getWorkspaceId(), mondayConfig.getAuthorization());
         log.info("-----------------------------初始化Monday模板结束------------------------------------------");
     }
 
@@ -102,7 +122,7 @@ public class MondayServiceImpl implements MondayService {
     @Override
     public void initializationBackMondaytemplate() {
         log.info("-----------------------------初始化备份数据Monday模板------------------------------------------");
-        checkCustomerEnumsColumn(mondayConfig.getCustomerBoardName(), redeCustomerMap, mondayConfig.getWorkspaceId());
+        checkCustomerEnumsColumn(mondayConfig.getCustomerBoardName(), redeCustomerMap, mondayConfig.getWorkspaceId(), mondayConfig.getAuthorization());
         log.info("-----------------------------初始化备份Monday模板结束------------------------------------------");
     }
 
@@ -179,7 +199,7 @@ public class MondayServiceImpl implements MondayService {
     @Override
     public MondayCreateResult mutationBoard(MondayMutationBoardEnter enter) {
         String graphGql =
-                MondayQueryGqlConstant.MUTATION_BOARD.replace(MondayParameterName.BOARD_NAME, enter.getBoardName())
+                MondayQueryGqlConstant.MUTATION_BOARD_NEW.replace(MondayParameterName.BOARD_NAME, enter.getBoardName())
                         .replace(MondayParameterName.BOARD_KIND, enter.getBoardKind())
                         .replace(MondayParameterName.BOARD_WORDSPACE, String.valueOf(enter.getWorkspaceId()))
                         .replace(MondayParameterName.BOARD_TEMPLETE, String.valueOf(enter.getTemplateId()));
@@ -285,7 +305,7 @@ public class MondayServiceImpl implements MondayService {
         map.add(mondayConfig.getParamQuery(), querySdl);
         map.add(mondayConfig.getParamVariables(), null);
 
-        log.info("----------执行查询SQL{}----------", querySdl.toString());
+        log.info("----------执行查询SQL{}----------", querySdl);
         // 将请求头部和参数合成一个请求
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, httpHeaders);
         // 执行HTTP请求，将返回的结构使用ResultVO类格式化
@@ -311,7 +331,7 @@ public class MondayServiceImpl implements MondayService {
         if (CollectionUtil.isEmpty(mondayBoardResults)) {
             // 创建板子
             mutationBoardEnter = MondayMutationBoardEnter.builder().boardName(boardName)
-                    //.workspaceId(Integer.valueOf(workspaceId)).templateId(Integer.valueOf(mondayConfig.getTempleteId()))
+                    .workspaceId(Integer.valueOf(workspaceId))//.templateId(Integer.valueOf(mondayConfig.getTempleteId()))
                     .boardKind(BoardKindEnums.PUBLIC.getCode()).build();
         }
         MondayBoardResult mondayBoardResult = mondayBoardResults.stream()
@@ -371,24 +391,36 @@ public class MondayServiceImpl implements MondayService {
      * @param parameterMap
      * @param workSpaceId
      */
-    private void checkCustomerEnumsColumn(String boardName, Map<String, String> parameterMap, String workSpaceId) {
+    private void checkCustomerEnumsColumn(String boardName, Map<String, String> parameterMap, String workSpaceId, String authorization) {
+        String boardId = mondayConfigService.queryBoardName(boardName, workSpaceId, authorization);
+        if (StringUtils.isNotBlank(boardId)) {
+            return;
+        }
+        MondayMutationBoardEnter mutationBoardEnter = MondayMutationBoardEnter.builder().boardName(boardName)
+                .workspaceId(Integer.valueOf(workSpaceId))
+                .boardKind(BoardKindEnums.PUBLIC.getCode()).build();
+        if (StringManaConstant.entityIsNotNull(mutationBoardEnter)) {
+            MondayCreateResult mondayCreateResult = mutationBoard(mutationBoardEnter);
+            boardId = mondayCreateResult.getId();
+        }
         // 板子校验
-        MondayBoardResult mondayBoardResult = getBoardByBoardName(boardName, workSpaceId);
+/*        MondayBoardResult mondayBoardResult = getBoardByBoardName(boardName, workSpaceId);
         log.info("板子id {}", mondayBoardResult.getId());
-
+        String boardId = mondayBoardResult.getId();*/
         // 列校验
-        List<MondayColumnResult> mondayColumnResults = queryColumnResult(mondayBoardResult.getId());
+        List<MondayColumnResult> mondayColumnResults = queryColumnResult(boardId);
 
         // 放入插入的列集合
         List<MondayMutationColumnEnter> bookOrderColumnList = new ArrayList<>();
 
         if (CollectionUtils.isEmpty(mondayColumnResults)) {
-            List<MondayMutationColumnEnter> columnEnterList = MondayRedeEnums.init(Integer.parseInt(mondayBoardResult.getId()));
+            List<MondayMutationColumnEnter> columnEnterList = MondayRedeEnums.init(Integer.parseInt(boardId));
             List<MondayColumnResult> results = multipleColumn(columnEnterList);
             MondayMutationGroupEnter redeGroup = new MondayMutationGroupEnter();
-            redeGroup.setBoardId(Integer.parseInt(mondayBoardResult.getId()));
+            redeGroup.setBoardId(Integer.parseInt(boardId));
             redeGroup.setGroupName(mondayConfig.getCustomerGroupName());
             MondayCreateResult mondayCreateResult1 = mutationGroup(redeGroup);
+            mondayConfigService.saveMondayConfig(boardName, boardId, mondayConfig.getCustomerGroupName(), workSpaceId, mondayConfig.getAuthorization());
             //delelteGroup(mondayBoardResult.getId(), "group title");
             return;
         }
@@ -410,7 +442,7 @@ public class MondayServiceImpl implements MondayService {
                         .filter(item -> StringUtils.equals(item.getTitle(), map)).findFirst().orElse(null);
                 if (null == mondayColumnResult || !mondayColumnResult.getId().equals(parameterMap.get(map))) {
                     bookOrderColumnList.add(MondayMutationColumnEnter.builder()
-                            .boardId(Integer.valueOf(mondayBoardResult.getId())).title(map)
+                            .boardId(Integer.valueOf(boardId)).title(map)
                             .columnType(MondayRedeEnums.getEnumsTypeByTitle(map)).defaults(null).build());
                 }
 
@@ -419,7 +451,7 @@ public class MondayServiceImpl implements MondayService {
 
         // 更新模版集合
         if (!CollectionUtils.isEmpty(bookOrderColumnList)) {
-            List<MondayMutationColumnEnter> columnEnterList = MondayRedeEnums.init(Integer.parseInt(mondayBoardResult.getId()));
+            List<MondayMutationColumnEnter> columnEnterList = MondayRedeEnums.init(Integer.parseInt(boardId));
             // 对Map 重新赋值
             List<MondayColumnResult> contantUsColumnResultList = null;
             if (bookOrderColumnList.size() == columnEnterList.size()) {
@@ -439,9 +471,10 @@ public class MondayServiceImpl implements MondayService {
             }
         }
         MondayMutationGroupEnter redeGroup = new MondayMutationGroupEnter();
-        redeGroup.setBoardId(Integer.parseInt(mondayBoardResult.getId()));
+        redeGroup.setBoardId(Integer.parseInt(boardId));
         redeGroup.setGroupName(mondayConfig.getCustomerGroupName());
         MondayCreateResult mondayCreateResult1 = mutationGroup(redeGroup);
+        mondayConfigService.saveMondayConfig(boardName, boardId, mondayConfig.getCustomerGroupName(), workSpaceId, mondayConfig.getAuthorization());
     }
 
     /**

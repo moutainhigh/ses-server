@@ -10,7 +10,7 @@ import com.redescooter.ses.web.ros.dm.MondayConfig;
  */
 public interface MondayConfigService extends IService<MondayConfig> {
 
-    void saveMondayConfig(String boardName, String boardId, String groupName, String workspaceId);
+    void saveMondayConfig(String boardName, String boardId, String groupName, String workspaceId, String authorization);
 
-    String queryBoardName(String boardName, String workSpaceId);
+    String queryBoardName(String boardName, String workSpaceId, String authorization);
 }

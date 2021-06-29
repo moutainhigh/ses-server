@@ -24,6 +24,14 @@ public interface MondayQueryGqlConstant {
             "\t}\n" +
             "}\n";
 
+    //板子插入
+    String MUTATION_BOARD_NEW = "mutation {\n" +
+            "\tcreate_board (board_name: \"" + MondayParameterName.BOARD_NAME + "\", board_kind: " + MondayParameterName.BOARD_KIND + ", workspace_id:" + MondayParameterName.BOARD_WORDSPACE +
+             ") {\n" +
+            "\t\tid\n" +
+            "\t}\n" +
+            "}\n";
+
     //查询分组
     String QUERY_GROUP = "query {\n" +
             "\tboards(ids: " + MondayParameterName.BOARD_PARAMETER + ") {\n" +

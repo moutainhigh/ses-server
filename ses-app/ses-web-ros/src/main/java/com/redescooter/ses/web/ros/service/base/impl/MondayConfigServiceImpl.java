@@ -28,31 +28,34 @@ public class MondayConfigServiceImpl extends ServiceImpl<MondayConfigMapper, Mon
     private IdAppService idAppService;
 
     @Override
-    public void saveMondayConfig(String boardName, String boardId, String groupName, String workspaceId) {
+    public void saveMondayConfig(String boardName, String boardId, String groupName, String workspaceId, String authorization) {
         LambdaUpdateWrapper<MondayConfig> uw = new LambdaUpdateWrapper<>();
         uw.eq(MondayConfig::getDr, Constant.DR_FALSE);
         uw.eq(MondayConfig::getBoardName, boardName);
         uw.eq(MondayConfig::getWorkspaceId, workspaceId);
-        uw.set(MondayConfig::getDr, Constant.DR_TRUE);
+        uw.eq(MondayConfig::getAuthorization, authorization);
+        uw.setSql("dr = 1, updated_time = now()");
         this.update(uw);
         MondayConfig mondayConfig = new MondayConfig();
         mondayConfig.setId(idAppService.getId(SequenceName.MONDAY_CONFIG));
         mondayConfig.setBoardId(boardId);
-        mondayConfig.setGroupName(boardName);
+        mondayConfig.setBoardName(boardName);
         mondayConfig.setGroupName(groupName);
         mondayConfig.setWorkspaceId(workspaceId);
+        mondayConfig.setAuthorization(authorization);
         mondayConfig.setCreatedTime(new Date());
         this.save(mondayConfig);
     }
 
     @Override
-    public String queryBoardName(String boardName, String workSpaceId) {
+    public String queryBoardName(String boardName, String workSpaceId, String authorization) {
         LambdaQueryWrapper<MondayConfig> qw = new LambdaQueryWrapper();
         qw.eq(MondayConfig::getDr, Constant.DR_FALSE);
         qw.eq(MondayConfig::getBoardName, boardName);
         qw.eq(MondayConfig::getWorkspaceId, workSpaceId);
+        qw.eq(MondayConfig::getAuthorization, authorization);
         qw.orderByDesc(MondayConfig::getCreatedTime);
-        qw.last("limit ");
+        qw.last("limit 1");
         MondayConfig mondayConfig = this.getOne(qw);
         return null == mondayConfig ? null : mondayConfig.getBoardId();
     }

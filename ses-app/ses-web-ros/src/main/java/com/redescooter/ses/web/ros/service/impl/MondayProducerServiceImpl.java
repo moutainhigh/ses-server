@@ -67,7 +67,7 @@ public class MondayProducerServiceImpl implements MondayProducerService {
 
             log.info("——————————————————————上传 monday start——————————————————————");
             log.info("monday 板名 {}", mondayConfig.getCustomerBoardName());
-            String boardId = mondayConfigService.queryBoardName(mondayConfig.getCustomerBoardName(), mondayConfig.getWorkspaceId());
+            String boardId = mondayConfigService.queryBoardName(mondayConfig.getCustomerBoardName(), mondayConfig.getWorkspaceId(), mondayConfig.getAuthorization());
             // 创建行
             log.info("——————————————————————创建行 monday start——————————————————————组名{}", mondayConfig.getCustomerGroupName());
             MondayItem item = new MondayItem();
