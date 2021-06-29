@@ -185,7 +185,7 @@ public class UserProfileProServiceImpl implements UserProfileProService {
         conUserProfileQueryWrapper.eq(ConUserProfile.COL_TENANT_ID, enter.getInputTenantId());
         conUserProfileQueryWrapper.eq(ConUserProfile.COL_EMAIL_1, enter.getEmail());
         conUserProfileQueryWrapper.eq(ConUserProfile.COL_DR, 0);
-
+        conUserProfileQueryWrapper.last("limit 1");
         ConUserProfile conUserProfile = conUserProfileMapper.selectOne(conUserProfileQueryWrapper);
         if (conUserProfile != null) {
             if (StringUtils.isNotBlank(enter.getFirstName()) && StringUtils.isNotBlank(enter.getLastName())) {
